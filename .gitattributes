@@ -1,0 +1,11 @@
+# GPC scripts are plain text. Keep them LF so the Zen Studio compiler doesn't
+# complain about CR on files edited on Mac/Linux.
+*.gpc text eol=lf
+
+# Guides and PDFs are binary — don't try to diff or merge them.
+*.pdf binary
+*.exe binary
+*.zip binary
+
+# Windows junk that sneaks in when people extract the pack and re-zip it.
+* text=auto

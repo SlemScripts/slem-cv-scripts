@@ -1,0 +1,19 @@
+# OS junk
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Zen Studio build output
+*.zcm
+*.zcd
+*.hex
+
+# Calibration files the setup writes — per-machine, never commit
+calib.dat
+*.calib
+offset.cfg
+
+# Local editor state
+.vscode/
+.idea/
+*.swp
