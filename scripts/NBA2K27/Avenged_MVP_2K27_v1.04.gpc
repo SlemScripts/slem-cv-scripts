@@ -1,0 +1,4053 @@
+/*  
+    
+                
+        ░█████╗░██╗░░░██╗███████╗███╗░░██╗░██████╗░███████╗██████╗░  ███╗░░░███╗██╗░░░██╗██████╗░
+        ██╔══██╗██║░░░██║██╔════╝████╗░██║██╔════╝░██╔════╝██╔══██╗  ████╗░████║██║░░░██║██╔══██╗
+        ███████║╚██╗░██╔╝█████╗░░██╔██╗██║██║░░██╗░█████╗░░██║░░██║  ██╔████╔██║╚██╗░██╔╝██████╔╝
+        ██╔══██║░╚████╔╝░██╔══╝░░██║╚████║██║░░╚██╗██╔══╝░░██║░░██║  ██║╚██╔╝██║░╚████╔╝░██╔═══╝░
+        ██║░░██║░░╚██╔╝░░███████╗██║░╚███║╚██████╔╝███████╗██████╔╝  ██║░╚═╝░██║░░╚██╔╝░░██║░░░░░
+        ╚═╝░░╚═╝░░░╚═╝░░░╚══════╝╚═╝░░╚══╝░╚═════╝░╚══════╝╚═════╝░  ╚═╝░░░░░╚═╝░░░╚═╝░░░╚═╝░░░░░
+                                            A V E N G E D
+
+-- =============================================
+--  Avenged Scripts | MVP 2K27 v1.04
+-- =============================================
+-- Author: Avenged Scripts
+-- Discord: https://discord.gg/avengedscripts
+-- KO-FI: https://ko-fi.com/avengedscripts
+
+-- Special Thanks & Contributors:
+--   • deemile420_84171 AKA Emileznn
+--   • o.Binds AKA Binds
+--   • always.avenged AKA Avenged
+
+-- NOTICE: Any redistribution of this script without 
+-- Avenged Zen's permission is strictly prohibited.
+-- Please support the creators!
+
+-- =============================================
+
+
+
+    ██╗░██████╗░███╗░░██╗░█████╗░██████╗░███████╗
+    ██║██╔════╝░████╗░██║██╔══██╗██╔══██╗██╔════╝
+    ██║██║░░██╗░██╔██╗██║██║░░██║██████╔╝█████╗░░
+    ██║██║░░╚██╗██║╚████║██║░░██║██╔══██╗██╔══╝░░   
+    ██║╚██████╔╝██║░╚███║╚█████╔╝██║░░██║███████╗
+    ╚═╝░╚═════╝░╚═╝░░╚══╝░╚════╝░╚═╝░░╚═╝╚══════╝
+
+                                
+
+    ██████╗░░█████╗░  ███╗░░██╗░█████╗░████████╗  ████████╗░█████╗░██╗░░░██╗░█████╗░██╗░░██╗
+    ██╔══██╗██╔══██╗  ████╗░██║██╔══██╗╚══██╔══╝  ╚══██╔══╝██╔══██╗██║░░░██║██╔══██╗██║░░██║
+    ██║░░██║██║░░██║  ██╔██╗██║██║░░██║░░░██║░░░  ░░░██║░░░██║░░██║██║░░░██║██║░░╚═╝███████║
+    ██║░░██║██║░░██║  ██║╚████║██║░░██║░░░██║░░░  ░░░██║░░░██║░░██║██║░░░██║██║░░██╗██╔══██║
+    ██████╔╝╚█████╔╝  ██║░╚███║╚█████╔╝░░░██║░░░  ░░░██║░░░╚█████╔╝╚██████╔╝╚█████╔╝██║░░██║
+    ╚═════╝░░╚════╝░  ╚═╝░░╚══╝░╚════╝░░░░╚═╝░░░  ░░░╚═╝░░░░╚════╝░░╚═════╝░░╚════╝░╚═╝░░╚═╝
+*/
+
+define PVAR_FLICK_ACTIVE = SPVAR_1;
+define PVAR_TEMPO_MS = SPVAR_2;
+define PVAR_STABILITY = SPVAR_3;
+define PVAR_REVERSE_MODE = SPVAR_5;
+define PVAR_RS_SHOOT = SPVAR_6;
+define PVAR_REMAP_SQ = SPVAR_7;
+define PVAR_QS_MODE = SPVAR_8;
+define PVAR_BR_AUTO = SPVAR_8;  // bit0=mode bits1-14=auto_ms
+define PVAR_DUNK_METER = SPVAR_9;
+define PVAR_QS_ON = SPVAR_14;   // quick stop on + packed binds
+
+define PVAR_DASSIST = SPVAR_10;
+define PVAR_LAST_PAGE = SPVAR_11;
+define PVAR_FADE_MS = SPVAR_12;
+define PVAR_FADE_TOGGLE = SPVAR_13;
+define PVAR_AUTO_REMAP = SPVAR_14;
+define PVAR_AUTO_SHOT_ACTIVE = SPVAR_15;
+define PVAR_AUTO_SHOT_DUR = SPVAR_16;
+define PVAR_AUTO_TEMPO = SPVAR_17;
+
+define PVAR_PROFILE_SLOT = SPVAR_20;
+define PVAR_UNLIM_STAM = SPVAR_21;
+define PROFILE_MIN = 1;
+define PROFILE_MAX = 5;
+
+// ---- Global (non-profile) settings ----
+define PVAR_SLAM_EN_L1      = SPVAR_50;
+define PVAR_SLAM_TRIG_L1    = SPVAR_51;
+define PVAR_SLAM_STYLE_L1   = SPVAR_52;
+define PVAR_SLAM_EN_O       = SPVAR_53;
+define PVAR_SLAM_TRIG_O     = SPVAR_54;
+define PVAR_SLAM_STYLE_O    = SPVAR_55;
+define PVAR_DUNK_METER_ON   = SPVAR_56;
+define PVAR_DUNK_HOLD       = SPVAR_57;
+define PVAR_DUNK_HOLD_O     = SPVAR_58;
+define PVAR_SOFT_TRIGGER    = SPVAR_4;   // was SPVAR_62 (out of range on Zen — never persisted)
+define PVAR_GOTO_TOGGLE     = SPVAR_18;  // was SPVAR_63 (out of range)
+define PVAR_SMART_TIMING    = SPVAR_19;  // was SPVAR_64 (out of range)
+define PVAR_DUNK_BIND       = SPVAR_59;  // custom dunk bind (bind_name_idx 0-10)
+define PVAR_DEFAULTS_STAMP  = SPVAR_22;  // one-time flag: force factory defaults below
+define PVAR_SMART_FADE      = SPVAR_23;
+define PVAR_SMART_QUICK     = SPVAR_24;
+define PVAR_SHOTLOG         = SPVAR_25;
+define PVAR_SHOT_VIBE       = SPVAR_32;  // unused padding slot (profile 1's p_start+2)
+define PVAR_SHOT_VIBE_MS    = SPVAR_35;  // unused padding slot (profile 2's p_start+2)
+define PVAR_FADE_VIBE       = SPVAR_38;  // unused padding slot (profile 3's p_start+2)
+define PVAR_FADE_VIBE_MS    = SPVAR_41;  // unused padding slot (profile 4's p_start+2)
+define PVAR_NODIP_ON        = SPVAR_44;  // unused padding slot (profile 5's p_start+2)
+define PVAR_NODIP_MS        = SPVAR_60;
+define PVAR_DRIBBLE_ON      = SPVAR_26;
+define PVAR_DRIB_UP         = SPVAR_27;
+define PVAR_DRIB_DN         = SPVAR_28;
+define PVAR_DRIB_LF         = SPVAR_29;
+// SPVAR_30..SPVAR_44 are RESERVED by the profile system (SaveProfile/LoadProfile
+// use PVAR_BASE=30 + slot*3), except the p_start+2 padding slots (32/35/38/41/44)
+// already claimed above. The six settings that previously sat on 33/34/36/37/39/40
+// were being overwritten every time profile 2/3/4 was saved -- drib_rt landing on
+// profile 2's slot is why the D-Pad Right bind kept resetting to Off (and the
+// unbound press then fell through to the game's own d-pad camera toggle).
+// All six now live bit-packed in the one verified-free slot below:
+// bits 0-8 drib_rt | 9 auto_stand | 10 auto_fade | 11 auto_nodip |
+// bits 12-21 auto_speed_ms | bits 22-30 auto_tempo_ms
+define PVAR_MISC_PACK       = SPVAR_49;
+define PVAR_BTN_SHOT_ON     = SPVAR_45;
+define PVAR_BTN_SHOT_MS     = SPVAR_46;
+define PVAR_AUTO_FADE_SPD   = SPVAR_47;
+define PVAR_AUTO_NODIP_MS   = SPVAR_48;
+
+
+
+
+define TEAL_R = 0;
+define TEAL_G = 128;
+define TEAL_B = 128;
+define STAR_COUNT = 42;
+
+define REPEAT_INITIAL_MS = 180;
+define REPEAT_RATE_SLOW = 55;
+define REPEAT_ACCEL_AT = 500;
+define REPEAT_RATE_FAST = 22;
+
+int flick_up_shooting_active = 1;
+int delay_duration = 50;
+int STICK_DOWN_VALUE = 100;
+int STICK_UP_VALUE = -100;
+int random_variation_min = -4;
+int random_variation_max = 4;
+int random_hold_variation_min = -2;
+int random_hold_variation_max = 2;
+
+int reverse_flick_mode = 0;
+
+int remap_square_active = 1;  
+
+// ==== Smart Timing (shot-context release offset) ====
+// Reads the same way as a manual "off-dribble" or "fade" read: nudges the
+// release earlier for a quick off-dribble pull-up, later for a fade, and
+// leaves a stand-still shot untouched. Applies to Turbo Shot, Fade Shot,
+// and Go-To Shot alike since they all release through the same combos.
+int smart_timing_enabled = 0;
+int rs_recent_timer = 0;
+int shot_offset = 0;
+int effective_wait = 0;
+int smart_fade_offset = 30;
+int smart_quick_offset = 20;
+
+// -- Soft Trigger (Misc) --
+int tk_at_on = 1;
+// -- Vibe Blocker (Misc) --
+int vib_block_on = 0;   // 1 = block all game rumble (script menu vibes unaffected)
+int vib_block_prev = 0;
+
+// ---- Dribble moves (D-pad slots) ----
+int dribble_on = 0;
+
+// ==== Button Shot ====
+// Directional button-hold release. On Square press the script reads left
+// stick once, then holds Square for a calibrated window and releases:
+//   standstill  -> ShotH
+//   fade left   -> FadeLH
+//   fade right  -> FadeRH
+// Optional Catch sequence (LB) runs Circle+Triangle then the CatchH hold.
+// Pure button timing -- never touches the right stick.
+int btn_shot_on = 0;          // master toggle (menu still labeled via strings)
+int ShotH   = 664;            // standstill / normal shot hold
+int FadeLH  = 925;            // fade left hold
+int FadeRH  = 922;            // fade right hold
+int CatchH  = 664;            // catch-and-shoot hold
+int ShotV, FadeLV, FadeRV, CatchV;  // release residual (set in init)
+int btn_hold_active = 0;        // 1 while a hold-release combo owns Square
+int btn_shot_hold_ms = 664;   // kept in sync with ShotH for menu/profile
+int btn_val_idx = 0;          // 0=Shot 1=Catch 2=FadeL 3=FadeR
+int btn_edit_open = 0;        // 1 = value editor screen is open
+const string BTN_VAL_NAMES[] = { "Shoot", "Catch", "Fade Left", "Fade Right", "" };
+const string BTN_EDIT_HINT[] = { "L/R switch  U/D +/-" };
+const string BTN_EDIT_HINT2[] = { "X type  O back" };
+const string BTN_OPEN_HINT[] = { "X: edit values" };
+int drib_up = 0;
+int drib_dn = 0;
+int drib_lf = 0;
+int drib_rt = 0;
+int drib_busy = 0;
+int drib_busy_ms = 0;
+int sq_shot_active = 0;
+int br_hold_active = 0;
+int br_auto_mode = 0;
+int br_auto_ms = 500;
+int br_sub_tab = 0;  // 0=Mode 1=Rhythm Tempo 2=Auto Hold MS
+
+
+// -- Dunk (Contact / Normal slam system) --
+int dunk_meter_on = 0;
+int dunk_bind_btn = PS4_L1;
+int bind_cap_mode = 0;
+int bind_cap_btn = PS4_L1;
+int bind_name_idx = 0;
+int bind_cap_name_idx = 0;
+int dunk_hold_dur = 700; int dunk_hold_ms_l1 = 0; int dunk_fired_l1 = 0;
+int dunk_release_l1 = 0;  // V8-style: set the instant the meter maxes, fires the flick immediately
+int dunk_guard = 0;       // keeps Unlimited Sprint from fighting the dunk stick input
+
+// -- Quick Stop (Misc) --
+int qs_on = 0;
+int qs_btn1 = PS4_L2;     // primary bind button
+int qs_btn2 = 0;          // secondary (0 = single-button bind)
+int qs_cap_mode = 0;      // 1 = capture screen active
+int qs_cap_step = 0;      // 0 = waiting btn1, 1 = waiting btn2 optional
+int qs_circle_held = 0;   // track hold-to-exit on capture screen
+
+// -- Unlimited Sprint (Misc) --
+int unlimited_stamina = 0;
+int stamina_ground_control = 70;  // % of full stick kept while sprinting
+int stamina_stick_active = 1;     // reserved enable flag (always on, matches V8)
+
+int fade_toggle = 1;
+int fade_delay_ms = 42;
+int fade_intent = 0;
+
+// ==== RS Shooting ====
+int rs_shoot_on = 0;
+int rs_hold_time = 300;
+int rs_hold_elapsed = 0;
+int rs_shot_active = 0;
+int rs_shot_dir = 0;
+int fade_l1r2_on = 0;
+
+// ==== Release Timing Feedback ====
+// A standalone hold-timer that watches Square (post-remap) regardless of
+// whether Turbo/Button Rhythm shooting itself is on. Two things read off
+// this same timer: a small on-screen log of your last few release times,
+// and an optional one-shot rumble that fires once you've held past a
+// tunable point, as a "let go now" cue while you're learning your timing.
+int shot_press_ms = 0;
+int shot_charging = 0;
+int shotlog_enabled = 0;
+int shotlog_normal_ms = 0;
+int shotlog_fade_ms = 0;
+int shotlog_nodip_ms = 0;
+int shotlog_last_ms = 0;
+int shotlog_last_type = 0;
+int shot_log_nodip = 0;
+int nodip_enabled = 0;
+int nodip_tempo_ms = 270;
+
+// ---- Automation (L3/R3 auto shot) ----
+int auto_stand_on = 0;
+int auto_fade_on = 0;
+int auto_nodip_on = 0;
+int auto_speed_ms = 500;   // stand auto hold (your green ~500ms)
+int auto_tempo_ms = 50;    // delay before full flick
+int auto_nodip_ms = 440;   // no-dip auto hold (your green ~440ms)
+int auto_fade_speed_ms = 500;  // fade auto hold, tuned separately from Stand
+int auto_stick = 0;
+
+int shot_vibe_enabled = 0;
+int shot_vibe_ms = 500;
+int shot_vibe_fired = 0;
+int fade_vibe_enabled = 0;
+int fade_vibe_ms = 500;
+int fade_vibe_fired = 0;
+
+int meter_dunk_active = 0;
+int r2_recent_ms = 0;
+
+int last_menu_page = 1;
+int rpt_up_held = 0, rpt_dn_held = 0;
+int rpt_up_bucket = 0, rpt_dn_bucket = 0;
+int rpt_up_total = 0, rpt_dn_total = 0;
+int rpt_rate_up = 0, rpt_rate_dn = 0;
+int dt_menu = 0;
+int current_profile = 1;
+int profile_sel = 1;
+int loaded_idx = 0;
+
+int star_x[STAR_COUNT];
+int star_y[STAR_COUNT];
+int star_vx[STAR_COUNT];
+int star_brightness[STAR_COUNT];
+int star_index;
+int profile_idx;
+
+
+int saver_on = 0;
+int saver_timer = 0;
+
+// ---- Custom NumberPad input ----
+int np_active = 0; int np_tid = 0; int np_len = 0;
+int np_cur = 0; int np_result = 0;
+int np_confirmed = 0; int np_x_last = 0;
+int np_d0 = -1; int np_d1 = -1; int np_d2 = -1; int np_d3 = -1; int np_d4 = -1; int np_d5 = -1;
+int np_cx = 0; int np_cy = 0; int np_disp = 0;
+
+// ---- Info panel (Triangle) ----
+int info_active = 0; int info_idx = 0; int info_page = 0;
+
+// ---- Loading / idle screen (basketball hoop shot + cycling text) ----
+
+// Text stays centered normally unless it would run under the hoop,
+// in which case it's nudged left just enough to clear it (never off-screen).
+define TXT_ZONE_L = 9;
+define TXT_ZONE_R = 109;
+int cxs_x; int cxs_edge;
+int ssp = 1; int hcd = 0;
+int rv_tx = 0; int rv_tw = 0; int rv_px = 0;
+int rv_tx2 = 0; int rv_tw2 = 0; int rv_px2 = 0;
+int rv_tx3 = 0;
+
+const string L1_TXT[]  = { "2K27" };
+const string L1B_TXT[] = { "AVENGED MVP" };
+const string L1V_TXT[] = { "v1.04" };
+const string CR_TXT[]  = { "Binds,Emileznn" };
+
+
+
+
+
+
+int graph_width;
+int x_start;
+int mid_x;
+int bar_pos;
+
+int numpgs = 39, menu_enabled = 0, page = 1, menuSelection;
+int flashtoggle, isXbox;
+int p_start, val0, val1;
+
+int menu_mode = 0; 
+int category_index = 0;
+int i;
+int c_y;
+int p_len;
+int p_x;
+int str_len;
+int x_pos;
+int p_idx;
+int dot_count;
+int dot_start_x;
+int menu_scroll_y = 0;
+int menu_target_y = 0;
+
+// Nested feature editors.
+// Parent pages open their related timing/options pages with X.
+// Circle always returns to the parent page instead of closing the whole menu.
+int sub_edit_open = 0;
+int sub_parent_page = 0;
+int sub_first_page = 0;
+int sub_last_page = 0;
+const string CATEGORIES[] = { "Shooting", "Fade", "No Dip", "Dunk", "Dribble", "Feedback", "RS Shoot", "Misc", "Profile" };
+const int8 CAT_START[] = { 1, 14, 21, 25, 27, 32, 37, 33, 36 };
+// Child setting pages are opened only from their parent feature.
+// RS Shoot is above Misc; Misc order is Soft Triggers, Vibe Blocker, Unlimited Sprint, Quick Stop.
+const int8 CAT_COUNT[] = { 6, 4, 2, 2, 1, 1, 1, 4, 1 };
+define NUM_CATEGORIES = 9;
+
+const string ARROW_L[] = { "< " };
+const string ARROW_R[] = { " >" };
+
+const string NP_DIG[]  = {"0","1","2","3","4","5","6","7","8","9"};
+const string NP_OK[]   = {"OK"};
+const string NP_DASH[] = {"-"};
+const string NP_HINT[] = {"X sel SQ del O bk"};
+// ---- OLED slider labels (GPC-compatible string arrays) ----
+// Keep labels as string arrays: GPC does not allow raw string literals
+// as expression arguments to get_string_length().
+const string SL_TEMPO[] = { "Tempo" };
+const string SL_RHYTHM_TEMPO[] = { "Rhythm Tempo" };
+const string SL_AUTO_HOLD[] = { "Auto Hold MS" };
+const string SL_FADE_ASSIST[] = { "Fade Assist" };
+const string SL_PULLUP_ASSIST[] = { "Pull-Up Assist" };
+const string SL_VIBE_TIMING[] = { "Vibe Timing" };
+const string SL_FADE_TEMPO[] = { "Fade Tempo" };
+const string SL_NODIP_TEMPO[] = { "No-Dip Tempo" };
+const string SL_AUTO_SPEED[] = { "Auto Speed" };
+const string SL_AUTO_TEMPO[] = { "Auto Tempo" };
+const string SL_AUTO_FADE_SPEED[] = { "Auto Fade Speed" };
+const string SL_AUTO_NODIP_SPEED[] = { "Auto No-Dip Speed" };
+const string SL_RS_HOLD_TIME[] = { "RS Hold Time" };
+
+const string np_labels[] = {
+    "Tempo (ms)",
+    "Fade Assist (ms)",
+    "Pull-Up (ms)",
+    "Shot Vibe (ms)",
+    "Fade Vibe (ms)",
+    "Explosive Power",
+    "Sprint Power",
+    "Cut Power",
+    "Stamina Floor",
+    "Contact Hold",
+    "Normal Hold",
+    "RS Hold Time",
+    "SQ Timing",
+    "No-Dip Tempo",
+    "Value",
+    "Value",
+    "Auto Speed",
+    "Auto Tempo"
+};
+const string INFO_HINT[] = { "1/3 X:Ctrl O:Back", "2/3 X:Use O:Back", "3/3 X:What O:Back" };
+const string INFO_L0[] = {
+    "Button Rhythm",
+    "Tempo (ms)",
+    "Remap Button",
+    "Smart Timing",
+    "Fade Assist",
+    "Pull-Up (ms)",
+    "Shot Vibe",
+    "Shot Vibe ms",
+    "Auto Stand",
+    "Auto Speed",
+    "Auto Tempo",
+    "Button Shot",
+    "Button Shot MS",
+    "Fade Toggle",
+    "Fade Tempo",
+    "Turbo Shots",
+    "Fade Vibe",
+    "Fade Vibe ms",
+    "Auto Fade",
+    "Auto Fade Speed",
+    "No-Dip Shot",
+    "ND Tempo",
+    "Auto NoDip",
+    "Auto NoDip Speed",
+    "Dunk Meter",
+    "Dunk Bind",
+    "Dribble Moves",
+    "D-Pad UP",
+    "D-Pad DOWN",
+    "D-Pad LEFT",
+    "D-Pad RIGHT",
+    "Shot Log",
+    "Soft Triggers",
+    "Vibe Blocker",
+    "Unlimited Sprint",
+    "Quick Stop",
+    "Profile Select",
+    "RS Shooting",
+    "RS Hold Time"
+};
+const string INFO_L0_XB[] = {
+    "Button Rhythm",
+    "Tempo (ms)",
+    "Remap Button",
+    "Smart Timing",
+    "Fade Assist",
+    "Pull-Up (ms)",
+    "Shot Vibe",
+    "Shot Vibe ms",
+    "Auto Stand",
+    "Auto Speed",
+    "Auto Tempo",
+    "Button Shot",
+    "Button Shot MS",
+    "Fade Toggle",
+    "Fade Tempo",
+    "Turbo Shots",
+    "Fade Vibe",
+    "Fade Vibe ms",
+    "Auto Fade",
+    "Auto Fade Speed",
+    "No-Dip Shot",
+    "ND Tempo",
+    "Auto NoDip",
+    "Auto NoDip Speed",
+    "Dunk Meter",
+    "Dunk Bind",
+    "Dribble Moves",
+    "D-Pad UP",
+    "D-Pad DOWN",
+    "D-Pad LEFT",
+    "D-Pad RIGHT",
+    "Shot Log",
+    "Soft Triggers",
+    "Vibe Blocker",
+    "Unlimited Sprint",
+    "Quick Stop",
+    "Profile Select",
+    "RS Shooting",
+    "RS Hold Time"
+};
+const string INFO_L1[] = {
+    "Turns the shot",
+    "Wait before your",
+    "Choose which stick",
+    "Auto-adjusts your",
+    "Extra wait added",
+    "How much sooner",
+    "Buzzes once while",
+    "How long you hold",
+    "Fully automated",
+    "Hold time before",
+    "Delay before the",
+    "Locks your Square",
+    "How long a hold",
+    "Move LS away from",
+    "Extra delay added",
+    "Flick direction",
+    "Buzzes twice while",
+    "How long you hold",
+    "Auto fade shot",
+    "Hold time before",
+    "Skips the pump",
+    "How long it waits",
+    "Automated no-dip",
+    "Hold time before",
+    "Charge by holding",
+    "Choose the button",
+    "Turns on D-pad",
+    "Which move fires",
+    "Which move fires",
+    "Which move fires",
+    "Which move fires",
+    "Shows live hold",
+    "Makes L2/R2 fully",
+    "Blocks all rumble",
+    "Softens sprint",
+    "Save and load a",
+    "Flick right stick",
+    "How long to hold"
+};
+const string INFO_L1_XB[] = {
+    "Turns the shot",
+    "Wait before your",
+    "Choose which stick",
+    "Auto-adjusts your",
+    "Extra wait added",
+    "How much sooner",
+    "Buzzes once while",
+    "How long you hold",
+    "Fully automated",
+    "Hold time before",
+    "Delay before the",
+    "Locks your X press",
+    "How long a hold",
+    "Move LS away from",
+    "Extra delay added",
+    "Flick direction",
+    "Buzzes twice while",
+    "How long you hold",
+    "Auto fade shot",
+    "Hold time before",
+    "Skips the pump",
+    "How long it waits",
+    "Automated no-dip",
+    "Hold time before",
+    "Charge by holding",
+    "Choose the button",
+    "Turns on D-pad",
+    "Which move fires",
+    "Which move fires",
+    "Which move fires",
+    "Which move fires",
+    "Shows live hold",
+    "Makes LT/RT fully",
+    "Blocks all rumble",
+    "Softens sprint",
+    "Save and load a",
+    "Flick right stick",
+    "How long to hold"
+};
+const string INFO_L2[] = {
+    "timing helper on",
+    "shot releases",
+    "click fires a shot",
+    "by shot type",
+    "for a fade shot",
+    "a quick pull-up",
+    "holding a shot",
+    "before it buzzes",
+    "stand-still shot",
+    "the auto shot",
+    "the auto flick",
+    "hold to a fixed",
+    "gets locked to",
+    "hoop for a fade",
+    "only for fades",
+    "on release",
+    "holding a fade",
+    "before it buzzes",
+    "on a stick click",
+    "an auto fade fires",
+    "dip on release",
+    "before releasing",
+    "on a stick click",
+    "an auto no-dip",
+    "R2 and your bind",
+    "that pairs with R2",
+    "dribble moves",
+    "on Up press",
+    "on Down press",
+    "on Left press",
+    "on Right press",
+    "times: S, F, ND",
+    "digital on/off",
+    "from the game",
+    "to save stamina",
+    "full setup",
+    "to shoot instead",
+    "RS before it fires"
+};
+const string INFO_L2_XB[] = {
+    "timing helper on",
+    "shot releases",
+    "click fires a shot",
+    "by shot type",
+    "for a fade shot",
+    "a quick pull-up",
+    "holding a shot",
+    "before it buzzes",
+    "stand-still shot",
+    "the auto shot",
+    "the auto flick",
+    "hold to a fixed",
+    "gets locked to",
+    "hoop for a fade",
+    "only for fades",
+    "on release",
+    "holding a fade",
+    "before it buzzes",
+    "on a stick click",
+    "an auto fade fires",
+    "dip on release",
+    "before releasing",
+    "on a stick click",
+    "an auto no-dip",
+    "RT and your bind",
+    "that pairs with RT",
+    "dribble moves",
+    "on Up press",
+    "on Down press",
+    "on Left press",
+    "on Right press",
+    "times: S, F, ND",
+    "digital on/off",
+    "from the game",
+    "to save stamina",
+    "full setup",
+    "to shoot instead",
+    "RS before it fires"
+};
+
+// ---- Info panel page 2: Controls (how to use each setting) ----
+const string INFO_C1[] = {
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = R3",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up/Down: +/-1",
+    "length, no stick",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Up = Turbo Fade",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = On",
+    "Hold R2, press",
+    "Dpad Up = On",
+    "Up/Down cycles",
+    "Up/Down cycles",
+    "Up/Down cycles",
+    "Up/Down cycles",
+    "Dpad Up = On",
+    "Dpad Up = On",
+    "Dpad Up = On",
+    "Dpad Up = On",
+    "Up/Down picks",
+    "Dpad Up = On",
+    "Dpad Up/Down"
+};
+const string INFO_C1_XB[] = {
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = RS",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up/Down: +/-1",
+    "length, no stick",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Up = Turbo Fade",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = On",
+    "Dpad Up/Down: +/-1",
+    "Dpad Up = On",
+    "Hold RT, press",
+    "Dpad Up = On",
+    "Up/Down cycles",
+    "Up/Down cycles",
+    "Up/Down cycles",
+    "Up/Down cycles",
+    "Dpad Up = On",
+    "Dpad Up = On",
+    "Dpad Up = On",
+    "Dpad Up = On",
+    "Up/Down picks",
+    "Dpad Up = On",
+    "Dpad Up/Down"
+};
+const string INFO_C2[] = {
+    "Dpad Down = Off",
+    "X: type exact ms",
+    "Dpad Down = L3",
+    "Dpad Down = Off",
+    "X: type exact ms",
+    "X: type exact ms",
+    "Dpad Down = Off",
+    "X: type exact ms",
+    "Dpad Down = Off",
+    "X: type exact ms",
+    "X: type exact ms",
+    "flick involved",
+    "X: type exact ms",
+    "Dpad Down = Off",
+    "X: type exact ms",
+    "Down = Hop Jumper",
+    "Dpad Down = Off",
+    "X: type exact ms",
+    "Dpad Down = Off",
+    "X: type exact ms",
+    "Dpad Down = Off",
+    "X: type exact ms",
+    "Dpad Down = Off",
+    "X: type exact ms",
+    "Dpad Down = Off",
+    "your dunk button",
+    "Dpad Down = Off",
+    "through the list",
+    "through the list",
+    "through the list",
+    "through the list",
+    "Dpad Down = Off",
+    "Dpad Down = Off",
+    "Dpad Down = Off",
+    "Dpad Down = Off",
+    "a save slot",
+    "Dpad Down = Off",
+    "adjusts value"
+};
+const string INFO_C2_XB[] = {
+    "Dpad Down = Off",
+    "A: type exact ms",
+    "Dpad Down = LS",
+    "Dpad Down = Off",
+    "A: type exact ms",
+    "A: type exact ms",
+    "Dpad Down = Off",
+    "A: type exact ms",
+    "Dpad Down = Off",
+    "A: type exact ms",
+    "A: type exact ms",
+    "flick involved",
+    "A: type exact ms",
+    "Dpad Down = Off",
+    "A: type exact ms",
+    "Down = Hop Jumper",
+    "Dpad Down = Off",
+    "A: type exact ms",
+    "Dpad Down = Off",
+    "A: type exact ms",
+    "Dpad Down = Off",
+    "A: type exact ms",
+    "Dpad Down = Off",
+    "A: type exact ms",
+    "Dpad Down = Off",
+    "your dunk button",
+    "Dpad Down = Off",
+    "through the list",
+    "through the list",
+    "through the list",
+    "through the list",
+    "Dpad Down = Off",
+    "Dpad Down = Off",
+    "Dpad Down = Off",
+    "Dpad Down = Off",
+    "a save slot",
+    "Dpad Down = Off",
+    "adjusts value"
+};
+
+// ---- Info panel page 3: Usage (how to actually trigger it in-game) ----
+const string INFO_U1[] = {
+    "Turn this on first",
+    "Lower releases",
+    "Click that stick",
+    "Works with Fade",
+    "Only applies when",
+    "Only applies when",
+    "Single buzz means",
+    "Set to about how",
+    "Click the free",
+    "Shared by Auto",
+    "Used by all three",
+    "Good for RP%",
+    "Set it to match",
+    "Hold LS back as",
+    "Adds on top of",
+    "Try both and use",
+    "Double buzz means",
+    "Separate from",
+    "Hold R2 and click",
+    "Separate from Auto",
+    "Hold L2+Square",
+    "Lower feels",
+    "Hold L2 and click",
+    "Its own timing,",
+    "Let go of both to",
+    "Let go of R2 to",
+    "Set which move",
+    "Pick a move, it",
+    "Pick a move, it",
+    "Pick a move, it",
+    "Pick a move, it",
+    "Takes over the",
+    "No more partial",
+    "Menu vibes still",
+    "No setup needed",
+    "Great for sharing",
+    "Hold RS past the",
+    "Lower = quicker"
+};
+const string INFO_U1_XB[] = {
+    "Turn this on first",
+    "Lower releases",
+    "Click that stick",
+    "Works with Fade",
+    "Only applies when",
+    "Only applies when",
+    "Single buzz means",
+    "Set to about how",
+    "Click the free",
+    "Shared by Auto",
+    "Used by all three",
+    "Good for RP%",
+    "Set it to match",
+    "Hold LS back as",
+    "Adds on top of",
+    "Try both and use",
+    "Double buzz means",
+    "Separate from",
+    "Hold RT and click",
+    "Separate from Auto",
+    "Hold LT+X",
+    "Lower feels",
+    "Hold LT and click",
+    "Its own timing,",
+    "Let go of both to",
+    "Let go of RT to",
+    "Set which move",
+    "Pick a move, it",
+    "Pick a move, it",
+    "Pick a move, it",
+    "Pick a move, it",
+    "Takes over the",
+    "No more partial",
+    "Menu vibes still",
+    "No setup needed",
+    "Great for sharing",
+    "Hold RS past the",
+    "Lower = quicker"
+};
+const string INFO_U2[] = {
+    "before Tempo",
+    "higher = later",
+    "instead of Square",
+    "Assist and Pull-Up",
+    "Smart Timing is on",
+    "Smart Timing is on",
+    "let go, release",
+    "long you hold it",
+    "stick to fire it",
+    "Stand + Auto Fade",
+    "Auto shot types",
+    "style shot timing",
+    "your ideal hold",
+    "you shoot for fade",
+    "your normal Tempo",
+    "what feels best",
+    "let go, release",
+    "Shot Vibe's timing",
+    "the free stick",
+    "Stand's own speed",
+    "for a no-dip shot",
+    "snappier, quicker",
+    "the free stick",
+    "apart from Stand",
+    "throw it down",
+    "save that button",
+    "fires on each move",
+    "saves right away",
+    "saves right away",
+    "saves right away",
+    "saves right away",
+    "ball/hoop screen",
+    "trigger presses",
+    "work when blocked",
+    "just turn it on",
+    "one controller",
+    "threshold to fire",
+    "flick response"
+};
+const string INFO_U2_XB[] = {
+    "before Tempo",
+    "higher = later",
+    "instead of X",
+    "Assist and Pull-Up",
+    "Smart Timing is on",
+    "Smart Timing is on",
+    "let go, release",
+    "long you hold it",
+    "stick to fire it",
+    "Stand + Auto Fade",
+    "Auto shot types",
+    "style shot timing",
+    "your ideal hold",
+    "you shoot for fade",
+    "your normal Tempo",
+    "what feels best",
+    "let go, release",
+    "Shot Vibe's timing",
+    "the free stick",
+    "Stand's own speed",
+    "for a no-dip shot",
+    "snappier, quicker",
+    "the free stick",
+    "apart from Stand",
+    "throw it down",
+    "save that button",
+    "fires on each move",
+    "saves right away",
+    "saves right away",
+    "saves right away",
+    "saves right away",
+    "ball/hoop screen",
+    "trigger presses",
+    "work when blocked",
+    "just turn it on",
+    "one controller",
+    "threshold to fire",
+    "flick response"
+};
+const string profile_labels[] = {
+    "Profile: 1",
+    "Profile: 2",
+    "Profile: 3",
+    "Profile: 4",
+    "Profile: 5"
+};
+const string profile_active_txt[] = { "ACTIVE" };
+const string profile_load_txt[]   = { "X to load" };
+const string profile_loaded_labels[] = {
+    "Loaded: 1",
+    "Loaded: 2",
+    "Loaded: 3",
+    "Loaded: 4",
+    "Loaded: 5"
+};
+
+const string saver_line1_ps[] = { "L2 + Options" };
+const string saver_line1_xb[] = { " LT + Start" };
+
+const string menu_header[] = {
+    "Button Rhythm",
+    "Tempo (ms)",
+    "Remap Button",
+    "Smart Timing",
+    "Fade Assist",
+    "Pull-Up (ms)",
+    "Shot Vibe",
+    "Shot Vibe ms",
+    "Auto Stand",
+    "Auto Speed",
+    "Auto Tempo",
+    "Button Shot",
+    "Button Shot MS",
+    "Fade Toggle",
+    "Fade Tempo",
+    "Turbo Shots",
+    "Fade Vibe",
+    "Fade Vibe ms",
+    "Auto Fade",
+    "Auto Fade Speed",
+    "No-Dip Shot",
+    "ND Tempo",
+    "Auto NoDip",
+    "Auto NoDip Speed",
+    "Dunk Meter",
+    "Dunk Bind",
+    "Dribble Moves",
+    "D-Pad UP",
+    "D-Pad DOWN",
+    "D-Pad LEFT",
+    "D-Pad RIGHT",
+    "Shot Log",
+    "Soft Triggers",
+    "Vibe Blocker",
+    "Unlimited Sprint",
+    "Quick Stop",
+    "Profile Select",
+    "RS Shoot",
+    "RS Hold"
+};
+
+const string onOff[] = { "OFF", "ON", "", "L3", "R3" };
+const string br_mode_names[] = { "Rhythm", "Auto Hold" };
+const string QS_CAP_HINT[] = { "Hold O to exit" };
+const string QS_CAP_TITLE[] = { "Quick Stop Bind" };
+const string QS_CAP_TAP[] = { "Press 1-2 buttons" };
+const string QS_OPEN_HINT[] = { "X: set bind" };
+const string BR_SUB_HINT[] = { "L/R pages  U/D change" };
+const string BR_SUB_MODE[] = { "Mode" };
+const string ms[] = { "ms" };
+const string RLG_TITLE[]  = { "RELEASE LOG" };
+const string RLG_NORMAL[] = { "S" };
+const string RLG_FADE[]   = { "F" };
+const string RLG_NODIP[]  = { "ND" };
+const string RLG_LAST[]   = { "LAST" };
+const string reverse_modes[] = { "Hop Jumper", "Turbo Fade" };
+const string remap_modes_ps[] = { "L3", "R3" };
+const string remap_modes_xb[] = { "LS", "RS" };
+const string bind_hint1[] = { "hold R2 + button" };
+const string bind_cap_listen[] = { "press a button..." };
+const string bind_cap_apply[] = { "release R2 = save" };
+const string bind_btn_names_ps[] = { "L1", "O", "L2", "TRI", "SQ", "R1", "X", "UP", "DN", "LF", "RT", "?" };
+const string bind_btn_names_xb[] = { "LB", "B", "LT", "Y", "X", "RB", "A", "UP", "DN", "LF", "RT", "?" };
+const string bind_r2_ps[] = { "R2+" };
+const string bind_r2_xb[] = { "RT+" };
+const string bind_locked[] = { "SETTING BIND" };
+const string drib_move_names[] = {
+    "OFF",
+    "BTB Spam",
+    "Curry",
+    "DBook",
+    "Moonwalk",
+    "SizeUp Esc",
+    "Hop Back",
+    "Ankle Brk",
+    "Escape",
+    "Momentum",
+    "Crossover",
+    "Quick BTB",
+    "Shamgod",
+    "Hesi",
+    "Btwn Legs",
+    "Behind Bk",
+    "Spin",
+    "Snatch",
+    "Hard Stop",
+    "Stepback",
+    "Hesi Cross",
+    "BL Cross",
+    "Tri Cross",
+    "In & Out",
+    "Shimmy",
+    "Tur Hesi",
+    "Tur Cross",
+    "Tur Esc",
+    "Jab",
+    "Half Spin",
+    "Full Spin",
+    "Tunnel",
+    "Size x3",
+    "Kyrie",
+    "Luka Step",
+    "Ja Burst",
+    "Dame Hesi",
+    "Trae YoYo",
+    "Morant Sp",
+    "Euro",
+    "Post Spin",
+    "DriveKick",
+    "Dbl Hesi",
+    "Dbl Cross",
+    "Park Ank",
+    "Comp X",
+    "Quick Stop"
+};
+
+define DRIB_MOVE_MAX = 46;
+
+
+
+
+// ---- Dunk trigger / style names ----
+
+define PVAR_BASE = 30;
+define PVAR_OFFSET = 6;  // 6 slots per profile so each profile owns full settings
+
+function SaveProfile(idx) {
+    p_start = PVAR_BASE + (idx - 1) * PVAR_OFFSET;
+    val0 = 0;
+    val1 = 0;
+
+    // ---- val0: toggles ----
+    if (flick_up_shooting_active) val0 = val0 | 1;
+    if (reverse_flick_mode)       val0 = val0 | 2;
+    if (br_auto_mode)             val0 = val0 | 4;
+    if (btn_shot_on)              val0 = val0 | 8;
+    if (smart_timing_enabled)     val0 = val0 | 16;
+    if (nodip_enabled)            val0 = val0 | 32;
+    if (fade_toggle)              val0 = val0 | 64;
+    if (auto_stand_on)            val0 = val0 | 128;
+    if (auto_fade_on)             val0 = val0 | 256;
+    if (auto_nodip_on)            val0 = val0 | 512;
+    if (rs_shoot_on)              val0 = val0 | 1024;
+    if (unlimited_stamina)        val0 = val0 | 2048;
+    if (dunk_meter_on)            val0 = val0 | 4096;
+    if (dribble_on)               val0 = val0 | 8192;
+    if (vib_block_on)             val0 = val0 | 16384;
+    if (qs_on)                    val0 = val0 | 32768;
+    if (shot_vibe_enabled)        val0 = val0 | 65536;
+    if (fade_vibe_enabled)        val0 = val0 | 131072;
+    if (shotlog_enabled)          val0 = val0 | 262144;
+    if (tk_at_on)                 val0 = val0 | 524288;
+    if (meter_dunk_active)        val0 = val0 | 1048576;
+    if (fade_l1r2_on)             val0 = val0 | 2097152;
+    val0 = val0 | ((remap_square_active & 3) << 22);
+    val0 = val0 | ((bind_name_idx & 15) << 24);
+    set_pvar(p_start, val0);
+
+    // ---- val1: Button Rhythm timings ----
+    val1 = (delay_duration & 16383) | ((br_auto_ms & 16383) << 14);
+    set_pvar(p_start + 1, val1);
+
+    // ---- val2: fade / nodip / button shot ms ----
+    val0 = (fade_delay_ms & 511)
+         | ((nodip_tempo_ms & 511) << 9)
+         | ((btn_shot_hold_ms & 2047) << 18);
+    set_pvar(p_start + 2, val0);
+
+    // ---- val3: auto speeds ----
+    val0 = (auto_speed_ms & 1023)
+         | ((auto_tempo_ms & 511) << 10)
+         | ((auto_fade_speed_ms & 1023) << 19);
+    set_pvar(p_start + 3, val0);
+
+    // ---- val4: auto nodip / rs hold / qs btn1 / qs btn2 ----
+    // auto_nodip 10 bits, rs_hold 10 bits, qs_btn1 6 bits, qs_btn2 6 bits (button ids fit in 6)
+    val0 = (auto_nodip_ms & 1023)
+         | ((rs_hold_time & 1023) << 10)
+         | ((qs_btn1 & 63) << 20)
+         | ((qs_btn2 & 63) << 26);
+    set_pvar(p_start + 4, val0);
+
+    // ---- val5: dribble slots (8 bits each, 0-126 fits) ----
+    // qs_btn2 stored in high bits of val4 already? extend val4 write above
+    val0 = (drib_up & 255)
+         | ((drib_dn & 255) << 8)
+         | ((drib_lf & 255) << 16)
+         | ((drib_rt & 255) << 24);
+    set_pvar(p_start + 5, val0);
+}
+
+function LoadProfile(idx) {
+    p_start = PVAR_BASE + (idx - 1) * PVAR_OFFSET;
+    val0 = get_pvar(p_start, -2147483648, 2147483647, 0);
+    val1 = get_pvar(p_start + 1, -2147483648, 2147483647, 0);
+
+    flick_up_shooting_active = val0 & 1;
+    reverse_flick_mode       = (val0 >> 1) & 1;
+    br_auto_mode             = (val0 >> 2) & 1;
+    btn_shot_on              = (val0 >> 3) & 1;
+    smart_timing_enabled     = (val0 >> 4) & 1;
+    nodip_enabled            = (val0 >> 5) & 1;
+    fade_toggle              = (val0 >> 6) & 1;
+    auto_stand_on            = (val0 >> 7) & 1;
+    auto_fade_on             = (val0 >> 8) & 1;
+    auto_nodip_on            = (val0 >> 9) & 1;
+    rs_shoot_on              = (val0 >> 10) & 1;
+    unlimited_stamina        = (val0 >> 11) & 1;
+    dunk_meter_on            = (val0 >> 12) & 1;
+    dribble_on               = (val0 >> 13) & 1;
+    vib_block_on             = (val0 >> 14) & 1;
+    qs_on                    = (val0 >> 15) & 1;
+    shot_vibe_enabled        = (val0 >> 16) & 1;
+    fade_vibe_enabled        = (val0 >> 17) & 1;
+    shotlog_enabled          = (val0 >> 18) & 1;
+    tk_at_on                 = (val0 >> 19) & 1;
+    meter_dunk_active        = (val0 >> 20) & 1;
+    fade_l1r2_on             = (val0 >> 21) & 1;
+    remap_square_active      = (val0 >> 22) & 3;
+    bind_name_idx            = (val0 >> 24) & 15;
+
+    delay_duration = val1 & 16383;
+    br_auto_ms     = (val1 >> 14) & 16383;
+    if (delay_duration > 9000) delay_duration = 9000;
+    if (br_auto_ms > 9000) br_auto_ms = 9000;
+
+    val0 = get_pvar(p_start + 2, -2147483648, 2147483647, 0);
+    fade_delay_ms    = val0 & 511;
+    nodip_tempo_ms   = (val0 >> 9) & 511;
+    btn_shot_hold_ms = (val0 >> 18) & 2047;
+    if (btn_shot_hold_ms < 100) btn_shot_hold_ms = 664;
+    ShotH = btn_shot_hold_ms;
+
+    val0 = get_pvar(p_start + 3, -2147483648, 2147483647, 0);
+    auto_speed_ms      = val0 & 1023;
+    auto_tempo_ms      = (val0 >> 10) & 511;
+    auto_fade_speed_ms = (val0 >> 19) & 1023;
+    if (auto_speed_ms < 100) auto_speed_ms = 500;
+    if (auto_fade_speed_ms < 100) auto_fade_speed_ms = 500;
+
+    val0 = get_pvar(p_start + 4, -2147483648, 2147483647, 0);
+    auto_nodip_ms = val0 & 1023;
+    rs_hold_time  = (val0 >> 10) & 1023;
+    qs_btn1       = (val0 >> 20) & 63;
+    qs_btn2       = (val0 >> 26) & 63;
+    if (auto_nodip_ms < 100) auto_nodip_ms = 440;
+    if (rs_hold_time < 50) rs_hold_time = 300;
+    if (qs_btn1 == 0) qs_btn1 = PS4_L2;
+
+    val0 = get_pvar(p_start + 5, -2147483648, 2147483647, 0);
+    drib_up = val0 & 255;
+    drib_dn = (val0 >> 8) & 255;
+    drib_lf = (val0 >> 16) & 255;
+    drib_rt = (val0 >> 24) & 255;
+    if (drib_up > DRIB_MOVE_MAX) drib_up = 0;
+    if (drib_dn > DRIB_MOVE_MAX) drib_dn = 0;
+    if (drib_lf > DRIB_MOVE_MAX) drib_lf = 0;
+    if (drib_rt > DRIB_MOVE_MAX) drib_rt = 0;
+
+    // dunk bind button from name idx
+    if (bind_name_idx == 0)      { dunk_bind_btn = PS4_L1; }
+    else if (bind_name_idx == 1) { dunk_bind_btn = PS4_CIRCLE; }
+    else if (bind_name_idx == 2) { dunk_bind_btn = PS4_L2; }
+    else if (bind_name_idx == 3) { dunk_bind_btn = PS4_TRIANGLE; }
+    else if (bind_name_idx == 4) { dunk_bind_btn = PS4_SQUARE; }
+    else if (bind_name_idx == 5) { dunk_bind_btn = PS4_R1; }
+    else if (bind_name_idx == 6) { dunk_bind_btn = PS4_CROSS; }
+    else if (bind_name_idx == 7) { dunk_bind_btn = PS4_UP; }
+    else if (bind_name_idx == 8) { dunk_bind_btn = PS4_DOWN; }
+    else if (bind_name_idx == 9) { dunk_bind_btn = PS4_LEFT; }
+    else                         { dunk_bind_btn = PS4_RIGHT; }
+}
+
+
+init {
+    current_profile = get_pvar(PVAR_PROFILE_SLOT, PROFILE_MIN, PROFILE_MAX, 1);
+    if (current_profile < PROFILE_MIN || current_profile > PROFILE_MAX) current_profile = 1;
+    profile_sel = current_profile;
+    last_menu_page = get_pvar(PVAR_LAST_PAGE, 1, numpgs, 1);
+
+    // Safe factory-ish defaults before profile load
+    FadeLH = 925; FadeRH = 922; CatchH = 664;
+    ShotH = 664; ShotV = 659; FadeLV = 920; FadeRV = 917; CatchV = 659;
+    smart_fade_offset = 30;
+    smart_quick_offset = 20;
+    shot_vibe_ms = 500;
+    fade_vibe_ms = 500;
+    dunk_hold_dur = 700;
+    tk_at_on = 1;
+    remap_square_active = 1;
+    qs_btn1 = PS4_L2;
+    qs_btn2 = 0;
+    delay_duration = 50;
+    br_auto_ms = 500;
+    br_auto_mode = 0;
+    fade_delay_ms = 42;
+    nodip_tempo_ms = 270;
+    btn_shot_hold_ms = 664;
+    auto_speed_ms = 500;
+    auto_tempo_ms = 50;
+    auto_fade_speed_ms = 500;
+    auto_nodip_ms = 440;
+    rs_hold_time = 300;
+
+    // One-time stamp for first boot defaults
+    if (get_pvar(PVAR_DEFAULTS_STAMP, 0, 1, 0) == 0) {
+        set_pvar(PVAR_DEFAULTS_STAMP, 1);
+    }
+
+    // Load THIS profile's full custom settings last (wins over defaults)
+    LoadProfile(current_profile);
+
+    set_rgb(TEAL_R, TEAL_G, TEAL_B);
+    saver_on = 0;
+    saver_timer = 0;
+    cls_oled(OLED_BLACK);
+    starfield_init();
+    saver_on = 1;
+    saver_timer = 0;
+    ssp = 1;
+}
+
+main {
+    // ---- Vibe Blocker ----
+    // block_rumble() stops rumble commands coming FROM the console, so the
+    // script's own set_rumble feedback (menu ticks, toggle flashes) keeps
+    // working. reset_rumble() is only called once on the off-transition so
+    // it never stomps a feedback vibe mid-buzz.
+    if (vib_block_on != vib_block_prev) {
+        if (!vib_block_on) { reset_rumble(); }
+        vib_block_prev = vib_block_on;
+    }
+    if (vib_block_on) { block_rumble(); }
+
+    set_rgb(TEAL_R, TEAL_G, TEAL_B);
+
+    if (get_console() == PIO_XB1) { isXbox = 1; } else { isXbox = 0; }
+
+    {
+        if (event_press(PS4_CIRCLE) && menu_enabled && !np_active && !info_active && bind_cap_mode == 0 && qs_cap_mode == 0) {
+            // Nested editor: Circle goes back to the feature page first.
+            if (menu_mode == 1 && (sub_edit_open || btn_edit_open)) {
+                if (sub_edit_open) {
+                    page = sub_parent_page;
+                    sub_edit_open = 0;
+                    sub_first_page = 0;
+                    sub_last_page = 0;
+                }
+                if (btn_edit_open) {
+                    btn_edit_open = 0;
+                }
+                combo_run(vibration_valchg);
+                set_val(PS4_CIRCLE, 0);
+            } else if (menu_mode == 1) {
+                menu_mode = 0;
+                combo_run(vibration_valchg);
+                set_val(PS4_CIRCLE, 0);
+            } else {
+                menu_enabled = 0;
+                combo_run(vibration_off);
+                set_rgb(0, 255, 0);
+                saver_on = 1;
+                saver_init_static();
+                last_menu_page = page;
+                
+                btn_shot_hold_ms = ShotH;
+                SaveProfile(current_profile);
+                set_pvar(PVAR_LAST_PAGE, last_menu_page);
+                set_pvar(PVAR_PROFILE_SLOT, current_profile);
+
+            }
+        }
+        else if (!menu_enabled && get_val(PS4_L2) && event_press(PS4_OPTIONS)) {
+            menu_enabled = 1;
+            page = last_menu_page;
+            
+            category_index = 0;
+            for (i = 0; i < NUM_CATEGORIES; i++) {
+                if (page >= CAT_START[i] && page < (CAT_START[i] + CAT_COUNT[i])) {
+                    category_index = i;
+                }
+            }
+
+            // Migrate old/hidden child-page saves to their parent.
+            if (page == 2) page = 1;
+            else if (page == 5 || page == 6) page = 4;
+            else if (page == 8) page = 7;
+            else if (page == 10 || page == 11) page = 9;
+            else if (page == 13) page = 12;
+            else if (page == 15) page = 14;
+            else if (page == 18) page = 17;
+            else if (page == 20) page = 19;
+            else if (page == 22) page = 21;
+            else if (page == 24) page = 23;
+            else if (page >= 28 && page <= 31) page = 27;
+            else if (page == 38) page = 37;
+
+            // Recalculate category after migration.
+            category_index = 0;
+            if (page >= 1 && page <= 12) category_index = 0;
+            else if (page >= 14 && page <= 20) category_index = 1;
+            else if (page >= 21 && page <= 24) category_index = 2;
+            else if (page >= 25 && page <= 26) category_index = 3;
+            else if (page >= 27 && page <= 31) category_index = 4;
+            else if (page == 32) category_index = 5;
+            else if (page >= 37 && page <= 38) category_index = 6;
+            else if ((page >= 33 && page <= 35) || page == 39) category_index = 7;
+            else if (page == 36) category_index = 8;
+
+            menu_mode = 0; 
+            menu_scroll_y = category_index * 10;
+
+            combo_run(vibration_on);
+            set_rgb(0, 0, 255);
+            saver_on = 0;
+        }
+
+        if (menu_enabled) {
+            dt_menu = get_rtime();
+            repeat_update(dt_menu);
+            starfield_step();
+            cls_oled(OLED_BLACK);
+            starfield_draw();
+
+            set_val(PS4_UP, 0); set_val(PS4_DOWN, 0); 
+            set_val(PS4_LEFT, 0); set_val(PS4_RIGHT, 0); 
+            if (bind_cap_mode == 0) {
+                set_val(PS4_CROSS, 0); set_val(PS4_CIRCLE, 0);
+            }
+
+            if (menu_mode == 0) {
+                menu_target_y = category_index * 25;
+                if (menu_scroll_y < menu_target_y) menu_scroll_y = menu_scroll_y + 2;
+                if (menu_scroll_y > menu_target_y) menu_scroll_y = menu_scroll_y - 2;
+
+                for(i = 0; i < NUM_CATEGORIES; i++) {
+                    c_y = 25 + (i * 25) - menu_scroll_y;
+                    
+                    if (c_y >= -15 && c_y <= 70) {
+                        str_len = get_string_length(CATEGORIES[i]);
+                        
+                        if (i == category_index) {
+                             x_pos = center_x(str_len, OLED_FONT_MEDIUM_WIDTH);
+                             print(x_pos, c_y, OLED_FONT_MEDIUM, OLED_WHITE, CATEGORIES[i]);
+                             line_oled(39, c_y + 19, 89, c_y + 19, 3, OLED_WHITE);
+                        } else {
+                             x_pos = center_x(str_len, OLED_FONT_SMALL_WIDTH);
+                             print(x_pos, c_y + 3, OLED_FONT_SMALL, OLED_WHITE, CATEGORIES[i]);
+                        }
+                    }
+                }
+                
+                if (event_press(PS4_UP)) { 
+                    category_index--; 
+                    if(category_index < 0) category_index = NUM_CATEGORIES - 1; 
+                    combo_run(vibration_valchg); 
+                }
+                if (event_press(PS4_DOWN)) { 
+                    category_index++; 
+                    if(category_index > (NUM_CATEGORIES - 1)) category_index = 0; 
+                    combo_run(vibration_valchg); 
+                }
+                if (event_press(PS4_CROSS)) {
+                    menu_mode = 1; 
+                    if (last_menu_page >= CAT_START[category_index] && last_menu_page < (CAT_START[category_index] + CAT_COUNT[category_index])) {
+                        page = last_menu_page;
+                    } else {
+                        page = CAT_START[category_index];
+                    }
+                    combo_run(vibration_valchg);
+                }
+            } else {
+                if (sub_edit_open) {
+                    p_len = get_string_length(menu_header[sub_parent_page - 1]);
+                    p_x = center_x(p_len, OLED_FONT_SMALL_WIDTH);
+                    print(p_x, 10, OLED_FONT_SMALL, OLED_WHITE, menu_header[sub_parent_page - 1]);
+                } else if (page == 39) {
+                    p_len = get_string_length(QS_CAP_TITLE[0]);
+                    p_x = center_x(p_len, OLED_FONT_SMALL_WIDTH);
+                    print(p_x, 10, OLED_FONT_SMALL, OLED_WHITE, QS_CAP_TITLE[0]);
+                } else {
+                    p_len = get_string_length(menu_header[page - 1]);
+                    p_x = center_x(p_len, OLED_FONT_SMALL_WIDTH);
+                    print(p_x, 10, OLED_FONT_SMALL, OLED_WHITE, menu_header[page - 1]);
+                }
+                
+                print(2, 25, OLED_FONT_SMALL, OLED_WHITE, ARROW_L[0]);
+                print(115, 25, OLED_FONT_SMALL, OLED_WHITE, ARROW_R[0]);
+
+                dot_count = CAT_COUNT[category_index];
+                if (sub_edit_open) {
+                    dot_count = (sub_last_page - sub_first_page) + 1;
+                    dot_start_x = 64 - ((dot_count * 10) / 2);
+                    p_idx = page - sub_first_page;
+                } else {
+                    dot_start_x = 64 - ((dot_count * 10) / 2);
+                    if (category_index == 0) {
+                        if (page == 1) p_idx = 0; else if (page == 3) p_idx = 1; else if (page == 4) p_idx = 2;
+                        else if (page == 7) p_idx = 3; else if (page == 9) p_idx = 4; else p_idx = 5;
+                    } else if (category_index == 1) {
+                        if (page == 14) p_idx = 0; else if (page == 16) p_idx = 1; else if (page == 17) p_idx = 2; else p_idx = 3;
+                    } else if (category_index == 2) {
+                        if (page == 21) p_idx = 0; else p_idx = 1;
+                    } else if (category_index == 3) {
+                        if (page == 25) p_idx = 0; else p_idx = 1;
+                    } else if (category_index == 6) {
+                        p_idx = 0;
+                    } else if (category_index == 7) {
+                        if (page == 33) p_idx = 0; else if (page == 34) p_idx = 1; else if (page == 35) p_idx = 2; else p_idx = 3;
+                    } else {
+                        p_idx = 0;
+                    }
+                }
+
+                for(i = 0; i < dot_count; i++) {
+                    if (i == p_idx) {
+                        rect_oled(dot_start_x + (i * 10), 58, 5, 5, 1, 1);
+                    } else {
+                        rect_oled(dot_start_x + (i * 10) + 1, 59, 3, 3, 1, 1);
+                    }
+                }
+
+                if (event_press(PS4_LEFT) && !np_active && !info_active && bind_cap_mode == 0 && qs_cap_mode == 0 && !btn_edit_open && !sub_edit_open) {
+                    // Parent-only navigation. Child timing/option pages are nested.
+                    if (category_index == 0) {
+                        if (page == 1) page = 12; else if (page == 12) page = 9; else if (page == 9) page = 7;
+                        else if (page == 7) page = 4; else if (page == 4) page = 3; else page = 1;
+                    } else if (category_index == 1) {
+                        if (page == 14) page = 19; else if (page == 19) page = 17; else if (page == 17) page = 16; else page = 14;
+                    } else if (category_index == 2) {
+                        if (page == 21) page = 23; else page = 21;
+                    } else if (category_index == 3) {
+                        if (page == 25) page = 26; else page = 25;
+                    } else if (category_index == 4) {
+                        page = 27;
+                    } else if (category_index == 5) {
+                        page = 32;
+                    } else if (category_index == 6) {
+                        page = 37;
+                    } else if (category_index == 7) {
+                        if (page == 33) page = 39; else if (page == 39) page = 35; else if (page == 35) page = 34; else page = 33;
+                    } else {
+                        page = 36;
+                    }
+                    combo_run(vibration_valchg);
+                }
+                if (event_press(PS4_RIGHT) && !np_active && !info_active && bind_cap_mode == 0 && qs_cap_mode == 0 && !btn_edit_open && !sub_edit_open) {
+                    // Parent-only navigation. Child timing/option pages are nested.
+                    if (category_index == 0) {
+                        if (page == 1) page = 3; else if (page == 3) page = 4; else if (page == 4) page = 7;
+                        else if (page == 7) page = 9; else if (page == 9) page = 12; else page = 1;
+                    } else if (category_index == 1) {
+                        if (page == 14) page = 16; else if (page == 16) page = 17; else if (page == 17) page = 19; else page = 14;
+                    } else if (category_index == 2) {
+                        if (page == 21) page = 23; else page = 21;
+                    } else if (category_index == 3) {
+                        if (page == 25) page = 26; else page = 25;
+                    } else if (category_index == 4) {
+                        page = 27;
+                    } else if (category_index == 5) {
+                        page = 32;
+                    } else if (category_index == 6) {
+                        page = 37;
+                    } else if (category_index == 7) {
+                        if (page == 33) page = 34; else if (page == 34) page = 35; else if (page == 35) page = 39; else page = 33;
+                    } else {
+                        page = 36;
+                    }
+                    combo_run(vibration_valchg);
+                }
+                
+                if ((event_press(PS4_LEFT) || event_press(PS4_RIGHT)) && !np_active && !info_active && bind_cap_mode == 0 && qs_cap_mode == 0 && !btn_edit_open && !sub_edit_open) {
+                        last_menu_page = page;
+                        set_pvar(PVAR_LAST_PAGE, last_menu_page);
+                }
+
+                if (event_press(PS4_TRIANGLE) && !np_active && !info_active) {
+                    info_active = 1;
+                    info_page = 0;
+                    combo_run(vibration_valchg);
+                }
+
+                // ---- Nested feature navigation ----
+                // Parent stays active while its child setting page is shown.
+                // Left/right changes only the child setting; it never escapes to
+                // the next top-level feature. Circle is handled globally above.
+                if (sub_edit_open && !np_active && !info_active && bind_cap_mode == 0) {
+                    if (event_press(PS4_LEFT)) {
+                        if (page > sub_first_page) page--; else page = sub_last_page;
+                        combo_run(vibration_valchg);
+                    }
+                    if (event_press(PS4_RIGHT)) {
+                        if (page < sub_last_page) page++; else page = sub_first_page;
+                        combo_run(vibration_valchg);
+                    }
+                }
+
+                if (!info_active) {
+                // ---- Button Rhythm (Shooting) ----
+                if (page == 1) {
+                    menuSelection = flick_up_shooting_active;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { flick_up_shooting_active = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { flick_up_shooting_active = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                    // X opens sub-pages: Mode -> Rhythm Tempo -> Auto Hold MS
+                    if (event_press(PS4_CROSS) && !np_x_last) {
+                        br_sub_tab = 0;
+                        sub_edit_open = 1; sub_parent_page = 1; sub_first_page = 2; sub_last_page = 2; page = 2;
+                        np_x_last = 1; combo_run(vibration_valchg);
+                    }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                }
+
+                // ---- Button Rhythm sub-pages (X from Button Rhythm) ----
+                // Tab 0 = Mode | Tab 1 = Rhythm Tempo | Tab 2 = Auto Hold MS
+                // Left/Right switches tabs. Up/Down changes value.
+                if (page == 2) {
+                    // L/R switch sub-tab
+                    if (event_press(PS4_LEFT)) {
+                        if (br_sub_tab > 0) br_sub_tab = br_sub_tab - 1;
+                        else br_sub_tab = 2;
+                        combo_run(vibration_valchg);
+                    }
+                    if (event_press(PS4_RIGHT)) {
+                        if (br_sub_tab < 2) br_sub_tab = br_sub_tab + 1;
+                        else br_sub_tab = 0;
+                        combo_run(vibration_valchg);
+                    }
+
+                    if (br_sub_tab == 0) {
+                        // MODE select
+                        menuSelection = br_auto_mode;
+                        print(center_x(get_string_length(BR_SUB_MODE[0]), OLED_FONT_SMALL_WIDTH), 16, OLED_FONT_SMALL, OLED_WHITE, BR_SUB_MODE[0]);
+                        print(center_x(get_string_length(br_mode_names[br_auto_mode]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, br_mode_names[br_auto_mode]);
+                        print(center_x(get_string_length(BR_SUB_HINT[0]), OLED_FONT_SMALL_WIDTH), 50, OLED_FONT_SMALL, OLED_WHITE, BR_SUB_HINT[0]);
+                        if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+                            if (br_auto_mode) br_auto_mode = 0; else br_auto_mode = 1;
+                            flashtoggle = br_auto_mode;
+                            combo_run(vibration_valchg); combo_run(flashtog);
+                        }
+                    }
+                    else if (br_sub_tab == 1) {
+                        // RHYTHM TEMPO 0-9000
+                        if (np_confirmed && np_tid == 1) { delay_duration = clamp(np_result, 0, 9000); np_confirmed = 0; }
+                        if (!np_active) {
+                        menuSelection = 2;
+                        NumberToString(delay_duration, FindDigits(delay_duration));
+                        print(center_x(get_string_length(SL_RHYTHM_TEMPO[0]), OLED_FONT_SMALL_WIDTH), 16, OLED_FONT_SMALL, OLED_WHITE, SL_RHYTHM_TEMPO[0]);
+                        print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                        draw_x_graph(delay_duration, 0, 9000, 45);
+                        if (event_press(PS4_UP) || repeat_up_due()) { delay_duration++; }
+                        if (event_press(PS4_DOWN) || repeat_down_due()) { delay_duration--; }
+                        if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                            combo_run(vibration_valchg); combo_run(flashedit);
+                        }
+                        if (delay_duration > 9000) { delay_duration = 9000; }
+                        if (delay_duration < 0) { delay_duration = 0; }
+                        if (event_press(PS4_CROSS) && !np_x_last) { np_active = 1; np_tid = 1; np_x_last = 1; np_len = 0; np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1; }
+                        if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                        }
+                    }
+                    else {
+                        // AUTO HOLD MS 0-9000
+                        if (np_confirmed && np_tid == 40) { br_auto_ms = clamp(np_result, 0, 9000); np_confirmed = 0; }
+                        if (!np_active) {
+                        menuSelection = 2;
+                        NumberToString(br_auto_ms, FindDigits(br_auto_ms));
+                        print(center_x(get_string_length(SL_AUTO_HOLD[0]), OLED_FONT_SMALL_WIDTH), 16, OLED_FONT_SMALL, OLED_WHITE, SL_AUTO_HOLD[0]);
+                        print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                        draw_x_graph(br_auto_ms, 0, 9000, 45);
+                        if (event_press(PS4_UP) || repeat_up_due()) { br_auto_ms++; }
+                        if (event_press(PS4_DOWN) || repeat_down_due()) { br_auto_ms--; }
+                        if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                            combo_run(vibration_valchg); combo_run(flashedit);
+                        }
+                        if (br_auto_ms > 9000) { br_auto_ms = 9000; }
+                        if (br_auto_ms < 0) { br_auto_ms = 0; }
+                        if (event_press(PS4_CROSS) && !np_x_last) { np_active = 1; np_tid = 40; np_x_last = 1; np_len = 0; np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1; }
+                        if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                        }
+                    }
+                }
+
+                // ---- Remap Button (Shooting) ----
+                if (page == 3) {
+                    menuSelection = remap_square_active;
+                    if (isXbox) {
+                        print(
+                            center_x(get_string_length(remap_modes_xb[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                            30, OLED_FONT_MEDIUM, OLED_WHITE,
+                            remap_modes_xb[menuSelection]
+                        );
+                    } else {
+                        print(
+                            center_x(get_string_length(remap_modes_ps[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                            30, OLED_FONT_MEDIUM, OLED_WHITE,
+                            remap_modes_ps[menuSelection]
+                        );
+                    }
+                    if (event_press(PS4_UP)) { remap_square_active = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { remap_square_active = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                }
+
+                // ---- Smart Timing (Shooting) ----
+                if (page == 4) {
+                    menuSelection = smart_timing_enabled;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { smart_timing_enabled = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { smart_timing_enabled = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_CROSS) && !np_x_last) {
+                        sub_edit_open = 1; sub_parent_page = 4; sub_first_page = 5; sub_last_page = 6; page = 5;
+                        np_x_last = 1; combo_run(vibration_valchg);
+                    }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                }
+
+                // ---- Smart Timing: Fade Assist (ms) (Shooting) ----
+                if (page == 5) {
+                    if (np_confirmed && np_tid == 2) { smart_fade_offset = clamp(np_result, 0, 100); np_confirmed = 0; }
+                    if (!np_active) {
+                    menuSelection = 2;
+                    NumberToString(smart_fade_offset, FindDigits(smart_fade_offset));
+                    print(center_x(get_string_length(SL_FADE_ASSIST[0]), OLED_FONT_SMALL_WIDTH), 18, OLED_FONT_SMALL, OLED_WHITE, SL_FADE_ASSIST[0]);
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(smart_fade_offset, 0, 100, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { smart_fade_offset++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { smart_fade_offset--; }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (smart_fade_offset > 100) { smart_fade_offset = 100; }
+                    if (smart_fade_offset < 0) { smart_fade_offset = 0; }
+                    if (event_press(PS4_CROSS) && !np_x_last) { np_active = 1; np_tid = 2; np_x_last = 1; np_len = 0; np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1; }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                    }
+                }
+
+                // ---- Smart Timing: Pull-Up Assist (ms) (Shooting) ----
+                if (page == 6) {
+                    if (np_confirmed && np_tid == 3) { smart_quick_offset = clamp(np_result, 0, 100); np_confirmed = 0; }
+                    if (!np_active) {
+                    menuSelection = 2;
+                    NumberToString(smart_quick_offset, FindDigits(smart_quick_offset));
+                    print(center_x(get_string_length(SL_PULLUP_ASSIST[0]), OLED_FONT_SMALL_WIDTH), 18, OLED_FONT_SMALL, OLED_WHITE, SL_PULLUP_ASSIST[0]);
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(smart_quick_offset, 0, 100, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { smart_quick_offset++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { smart_quick_offset--; }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (smart_quick_offset > 100) { smart_quick_offset = 100; }
+                    if (smart_quick_offset < 0) { smart_quick_offset = 0; }
+                    if (event_press(PS4_CROSS) && !np_x_last) { np_active = 1; np_tid = 3; np_x_last = 1; np_len = 0; np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1; }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                    }
+                }
+
+                // ---- Shot Vibe (Shooting) ----
+                if (page == 7) {
+                    menuSelection = shot_vibe_enabled;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { shot_vibe_enabled = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { shot_vibe_enabled = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_CROSS) && !np_x_last) {
+                        sub_edit_open = 1; sub_parent_page = 7; sub_first_page = 8; sub_last_page = 8; page = 8;
+                        np_x_last = 1; combo_run(vibration_valchg);
+                    }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                }
+
+                // ---- Shot Vibe (ms) (Shooting) ----
+                if (page == 8) {
+                    if (np_confirmed && np_tid == 4) { shot_vibe_ms = clamp(np_result, 100, 1500); np_confirmed = 0; }
+                    if (!np_active) {
+                    menuSelection = 2;
+                    NumberToString(shot_vibe_ms, FindDigits(shot_vibe_ms));
+                    print(center_x(get_string_length(SL_VIBE_TIMING[0]), OLED_FONT_SMALL_WIDTH), 18, OLED_FONT_SMALL, OLED_WHITE, SL_VIBE_TIMING[0]);
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(shot_vibe_ms, 100, 1500, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { shot_vibe_ms++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { shot_vibe_ms--; }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (shot_vibe_ms > 1500) { shot_vibe_ms = 1500; }
+                    if (shot_vibe_ms < 100) { shot_vibe_ms = 100; }
+                    if (event_press(PS4_CROSS) && !np_x_last) { np_active = 1; np_tid = 4; np_x_last = 1; np_len = 0; np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1; }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                    }
+                }
+
+
+                // ---- Fade Toggle (Fade) ----
+                if (page == 14) {
+                    menuSelection = fade_toggle;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { fade_toggle = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { fade_toggle = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_CROSS) && !np_x_last) {
+                        sub_edit_open = 1; sub_parent_page = 14; sub_first_page = 15; sub_last_page = 15; page = 15;
+                        np_x_last = 1; combo_run(vibration_valchg);
+                    }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                }
+
+                // ---- Fade Tempo (ms) (Fade) ----
+                if (page == 15) {
+                    if (np_confirmed && np_tid == 5) { fade_delay_ms = clamp(np_result, 0, 300); np_confirmed = 0; }
+                    if (!np_active) {
+                    menuSelection = 2;
+                    NumberToString(fade_delay_ms, FindDigits(fade_delay_ms));
+                    print(center_x(get_string_length(SL_FADE_TEMPO[0]), OLED_FONT_SMALL_WIDTH), 18, OLED_FONT_SMALL, OLED_WHITE, SL_FADE_TEMPO[0]);
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(fade_delay_ms, 0, 300, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { fade_delay_ms++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { fade_delay_ms--; }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (fade_delay_ms > 300) { fade_delay_ms = 300; }
+                    if (fade_delay_ms < 0) { fade_delay_ms = 0; }
+                    if (event_press(PS4_CROSS) && !np_x_last) { np_active = 1; np_tid = 16; np_x_last = 1; np_len = 0; np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1; }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                    }
+                }
+
+                // ---- Turbo Shots / Reverse Flick Mode (Fade) ----
+                if (page == 16) {
+                    menuSelection = reverse_flick_mode;
+                    print(
+                        center_x(get_string_length(reverse_modes[reverse_flick_mode]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        reverse_modes[reverse_flick_mode]
+                    );
+                    if (event_press(PS4_UP)) { reverse_flick_mode = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { reverse_flick_mode = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                }
+
+                // ---- Fade Vibe (Fade) ----
+                if (page == 17) {
+                    menuSelection = fade_vibe_enabled;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { fade_vibe_enabled = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { fade_vibe_enabled = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_CROSS) && !np_x_last) {
+                        sub_edit_open = 1; sub_parent_page = 17; sub_first_page = 18; sub_last_page = 18; page = 18;
+                        np_x_last = 1; combo_run(vibration_valchg);
+                    }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                }
+
+                // ---- Fade Vibe (ms) (Fade) ----
+                if (page == 18) {
+                    if (np_confirmed && np_tid == 15) { fade_vibe_ms = clamp(np_result, 100, 1500); np_confirmed = 0; }
+                    if (!np_active) {
+                    menuSelection = 2;
+                    NumberToString(fade_vibe_ms, FindDigits(fade_vibe_ms));
+                    print(center_x(get_string_length(SL_VIBE_TIMING[0]), OLED_FONT_SMALL_WIDTH), 18, OLED_FONT_SMALL, OLED_WHITE, SL_VIBE_TIMING[0]);
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(fade_vibe_ms, 100, 1500, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { fade_vibe_ms++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { fade_vibe_ms--; }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (fade_vibe_ms > 1500) { fade_vibe_ms = 1500; }
+                    if (fade_vibe_ms < 100) { fade_vibe_ms = 100; }
+                    if (event_press(PS4_CROSS) && !np_x_last) { np_active = 1; np_tid = 15; np_x_last = 1; np_len = 0; np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1; }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                    }
+                }
+
+                // ---- No-Dip Shot (No Dip) ----
+                if (page == 21) {
+                    menuSelection = nodip_enabled;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { nodip_enabled = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { nodip_enabled = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_CROSS) && !np_x_last) {
+                        sub_edit_open = 1; sub_parent_page = 21; sub_first_page = 22; sub_last_page = 22; page = 22;
+                        np_x_last = 1; combo_run(vibration_valchg);
+                    }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                }
+
+                // ---- No-Dip Tempo (ms) (No Dip) ----
+                if (page == 22) {
+                    if (np_confirmed && np_tid == 6) { nodip_tempo_ms = clamp(np_result, 120, 420); np_confirmed = 0; }
+                    if (!np_active) {
+                    menuSelection = 2;
+                    NumberToString(nodip_tempo_ms, FindDigits(nodip_tempo_ms));
+                    print(center_x(get_string_length(SL_NODIP_TEMPO[0]), OLED_FONT_SMALL_WIDTH), 18, OLED_FONT_SMALL, OLED_WHITE, SL_NODIP_TEMPO[0]);
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(nodip_tempo_ms, 120, 420, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { nodip_tempo_ms++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { nodip_tempo_ms--; }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (nodip_tempo_ms > 420) { nodip_tempo_ms = 420; }
+                    if (nodip_tempo_ms < 120) { nodip_tempo_ms = 120; }
+                    if (event_press(PS4_CROSS) && !np_x_last) { np_active = 1; np_tid = 6; np_x_last = 1; np_len = 0; np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1; }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                    }
+                }
+
+                // ---- Dunk Bind (Dunk) ----
+                // offset calc 66 32 105 32 110 32 100 32 115 → total 663
+                if (page == 26) {
+                    // Custom Dunk Bind — hold R2 + press any button, release R2 to save
+                    if (bind_cap_mode == 0) {
+                        // Show the current bind
+                        if (isXbox) {
+                            print(24, 22, OLED_FONT_MEDIUM, OLED_WHITE, bind_r2_xb[0]);
+                            print(64, 22, OLED_FONT_MEDIUM, OLED_WHITE, bind_btn_names_xb[bind_name_idx]);
+                        } else {
+                            print(24, 22, OLED_FONT_MEDIUM, OLED_WHITE, bind_r2_ps[0]);
+                            print(64, 22, OLED_FONT_MEDIUM, OLED_WHITE, bind_btn_names_ps[bind_name_idx]);
+                        }
+                        print(center_x(get_string_length(bind_hint1[0]), OLED_FONT_SMALL_WIDTH), 44, OLED_FONT_SMALL, OLED_WHITE, bind_hint1[0]);
+
+                        // Holding R2 arms capture (also locks menu nav so captured
+                        // presses don't flip pages / exit the menu)
+                        if (get_ival(PS4_R2) > 20) {
+                            bind_cap_mode = 2;
+                            bind_cap_btn = dunk_bind_btn;
+                            bind_cap_name_idx = 11;   // "?" until a button is pressed
+                            combo_run(vibration_valchg);
+                        }
+                    } else {
+                        print(center_x(get_string_length(bind_locked[0]), OLED_FONT_SMALL_WIDTH), 6, OLED_FONT_SMALL, OLED_WHITE, bind_locked[0]);
+
+                        if (get_ival(PS4_R2) > 20) {
+                            // Physical input via get_ival (menu zeroes get_val).
+                            // Keep scanning while R2 is held — pressing a different
+                            // button before release just overwrites the pending bind.
+                            if (get_ival(PS4_L1) > 20)            { bind_cap_btn = PS4_L1;       bind_cap_name_idx = 0; }
+                            else if (get_ival(PS4_CIRCLE) > 20)   { bind_cap_btn = PS4_CIRCLE;   bind_cap_name_idx = 1; }
+                            else if (get_ival(PS4_L2) > 20)       { bind_cap_btn = PS4_L2;       bind_cap_name_idx = 2; }
+                            else if (get_ival(PS4_TRIANGLE) > 20) { bind_cap_btn = PS4_TRIANGLE; bind_cap_name_idx = 3; }
+                            else if (get_ival(PS4_SQUARE) > 20)   { bind_cap_btn = PS4_SQUARE;   bind_cap_name_idx = 4; }
+                            else if (get_ival(PS4_R1) > 20)       { bind_cap_btn = PS4_R1;       bind_cap_name_idx = 5; }
+                            else if (get_ival(PS4_CROSS) > 20)    { bind_cap_btn = PS4_CROSS;    bind_cap_name_idx = 6; }
+                            else if (get_ival(PS4_UP) > 20)       { bind_cap_btn = PS4_UP;       bind_cap_name_idx = 7; }
+                            else if (get_ival(PS4_DOWN) > 20)     { bind_cap_btn = PS4_DOWN;     bind_cap_name_idx = 8; }
+                            else if (get_ival(PS4_LEFT) > 20)     { bind_cap_btn = PS4_LEFT;     bind_cap_name_idx = 9; }
+                            else if (get_ival(PS4_RIGHT) > 20)    { bind_cap_btn = PS4_RIGHT;    bind_cap_name_idx = 10; }
+
+                            if (bind_cap_name_idx == 11) {
+                                print(center_x(get_string_length(bind_cap_listen[0]), OLED_FONT_SMALL_WIDTH), 26, OLED_FONT_SMALL, OLED_WHITE, bind_cap_listen[0]);
+                            } else {
+                                if (isXbox) {
+                                    print(24, 24, OLED_FONT_MEDIUM, OLED_WHITE, bind_r2_xb[0]);
+                                    print(64, 24, OLED_FONT_MEDIUM, OLED_WHITE, bind_btn_names_xb[bind_cap_name_idx]);
+                                } else {
+                                    print(24, 24, OLED_FONT_MEDIUM, OLED_WHITE, bind_r2_ps[0]);
+                                    print(64, 24, OLED_FONT_MEDIUM, OLED_WHITE, bind_btn_names_ps[bind_cap_name_idx]);
+                                }
+                            }
+                            print(center_x(get_string_length(bind_cap_apply[0]), OLED_FONT_SMALL_WIDTH), 46, OLED_FONT_SMALL, OLED_WHITE, bind_cap_apply[0]);
+                        } else {
+                            // R2 released — save if a button was captured, else just exit
+                            if (bind_cap_name_idx != 11) {
+                                dunk_bind_btn = bind_cap_btn;
+                                bind_name_idx = bind_cap_name_idx;
+                                set_pvar(PVAR_DUNK_BIND, bind_name_idx);
+                            }
+                            bind_cap_mode = 0;
+                            combo_run(vibration_valchg);
+                        }
+                    }
+                }
+
+
+
+
+                // ---- Auto Stand Still (Shooting) ----
+                if (page == 9) {
+                    menuSelection = auto_stand_on;
+                    print(center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, onOff[menuSelection]);
+                    if (event_press(PS4_UP)) { auto_stand_on = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { auto_stand_on = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_CROSS) && !np_x_last) {
+                        sub_edit_open = 1; sub_parent_page = 9; sub_first_page = 10; sub_last_page = 11; page = 10;
+                        np_x_last = 1; combo_run(vibration_valchg);
+                    }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                }
+                // ---- Auto Speed / Tempo (Shooting, shared) ----
+                if (page == 10) {
+                    if (np_confirmed && np_tid == 17) { auto_speed_ms = clamp(np_result, 100, 1000); np_confirmed = 0; }
+                    if (!np_active) {
+                    NumberToString(auto_speed_ms, FindDigits(auto_speed_ms));
+                    print(center_x(get_string_length(SL_AUTO_SPEED[0]), OLED_FONT_SMALL_WIDTH), 18, OLED_FONT_SMALL, OLED_WHITE, SL_AUTO_SPEED[0]);
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(auto_speed_ms, 100, 1000, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { auto_speed_ms++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { auto_speed_ms--; }
+                    if (auto_speed_ms > 1000) auto_speed_ms = 1000;
+                    if (auto_speed_ms < 100) auto_speed_ms = 100;
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (event_press(PS4_CROSS) && !np_x_last) { np_active = 1; np_tid = 17; np_x_last = 1; np_len = 0; np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1; }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                    }
+                }
+                if (page == 11) {
+                    if (np_confirmed && np_tid == 18) { auto_tempo_ms = clamp(np_result, 0, 300); np_confirmed = 0; }
+                    if (!np_active) {
+                    NumberToString(auto_tempo_ms, FindDigits(auto_tempo_ms));
+                    print(center_x(get_string_length(SL_AUTO_TEMPO[0]), OLED_FONT_SMALL_WIDTH), 18, OLED_FONT_SMALL, OLED_WHITE, SL_AUTO_TEMPO[0]);
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(auto_tempo_ms, 0, 300, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { auto_tempo_ms++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { auto_tempo_ms--; }
+                    if (auto_tempo_ms > 300) auto_tempo_ms = 300;
+                    if (auto_tempo_ms < 0) auto_tempo_ms = 0;
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (event_press(PS4_CROSS) && !np_x_last) { np_active = 1; np_tid = 18; np_x_last = 1; np_len = 0; np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1; }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                    }
+                }
+
+                // ---- Button Shot (Shooting category) ----
+                if (page == 12) {
+                    if (!btn_edit_open) {
+                        menuSelection = btn_shot_on;
+                        print(center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH), 26, OLED_FONT_MEDIUM, OLED_WHITE, onOff[menuSelection]);
+                        print(center_x(get_string_length(BTN_OPEN_HINT[0]), OLED_FONT_SMALL_WIDTH), 46, OLED_FONT_SMALL, OLED_WHITE, BTN_OPEN_HINT[0]);
+                        if (event_press(PS4_UP)) { btn_shot_on = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                        if (event_press(PS4_DOWN)) { btn_shot_on = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                        // X opens the value editor
+                        if (event_press(PS4_CROSS) && !np_x_last) {
+                            btn_edit_open = 1;
+                            btn_val_idx = 0;
+                            np_x_last = 1;
+                            combo_run(vibration_valchg);
+                        }
+                        if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                    } else {
+                        // ===== Value editor (opened from Button Shot) =====
+                        if (event_press(PS4_LEFT))  { btn_val_idx = btn_val_idx - 1; if (btn_val_idx < 0) btn_val_idx = 3; combo_run(vibration_valchg); }
+                        if (event_press(PS4_RIGHT)) { btn_val_idx = btn_val_idx + 1; if (btn_val_idx > 3) btn_val_idx = 0; combo_run(vibration_valchg); }
+                        set_val(PS4_LEFT, 0); set_val(PS4_RIGHT, 0);
+
+                        // Active value label
+                        
+                        // Sync display value
+                        if (btn_val_idx == 0) btn_shot_hold_ms = ShotH;
+                        else if (btn_val_idx == 1) btn_shot_hold_ms = CatchH;
+                        else if (btn_val_idx == 2) btn_shot_hold_ms = FadeLH;
+                        else btn_shot_hold_ms = FadeRH;
+
+                        if (np_confirmed && np_tid == 19) {
+                            btn_shot_hold_ms = clamp(np_result, 100, 1500);
+                            if (btn_val_idx == 0) { ShotH = btn_shot_hold_ms; ShotV = ShotH - 5; }
+                            else if (btn_val_idx == 1) { CatchH = btn_shot_hold_ms; CatchV = CatchH - 5; }
+                            else if (btn_val_idx == 2) { FadeLH = btn_shot_hold_ms; FadeLV = FadeLH - 5; }
+                            else { FadeRH = btn_shot_hold_ms; FadeRV = FadeRH - 5; }
+                            np_confirmed = 0;
+                        }
+                        if (!np_active) {
+                            NumberToString(btn_shot_hold_ms, FindDigits(btn_shot_hold_ms));
+                            print(center_x(get_string_length(BTN_VAL_NAMES[btn_val_idx]), OLED_FONT_SMALL_WIDTH), 18, OLED_FONT_SMALL, OLED_WHITE, BTN_VAL_NAMES[btn_val_idx]);
+                            print(70, 24, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                            draw_x_graph(btn_shot_hold_ms, 100, 1500, 40);
+                            print(center_x(get_string_length(BTN_EDIT_HINT[0]), OLED_FONT_SMALL_WIDTH), 50, OLED_FONT_SMALL, OLED_WHITE, BTN_EDIT_HINT[0]);
+                            print(center_x(get_string_length(BTN_EDIT_HINT2[0]), OLED_FONT_SMALL_WIDTH), 58, OLED_FONT_SMALL, OLED_WHITE, BTN_EDIT_HINT2[0]);
+
+                            if (event_press(PS4_UP) || repeat_up_due()) {
+                                btn_shot_hold_ms++;
+                                if (btn_shot_hold_ms > 1500) btn_shot_hold_ms = 1500;
+                                if (btn_val_idx == 0) { ShotH = btn_shot_hold_ms; ShotV = ShotH - 5; }
+                                else if (btn_val_idx == 1) { CatchH = btn_shot_hold_ms; CatchV = CatchH - 5; }
+                                else if (btn_val_idx == 2) { FadeLH = btn_shot_hold_ms; FadeLV = FadeLH - 5; }
+                                else { FadeRH = btn_shot_hold_ms; FadeRV = FadeRH - 5; }
+                                combo_run(vibration_valchg); combo_run(flashedit);
+                            }
+                            if (event_press(PS4_DOWN) || repeat_down_due()) {
+                                btn_shot_hold_ms--;
+                                if (btn_shot_hold_ms < 100) btn_shot_hold_ms = 100;
+                                if (btn_val_idx == 0) { ShotH = btn_shot_hold_ms; ShotV = ShotH - 5; }
+                                else if (btn_val_idx == 1) { CatchH = btn_shot_hold_ms; CatchV = CatchH - 5; }
+                                else if (btn_val_idx == 2) { FadeLH = btn_shot_hold_ms; FadeLV = FadeLH - 5; }
+                                else { FadeRH = btn_shot_hold_ms; FadeRV = FadeRH - 5; }
+                                combo_run(vibration_valchg); combo_run(flashedit);
+                            }
+                            // X = type exact number
+                            if (event_press(PS4_CROSS) && !np_x_last) {
+                                np_active = 1; np_tid = 19; np_x_last = 1;
+                                np_len = 0; np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1;
+                            }
+                            if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                            // O = back to ON/OFF screen
+                            if (event_press(PS4_CIRCLE)) {
+                                btn_edit_open = 0;
+                                combo_run(vibration_valchg);
+                            }
+                            set_val(PS4_CIRCLE, 0);
+                        }
+                    }
+                }
+
+                // (page 13 removed — Button Shot's editor now only opens when
+                // X is pressed on the Button Shot toggle, per Shooting CAT_COUNT above)
+
+                // ---- Auto Fade (Fade category) ----
+                if (page == 19) {
+                    menuSelection = auto_fade_on;
+                    print(center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, onOff[menuSelection]);
+                    if (event_press(PS4_UP)) { auto_fade_on = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { auto_fade_on = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_CROSS) && !np_x_last) {
+                        sub_edit_open = 1; sub_parent_page = 19; sub_first_page = 20; sub_last_page = 20; page = 20;
+                        np_x_last = 1; combo_run(vibration_valchg);
+                    }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                }
+
+                // ---- Auto Fade Speed (Fade category) ----
+                if (page == 20) {
+                    if (np_confirmed && np_tid == 20) { auto_fade_speed_ms = clamp(np_result, 100, 1000); np_confirmed = 0; }
+                    if (!np_active) {
+                    NumberToString(auto_fade_speed_ms, FindDigits(auto_fade_speed_ms));
+                    print(center_x(get_string_length(SL_AUTO_FADE_SPEED[0]), OLED_FONT_SMALL_WIDTH), 18, OLED_FONT_SMALL, OLED_WHITE, SL_AUTO_FADE_SPEED[0]);
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(auto_fade_speed_ms, 100, 1000, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { auto_fade_speed_ms++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { auto_fade_speed_ms--; }
+                    if (auto_fade_speed_ms > 1000) auto_fade_speed_ms = 1000;
+                    if (auto_fade_speed_ms < 100) auto_fade_speed_ms = 100;
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (event_press(PS4_CROSS) && !np_x_last) { np_active = 1; np_tid = 20; np_x_last = 1; np_len = 0; np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1; }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                    }
+                }
+                // ---- Auto No-Dip (No Dip category) ----
+                if (page == 23) {
+                    menuSelection = auto_nodip_on;
+                    print(center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, onOff[menuSelection]);
+                    if (event_press(PS4_UP)) { auto_nodip_on = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { auto_nodip_on = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_CROSS) && !np_x_last) {
+                        sub_edit_open = 1; sub_parent_page = 23; sub_first_page = 24; sub_last_page = 24; page = 24;
+                        np_x_last = 1; combo_run(vibration_valchg);
+                    }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                }
+
+                // ---- Auto No-Dip Speed (No Dip category) ----
+                if (page == 24) {
+                    if (np_confirmed && np_tid == 21) { auto_nodip_ms = clamp(np_result, 100, 1000); np_confirmed = 0; }
+                    if (!np_active) {
+                    NumberToString(auto_nodip_ms, FindDigits(auto_nodip_ms));
+                    print(center_x(get_string_length(SL_AUTO_NODIP_SPEED[0]), OLED_FONT_SMALL_WIDTH), 18, OLED_FONT_SMALL, OLED_WHITE, SL_AUTO_NODIP_SPEED[0]);
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(auto_nodip_ms, 100, 1000, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { auto_nodip_ms++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { auto_nodip_ms--; }
+                    if (auto_nodip_ms > 1000) auto_nodip_ms = 1000;
+                    if (auto_nodip_ms < 100) auto_nodip_ms = 100;
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (event_press(PS4_CROSS) && !np_x_last) { np_active = 1; np_tid = 21; np_x_last = 1; np_len = 0; np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1; }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                    }
+                }
+
+
+                if (page == 25) {
+                    menuSelection = dunk_meter_on;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { dunk_meter_on = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { dunk_meter_on = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_CROSS) && !np_x_last) {
+                        sub_edit_open = 1; sub_parent_page = 25; sub_first_page = 26; sub_last_page = 26; page = 26;
+                        np_x_last = 1; combo_run(vibration_valchg);
+                    }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                }
+
+                if (page == 27) {
+                    menuSelection = dribble_on;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { dribble_on = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { dribble_on = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_CROSS) && !np_x_last) {
+                        sub_edit_open = 1; sub_parent_page = 27; sub_first_page = 28; sub_last_page = 31; page = 28;
+                        np_x_last = 1; combo_run(vibration_valchg);
+                    }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                }
+
+                if (page == 28) {
+                    print(center_x(get_string_length(drib_move_names[drib_up]), OLED_FONT_SMALL_WIDTH), 28, OLED_FONT_SMALL, OLED_WHITE, drib_move_names[drib_up]);
+                    if (event_press(PS4_UP)) {
+                        drib_up = drib_up + 1;
+                        if (drib_up > DRIB_MOVE_MAX) drib_up = 0;
+                        combo_run(vibration_valchg); combo_run(flashtog);
+                    }
+                    if (event_press(PS4_DOWN)) {
+                        drib_up = drib_up - 1;
+                        if (drib_up < 0) drib_up = DRIB_MOVE_MAX;
+                        combo_run(vibration_valchg); combo_run(flashtog);
+                    }
+                }
+
+                if (page == 29) {
+                    print(center_x(get_string_length(drib_move_names[drib_dn]), OLED_FONT_SMALL_WIDTH), 28, OLED_FONT_SMALL, OLED_WHITE, drib_move_names[drib_dn]);
+                    if (event_press(PS4_UP)) {
+                        drib_dn = drib_dn + 1;
+                        if (drib_dn > DRIB_MOVE_MAX) drib_dn = 0;
+                        combo_run(vibration_valchg); combo_run(flashtog);
+                    }
+                    if (event_press(PS4_DOWN)) {
+                        drib_dn = drib_dn - 1;
+                        if (drib_dn < 0) drib_dn = DRIB_MOVE_MAX;
+                        combo_run(vibration_valchg); combo_run(flashtog);
+                    }
+                }
+
+                if (page == 30) {
+                    print(center_x(get_string_length(drib_move_names[drib_lf]), OLED_FONT_SMALL_WIDTH), 28, OLED_FONT_SMALL, OLED_WHITE, drib_move_names[drib_lf]);
+                    if (event_press(PS4_UP)) {
+                        drib_lf = drib_lf + 1;
+                        if (drib_lf > DRIB_MOVE_MAX) drib_lf = 0;
+                        combo_run(vibration_valchg); combo_run(flashtog);
+                    }
+                    if (event_press(PS4_DOWN)) {
+                        drib_lf = drib_lf - 1;
+                        if (drib_lf < 0) drib_lf = DRIB_MOVE_MAX;
+                        combo_run(vibration_valchg); combo_run(flashtog);
+                    }
+                }
+
+                if (page == 31) {
+                    print(center_x(get_string_length(drib_move_names[drib_rt]), OLED_FONT_SMALL_WIDTH), 28, OLED_FONT_SMALL, OLED_WHITE, drib_move_names[drib_rt]);
+                    if (event_press(PS4_UP)) {
+                        drib_rt = drib_rt + 1;
+                        if (drib_rt > DRIB_MOVE_MAX) drib_rt = 0;
+                        combo_run(vibration_valchg); combo_run(flashtog);
+                    }
+                    if (event_press(PS4_DOWN)) {
+                        drib_rt = drib_rt - 1;
+                        if (drib_rt < 0) drib_rt = DRIB_MOVE_MAX;
+                        combo_run(vibration_valchg); combo_run(flashtog);
+                    }
+                }
+
+                if (page == 32) {
+                    menuSelection = shotlog_enabled;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { shotlog_enabled = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { shotlog_enabled = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                }
+
+                if (page == 33) {
+                    menuSelection = tk_at_on;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { tk_at_on = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { tk_at_on = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                    // Soft Triggers is a toggle only: X has no action here.
+                    set_val(PS4_CROSS, 0);
+                    np_x_last = 0;
+                }
+
+                if (page == 34) {
+                    menuSelection = vib_block_on;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { vib_block_on = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { vib_block_on = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                }
+
+                if (page == 35) {
+                    menuSelection = unlimited_stamina;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { unlimited_stamina = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { unlimited_stamina = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                }
+
+                // ---- Quick Stop (Misc) ----
+                if (page == 39) {
+                    if (qs_cap_mode == 0) {
+                        menuSelection = qs_on;
+                        print(
+                            center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                            26, OLED_FONT_MEDIUM, OLED_WHITE,
+                            onOff[menuSelection]
+                        );
+                        print(center_x(get_string_length(QS_OPEN_HINT[0]), OLED_FONT_SMALL_WIDTH), 44, OLED_FONT_SMALL, OLED_WHITE, QS_OPEN_HINT[0]);
+                        if (event_press(PS4_UP)) { qs_on = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                        if (event_press(PS4_DOWN)) { qs_on = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                        if (event_press(PS4_CROSS) && !np_x_last) {
+                            qs_cap_mode = 1;
+                            qs_cap_step = 0;
+                            qs_circle_held = 0;
+                            qs_btn1 = 0;
+                            qs_btn2 = 0;
+                            np_x_last = 1;
+                            combo_run(vibration_valchg);
+                        }
+                        if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                    } else {
+                        // CAPTURE SCREEN — hold Circle to exit so X/O can be bound
+                        print(center_x(get_string_length(QS_CAP_TITLE[0]), OLED_FONT_SMALL_WIDTH), 4, OLED_FONT_SMALL, OLED_WHITE, QS_CAP_TITLE[0]);
+                        print(center_x(get_string_length(QS_CAP_TAP[0]), OLED_FONT_SMALL_WIDTH), 16, OLED_FONT_SMALL, OLED_WHITE, QS_CAP_TAP[0]);
+                        print(center_x(get_string_length(QS_CAP_HINT[0]), OLED_FONT_SMALL_WIDTH), 52, OLED_FONT_SMALL, OLED_WHITE, QS_CAP_HINT[0]);
+
+                        // Show captured so far
+                        if (qs_btn1 != 0) {
+                            // simple marker text via NumberToString of button id is ugly; show step status
+                            print(10, 30, OLED_FONT_SMALL, OLED_WHITE, onOff[1]);
+                        }
+                        if (qs_btn2 != 0) {
+                            print(50, 30, OLED_FONT_SMALL, OLED_WHITE, onOff[1]);
+                        }
+
+                        // Hold Circle 450ms+ to exit capture
+                        if (get_val(PS4_CIRCLE)) {
+                            qs_circle_held = qs_circle_held + get_rtime();
+                            if (qs_circle_held >= 450) {
+                                qs_cap_mode = 0;
+                                qs_circle_held = 0;
+                                // if nothing captured, keep previous via not zeroing if both 0 - already set
+                                if (qs_btn1 == 0) { qs_btn1 = PS4_L2; }
+                                combo_run(vibration_valchg);
+                            }
+                        } else {
+                            // quick tap Circle = bind Circle as a button
+                            if (qs_circle_held > 0 && qs_circle_held < 450) {
+                                if (qs_cap_step == 0) { qs_btn1 = PS4_CIRCLE; qs_cap_step = 1; }
+                                else if (qs_cap_step == 1 && qs_btn2 == 0 && qs_btn1 != PS4_CIRCLE) { qs_btn2 = PS4_CIRCLE; qs_cap_step = 2; }
+                                combo_run(vibration_valchg);
+                            }
+                            qs_circle_held = 0;
+                        }
+
+                        // Capture other buttons (X/Square/etc are free here)
+                        if (event_press(PS4_CROSS)) {
+                            if (qs_cap_step == 0) { qs_btn1 = PS4_CROSS; qs_cap_step = 1; }
+                            else if (qs_cap_step == 1 && qs_btn1 != PS4_CROSS) { qs_btn2 = PS4_CROSS; qs_cap_step = 2; }
+                            combo_run(vibration_valchg);
+                        }
+                        if (event_press(PS4_SQUARE)) {
+                            if (qs_cap_step == 0) { qs_btn1 = PS4_SQUARE; qs_cap_step = 1; }
+                            else if (qs_cap_step == 1 && qs_btn1 != PS4_SQUARE) { qs_btn2 = PS4_SQUARE; qs_cap_step = 2; }
+                            combo_run(vibration_valchg);
+                        }
+                        if (event_press(PS4_TRIANGLE)) {
+                            if (qs_cap_step == 0) { qs_btn1 = PS4_TRIANGLE; qs_cap_step = 1; }
+                            else if (qs_cap_step == 1 && qs_btn1 != PS4_TRIANGLE) { qs_btn2 = PS4_TRIANGLE; qs_cap_step = 2; }
+                            combo_run(vibration_valchg);
+                        }
+                        if (event_press(PS4_L1)) {
+                            if (qs_cap_step == 0) { qs_btn1 = PS4_L1; qs_cap_step = 1; }
+                            else if (qs_cap_step == 1 && qs_btn1 != PS4_L1) { qs_btn2 = PS4_L1; qs_cap_step = 2; }
+                            combo_run(vibration_valchg);
+                        }
+                        if (event_press(PS4_L2)) {
+                            if (qs_cap_step == 0) { qs_btn1 = PS4_L2; qs_cap_step = 1; }
+                            else if (qs_cap_step == 1 && qs_btn1 != PS4_L2) { qs_btn2 = PS4_L2; qs_cap_step = 2; }
+                            combo_run(vibration_valchg);
+                        }
+                        if (event_press(PS4_R1)) {
+                            if (qs_cap_step == 0) { qs_btn1 = PS4_R1; qs_cap_step = 1; }
+                            else if (qs_cap_step == 1 && qs_btn1 != PS4_R1) { qs_btn2 = PS4_R1; qs_cap_step = 2; }
+                            combo_run(vibration_valchg);
+                        }
+                        if (event_press(PS4_R2)) {
+                            if (qs_cap_step == 0) { qs_btn1 = PS4_R2; qs_cap_step = 1; }
+                            else if (qs_cap_step == 1 && qs_btn1 != PS4_R2) { qs_btn2 = PS4_R2; qs_cap_step = 2; }
+                            combo_run(vibration_valchg);
+                        }
+                        if (event_press(PS4_UP)) {
+                            if (qs_cap_step == 0) { qs_btn1 = PS4_UP; qs_cap_step = 1; }
+                            else if (qs_cap_step == 1 && qs_btn1 != PS4_UP) { qs_btn2 = PS4_UP; qs_cap_step = 2; }
+                            combo_run(vibration_valchg);
+                        }
+                        if (event_press(PS4_DOWN)) {
+                            if (qs_cap_step == 0) { qs_btn1 = PS4_DOWN; qs_cap_step = 1; }
+                            else if (qs_cap_step == 1 && qs_btn1 != PS4_DOWN) { qs_btn2 = PS4_DOWN; qs_cap_step = 2; }
+                            combo_run(vibration_valchg);
+                        }
+                        if (event_press(PS4_LEFT)) {
+                            if (qs_cap_step == 0) { qs_btn1 = PS4_LEFT; qs_cap_step = 1; }
+                            else if (qs_cap_step == 1 && qs_btn1 != PS4_LEFT) { qs_btn2 = PS4_LEFT; qs_cap_step = 2; }
+                            combo_run(vibration_valchg);
+                        }
+                        if (event_press(PS4_RIGHT)) {
+                            if (qs_cap_step == 0) { qs_btn1 = PS4_RIGHT; qs_cap_step = 1; }
+                            else if (qs_cap_step == 1 && qs_btn1 != PS4_RIGHT) { qs_btn2 = PS4_RIGHT; qs_cap_step = 2; }
+                            combo_run(vibration_valchg);
+                        }
+                        if (event_press(PS4_L3)) {
+                            if (qs_cap_step == 0) { qs_btn1 = PS4_L3; qs_cap_step = 1; }
+                            else if (qs_cap_step == 1 && qs_btn1 != PS4_L3) { qs_btn2 = PS4_L3; qs_cap_step = 2; }
+                            combo_run(vibration_valchg);
+                        }
+                        if (event_press(PS4_R3)) {
+                            if (qs_cap_step == 0) { qs_btn1 = PS4_R3; qs_cap_step = 1; }
+                            else if (qs_cap_step == 1 && qs_btn1 != PS4_R3) { qs_btn2 = PS4_R3; qs_cap_step = 2; }
+                            combo_run(vibration_valchg);
+                        }
+
+                        // Auto-finish after 2 buttons
+                        if (qs_cap_step >= 2) {
+                            qs_cap_mode = 0;
+                            qs_circle_held = 0;
+                            combo_run(vibration_on);
+                        }
+
+                        // Block normal menu nav buttons while capturing
+                        set_val(PS4_CROSS, 0);
+                        set_val(PS4_CIRCLE, 0);
+                    }
+                }
+
+                if (page == 36) {
+                    menuSelection = profile_sel;
+                   
+                    profile_idx = profile_sel - 1;
+                    if (profile_idx < 0) profile_idx = 0;
+                    if (profile_idx > (PROFILE_MAX - 1)) profile_idx = PROFILE_MAX - 1;
+
+                    print(
+                        center_x(get_string_length(profile_labels[profile_idx]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        profile_labels[profile_idx]
+                    );
+
+                    if (profile_sel == current_profile) {
+                        print(center_x(get_string_length(profile_active_txt[0]), OLED_FONT_SMALL_WIDTH), 42, OLED_FONT_SMALL, OLED_WHITE, profile_active_txt[0]);
+                    } else {
+                        print(center_x(get_string_length(profile_load_txt[0]), OLED_FONT_SMALL_WIDTH), 42, OLED_FONT_SMALL, OLED_WHITE, profile_load_txt[0]);
+                    }
+
+                    loaded_idx = current_profile - 1;
+                    if (loaded_idx < 0) loaded_idx = 0;
+                    if (loaded_idx > (PROFILE_MAX - 1)) loaded_idx = PROFILE_MAX - 1;
+                    print(center_x(get_string_length(profile_loaded_labels[loaded_idx]), OLED_FONT_SMALL_WIDTH), 54, OLED_FONT_SMALL, OLED_WHITE, profile_loaded_labels[loaded_idx]);
+
+                    if (event_press(PS4_UP)) {
+                        profile_sel++;
+                        if (profile_sel > PROFILE_MAX) profile_sel = PROFILE_MIN;
+                        combo_run(vibration_valchg);
+                    }
+                    if (event_press(PS4_DOWN)) {
+                        profile_sel--;
+                        if (profile_sel < PROFILE_MIN) profile_sel = PROFILE_MAX;
+                        combo_run(vibration_valchg);
+                    }
+                    if (event_press(PS4_CROSS)) {
+                        SaveProfile(current_profile);
+                        current_profile = profile_sel;
+                        LoadProfile(current_profile);
+                        set_pvar(PVAR_PROFILE_SLOT, current_profile);
+                        combo_run(vibration_valchg);
+                        combo_run(profileFlash);
+                    }
+                }
+
+                // ---- RS Shooting category (pages 37-38) ----
+                if (page == 37) {
+                    menuSelection = rs_shoot_on;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { rs_shoot_on = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { rs_shoot_on = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_CROSS) && !np_x_last) {
+                        sub_edit_open = 1; sub_parent_page = 37; sub_first_page = 38; sub_last_page = 38; page = 38;
+                        np_x_last = 1; combo_run(vibration_valchg);
+                    }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                }
+
+                if (page == 38) {
+                    if (np_confirmed && np_tid == 37) { rs_hold_time = clamp(np_result, 50, 2000); np_confirmed = 0; }
+                    if (!np_active) {
+                    menuSelection = 2;
+                    NumberToString(rs_hold_time, FindDigits(rs_hold_time));
+                    print(center_x(get_string_length(SL_RS_HOLD_TIME[0]), OLED_FONT_SMALL_WIDTH), 18, OLED_FONT_SMALL, OLED_WHITE, SL_RS_HOLD_TIME[0]);
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(rs_hold_time, 50, 2000, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { rs_hold_time++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { rs_hold_time--; }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (rs_hold_time > 2000) rs_hold_time = 2000;
+                    if (rs_hold_time < 50) rs_hold_time = 50;
+                    if (event_press(PS4_CROSS) && !np_x_last) { np_active = 1; np_tid = 37; np_x_last = 1; np_len = 0; np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1; }
+                    if (!event_press(PS4_CROSS)) { np_x_last = 0; }
+                    }
+                }
+                }
+
+                // ═══════════════ INFO PANEL (Triangle) ═══════════════
+                if (info_active) {
+                    info_idx = page - 1;
+                    if (info_idx < 0) info_idx = 0;
+                    if (info_idx > (numpgs - 1)) info_idx = numpgs - 1;
+                    cls_oled(OLED_BLACK);
+                    if (isXbox) {
+                        print(center_x(get_string_length(INFO_L0_XB[info_idx]), OLED_FONT_SMALL_WIDTH), 6, OLED_FONT_SMALL, OLED_WHITE, INFO_L0_XB[info_idx]);
+                        if (info_page == 0) {
+                            print(0, 24, OLED_FONT_SMALL, OLED_WHITE, INFO_L1_XB[info_idx]);
+                            print(0, 36, OLED_FONT_SMALL, OLED_WHITE, INFO_L2_XB[info_idx]);
+                            print(0, 55, OLED_FONT_SMALL, OLED_WHITE, INFO_HINT[0]);
+                        } else if (info_page == 1) {
+                            print(0, 24, OLED_FONT_SMALL, OLED_WHITE, INFO_C1_XB[info_idx]);
+                            print(0, 36, OLED_FONT_SMALL, OLED_WHITE, INFO_C2_XB[info_idx]);
+                            print(0, 55, OLED_FONT_SMALL, OLED_WHITE, INFO_HINT[1]);
+                        } else {
+                            print(0, 24, OLED_FONT_SMALL, OLED_WHITE, INFO_U1_XB[info_idx]);
+                            print(0, 36, OLED_FONT_SMALL, OLED_WHITE, INFO_U2_XB[info_idx]);
+                            print(0, 55, OLED_FONT_SMALL, OLED_WHITE, INFO_HINT[2]);
+                        }
+                    } else {
+                        print(center_x(get_string_length(INFO_L0[info_idx]), OLED_FONT_SMALL_WIDTH), 6, OLED_FONT_SMALL, OLED_WHITE, INFO_L0[info_idx]);
+                        if (info_page == 0) {
+                            print(0, 24, OLED_FONT_SMALL, OLED_WHITE, INFO_L1[info_idx]);
+                            print(0, 36, OLED_FONT_SMALL, OLED_WHITE, INFO_L2[info_idx]);
+                            print(0, 55, OLED_FONT_SMALL, OLED_WHITE, INFO_HINT[0]);
+                        } else if (info_page == 1) {
+                            print(0, 24, OLED_FONT_SMALL, OLED_WHITE, INFO_C1[info_idx]);
+                            print(0, 36, OLED_FONT_SMALL, OLED_WHITE, INFO_C2[info_idx]);
+                            print(0, 55, OLED_FONT_SMALL, OLED_WHITE, INFO_HINT[1]);
+                        } else {
+                            print(0, 24, OLED_FONT_SMALL, OLED_WHITE, INFO_U1[info_idx]);
+                            print(0, 36, OLED_FONT_SMALL, OLED_WHITE, INFO_U2[info_idx]);
+                            print(0, 55, OLED_FONT_SMALL, OLED_WHITE, INFO_HINT[2]);
+                        }
+                    }
+                    if (event_press(PS4_CROSS)) {
+                        info_page = (info_page + 1) % 3;
+                        combo_run(vibration_valchg);
+                    }
+                    if (event_press(PS4_CIRCLE)) {
+                        info_active = 0;
+                        info_page = 0;
+                        combo_run(vibration_valchg);
+                    }
+                }
+                // ════════════════════════════════════════════════════
+
+                // ═══════════════ CUSTOM NUMPAD INPUT ═══════════════
+                if (np_active) {
+                    cls_oled(OLED_BLACK);
+                    if (np_tid == 40) print(0, 2, OLED_FONT_SMALL, OLED_WHITE, SL_AUTO_HOLD[0]);
+                    else if (np_tid >= 1 && np_tid <= 18) print(0, 2, OLED_FONT_SMALL, OLED_WHITE, np_labels[np_tid - 1]);
+                    else print(0, 2, OLED_FONT_SMALL, OLED_WHITE, SL_TEMPO[0]);
+                    print( 4, 13, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[0]);
+                    print(18, 13, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[1]);
+                    print(32, 13, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[2]);
+                    print(46, 13, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[3]);
+                    print(60, 13, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[4]);
+                    print( 4, 25, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[5]);
+                    print(18, 25, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[6]);
+                    print(32, 25, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[7]);
+                    print(46, 25, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[8]);
+                    print(60, 25, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[9]);
+                    print(80, 25, OLED_FONT_SMALL, OLED_WHITE, NP_OK[0]);
+                    if (np_cur < 5)       { np_cx = 3 + np_cur * 14;       np_cy = 12; }
+                    else if (np_cur < 10) { np_cx = 3 + (np_cur - 5) * 14; np_cy = 24; }
+                    if (np_cur < 10) { rect_oled(np_cx, np_cy, 9, 9, 0, OLED_WHITE); }
+                    if (np_cur == 10) { rect_oled(78, 23, 16, 10, 0, OLED_WHITE); }
+                    print( 4, 36, OLED_FONT_SMALL, OLED_WHITE, NP_DASH[0]);
+                    print(24, 36, OLED_FONT_SMALL, OLED_WHITE, NP_DASH[0]);
+                    print(44, 36, OLED_FONT_SMALL, OLED_WHITE, NP_DASH[0]);
+                    print(64, 36, OLED_FONT_SMALL, OLED_WHITE, NP_DASH[0]);
+                    print(84, 36, OLED_FONT_SMALL, OLED_WHITE, NP_DASH[0]);
+                    print(104, 36, OLED_FONT_SMALL, OLED_WHITE, NP_DASH[0]);
+                    if (np_len >= 1) { print( 4, 36, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[np_d0]); }
+                    if (np_len >= 2) { print(24, 36, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[np_d1]); }
+                    if (np_len >= 3) { print(44, 36, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[np_d2]); }
+                    if (np_len >= 4) { print(64, 36, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[np_d3]); }
+                    if (np_len >= 5) { print(84, 36, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[np_d4]); }
+                    if (np_len >= 6) { print(104, 36, OLED_FONT_SMALL, OLED_WHITE, NP_DIG[np_d5]); }
+                    print(0, 52, OLED_FONT_SMALL, OLED_WHITE, NP_HINT[0]);
+                    if (event_press(PS4_LEFT)) {
+                        if (np_cur == 10) { np_cur = 9; }
+                        else if (np_cur == 5) { np_cur = 10; }
+                        else if ((np_cur % 5) > 0) { np_cur = np_cur - 1; }
+                        else { np_cur = np_cur + 4; }
+                        combo_run(vibration_valchg);
+                    }
+                    if (event_press(PS4_RIGHT)) {
+                        if (np_cur == 9) { np_cur = 10; }
+                        else if (np_cur == 10) { np_cur = 5; }
+                        else if ((np_cur % 5) < 4) { np_cur = np_cur + 1; }
+                        else { np_cur = np_cur - 4; }
+                        combo_run(vibration_valchg);
+                    }
+                    if (event_press(PS4_UP)) {
+                        if (np_cur == 10) { np_cur = 4; }
+                        else if (np_cur >= 5) { np_cur = np_cur - 5; }
+                        combo_run(vibration_valchg);
+                    }
+                    if (event_press(PS4_DOWN)) {
+                        if (np_cur < 5) { np_cur = np_cur + 5; }
+                        else if (np_cur == 4) { np_cur = 10; }
+                        combo_run(vibration_valchg);
+                    }
+                    if (event_press(PS4_CROSS)) {
+                        if (np_len == 1) { np_disp = np_d0; }
+                        else if (np_len == 2) { np_disp = np_d0 * 10 + np_d1; }
+                        else if (np_len == 3) { np_disp = np_d0 * 100 + np_d1 * 10 + np_d2; }
+                        else if (np_len == 4) { np_disp = np_d0 * 1000 + np_d1 * 100 + np_d2 * 10 + np_d3; }
+                        else if (np_len == 5) { np_disp = np_d0 * 10000 + np_d1 * 1000 + np_d2 * 100 + np_d3 * 10 + np_d4; }
+                        else if (np_len == 6) { np_disp = np_d0 * 100000 + np_d1 * 10000 + np_d2 * 1000 + np_d3 * 100 + np_d4 * 10 + np_d5; }
+                        else { np_disp = 0; }
+                        if (np_cur == 10 && np_len > 0) {
+                            np_result = np_disp; np_confirmed = 1; np_active = 0; np_len = 0;
+                            np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1;
+                            if (np_tid == 1) {
+                                delay_duration = np_result;
+                                if (delay_duration < 0) delay_duration = 0;
+                                if (delay_duration > 9000) delay_duration = 9000;
+                                np_confirmed = 0;
+                            }
+                            if (np_tid == 40) {
+                                br_auto_ms = np_result;
+                                if (br_auto_ms < 0) br_auto_ms = 0;
+                                if (br_auto_ms > 9000) br_auto_ms = 9000;
+                                np_confirmed = 0;
+                            }
+                            combo_run(vibration_valchg);
+                        }
+                        else if (np_cur < 10 && np_len < 6) {
+                            if (np_len == 0) { np_d0 = np_cur; }
+                            else if (np_len == 1) { np_d1 = np_cur; }
+                            else if (np_len == 2) { np_d2 = np_cur; }
+                            else if (np_len == 3) { np_d3 = np_cur; }
+                            else if (np_len == 4) { np_d4 = np_cur; }
+                            else { np_d5 = np_cur; }
+                            np_len++;
+                            combo_run(vibration_valchg);
+                        }
+                    }
+                    if (event_press(PS4_SQUARE) && np_len > 0) {
+                        np_len--;
+                        if (np_len == 0) { np_d0 = -1; }
+                        else if (np_len == 1) { np_d1 = -1; }
+                        else if (np_len == 2) { np_d2 = -1; }
+                        else if (np_len == 3) { np_d3 = -1; }
+                        else if (np_len == 4) { np_d4 = -1; }
+                        else { np_d5 = -1; }
+                        combo_run(vibration_valchg);
+                    }
+                    if (event_press(PS4_CIRCLE)) {
+                        np_active = 0; np_len = 0;
+                        np_d0 = -1; np_d1 = -1; np_d2 = -1; np_d3 = -1; np_d4 = -1; np_d5 = -1;
+                       
+                        combo_run(vibration_valchg);
+                    }
+                }
+                // ════════════════════════════════════════════════════
+            }
+        }
+
+        if (!menu_enabled) {
+            set_rgb(0, 255, 0);
+
+            // ==================== Soft Triggers (fully digital R2/L2) ====================
+            // Removes analog creep: any press at all reads as a full 100, and
+            // anything below the deadzone reads as a clean 0. Runs first so
+            // every other check in this frame (sprint, dunk, shot triggers,
+            // etc.) sees the same clean digital value.
+            if (tk_at_on) {
+                if (get_val(PS4_R2) > 10) { set_val(PS4_R2, 100); } else { set_val(PS4_R2, 0); }
+                if (get_val(PS4_L2) > 10) { set_val(PS4_L2, 100); } else { set_val(PS4_L2, 0); }
+            }
+
+            if (saver_on) {
+                saver_timer += get_rtime();
+                if (saver_timer >= 35) {
+                    if (shotlog_enabled) { draw_shotlog(); } else { saver_step(); }
+                    saver_timer = 0;
+                }
+            }
+
+            r2_recent_ms -= get_rtime();
+            if (r2_recent_ms < 0) r2_recent_ms = 0;
+            if (get_val(PS4_R2) > 30) r2_recent_ms = 200;
+
+            // dunk_guard: true while a dunk-meter charge is plausibly in
+            // progress, so Unlimited Sprint leaves the left stick alone.
+            dunk_guard = (dunk_meter_on && get_val(dunk_bind_btn) && (get_val(PS4_R2) > 30 || r2_recent_ms > 0));
+            combo_run(Unlimited_Stamina_Control);
+
+            // ==================== Smart Timing (release-offset classifier) ====================
+            // Watches the sticks every frame and buckets the current shot attempt
+            // into one of three release characters, then nudges the flick-release
+            // wait to match. Runs even when the toggle is off (cheap), but only
+            // feeds into shot_offset when smart_timing_enabled is set, so it never
+            // changes anything unless the player turns it on.
+            rs_recent_timer -= get_rtime();
+            if (rs_recent_timer < 0) { rs_recent_timer = 0; }
+            if (abs(get_val(PS4_RX)) > 25 || abs(get_val(PS4_RY)) > 25) { rs_recent_timer = 550; }
+
+            if (smart_timing_enabled) {
+                if (abs(get_val(PS4_LX)) > 25 || abs(get_val(PS4_LY)) > 25) {
+                    shot_offset = smart_fade_offset;       // drifting/moving reads as a fade attempt
+                } else if (rs_recent_timer > 0) {
+                    shot_offset = 0 - smart_quick_offset; // stick was just active -- treat as a quick pull-up
+                } else {
+                    shot_offset = 0;                     // stationary catch-and-shoot, no nudge
+                }
+            } else {
+                shot_offset = 0;
+            }
+            // If this press already latched as a fade, the Fade combos add
+            // fade_delay_ms themselves -- don't ALSO stack the smart fade
+            // nudge on top (with defaults that double-counted ~30ms and made
+            // Smart Timing fades release noticeably late).
+            if (fade_intent) { shot_offset = 0; }
+            effective_wait = delay_duration + shot_offset;
+            if (effective_wait < 0) { effective_wait = 0; }
+
+            // Fixed, sane release randomization (was previously overridden every
+            // frame by an unreachable "stability" formula defaulting to a very
+            // wide jitter range -- that continuous large stick wobble during
+            // the hold was being read by the game as repeated release/recharge
+            // cycles, causing the multi-pump-fake-before-real-shot bug).
+            random_variation_min = -7;
+            random_variation_max = 7;
+            random_hold_variation_min = -2;
+            random_hold_variation_max = 2;
+
+            if (remap_square_active == 0) {
+                if (get_val(PS4_L3)) { set_val(PS4_SQUARE, 100); }
+            } else {
+                if (get_val(PS4_R3)) { set_val(PS4_SQUARE, 100); }
+            }
+
+            // ==================== Release Timing Feedback ====================
+            // Independent of flick_up_shooting_active -- tracks a hold on
+            // Square (or L3/R3, since remap already fed into Square above)
+            // whether or not Button Rhythm assistance is switched on.
+            if (event_press(PS4_SQUARE)) {
+                shot_press_ms = 0;
+                shot_charging = 1;
+                shot_log_nodip = 0;
+                shot_vibe_fired = 0;
+                fade_vibe_fired = 0;
+            }
+            if (shot_charging) {
+                shot_press_ms += get_rtime();
+                // Latch ND any time during the hold (do NOT clear until release)
+                // so the Shot Log still records ND even if L2 is let go first.
+                if (nodip_enabled && get_val(PS4_L2) > 20 && !fade_intent) {
+                    shot_log_nodip = 1;
+                }
+                if (flick_up_shooting_active && fade_intent) {
+                    if (fade_vibe_enabled && !fade_vibe_fired && shot_press_ms >= fade_vibe_ms) {
+                        combo_run(fade_vibe_pulse);
+                        fade_vibe_fired = 1;
+                    }
+                } else {
+                    if (shot_vibe_enabled && !shot_vibe_fired && shot_press_ms >= shot_vibe_ms) {
+                        combo_run(shot_vibe_pulse);
+                        shot_vibe_fired = 1;
+                    }
+                }
+            }
+            if (event_release(PS4_SQUARE)) {
+                if (shot_charging) {
+                    shotlog_last_ms = shot_press_ms;
+                    if (fade_intent) {
+                        shotlog_last_type = 1;
+                        shotlog_fade_ms = shot_press_ms;
+                    } else if (shot_log_nodip) {
+                        shotlog_last_type = 2;
+                        shotlog_nodip_ms = shot_press_ms;
+                    } else {
+                        shotlog_last_type = 0;
+                        shotlog_normal_ms = shot_press_ms;
+                    }
+                }
+                shot_charging = 0;
+                // keep shot_log_nodip until after rhythm release uses it; clear next press
+            }
+
+            // SQ Go To Shot rem
+            // ---- Automation: stick click + context hold ----
+            // Stick = free stick (opposite of Remap): Remap R3 -> use L3, Remap L3 -> use R3
+            // Stand Still: stick only (no L2, no R2)
+            // Fade:       R2 + stick
+            // No-Dip:     L2 + stick
+            if (!combo_running(Auto_Stand_Smooth) && !combo_running(Auto_Stand_Reversed)
+             && !combo_running(Auto_Fade_Smooth) && !combo_running(Auto_Fade_Reversed)
+             && !combo_running(Auto_NoDip_Smooth) && !combo_running(Auto_NoDip_Reversed)) {
+                auto_stick = 0;
+                if (remap_square_active == 0 && event_press(PS4_R3)) auto_stick = 1;
+                if (remap_square_active == 1 && event_press(PS4_L3)) auto_stick = 1;
+                if (auto_stick) {
+                    if (auto_fade_on && get_val(PS4_R2) > 20 && get_val(PS4_L2) <= 20) {
+                        if (reverse_flick_mode) combo_run(Auto_Fade_Reversed);
+                        else combo_run(Auto_Fade_Smooth);
+                    } else if (auto_nodip_on && get_val(PS4_L2) > 20) {
+                        if (reverse_flick_mode) combo_run(Auto_NoDip_Reversed);
+                        else combo_run(Auto_NoDip_Smooth);
+                    } else if (auto_stand_on && get_val(PS4_L2) <= 20 && get_val(PS4_R2) <= 20) {
+                        if (reverse_flick_mode) combo_run(Auto_Stand_Reversed);
+                        else combo_run(Auto_Stand_Smooth);
+                    }
+                }
+            }
+
+            // ---- Dribble moves on D-pad (when enabled) ----
+            // ---- Quick Stop ----
+            if (qs_on && !menu_enabled && qs_btn1 != 0) {
+                if (qs_btn2 == 0) {
+                    if (event_press(qs_btn1)) combo_run(Quick_Stop_Move);
+                } else {
+                    if (get_val(qs_btn1) && event_press(qs_btn2)) combo_run(Quick_Stop_Move);
+                    if (get_val(qs_btn2) && event_press(qs_btn1)) combo_run(Quick_Stop_Move);
+                }
+            }
+
+            if (dribble_on && !drib_busy && !get_val(PS4_L2)) {
+                if (event_press(PS4_UP) && drib_up > 0) { drib_busy = 1; drib_busy_ms = 0; fire_dribble(drib_up); }
+                else if (event_press(PS4_DOWN) && drib_dn > 0) { drib_busy = 1; drib_busy_ms = 0; fire_dribble(drib_dn); }
+                else if (event_press(PS4_LEFT) && drib_lf > 0) { drib_busy = 1; drib_busy_ms = 0; fire_dribble(drib_lf); }
+                else if (event_press(PS4_RIGHT) && drib_rt > 0) { drib_busy = 1; drib_busy_ms = 0; fire_dribble(drib_rt); }
+            }
+            // Swallow bound d-pad directions so the game never sees them.
+            // Without this, every dribble tap ALSO reached NBA 2K's own d-pad
+            // handling (playcalling / on-the-fly coaching), which popped its
+            // overlay mid-move -- that was the in-game "glitch". Directions
+            // left on Off still pass through, and holding L2 bypasses the
+            // whole system so d-pad playcalling stays reachable on demand.
+            if (dribble_on && !get_val(PS4_L2)) {
+                if (drib_up > 0) { set_val(PS4_UP, 0); }
+                if (drib_dn > 0) { set_val(PS4_DOWN, 0); }
+                if (drib_lf > 0) { set_val(PS4_LEFT, 0); }
+                if (drib_rt > 0) { set_val(PS4_RIGHT, 0); }
+            }
+            // drib_busy is now a latch: set here on fire, cleared by the move
+            // combo itself on its final step. (The old version counted 40 main
+            // iterations -- roughly 400ms -- so any move longer than that could
+            // be double-fired mid-combo; two combos fighting over the sticks
+            // produced broken half-moves.) The ms counter below is only a
+            // safety net in case a combo ever gets interrupted.
+            if (drib_busy) {
+                drib_busy_ms = drib_busy_ms + get_rtime();
+                if (drib_busy_ms > 2200) { drib_busy = 0; drib_busy_ms = 0; }
+            }
+
+
+
+            // ==================== Button Rhythm ====================
+            // 0 = Rhythm (you release) | 1 = Auto Hold (script releases)
+            // L/R on Button Rhythm page switches mode. Button Shot untouched.
+            if (flick_up_shooting_active && !btn_shot_on) {
+                if (br_auto_mode) {
+                    if (br_hold_active) {
+                        set_val(PS4_SQUARE, 0);
+                    }
+                    else if (!get_val(PS4_R1) && !get_val(PS4_LEFT)
+                        && !(remap_square_active == 0 && get_val(PS4_L3))
+                        && !(remap_square_active == 1 && get_val(PS4_R3))
+                        && event_press(PS4_SQUARE)) {
+                        sq_shot_active = 1;
+                        br_hold_active = 1;
+                        if (fade_toggle && (abs(get_val(PS4_LX)) > 25 || abs(get_val(PS4_LY)) > 25))
+                            fade_intent = 1;
+                        else
+                            fade_intent = 0;
+                        if (!fade_intent && nodip_enabled && get_val(PS4_L2) > 20)
+                            shot_log_nodip = 1;
+                        else
+                            shot_log_nodip = 0;
+                        if (fade_intent) {
+                            if (reverse_flick_mode && get_val(PS4_R2)) combo_run(BR_Auto_Fade_Rev);
+                            else combo_run(BR_Auto_Fade);
+                        } else if (shot_log_nodip) {
+                            if (reverse_flick_mode && get_val(PS4_R2)) combo_run(BR_Auto_NoDip_Rev);
+                            else combo_run(BR_Auto_NoDip);
+                        } else {
+                            if (reverse_flick_mode && get_val(PS4_R2)) combo_run(BR_Auto_Hold_Rev);
+                            else combo_run(BR_Auto_Hold);
+                        }
+                    }
+                    if (event_release(PS4_SQUARE) && !br_hold_active) {
+                        fade_intent = 0; shot_log_nodip = 0; sq_shot_active = 0;
+                    }
+                } else {
+                    if (!get_val(PS4_R1) && !get_val(PS4_LEFT)
+                        && !(remap_square_active == 0 && get_val(PS4_L3))
+                        && !(remap_square_active == 1 && get_val(PS4_R3))
+                        && get_val(PS4_SQUARE)) {
+                        if (event_press(PS4_SQUARE)) {
+                            sq_shot_active = 1;
+                            if (fade_toggle && (abs(get_val(PS4_LX)) > 25 || abs(get_val(PS4_LY)) > 25))
+                                fade_intent = 1;
+                            else
+                                fade_intent = 0;
+                            if (!fade_intent && nodip_enabled && get_val(PS4_L2) > 20)
+                                shot_log_nodip = 1;
+                        }
+                        set_val(PS4_SQUARE, 0);
+                        if (reverse_flick_mode && get_val(PS4_R2))
+                            set_val(PS4_RY, STICK_UP_VALUE + random(random_variation_min, random_variation_max));
+                        else
+                            set_val(PS4_RY, STICK_DOWN_VALUE + random(random_variation_min, random_variation_max));
+                        set_val(PS4_RX, random(random_variation_min, random_variation_max));
+                    }
+                    if (!(remap_square_active == 0 && get_val(PS4_L3))
+                        && !(remap_square_active == 1 && get_val(PS4_R3))
+                        && event_release(PS4_SQUARE)) {
+                        if (sq_shot_active) {
+                            if (fade_intent) {
+                                if (reverse_flick_mode && get_val(PS4_R2)) combo_run(Fade_flick_up_rs_reversed);
+                                else combo_run(Fade_flick_up_rs_smooth);
+                            } else if (nodip_enabled && shot_log_nodip) {
+                                if (reverse_flick_mode && get_val(PS4_R2)) combo_run(Release_NoDip_Reversed);
+                                else combo_run(Release_NoDip_Smooth);
+                            } else {
+                                if (reverse_flick_mode && get_val(PS4_R2)) combo_run(flick_up_rs_reversed);
+                                else combo_run(flick_up_rs_smooth);
+                            }
+                        }
+                        fade_intent = 0; shot_log_nodip = 0; sq_shot_active = 0;
+                    }
+                }
+            }
+
+            // ==================== RS Shooting (V8) ====================
+            // Hold RS past threshold, release after rs_hold_time → auto flick
+            if (rs_shoot_on && !dunk_guard && !get_val(PS4_L2)) {
+                if (abs(get_val(PS4_RY)) > 40 || abs(get_val(PS4_RX)) > 40) {
+                    if (!rs_shot_active) {
+                        rs_shot_active = 1;
+                        rs_hold_elapsed = 0;
+                        if (get_val(PS4_RY) < -30) rs_shot_dir = 1;
+                        else rs_shot_dir = 0;
+                    }
+                    rs_hold_elapsed += get_rtime();
+                } else if (rs_shot_active) {
+                    if (rs_hold_elapsed >= rs_hold_time) {
+                        if (rs_shot_dir || (reverse_flick_mode && get_val(PS4_R2))) {
+                            combo_run(flick_up_rs_reversed);
+                        } else {
+                            combo_run(flick_up_rs_smooth);
+                        }
+                    }
+                    rs_shot_active = 0;
+                    rs_hold_elapsed = 0;
+                }
+            } else {
+                rs_shot_active = 0;
+                rs_hold_elapsed = 0;
+            }
+
+            // ==================== Button Shot ====================
+            // Directional hold-release. On Square press read LX once, then
+            // fire the matching hold combo. While a combo is active we keep
+            // Square forced off so a long physical press cannot overshoot.
+            if (btn_shot_on && !get_val(PS4_R1) && !get_val(PS4_LEFT)) {
+                if (btn_hold_active) {
+                    set_val(PS4_SQUARE, 0);
+                } else if (event_press(PS4_SQUARE)) {
+                    if (get_val(PS4_LX) <= -25) {
+                        combo_run(BtnHold_FadeL);
+                    } else if (get_val(PS4_LX) >= 25) {
+                        combo_run(BtnHold_FadeR);
+                    } else {
+                        combo_run(BtnHold_Shot);
+                    }
+                    btn_hold_active = 1;
+                    set_val(PS4_SQUARE, 0);
+                }
+                // Optional catch sequence on LB
+                if (event_press(PS4_L1) && !btn_hold_active) {
+                    combo_run(BtnHold_Catch);
+                    btn_hold_active = 1;
+                }
+            } else {
+                btn_hold_active = 0;
+            }
+
+            if (dunk_meter_on) {
+                if (get_val(PS4_R2) > 50 && get_val(dunk_bind_btn)) {
+                    if (dunk_release_l1) {
+                        // Meter already maxed out during THIS hold -- snap the
+                        // stick back to center right away and keep it there.
+                        // Fire the release flick the instant the meter fills
+                        // instead of waiting for a physical button release.
+                        set_val(PS4_RY, 0);
+                        set_val(PS4_RX, 0);
+                    } else if (!dunk_fired_l1) {
+                        dunk_hold_ms_l1 += get_rtime();
+                        set_val(PS4_RY, -100);
+                        if (dunk_hold_ms_l1 >= dunk_hold_dur) {
+                            dunk_hold_ms_l1 = 0;
+                            dunk_fired_l1 = 1;
+                            dunk_release_l1 = 1; // fire the release this same frame
+                        }
+                    }
+                } else {
+                    dunk_hold_ms_l1 = 0;
+                    dunk_fired_l1 = 0;
+                    dunk_release_l1 = 0;
+                }
+            } else {
+                dunk_hold_ms_l1 = 0;
+                dunk_fired_l1 = 0;
+                dunk_release_l1 = 0;
+            }
+        }
+    }
+}
+
+// No-Dip flick timing
+// ---- Button Shot hold-release combos ----
+combo BtnHold_Shot {
+    set_val(PS4_SQUARE, 100);
+    wait(abs(ShotH));
+    set_val(PS4_SQUARE, 0);
+    wait(abs(ShotV));
+    btn_hold_active = 0;
+}
+
+combo BtnHold_FadeL {
+    set_val(PS4_SQUARE, 100);
+    wait(abs(FadeLH));
+    set_val(PS4_SQUARE, 0);
+    wait(abs(FadeLV));
+    btn_hold_active = 0;
+}
+
+combo BtnHold_FadeR {
+    set_val(PS4_SQUARE, 100);
+    wait(abs(FadeRH));
+    set_val(PS4_SQUARE, 0);
+    wait(abs(FadeRV));
+    btn_hold_active = 0;
+}
+
+combo BtnHold_Catch {
+    set_val(PS4_CIRCLE, 100);
+    set_val(PS4_TRIANGLE, 100);
+    wait(225);
+    set_val(PS4_CIRCLE, 0);
+    set_val(PS4_TRIANGLE, 0);
+    wait(25);
+    set_val(PS4_SQUARE, 100);
+    wait(abs(CatchH));
+    set_val(PS4_SQUARE, 0);
+    wait(abs(CatchV));
+    btn_hold_active = 0;
+}
+
+// ---- Auto Hold combos ----
+combo BR_Auto_Hold {
+    set_val(PS4_SQUARE, 100);
+    wait(max(1, br_auto_ms + shot_offset));
+    set_val(PS4_SQUARE, 0);
+    br_hold_active = 0; sq_shot_active = 0; fade_intent = 0; shot_log_nodip = 0;
+}
+combo BR_Auto_Hold_Rev {
+    set_val(PS4_SQUARE, 100);
+    wait(max(1, br_auto_ms + shot_offset));
+    set_val(PS4_SQUARE, 0);
+    br_hold_active = 0; sq_shot_active = 0; fade_intent = 0; shot_log_nodip = 0;
+}
+combo BR_Auto_NoDip {
+    set_val(PS4_SQUARE, 100);
+    wait(max(1, nodip_tempo_ms + (br_auto_ms / 10)));
+    set_val(PS4_SQUARE, 0);
+    set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+    wait(80);
+    set_val(PS4_RY, 0); set_val(PS4_RX, 0);
+    br_hold_active = 0; sq_shot_active = 0; fade_intent = 0; shot_log_nodip = 0;
+}
+combo BR_Auto_NoDip_Rev {
+    set_val(PS4_SQUARE, 100);
+    wait(max(1, nodip_tempo_ms + (br_auto_ms / 10)));
+    set_val(PS4_SQUARE, 0);
+    set_val(PS4_RY, 100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, -25 + random(random_variation_min, random_variation_max));
+    wait(80);
+    set_val(PS4_RY, 0); set_val(PS4_RX, 0);
+    br_hold_active = 0; sq_shot_active = 0; fade_intent = 0; shot_log_nodip = 0;
+}
+combo BR_Auto_Fade {
+    set_val(PS4_SQUARE, 100);
+    wait(max(1, br_auto_ms + fade_delay_ms + shot_offset));
+    set_val(PS4_SQUARE, 0);
+    set_val(PS4_RY, -50 + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, 20 + random(random_hold_variation_min, random_hold_variation_max));
+    wait(max(1, effective_wait));
+    set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+    wait(200);
+    set_val(PS4_RY, 0); set_val(PS4_RX, 0);
+    br_hold_active = 0; sq_shot_active = 0; fade_intent = 0; shot_log_nodip = 0;
+}
+combo BR_Auto_Fade_Rev {
+    set_val(PS4_SQUARE, 100);
+    wait(max(1, br_auto_ms + fade_delay_ms + shot_offset));
+    set_val(PS4_SQUARE, 0);
+    set_val(PS4_RY, 50 + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, -20 + random(random_hold_variation_min, random_hold_variation_max));
+    wait(max(1, effective_wait));
+    set_val(PS4_RY, 100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, -25 + random(random_variation_min, random_variation_max));
+    wait(200);
+    set_val(PS4_RY, 0); set_val(PS4_RX, 0);
+    br_hold_active = 0; sq_shot_active = 0; fade_intent = 0; shot_log_nodip = 0;
+}
+
+combo flick_up_rs_smooth {
+    set_val(PS4_RY, -50 + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, 20 + random(random_hold_variation_min, random_hold_variation_max));
+    wait(effective_wait);
+    set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+    wait(300);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+combo flick_up_rs_reversed {
+    set_val(PS4_RY, 50 + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, -20 + random(random_hold_variation_min, random_hold_variation_max));
+    wait(effective_wait);
+    set_val(PS4_RY, 100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, -25 + random(random_variation_min, random_variation_max));
+    wait(300);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+combo Fade_flick_up_rs_smooth {
+    wait(fade_delay_ms);
+    set_val(PS4_RY, -50 + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, 20 + random(random_hold_variation_min, random_hold_variation_max));
+    wait(effective_wait);
+    set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+    wait(300);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+combo Fade_flick_up_rs_reversed {
+    wait(fade_delay_ms);
+    set_val(PS4_RY, 50 + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, -20 + random(random_hold_variation_min, random_hold_variation_max));
+    wait(effective_wait);
+    set_val(PS4_RY, 100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, -25 + random(random_variation_min, random_variation_max));
+    wait(300);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+// No-Dip: skips the two-stage hold-then-flick motion the other release
+// combos use -- jumps straight to full stick deflection after a single
+// wait, so there's no intermediate dip/pump pose in the release.
+combo Release_NoDip_Smooth {
+    set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+    wait(nodip_tempo_ms);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+combo Release_NoDip_Reversed {
+    set_val(PS4_RY, 100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, -25 + random(random_variation_min, random_variation_max));
+    wait(nodip_tempo_ms);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+// Fires the moment the player lets go of R2/the dunk-bind button after
+// fully charging the Dunk Meter -- that release IS the "throw it down"
+// action, so it needs its own committed flick instead of just zeroing
+// the stick while the buttons are still (no longer) held.
+
+// ---- Automation combos (L3/R3 one-tap shots) ----
+combo Auto_Stand_Smooth {
+    set_val(PS4_RY, STICK_DOWN_VALUE + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, random(random_variation_min, random_variation_max));
+    wait(auto_speed_ms);
+    set_val(PS4_RY, -50 + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, 20 + random(random_hold_variation_min, random_hold_variation_max));
+    wait(auto_tempo_ms);
+    set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+    wait(300);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+combo Auto_Stand_Reversed {
+    set_val(PS4_RY, STICK_UP_VALUE + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, random(random_variation_min, random_variation_max));
+    wait(auto_speed_ms);
+    set_val(PS4_RY, 50 + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, -20 + random(random_hold_variation_min, random_hold_variation_max));
+    wait(auto_tempo_ms);
+    set_val(PS4_RY, 100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, -25 + random(random_variation_min, random_variation_max));
+    wait(300);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+combo Auto_Fade_Smooth {
+    set_val(PS4_RY, STICK_DOWN_VALUE + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, random(random_variation_min, random_variation_max));
+    wait(auto_fade_speed_ms + fade_delay_ms);
+    set_val(PS4_RY, -50 + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, 20 + random(random_hold_variation_min, random_hold_variation_max));
+    wait(auto_tempo_ms);
+    set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+    wait(300);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+combo Auto_Fade_Reversed {
+    set_val(PS4_RY, STICK_UP_VALUE + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, random(random_variation_min, random_variation_max));
+    wait(auto_fade_speed_ms + fade_delay_ms);
+    set_val(PS4_RY, 50 + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, -20 + random(random_hold_variation_min, random_hold_variation_max));
+    wait(auto_tempo_ms);
+    set_val(PS4_RY, 100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, -25 + random(random_variation_min, random_variation_max));
+    wait(300);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+combo Auto_NoDip_Smooth {
+    set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+    wait(auto_nodip_ms);
+    wait(auto_tempo_ms);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+combo Auto_NoDip_Reversed {
+    set_val(PS4_RY, 100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, -25 + random(random_variation_min, random_variation_max));
+    wait(auto_nodip_ms);
+    wait(auto_tempo_ms);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+// -- Unlimited Sprint --
+// Softens left stick while moving so stamina drains slower.
+// Skips while dunking or while any shot is active so it never
+// fights the shot stick or button.
+combo Quick_Stop_Move {
+    set_val(PS4_RY, 100);
+    wait(28);
+    set_val(PS4_RY, 0);
+    wait(18);
+    set_val(PS4_RX, 0);
+    set_val(PS4_RY, 0);
+    wait(40);
+}
+
+combo Unlimited_Stamina_Control {
+    if (unlimited_stamina && stamina_stick_active && !dunk_guard
+        && !btn_hold_active && !sq_shot_active && !br_hold_active
+        && !get_val(PS4_SQUARE) && !get_val(PS4_R3)
+        && !combo_running(flick_up_rs_smooth) && !combo_running(flick_up_rs_reversed)
+        && !combo_running(Fade_flick_up_rs_smooth) && !combo_running(Fade_flick_up_rs_reversed)
+        && !combo_running(Release_NoDip_Smooth) && !combo_running(Release_NoDip_Reversed)
+        && !combo_running(BR_Auto_Hold) && !combo_running(BR_Auto_Hold_Rev)
+        && !combo_running(BR_Auto_NoDip) && !combo_running(BR_Auto_NoDip_Rev)
+        && !combo_running(BR_Auto_Fade) && !combo_running(BR_Auto_Fade_Rev)
+        && !combo_running(BtnHold_Shot) && !combo_running(BtnHold_FadeL)
+        && !combo_running(BtnHold_FadeR) && !combo_running(BtnHold_Catch)
+        && !combo_running(Auto_Stand_Smooth) && !combo_running(Auto_Stand_Reversed)
+        && !combo_running(Auto_Fade_Smooth) && !combo_running(Auto_Fade_Reversed)
+        && !combo_running(Auto_NoDip_Smooth) && !combo_running(Auto_NoDip_Reversed)) {
+
+        if (abs(get_val(PS4_LX)) > 20 || abs(get_val(PS4_LY)) > 20) {
+            set_val(PS4_LX, (get_val(PS4_LX) * stamina_ground_control) / 100);
+            set_val(PS4_LY, (get_val(PS4_LY) * stamina_ground_control) / 100);
+        } else {
+            set_val(PS4_LX, 0);
+            set_val(PS4_LY, 0);
+        }
+    }
+}
+
+
+// ---- Dribble move combos (RS patterns for 2K) ----
+
+// ---- Signature dribble packs (unique timings, not V8 duplicates) ----
+combo mv_btb_spam {
+    set_val(PS4_RX, -75); set_val(PS4_RY, 100); wait(95);
+    set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(80);
+    set_val(PS4_RX, 75); set_val(PS4_RY, 100); wait(100);
+    set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85);
+    wait(120);
+    drib_busy = 0;
+}
+combo mv_curry {
+    set_val(PS4_R2, 100); set_val(PS4_RX, -75); set_val(PS4_RY, 100); wait(100);
+    set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(100);
+    set_val(PS4_R2, 100); wait(18);
+    set_val(PS4_R2, 100); set_val(PS4_RX, 75); set_val(PS4_RY, 100); wait(105);
+    set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(110);
+    set_val(PS4_R2, 0); wait(150);
+    drib_busy = 0;
+}
+combo mv_dbook {
+    set_val(PS4_R2, 100); set_val(PS4_RY, 100); wait(95);
+    set_val(PS4_R2, 100); set_val(PS4_RY, 0); wait(70);
+    set_val(PS4_R2, 100); set_val(PS4_LY, -100); wait(70);
+    set_val(PS4_R2, 100); set_val(PS4_LY, 0); wait(55);
+    set_val(PS4_R2, 100); set_val(PS4_LX, -100); wait(110);
+    set_val(PS4_R2, 0); set_val(PS4_LX, 0); wait(120);
+    drib_busy = 0;
+}
+combo mv_moonwalk {
+    set_val(PS4_R2, 100); set_val(PS4_RY, -100); wait(55);
+    set_val(PS4_R2, 100); set_val(PS4_RX, 40); wait(40);
+    set_val(PS4_R2, 100); set_val(PS4_RY, 0); set_val(PS4_RX, 0); wait(8);
+    set_val(PS4_R2, 0); wait(130);
+    drib_busy = 0;
+}
+combo mv_sizeup_esc {
+    set_val(PS4_R2, 100); set_val(PS4_RX, -80); wait(35);
+    set_val(PS4_R2, 100); set_val(PS4_RX, 80); wait(35);
+    set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 100); wait(45);
+    set_val(PS4_R2, 0); set_val(PS4_RY, 0); wait(130);
+    drib_busy = 0;
+}
+combo mv_hopback {
+    set_val(PS4_R2, 100); set_val(PS4_RY, 100); wait(45);
+    set_val(PS4_R2, 100); set_val(PS4_RY, 0); wait(5);
+    set_val(PS4_R2, 0); wait(130);
+    drib_busy = 0;
+}
+combo mv_ankle {
+    set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, -100); wait(40);
+    set_val(PS4_R2, 100); set_val(PS4_RX, -100); set_val(PS4_RY, 0); wait(40);
+    set_val(PS4_R2, 0); set_val(PS4_RX, 0); wait(130);
+    drib_busy = 0;
+}
+combo mv_escape {
+    set_val(PS4_R2, 100); set_val(PS4_L2, 100); set_val(PS4_RX, -100); wait(40);
+    set_val(PS4_R2, 100); set_val(PS4_L2, 100); set_val(PS4_RX, 100); wait(40);
+    set_val(PS4_R2, 0); set_val(PS4_L2, 0); set_val(PS4_RX, 0); wait(130);
+    drib_busy = 0;
+}
+combo mv_momentum {
+    set_val(PS4_R2, 100); set_val(PS4_RY, -100); wait(30);
+    set_val(PS4_R2, 100); set_val(PS4_RY, 0); set_val(PS4_RX, 100); wait(30);
+    set_val(PS4_R2, 100); set_val(PS4_RX, -100); wait(30);
+    set_val(PS4_R2, 0); set_val(PS4_RX, 0); wait(130);
+    drib_busy = 0;
+}
+combo mv_crossover {
+    set_val(PS4_R2, 100); set_val(PS4_RX, -100); wait(14);
+    set_val(PS4_R2, 100); set_val(PS4_LX, -100); wait(14);
+    set_val(PS4_R2, 100); set_val(PS4_LX, 0); set_val(PS4_RX, 100); wait(14);
+    set_val(PS4_R2, 0); set_val(PS4_RX, 0); wait(130);
+    drib_busy = 0;
+}
+combo mv_quick_btb {
+    set_val(PS4_R2, 100); set_val(PS4_RX, 100); wait(18);
+    set_val(PS4_R2, 100); set_val(PS4_RX, 0); wait(4);
+    set_val(PS4_R2, 0); wait(130);
+    drib_busy = 0;
+}
+combo mv_shamgod {
+    set_val(PS4_R2, 100); set_val(PS4_RX, -100); set_val(PS4_RY, 25); wait(18);
+    set_val(PS4_R2, 100); set_val(PS4_RX, 100); set_val(PS4_RY, -35); wait(18);
+    set_val(PS4_R2, 0); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(130);
+    drib_busy = 0;
+}
+
+combo mv_kyrie {
+    set_val(PS4_RX, -90); wait(22); set_val(PS4_RX, 90); wait(22);
+    set_val(PS4_RY, 100); wait(28); set_val(PS4_RY, 0);
+    set_val(PS4_RX, -100); wait(24); set_val(PS4_RX, 0);
+    drib_busy = 0;
+}
+combo mv_luka_step {
+    set_val(PS4_R2, 100); set_val(PS4_RY, 100); wait(40);
+    set_val(PS4_R2, 100); set_val(PS4_RX, 70); wait(30);
+    set_val(PS4_R2, 0); set_val(PS4_RY, 0); set_val(PS4_RX, 0); wait(120);
+    drib_busy = 0;
+}
+combo mv_ja_burst {
+    set_val(PS4_R2, 100); set_val(PS4_LY, -100); wait(35);
+    set_val(PS4_R2, 100); set_val(PS4_LY, 0); set_val(PS4_LX, -80); wait(30);
+    set_val(PS4_R2, 0); set_val(PS4_LX, 0); wait(120);
+    drib_busy = 0;
+}
+combo mv_dame_hesi {
+    set_val(PS4_RY, -100); wait(28); set_val(PS4_RY, 0); wait(12);
+    set_val(PS4_RY, -90); wait(28); set_val(PS4_RY, 0); wait(100);
+    drib_busy = 0;
+}
+combo mv_trae_yoyo {
+    set_val(PS4_RY, -80); wait(22); set_val(PS4_RY, 80); wait(22);
+    set_val(PS4_RY, -80); wait(22); set_val(PS4_RY, 0); wait(100);
+    drib_busy = 0;
+}
+combo mv_morant_spin {
+    set_val(PS4_R2, 100); set_val(PS4_RX, 100); set_val(PS4_RY, -40); wait(45);
+    set_val(PS4_R2, 100); set_val(PS4_RX, -40); set_val(PS4_RY, 100); wait(45);
+    set_val(PS4_R2, 0); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(120);
+    drib_busy = 0;
+}
+combo mv_euro {
+    set_val(PS4_R2, 100); set_val(PS4_LX, -80); wait(35);
+    set_val(PS4_R2, 100); set_val(PS4_LX, 80); wait(35);
+    set_val(PS4_R2, 0); set_val(PS4_LX, 0); wait(120);
+    drib_busy = 0;
+}
+combo mv_post_spin {
+    set_val(PS4_L2, 100); set_val(PS4_RX, 100); wait(45);
+    set_val(PS4_L2, 100); set_val(PS4_RX, -100); wait(45);
+    set_val(PS4_L2, 0); set_val(PS4_RX, 0); wait(100);
+    drib_busy = 0;
+}
+combo mv_drive_kick {
+    set_val(PS4_R2, 100); set_val(PS4_LY, -100); wait(40);
+    set_val(PS4_R2, 0); set_val(PS4_LY, 0); set_val(PS4_RX, 80); wait(30); set_val(PS4_RX, 0); wait(100);
+    drib_busy = 0;
+}
+combo mv_double_hesi {
+    set_val(PS4_RY, -90); wait(30); set_val(PS4_RY, 0); wait(15);
+    set_val(PS4_RY, -90); wait(30); set_val(PS4_RY, 0);
+    drib_busy = 0;
+}
+combo mv_double_cross {
+    set_val(PS4_RX, 100); wait(28); set_val(PS4_RX, -100); wait(28);
+    set_val(PS4_RX, 100); wait(28); set_val(PS4_RX, -100); wait(28); set_val(PS4_RX, 0);
+    drib_busy = 0;
+}
+combo mv_park_ankle {
+    set_val(PS4_RX, 100); wait(20); set_val(PS4_RX, -100); wait(20);
+    set_val(PS4_RY, 100); wait(25); set_val(PS4_RY, 0);
+    set_val(PS4_RX, 100); wait(20); set_val(PS4_RX, 0);
+    drib_busy = 0;
+}
+combo mv_comp_cross {
+    set_val(PS4_RX, 100); wait(24); set_val(PS4_RX, -50); wait(16);
+    set_val(PS4_RX, -100); wait(24); set_val(PS4_RX, 0);
+    drib_busy = 0;
+}
+
+// Shared micro-variants for extended library (unique names, compact combos)
+
+
+
+combo drib_hesitation {
+    set_val(PS4_RY, -80);
+    wait(40);
+    set_val(PS4_RY, 0);
+    wait(30);
+    set_val(PS4_RY, 80);
+    wait(40);
+    set_val(PS4_RY, 0);
+    drib_busy = 0;
+}
+combo drib_btwn_legs {
+    set_val(PS4_RY, 100);
+    wait(50);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, -100);
+    wait(50);
+    set_val(PS4_RX, 0);
+    drib_busy = 0;
+}
+combo drib_behind_back {
+    set_val(PS4_RX, -100);
+    wait(40);
+    set_val(PS4_RX, 100);
+    wait(40);
+    set_val(PS4_RX, 0);
+    drib_busy = 0;
+}
+combo drib_spin {
+    set_val(PS4_RX, 100);
+    set_val(PS4_RY, -40);
+    wait(60);
+    set_val(PS4_RX, 40);
+    set_val(PS4_RY, 100);
+    wait(60);
+    set_val(PS4_RX, -100);
+    set_val(PS4_RY, 40);
+    wait(60);
+    set_val(PS4_RX, 0);
+    set_val(PS4_RY, 0);
+    drib_busy = 0;
+}
+combo drib_snatchback {
+    set_val(PS4_RY, -100);
+    wait(40);
+    set_val(PS4_RY, 100);
+    wait(50);
+    set_val(PS4_RY, 0);
+    drib_busy = 0;
+}
+combo drib_hardstop {
+    set_val(PS4_R2, 100); set_val(PS4_RY, 100); wait(35);
+    set_val(PS4_R2, 100); set_val(PS4_RY, 0); wait(15);
+    set_val(PS4_R2, 0); wait(80);
+    drib_busy = 0;
+}
+combo drib_stepback {
+    set_val(PS4_RY, 100);
+    wait(45);
+    set_val(PS4_RY, -60);
+    wait(40);
+    set_val(PS4_RY, 0);
+    drib_busy = 0;
+}
+
+combo drib_hesi_cross {
+    set_val(PS4_RY, -80); wait(35); set_val(PS4_RY, 0);
+    set_val(PS4_RX, 100); wait(35); set_val(PS4_RX, -100); wait(35); set_val(PS4_RX, 0);
+    drib_busy = 0;
+}
+combo drib_bl_cross {
+    set_val(PS4_RY, 100); wait(40); set_val(PS4_RY, 0);
+    set_val(PS4_RX, 100); wait(35); set_val(PS4_RX, -100); wait(35); set_val(PS4_RX, 0);
+    drib_busy = 0;
+}
+combo drib_triple_cross {
+    set_val(PS4_RX, 100); wait(28); set_val(PS4_RX, -100); wait(28);
+    set_val(PS4_RX, 100); wait(28); set_val(PS4_RX, -100); wait(28);
+    set_val(PS4_RX, 100); wait(28); set_val(PS4_RX, 0);
+    drib_busy = 0;
+}
+combo drib_inout {
+    set_val(PS4_RX, 100); wait(30);
+    set_val(PS4_RX, -70); wait(30);
+    set_val(PS4_RX, 40); wait(25);
+    set_val(PS4_RX, 0); wait(70);
+    drib_busy = 0;
+}
+combo drib_shimmy {
+    set_val(PS4_RX, -50); wait(20); set_val(PS4_RX, 50); wait(20);
+    set_val(PS4_RX, -50); wait(20); set_val(PS4_RX, 0);
+    drib_busy = 0;
+}
+combo drib_turbo_hesi {
+    set_val(PS4_R2, 100); set_val(PS4_RY, -90); wait(35);
+    set_val(PS4_RY, 0); wait(20); set_val(PS4_R2, 0);
+    drib_busy = 0;
+}
+combo drib_turbo_cross {
+    set_val(PS4_R2, 100); set_val(PS4_RX, 100); wait(30);
+    set_val(PS4_RX, -100); wait(30); set_val(PS4_RX, 0); set_val(PS4_R2, 0);
+    drib_busy = 0;
+}
+combo drib_turbo_escape {
+    set_val(PS4_R2, 100); set_val(PS4_L2, 100); set_val(PS4_RX, -100); wait(40);
+    set_val(PS4_RX, 100); wait(40); set_val(PS4_RX, 0); set_val(PS4_L2, 0); set_val(PS4_R2, 0);
+    drib_busy = 0;
+}
+combo drib_quick_stop {
+    set_val(PS4_RY, 100); wait(25);
+    set_val(PS4_RY, 0); wait(20);
+    set_val(PS4_RX, 40); wait(15); set_val(PS4_RX, 0); wait(60);
+    drib_busy = 0;
+}
+combo drib_jab {
+    set_val(PS4_RX, 80); wait(30);
+    set_val(PS4_RX, 0); wait(25);
+    set_val(PS4_RX, -50); wait(20); set_val(PS4_RX, 0); wait(60);
+    drib_busy = 0;
+}
+combo drib_half_spin {
+    set_val(PS4_RX, 100); set_val(PS4_RY, -50); wait(50);
+    set_val(PS4_RX, 0); set_val(PS4_RY, 0);
+    drib_busy = 0;
+}
+combo drib_full_spin {
+    set_val(PS4_RX, 100); wait(40); set_val(PS4_RY, 100); wait(40);
+    set_val(PS4_RX, -100); wait(40); set_val(PS4_RY, -100); wait(40);
+    set_val(PS4_RX, 0); set_val(PS4_RY, 0);
+    drib_busy = 0;
+}
+combo drib_tunnel {
+    set_val(PS4_RY, 100); wait(35); set_val(PS4_RX, 100); wait(30);
+    set_val(PS4_RY, 0); set_val(PS4_RX, 0);
+    drib_busy = 0;
+}
+combo drib_sizeup_x3 {
+    set_val(PS4_RX, -70); wait(28); set_val(PS4_RX, 70); wait(28);
+    set_val(PS4_RX, -70); wait(28); set_val(PS4_RX, 70); wait(28);
+    set_val(PS4_RX, -70); wait(28); set_val(PS4_RX, 0);
+    drib_busy = 0;
+}
+
+
+
+combo flashtog {
+    if (!flashtoggle) {
+        set_rgb(255, 0, 0);
+    } else {
+        set_rgb(0, 255, 0);
+    }
+    wait(1000);
+    set_rgb(0, 0, 255);
+}
+
+combo flashedit {
+    set_rgb(0, 0, 0);
+    wait(150);
+    set_rgb(0, 0, 255);
+}
+
+combo profileFlash {
+    set_rgb(0, 255, 0);
+    wait(150);
+    set_rgb(0, 0, 255);
+    wait(100);
+    set_rgb(0, 255, 0);
+    wait(150);
+    set_rgb(0, 0, 255);
+}
+
+combo vibration_on {
+    set_rumble(RUMBLE_A, 100);
+    wait(200);
+    set_rumble(RUMBLE_A, 0);
+}
+
+combo vibration_off {
+    set_rumble(RUMBLE_A, 50);
+    wait(200);
+    set_rumble(RUMBLE_A, 0);
+}
+
+combo vibration_valchg {
+    set_rumble(RUMBLE_A, 50);
+    wait(50);
+    set_rumble(RUMBLE_A, 0);
+}
+
+// "Let go" cue for the Release Timing Feedback system -- a short double
+// pulse on the other motor so it reads as distinct from the menu-click
+// rumble above, felt while a shot is still being held.
+// "Let go" cue for a normal shot -- single pulse.
+combo shot_vibe_pulse {
+    set_rumble(RUMBLE_B, 100);
+    wait(90);
+    set_rumble(RUMBLE_B, 0);
+}
+
+// "Let go" cue for a fade -- double pulse, so it feels distinct from the
+// normal-shot cue above.
+combo fade_vibe_pulse {
+    set_rumble(RUMBLE_B, 100);
+    wait(70);
+    set_rumble(RUMBLE_B, 0);
+    wait(60);
+    set_rumble(RUMBLE_B, 100);
+    wait(70);
+    set_rumble(RUMBLE_B, 0);
+}
+
+function center_x(f_chars, f_font) {
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+
+// Centers text like normal, but nudges it left only if it would run
+// under the hoop graphic. Never pushes text off the left edge.
+function center_x_left(f_chars, f_font) {
+    cxs_x = (OLED_WIDTH / 2) - ((f_chars * f_font) / 2) + 3;
+    cxs_edge = cxs_x + (f_chars * f_font);
+    if (cxs_edge > TXT_ZONE_R) {
+        cxs_x = cxs_x - (cxs_edge - TXT_ZONE_R);
+    }
+    if (cxs_x < TXT_ZONE_L) { cxs_x = TXT_ZONE_L; }
+    return cxs_x;
+}
+
+int bufferIndex, digitIndex, charIndex;
+function NumberToString(f_val, f_digits) {
+    bufferIndex = 1;
+    digitIndex = 10000;
+    if (f_val < 0) { putc_oled(bufferIndex, 45); bufferIndex += 1; f_val = abs(f_val); }
+    for (charIndex = 5; charIndex >= 1; charIndex--) {
+        if (f_digits >= charIndex) {
+            putc_oled(bufferIndex, (f_val / digitIndex) + 48);
+            f_val %= digitIndex;
+            bufferIndex++;
+            if (charIndex == 4) { putc_oled(bufferIndex, 44); bufferIndex++; }
+        }
+        digitIndex /= 10;
+    }
+    puts_oled(center_x(bufferIndex + 1, OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, bufferIndex - 1, OLED_WHITE);
+}
+
+int logVal;
+function FindDigits(num) {
+    logVal = 0;
+    do { num /= 10; logVal++; } while (num);
+    return logVal;
+}
+
+int stringLength;
+function get_string_length(offset) {
+    stringLength = 0;
+    while (duint8(offset++)) { stringLength++; }
+    return stringLength + 1;
+}
+
+
+
+
+
+
+
+
+
+
+// Draws an integer at an arbitrary x/y using OLED_FONT_SMALL -- unlike
+// NumberToString() elsewhere in this file, which always centers on one
+// fixed row, this takes real coordinates so several values can share
+// one screen.
+function draw_ms_val(f_val, f_x, f_y) {
+    bufferIndex = 1;
+    digitIndex = 10000;
+    if (f_val < 0) { putc_oled(bufferIndex, 45); bufferIndex += 1; f_val = abs(f_val); }
+    for (charIndex = 5; charIndex >= 1; charIndex--) {
+        if (FindDigits(f_val) >= charIndex) {
+            putc_oled(bufferIndex, (f_val / digitIndex) + 48);
+            f_val %= digitIndex;
+            bufferIndex++;
+        }
+        digitIndex /= 10;
+    }
+    puts_oled(f_x, f_y, OLED_FONT_SMALL, bufferIndex - 1, OLED_WHITE);
+}
+
+// Live idle-screen readout for Release Timing Feedback -- takes over the
+// spot the bounce/shoot screensaver normally occupies while Shot Log is
+// switched on, so it's actually visible while playing rather than buried
+// in a menu page. Whichever row matches what you're currently holding
+// counts up live; the other two keep showing their last recorded value.
+function draw_shotlog() {
+    cls_oled(OLED_BLACK);
+    line_oled(4, 2, 123, 2, 1, OLED_WHITE);
+    line_oled(4, 12, 123, 12, 1, OLED_WHITE);
+    print(center_x(get_string_length(RLG_TITLE[0]), OLED_FONT_SMALL_WIDTH), 4, OLED_FONT_SMALL, OLED_WHITE, RLG_TITLE[0]);
+
+    print(8, 16, OLED_FONT_SMALL, OLED_WHITE, RLG_NORMAL[0]);
+    if (shot_charging && !fade_intent && !shot_log_nodip) { draw_ms_val(shot_press_ms, 60, 16); }
+    else { draw_ms_val(shotlog_normal_ms, 60, 16); }
+    print(96, 16, OLED_FONT_SMALL, OLED_WHITE, ms[0]);
+
+    print(8, 25, OLED_FONT_SMALL, OLED_WHITE, RLG_FADE[0]);
+    if (shot_charging && fade_intent) { draw_ms_val(shot_press_ms, 60, 25); }
+    else { draw_ms_val(shotlog_fade_ms, 60, 25); }
+    print(96, 25, OLED_FONT_SMALL, OLED_WHITE, ms[0]);
+
+    print(8, 34, OLED_FONT_SMALL, OLED_WHITE, RLG_NODIP[0]);
+    if (shot_charging && !fade_intent && shot_log_nodip) { draw_ms_val(shot_press_ms, 60, 34); }
+    else { draw_ms_val(shotlog_nodip_ms, 60, 34); }
+    print(96, 34, OLED_FONT_SMALL, OLED_WHITE, ms[0]);
+
+    line_oled(4, 46, 123, 46, 1, OLED_WHITE);
+
+    print(8, 50, OLED_FONT_SMALL, OLED_WHITE, RLG_LAST[0]);
+    if (shotlog_last_type == 1) { print(40, 50, OLED_FONT_SMALL, OLED_WHITE, RLG_FADE[0]); }
+    else if (shotlog_last_type == 2) { print(40, 50, OLED_FONT_SMALL, OLED_WHITE, RLG_NODIP[0]); }
+    else { print(40, 50, OLED_FONT_SMALL, OLED_WHITE, RLG_NORMAL[0]); }
+    draw_ms_val(shotlog_last_ms, 80, 50);
+    print(112, 50, OLED_FONT_SMALL, OLED_WHITE, ms[0]);
+}
+
+function saver_step() {
+    cls_oled(OLED_BLACK);
+    line_oled(4,   2,  123,  2,  2, OLED_WHITE);
+    line_oled(4,  50,  123, 50,  2, OLED_WHITE);
+    line_oled(4,   2,    4, 50,  2, OLED_WHITE);
+    line_oled(123, 2,  123, 50,  2, OLED_WHITE);
+    line_oled(8,   6,  119,  6,  1, OLED_WHITE);
+    line_oled(8,  46,  119, 46,  1, OLED_WHITE);
+    line_oled(8,   6,    8, 46,  1, OLED_WHITE);
+    line_oled(119, 6,  119, 46,  1, OLED_WHITE);
+    line_oled(0,   0,   10,  0,  1, OLED_WHITE);
+    line_oled(0,   0,    0,  8,  1, OLED_WHITE);
+    line_oled(117, 0,  127,  0,  1, OLED_WHITE);
+    line_oled(127, 0,  127,  8,  1, OLED_WHITE);
+    line_oled(0,  63,   10, 63,  1, OLED_WHITE);
+    line_oled(0,  55,    0, 63,  1, OLED_WHITE);
+    line_oled(117,63,  127, 63,  1, OLED_WHITE);
+    line_oled(127,55,  127, 63,  1, OLED_WHITE);
+    // Footer hint on both remaining splash pages
+    if (ssp == 1 || ssp == 3) {
+        if (isXbox) {
+            print(center_x(get_string_length(saver_line1_xb[0]), OLED_FONT_SMALL_WIDTH), 54, OLED_FONT_SMALL, OLED_WHITE, saver_line1_xb[0]);
+        } else {
+            print(center_x(get_string_length(saver_line1_ps[0]), OLED_FONT_SMALL_WIDTH), 54, OLED_FONT_SMALL, OLED_WHITE, saver_line1_ps[0]);
+        }
+    }
+
+    // ===== PAGE 1: 2K27 logo badge + AVENGED MVP =====
+    if (ssp == 1) {
+        rv_tx  = center_x_left(get_string_length(L1_TXT[0]),  OLED_FONT_MEDIUM_WIDTH);
+        rv_tw  = (get_string_length(L1_TXT[0])  - 1) * OLED_FONT_MEDIUM_WIDTH;
+        rv_tx2 = center_x_left(get_string_length(L1B_TXT[0]), OLED_FONT_SMALL_WIDTH);
+        rv_tw2 = (get_string_length(L1B_TXT[0]) - 1) * OLED_FONT_SMALL_WIDTH;
+        rv_tx3 = center_x(get_string_length(L1V_TXT[0]), OLED_FONT_SMALL_WIDTH);
+
+        // -- "2K27" badge (boxed wordmark, centered) --
+        rect_oled(rv_tx - 8, 3, rv_tw + 16, 20, 0, OLED_WHITE);
+        print(rv_tx, 7, OLED_FONT_MEDIUM, OLED_WHITE, L1_TXT[0]);
+
+        // -- "AVENGED MVP" centered below the badge --
+        print(rv_tx2, 31, OLED_FONT_SMALL, OLED_WHITE, L1B_TXT[0]);
+        line_oled(rv_tx2 - 5, 43, rv_tx2 + rv_tw2 + 5, 43, 1, OLED_WHITE);
+
+        // -- version footer, centered --
+        print(rv_tx3, 50, OLED_FONT_SMALL, OLED_WHITE, L1V_TXT[0]);
+
+        if (hcd < 12) {
+            rv_px  = (hcd * rv_tw)  / 12; rect_oled(rv_tx  + rv_px,  6, rv_tw  - rv_px  + 2, 12, 1, OLED_BLACK);
+            rv_px2 = (hcd * rv_tw2) / 12; rect_oled(rv_tx2 + rv_px2, 30, rv_tw2 - rv_px2 + 2, 10, 1, OLED_BLACK);
+        }
+        hcd = hcd + 1; if (hcd >= 57) { ssp = 3; hcd = 0; }
+    }
+    // ===== PAGE 3: Credits =====
+    else if (ssp == 3) {
+        rv_tx = center_x_left(get_string_length(CR_TXT[0]), OLED_FONT_SMALL_WIDTH);
+        rv_tw = (get_string_length(CR_TXT[0]) - 1) * OLED_FONT_SMALL_WIDTH;
+        print(rv_tx, 20, OLED_FONT_SMALL, OLED_WHITE, CR_TXT[0]);
+        if (hcd < 12) { rv_px = (hcd * rv_tw) / 12; rect_oled(rv_tx + rv_px, 19, rv_tw - rv_px + 2, 10, 1, OLED_BLACK); }
+        hcd = hcd + 1; if (hcd >= 57) { ssp = 1; hcd = 0; }
+    }
+
+}
+
+function saver_init_static() {
+    // retained for call sites
+}
+
+
+function repeat_update(dt) {
+    if (get_val(PS4_L2) && get_val(PS4_UP)) {
+        if (!rpt_up_held) { rpt_up_held = 1; rpt_up_bucket = 0; rpt_up_total = 0; }
+        rpt_up_bucket += dt;
+        rpt_up_total += dt;
+    } else {
+        rpt_up_held = 0; rpt_up_bucket = 0; rpt_up_total = 0;
+    }
+    if (get_val(PS4_L2) && get_val(PS4_DOWN)) {
+        if (!rpt_dn_held) { rpt_dn_held = 1; rpt_dn_bucket = 0; rpt_dn_total = 0; }
+        rpt_dn_bucket += dt;
+        rpt_dn_total += dt;
+    } else {
+        rpt_dn_held = 0; rpt_dn_bucket = 0; rpt_dn_total = 0;
+    }
+}
+
+function repeat_up_due() {
+    if (!rpt_up_held) return 0;
+    if (rpt_up_total < REPEAT_INITIAL_MS) return 0;
+
+    if (rpt_up_total >= REPEAT_ACCEL_AT) { rpt_rate_up = REPEAT_RATE_FAST; }
+    else { rpt_rate_up = REPEAT_RATE_SLOW; }
+
+    if (rpt_up_bucket >= rpt_rate_up) {
+        rpt_up_bucket -= rpt_rate_up;
+        return 1;
+    }
+    return 0;
+}
+
+function repeat_down_due() {
+    if (!rpt_dn_held) return 0;
+    if (rpt_dn_total < REPEAT_INITIAL_MS) return 0;
+
+    if (rpt_dn_total >= REPEAT_ACCEL_AT) { rpt_rate_dn = REPEAT_RATE_FAST; }
+    else { rpt_rate_dn = REPEAT_RATE_SLOW; }
+
+    if (rpt_dn_bucket >= rpt_rate_dn) {
+        rpt_dn_bucket -= rpt_rate_dn;
+        return 1;
+    }
+    return 0;
+}
+
+
+
+
+
+function fire_dribble(mid) {
+    if (mid <= 0) return;
+    if (mid == 1) combo_run(mv_btb_spam);
+    else if (mid == 2) combo_run(mv_curry);
+    else if (mid == 3) combo_run(mv_dbook);
+    else if (mid == 4) combo_run(mv_moonwalk);
+    else if (mid == 5) combo_run(mv_sizeup_esc);
+    else if (mid == 6) combo_run(mv_hopback);
+    else if (mid == 7) combo_run(mv_ankle);
+    else if (mid == 8) combo_run(mv_escape);
+    else if (mid == 9) combo_run(mv_momentum);
+    else if (mid == 10) combo_run(mv_crossover);
+    else if (mid == 11) combo_run(mv_quick_btb);
+    else if (mid == 12) combo_run(mv_shamgod);
+    else if (mid == 13) combo_run(drib_hesitation);
+    else if (mid == 14) combo_run(drib_btwn_legs);
+    else if (mid == 15) combo_run(drib_behind_back);
+    else if (mid == 16) combo_run(drib_spin);
+    else if (mid == 17) combo_run(drib_snatchback);
+    else if (mid == 18) combo_run(drib_hardstop);
+    else if (mid == 19) combo_run(drib_stepback);
+    else if (mid == 20) combo_run(drib_hesi_cross);
+    else if (mid == 21) combo_run(drib_bl_cross);
+    else if (mid == 22) combo_run(drib_triple_cross);
+    else if (mid == 23) combo_run(drib_inout);
+    else if (mid == 24) combo_run(drib_shimmy);
+    else if (mid == 25) combo_run(drib_turbo_hesi);
+    else if (mid == 26) combo_run(drib_turbo_cross);
+    else if (mid == 27) combo_run(drib_turbo_escape);
+    else if (mid == 28) combo_run(drib_jab);
+    else if (mid == 29) combo_run(drib_half_spin);
+    else if (mid == 30) combo_run(drib_full_spin);
+    else if (mid == 31) combo_run(drib_tunnel);
+    else if (mid == 32) combo_run(drib_sizeup_x3);
+    else if (mid == 33) combo_run(mv_kyrie);
+    else if (mid == 34) combo_run(mv_luka_step);
+    else if (mid == 35) combo_run(mv_ja_burst);
+    else if (mid == 36) combo_run(mv_dame_hesi);
+    else if (mid == 37) combo_run(mv_trae_yoyo);
+    else if (mid == 38) combo_run(mv_morant_spin);
+    else if (mid == 39) combo_run(mv_euro);
+    else if (mid == 40) combo_run(mv_post_spin);
+    else if (mid == 41) combo_run(mv_drive_kick);
+    else if (mid == 42) combo_run(mv_double_hesi);
+    else if (mid == 43) combo_run(mv_double_cross);
+    else if (mid == 44) combo_run(mv_park_ankle);
+    else if (mid == 45) combo_run(mv_comp_cross);
+    else if (mid == 46) combo_run(drib_quick_stop);
+}
+
+
+
+
+
+
+
+
+function map(val, in_min, in_max, out_min, out_max) {
+    return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+function draw_x_graph(value, min_val, max_val, y_pos) {
+    graph_width = 100;
+    x_start = (OLED_WIDTH - graph_width) / 2;
+    mid_x = x_start + graph_width / 2;
+    bar_pos = map(value, min_val, max_val, 0, graph_width);
+    line_oled(x_start, y_pos, x_start + graph_width, y_pos, 1, OLED_WHITE);
+    line_oled(mid_x, y_pos - 3, mid_x, y_pos + 3, 1, OLED_WHITE);
+    line_oled(x_start, y_pos - 2, x_start, y_pos + 2, 1, OLED_WHITE);
+    line_oled(x_start + graph_width, y_pos - 2, x_start + graph_width, y_pos + 2, 1, OLED_WHITE);
+    rect_oled(x_start, y_pos - 2, bar_pos, 4, 1, OLED_WHITE);
+}
+
+function starfield_init() {
+    for (star_index = 0; star_index < STAR_COUNT; star_index++) {
+        star_x[star_index] = random(0, OLED_WIDTH - 1);
+        star_y[star_index] = random(0, OLED_HEIGHT - 1);
+        star_vx[star_index] = 1 + random(0, 2);
+        star_brightness[star_index] = random(0, 2);
+    }
+}
+
+
+function starfield_step() {
+    for (star_index = 0; star_index < STAR_COUNT; star_index++) {
+        star_x[star_index] += star_vx[star_index];
+        if (star_x[star_index] >= OLED_WIDTH) {
+            star_x[star_index] = 0;
+            star_y[star_index] = random(0, OLED_HEIGHT - 1);
+            star_vx[star_index] = 1 + random(0, 2);
+            star_brightness[star_index] = random(0, 2);
+        }
+        if(random(0, 20) == 0) { star_brightness[star_index] = random(0, 2); }
+    }
+}
+
+function starfield_draw() {
+    for (star_index = 0; star_index < STAR_COUNT; star_index++) {
+        if(star_brightness[star_index] > 0) {
+            pixel_oled(star_x[star_index], star_y[star_index], 1);
+        }
+    }
+}

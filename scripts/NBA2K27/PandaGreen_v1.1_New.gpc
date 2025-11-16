@@ -1,0 +1,1135 @@
+data(0x50,0x53,0x00,0x53,0x68,0x61,0x72,0x65,0x00,0x4F,0x70,0x74,0x69,0x6F,0x6E,0x73,0x00,0x52,0x31,0x00,0x52,0x32,0x00,0x52,0x33,0x00,0x4C,0x31,0x00,0x4C,0x32,0x00,0x4C,0x33,0x00,0x00,0x00,0x00,0x00,0x55,0x70,0x00,0x44,0x6F,0x77,0x6E,0x00,0x4C,0x65,0x66,0x74,0x00,0x52,0x69,0x67,0x68,0x74,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x54,0x6F,0x75,0x63,0x68,0x00,0x00,0x00,0x46,0x69,0x6E,0x67,0x65,0x72,0x31,0x00,0x00,0x00,0x46,0x69,0x6E,0x67,0x65,0x72,0x32,0x00,0x00,0x00,0x00,0x00,0x58,0x62,0x6F,0x78,0x00,0x56,0x69,0x65,0x77,0x00,0x4D,0x65,0x6E,0x75,0x00,0x52,0x42,0x00,0x52,0x54,0x00,0x52,0x53,0x00,0x4C,0x42,0x00,0x4C,0x54,0x00,0x4C,0x53,0x00,0x00,0x00,0x00,0x00,0x55,0x70,0x00,0x44,0x6F,0x77,0x6E,0x00,0x4C,0x65,0x66,0x74,0x00,0x52,0x69,0x67,0x68,0x74,0x00,0x59,0x00,0x42,0x00,0x41,0x00,0x58,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x53,0x79,0x6E,0x63,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x50,0x52,0x31,0x00,0x50,0x52,0x32,0x00,0x50,0x4C,0x31,0x00,0x50,0x4C,0x32,0x00,0x50,0x61,0x6E,0x64,0x61,
+0x47,0x72,0x65,0x65,0x6E,0x00,0x4C,0x65,0x74,0x68,0x61,0x6C,0x50,0x61,0x6E,0x64,0x61,0x00,0x56,0x65,0x72,0x73,0x69,0x6F,0x6E,0x3A,0x20,0x00,0x4D,0x65,0x6E,0x75,0x3A,0x20,0x00,0x48,0x61,0x6E,0x64,0x65,0x64,0x00,0x53,0x68,0x6F,0x6F,0x74,0x20,0x42,0x75,0x74,0x74,0x6F,0x6E,0x00,0x51,0x75,0x69,0x63,0x6B,0x20,0x53,0x74,0x6F,0x70,0x00,0x42,0x75,0x74,0x74,0x6F,0x6E,0x20,0x53,0x68,0x6F,0x74,0x20,0x4D,0x53,0x00,0x4D,0x6F,0x76,0x65,0x20,0x4C,0x65,0x66,0x74,0x20,0x4D,0x53,0x00,0x4D,0x6F,0x76,0x65,0x20,0x52,0x69,0x67,0x68,0x74,0x20,0x4D,0x53,0x00,0x4D,0x6F,0x76,0x65,0x20,0x46,0x6F,0x72,0x77,0x61,0x72,0x64,0x20,0x4D,0x53,0x00,0x53,0x70,0x72,0x69,0x6E,0x74,0x20,0x46,0x61,0x64,0x65,0x20,0x4D,0x53,0x00,0x55,0x6E,0x6C,0x69,0x6D,0x69,0x74,0x65,0x64,0x20,0x53,0x70,0x72,0x69,0x6E,0x74,0x00,0x20,0x74,0x6F,0x20,0x41,0x64,0x6A,0x75,0x73,0x74,0x00,0x20,0x74,0x6F,0x20,0x53,0x63,0x72,0x6F,0x6C,0x6C,0x00,0x20,0x74,0x6F,0x20,0x53,0x61,0x76,0x65,0x20,0x26,0x20,0x45,0x78,0x69,0x74,0x00,0x52,0x69,0x67,0x68,0x74,0x00,
+0x4C,0x65,0x66,0x74,0x00,0x4F,0x66,0x66,0x00,0x4F,0x6E,0x00,0x48,0x6F,0x6C,0x64,0x20,0x4C,0x32,0x00,0x4F,0x66,0x66,0x00,0x4F,0x6E,0x00);
+function AIRPANDA_04(AIRPANDA_05) {
+    switch (AIRPANDA_05) {
+        case 0x0: {
+           return 0x0;
+        }
+        case 0x1: {
+           return 0x3;
+        }
+        case 0x2: {
+           return 0x9;
+        }
+        case 0x3: {
+           return 0x11;
+        }
+        case 0x4: {
+           return 0x14;
+        }
+        case 0x5: {
+           return 0x17;
+        }
+        case 0x6: {
+           return 0x1A;
+        }
+        case 0x7: {
+           return 0x1D;
+        }
+        case 0x8: {
+           return 0x20;
+        }
+        case 0x9: {
+           return 0x23;
+        }
+        case 0xA: {
+           return 0x24;
+        }
+        case 0xB: {
+           return 0x25;
+        }
+        case 0xC: {
+           return 0x26;
+        }
+        case 0xD: {
+           return 0x27;
+        }
+        case 0xE: {
+           return 0x2A;
+        }
+        case 0xF: {
+           return 0x2F;
+        }
+        case 0x10: {
+           return 0x34;
+        }
+        case 0x11: {
+           return 0x3A;
+        }
+        case 0x12: {
+           return 0x3B;
+        }
+        case 0x13: {
+           return 0x3C;
+        }
+        case 0x14: {
+           return 0x3D;
+        }
+        case 0x15: {
+           return 0x3E;
+        }
+        case 0x16: {
+           return 0x3F;
+        }
+        case 0x17: {
+           return 0x40;
+        }
+        case 0x18: {
+           return 0x41;
+        }
+        case 0x19: {
+           return 0x42;
+        }
+        case 0x1A: {
+           return 0x43;
+        }
+        case 0x1B: {
+           return 0x44;
+        }
+        case 0x1C: {
+           return 0x4A;
+        }
+        case 0x1D: {
+           return 0x4B;
+        }
+        case 0x1E: {
+           return 0x4C;
+        }
+        case 0x1F: {
+           return 0x54;
+        }
+        case 0x20: {
+           return 0x55;
+        }
+        case 0x21: {
+           return 0x56;
+        }
+        case 0x22: {
+           return 0x5E;
+        }
+        case 0x23: {
+           return 0x5F;
+        }
+        case 0x24: {
+           return 0x60;
+        }
+        case 0x25: {
+           return 0x61;
+        }
+    }
+    return inv(0x1);
+}
+function AIRPANDA_06(AIRPANDA_05) {
+    switch (AIRPANDA_05) {
+        case 0x0: {
+           return 0x62;
+        }
+        case 0x1: {
+           return 0x67;
+        }
+        case 0x2: {
+           return 0x6C;
+        }
+        case 0x3: {
+           return 0x71;
+        }
+        case 0x4: {
+           return 0x74;
+        }
+        case 0x5: {
+           return 0x77;
+        }
+        case 0x6: {
+           return 0x7A;
+        }
+        case 0x7: {
+           return 0x7D;
+        }
+        case 0x8: {
+           return 0x80;
+        }
+        case 0x9: {
+           return 0x83;
+        }
+        case 0xA: {
+           return 0x84;
+        }
+        case 0xB: {
+           return 0x85;
+        }
+        case 0xC: {
+           return 0x86;
+        }
+        case 0xD: {
+           return 0x87;
+        }
+        case 0xE: {
+           return 0x8A;
+        }
+        case 0xF: {
+           return 0x8F;
+        }
+        case 0x10: {
+           return 0x94;
+        }
+        case 0x11: {
+           return 0x9A;
+        }
+        case 0x12: {
+           return 0x9C;
+        }
+        case 0x13: {
+           return 0x9E;
+        }
+        case 0x14: {
+           return 0xA0;
+        }
+        case 0x15: {
+           return 0xA2;
+        }
+        case 0x16: {
+           return 0xA3;
+        }
+        case 0x17: {
+           return 0xA4;
+        }
+        case 0x18: {
+           return 0xA5;
+        }
+        case 0x19: {
+           return 0xA6;
+        }
+        case 0x1A: {
+           return 0xA7;
+        }
+        case 0x1B: {
+           return 0xA8;
+        }
+        case 0x1C: {
+           return 0xAD;
+        }
+        case 0x1D: {
+           return 0xAE;
+        }
+        case 0x1E: {
+           return 0xAF;
+        }
+        case 0x1F: {
+           return 0xB0;
+        }
+        case 0x20: {
+           return 0xB1;
+        }
+        case 0x21: {
+           return 0xB2;
+        }
+        case 0x22: {
+           return 0xB3;
+        }
+        case 0x23: {
+           return 0xB7;
+        }
+        case 0x24: {
+           return 0xBB;
+        }
+        case 0x25: {
+           return 0xBF;
+        }
+    }
+    return inv(0x1);
+}
+function AIRPANDA_08(AIRPANDA_05) {
+    switch (AIRPANDA_05) {
+        case 0x0: {
+           return 0xC3;
+        }
+        case 0x1: {
+           return 0xCE;
+        }
+        case 0x2: {
+           return 0xDA;
+        }
+        case 0x3: {
+           return 0xE4;
+        }
+    }
+    return inv(0x1);
+}
+function AIRPANDA_010(AIRPANDA_05) {
+    switch (AIRPANDA_05) {
+        case 0x0: {
+           return 0xEB;
+        }
+        case 0x1: {
+           return 0xF2;
+        }
+        case 0x2: {
+           return 0xFF;
+        }
+        case 0x3: {
+           return 0x10A;
+        }
+        case 0x4: {
+           return 0x119;
+        }
+        case 0x5: {
+           return 0x126;
+        }
+        case 0x6: {
+           return 0x134;
+        }
+        case 0x7: {
+           return 0x144;
+        }
+        case 0x8: {
+           return 0x153;
+        }
+    }
+    return inv(0x1);
+}
+function AIRPANDA_012(AIRPANDA_05) {
+    switch (AIRPANDA_05) {
+        case 0x0: {
+           return 0x164;
+        }
+        case 0x1: {
+           return 0x16F;
+        }
+        case 0x2: {
+           return 0x17A;
+        }
+    }
+    return inv(0x1);
+}
+function AIRPANDA_014(AIRPANDA_05) {
+    switch (AIRPANDA_05) {
+        case 0x0: {
+           return 0x18A;
+        }
+        case 0x1: {
+           return 0x190;
+        }
+    }
+    return inv(0x1);
+}
+function AIRPANDA_016(AIRPANDA_05) {
+    switch (AIRPANDA_05) {
+        case 0x0: {
+           return 0x195;
+        }
+        case 0x1: {
+           return 0x199;
+        }
+        case 0x2: {
+           return 0x19C;
+        }
+    }
+    return inv(0x1);
+}
+function AIRPANDA_018(AIRPANDA_05) {
+    switch (AIRPANDA_05) {
+        case 0x0: {
+           return 0x1A4;
+        }
+        case 0x1: {
+           return 0x1A8;
+        }
+    }
+    return inv(0x1);
+}
+const uint8 AIRPANDA_0422[] = { OLED_FONT_SMALL_HEIGHT, OLED_FONT_MEDIUM_HEIGHT, OLED_FONT_LARGE_HEIGHT };
+const uint8 AIRPANDA_0423[] = { OLED_FONT_SMALL_WIDTH, OLED_FONT_MEDIUM_WIDTH, OLED_FONT_LARGE_WIDTH };
+const uint16 AIRPANDA_0424[][] = {
+	{ AIRPANDA_0134, AIRPANDA_0135, AIRPANDA_0136, 0x1 }, 
+	{ AIRPANDA_0137, AIRPANDA_0138, AIRPANDA_0139, 0x1 }, 
+	{ AIRPANDA_0140, AIRPANDA_0141, AIRPANDA_0142, 0x1 }, 
+	{ 0x64, 0x3E8, AIRPANDA_0143, 0x2 }, 
+	{ 0x64, 0x3E8, AIRPANDA_0143, 0x2 }, 
+	{ 0x64, 0x3E8, AIRPANDA_0143, 0x2 }, 
+	{ 0x64, 0x3E8, AIRPANDA_0143, 0x2 }, 
+	{ 0x64, 0x3E8, AIRPANDA_0143, 0x2 }, 
+	{ FALSE, TRUE, AIRPANDA_0148, 0x1 } 
+};
+const uint16 AIRPANDA_0375[][] = {
+	{ 0xA, 0x64, 0x4B }, 		
+	{ 0x12C, 0x64, 0x4B }, 		
+	{ 0x78, 0x64, 0x4B }, 		
+	{ 0x0, 0x64, 0x4B } 			
+};
+enum {
+	AIRPANDA_0149 = 0x0, AIRPANDA_0150, AIRPANDA_0151, AIRPANDA_0152,
+	AIRPANDA_0153 = 0x0, AIRPANDA_0154, AIRPANDA_0155,
+	AIRPANDA_0156 = 0x0, AIRPANDA_0157, AIRPANDA_0158, AIRPANDA_0159,
+	AIRPANDA_0160 = AIRPANDA_0159 + 0x6, AIRPANDA_0161,
+	AIRPANDA_0162, AIRPANDA_0163, AIRPANDA_0164, AIRPANDA_0165,
+	AIRPANDA_0166 = -3, AIRPANDA_0167, AIRPANDA_0168, AIRPANDA_0169 = 0x2, AIRPANDA_0170 = 0x5,
+	AIRPANDA_0171 = -2, AIRPANDA_0172, AIRPANDA_0173,
+	AIRPANDA_0174 = 0x0, AIRPANDA_0175, AIRPANDA_0176,
+	AIRPANDA_0177 = 0x0, AIRPANDA_0178, AIRPANDA_0179, AIRPANDA_0180, AIRPANDA_0181, AIRPANDA_0182, AIRPANDA_0183,
+	AIRPANDA_0184 = 0x0, AIRPANDA_0185, AIRPANDA_0186, AIRPANDA_0187, AIRPANDA_0188,
+	AIRPANDA_0189 = 0x0, AIRPANDA_0190, AIRPANDA_0191, AIRPANDA_0192, AIRPANDA_0193, AIRPANDA_0194, AIRPANDA_0195, AIRPANDA_0196, AIRPANDA_0197,
+	AIRPANDA_0148 = 0x0, AIRPANDA_0143, AIRPANDA_0136, AIRPANDA_0142, AIRPANDA_0139,
+	AIRPANDA_0134 = 0x0, AIRPANDA_0135,
+	AIRPANDA_0140 = 0x0, AIRPANDA_0206, AIRPANDA_0141,
+	AIRPANDA_0137 = 0x0, AIRPANDA_0138,
+	AIRPANDA_0210 = 0x0, AIRPANDA_0211, AIRPANDA_0212,
+	AIRPANDA_0213 = 0x55, AIRPANDA_0214 = 0x56, AIRPANDA_0215 = 0x57, AIRPANDA_0216 = 0x58, AIRPANDA_0217 = 0x59, AIRPANDA_0218 = 0x9C4,
+	AIRPANDA_0219 = 0x0, AIRPANDA_0220, AIRPANDA_0221, AIRPANDA_0222, AIRPANDA_0223, AIRPANDA_0224, AIRPANDA_0225,
+	AIRPANDA_0226 = 0x0, AIRPANDA_0227, AIRPANDA_0228, AIRPANDA_0229, AIRPANDA_0230
+}
+int AIRPANDA_0231[0xF];
+int AIRPANDA_0232;
+int AIRPANDA_0233[0x3];
+int AIRPANDA_0234[0x7];
+int AIRPANDA_0235[0x9];
+int AIRPANDA_0236[0x5];
+int AIRPANDA_0237[0x7];
+init {
+	vm_tctrl(inv(0x8)); 
+	AIRPANDA_0103(AIRPANDA_0149);
+	cls_oled(OLED_BLACK);
+	image_oled(0x0, 0x0, OLED_WHITE, TRUE, addr(AIRPANDA_0434));
+	combo_run(AIRPANDA_03);
+}
+main {
+	if(!combo_running(AIRPANDA_03)) {
+		AIRPANDA_065(); 
+		AIRPANDA_072(); 
+		AIRPANDA_070(); 
+		AIRPANDA_071(); 
+		AIRPANDA_073(); 
+	}
+	set_val(TRACE_1, get_polar(POLAR_LS, POLAR_ANGLE));
+	set_val(TRACE_2, AIRPANDA_0237[AIRPANDA_0220]);
+}
+function AIRPANDA_020(AIRPANDA_021, AIRPANDA_022, AIRPANDA_023, AIRPANDA_024, AIRPANDA_025) {
+	if(AIRPANDA_024 > 0x0) {
+		if(AIRPANDA_021 + AIRPANDA_024 <= AIRPANDA_023) {
+			AIRPANDA_087(AIRPANDA_0151);
+			return AIRPANDA_021 + AIRPANDA_024;
+		} else if(AIRPANDA_025) {
+			AIRPANDA_087(AIRPANDA_0151);
+			return AIRPANDA_022;
+		}
+	} else {
+		if(AIRPANDA_021 + AIRPANDA_024 >= AIRPANDA_022) {
+			AIRPANDA_087(AIRPANDA_0151);
+			return AIRPANDA_021 + AIRPANDA_024;
+		} else if(AIRPANDA_025) {
+			AIRPANDA_087(AIRPANDA_0151);
+			return AIRPANDA_023;
+		}
+	}
+	if(!AIRPANDA_074(AIRPANDA_074(AIRPANDA_024 > 0x0, AIRPANDA_021 == AIRPANDA_023, AIRPANDA_021 == AIRPANDA_022), FALSE, TRUE)) {
+		AIRPANDA_087(AIRPANDA_0152);
+	}
+	return AIRPANDA_074(AIRPANDA_024 > 0x0, AIRPANDA_023, AIRPANDA_022);
+}
+function AIRPANDA_026(AIRPANDA_027) {
+	return AIRPANDA_074(AIRPANDA_0234[AIRPANDA_0179] >= AIRPANDA_027, 0x0, AIRPANDA_0234[AIRPANDA_0179] + get_rtime());
+}
+function AIRPANDA_028(AIRPANDA_029) {
+	AIRPANDA_0231[AIRPANDA_0164] = AIRPANDA_029; 
+	AIRPANDA_0231[AIRPANDA_0160] = TRUE; 
+	AIRPANDA_0101(); 
+	AIRPANDA_0102(); 
+	if(AIRPANDA_029 == AIRPANDA_0172) {
+		AIRPANDA_041(0x0); 
+	} else {
+		AIRPANDA_0233[AIRPANDA_0175] = PIO_NONE; 
+	}
+}
+function AIRPANDA_030(AIRPANDA_031, AIRPANDA_032) {
+	if(get_ival(AIRPANDA_031)) {
+		if(AIRPANDA_0234[AIRPANDA_0178] == inv(0x1))  {
+			AIRPANDA_0234[AIRPANDA_0178] = AIRPANDA_031;
+		}
+		if(AIRPANDA_0234[AIRPANDA_0178] == AIRPANDA_031) {
+			if(event_press(AIRPANDA_031)) {
+				return TRUE;
+			}
+			if(AIRPANDA_032) {
+                if (get_ptime(AIRPANDA_031) >= 0xC8) {
+                    if (get_ptime(AIRPANDA_031) > 0xBB8)  {
+                        AIRPANDA_0234[AIRPANDA_0179] = AIRPANDA_026(0xA);
+                    } else if (get_ptime(AIRPANDA_031) > 0x7D0) {
+                        AIRPANDA_0234[AIRPANDA_0179] = AIRPANDA_026(0x1E);
+                    } else if (get_ptime(AIRPANDA_031) > 0x3E8) {
+                        AIRPANDA_0234[AIRPANDA_0179] = AIRPANDA_026(0x32);
+                    } else {
+                        AIRPANDA_0234[AIRPANDA_0179] = AIRPANDA_026(0x46);
+                    }
+                } else {
+                	return FALSE;
+                }
+			} else {
+				AIRPANDA_0234[AIRPANDA_0179] = AIRPANDA_074(AIRPANDA_0234[AIRPANDA_0179] >= 0xC8, 0x0, AIRPANDA_0234[AIRPANDA_0179] + get_rtime());
+			}
+			return !AIRPANDA_0234[AIRPANDA_0179];
+		}
+	}
+	else if(event_release(AIRPANDA_0234[AIRPANDA_0178])) {
+		AIRPANDA_0234[AIRPANDA_0178] = inv(0x1);	
+		AIRPANDA_0234[AIRPANDA_0179] = 0x0; 
+		AIRPANDA_0101(); 
+	}
+	return FALSE;
+}
+function AIRPANDA_033(AIRPANDA_034, AIRPANDA_035) {
+	if(AIRPANDA_0233[AIRPANDA_0175] == AIRPANDA_034 || AIRPANDA_0233[AIRPANDA_0175] == AIRPANDA_035) {
+		if(AIRPANDA_0233[AIRPANDA_0174] == PIO_PS4 || AIRPANDA_0233[AIRPANDA_0174] == PIO_PS5) {
+			AIRPANDA_0133(); 
+		}
+	}
+}
+function AIRPANDA_036(AIRPANDA_037, AIRPANDA_038) {
+	if(AIRPANDA_0233[AIRPANDA_037] != AIRPANDA_038) {
+		AIRPANDA_0233[AIRPANDA_037] = AIRPANDA_038; 
+		return TRUE;
+	}
+	return FALSE; 
+}
+function AIRPANDA_039() {
+	if(AIRPANDA_0231[AIRPANDA_0165] >= 0x493E0) {
+		return;
+	}
+	AIRPANDA_0231[AIRPANDA_0163] += get_rtime();
+	if(AIRPANDA_0231[AIRPANDA_0163] >= 0xFA0) {
+		if(AIRPANDA_0231[AIRPANDA_0164] == AIRPANDA_0172) {
+			AIRPANDA_0231[AIRPANDA_0162] = (AIRPANDA_0231[AIRPANDA_0162] + 0x1) % 0x3;
+			AIRPANDA_0231[AIRPANDA_0161] = TRUE; 
+		} else {
+			AIRPANDA_0231[AIRPANDA_0162] = 0x0;
+		}
+		AIRPANDA_0231[AIRPANDA_0163] = 0x0;
+	}
+}
+function AIRPANDA_040() {
+    if(AIRPANDA_0231[AIRPANDA_0164] == AIRPANDA_0172) {
+        return FALSE;
+    }
+    if(AIRPANDA_0231[AIRPANDA_0165] < 0x1D4C0) {
+        AIRPANDA_0231[AIRPANDA_0165] += get_rtime();
+        if(AIRPANDA_0231[AIRPANDA_0165] >= 0x1D4C0) {
+            cls_oled(OLED_BLACK); 
+            AIRPANDA_0102(); 
+            return TRUE; 
+        }
+        return FALSE;
+    }
+    return TRUE;
+}
+function AIRPANDA_041(AIRPANDA_042) {
+	AIRPANDA_0234[AIRPANDA_0177] = AIRPANDA_020(AIRPANDA_0234[AIRPANDA_0177], 0x0, (sizeof(AIRPANDA_0424) / sizeof(AIRPANDA_0424[0x0])) - 0x1, AIRPANDA_042, TRUE);
+	AIRPANDA_0234[AIRPANDA_0180] = AIRPANDA_0424[AIRPANDA_0234[AIRPANDA_0177]][0x0]; 
+	AIRPANDA_0234[AIRPANDA_0181] = AIRPANDA_0424[AIRPANDA_0234[AIRPANDA_0177]][0x1]; 
+	AIRPANDA_0234[AIRPANDA_0182] = AIRPANDA_0424[AIRPANDA_0234[AIRPANDA_0177]][0x2]; 
+	AIRPANDA_0234[AIRPANDA_0183] = AIRPANDA_0424[AIRPANDA_0234[AIRPANDA_0177]][0x3]; 
+}
+function AIRPANDA_043(AIRPANDA_024) {
+	AIRPANDA_0235[AIRPANDA_0234[AIRPANDA_0177]] = AIRPANDA_020(AIRPANDA_0235[AIRPANDA_0234[AIRPANDA_0177]], AIRPANDA_0234[AIRPANDA_0180], AIRPANDA_0234[AIRPANDA_0181], AIRPANDA_024 * AIRPANDA_0234[AIRPANDA_0183], AIRPANDA_0234[AIRPANDA_0182] != AIRPANDA_0143);
+}
+function AIRPANDA_045() {
+	switch(AIRPANDA_0231[AIRPANDA_0164]) {
+		case AIRPANDA_0171 {
+			AIRPANDA_083(AIRPANDA_08(AIRPANDA_0187));
+			AIRPANDA_083(AIRPANDA_066(XB1_LT));
+			AIRPANDA_079(ASCII_SPACE);
+			AIRPANDA_079(ASCII_AMPERSAND);
+			AIRPANDA_079(ASCII_SPACE);
+			AIRPANDA_083(AIRPANDA_066(XB1_MENU));
+			break;	
+		}
+		case AIRPANDA_0172 {
+			switch(AIRPANDA_0231[AIRPANDA_0162]) {
+				case 0x0 {
+					AIRPANDA_079(OLED_UP);
+					AIRPANDA_079(ASCII_SLASH);
+					AIRPANDA_079(OLED_DOWN);
+					break;
+				}
+				case 0x1 {
+					AIRPANDA_079(OLED_LEFT);
+					AIRPANDA_079(ASCII_SLASH);
+					AIRPANDA_079(OLED_RIGHT);
+					break;
+				}
+				case 0x2 {
+					AIRPANDA_079(AIRPANDA_068(ASCII_UPPER_B));
+					break;
+				}
+			}
+			AIRPANDA_083(AIRPANDA_012(AIRPANDA_0231[AIRPANDA_0162]));
+			break;
+		}
+		case AIRPANDA_0173 {
+			return;
+		}
+	}
+	AIRPANDA_060(AIRPANDA_0166, AIRPANDA_0167, OLED_FONT_SMALL, OLED_WHITE);
+}
+function AIRPANDA_046() {
+    switch(AIRPANDA_0234[AIRPANDA_0182]) {
+        case AIRPANDA_0148 {
+            AIRPANDA_083(AIRPANDA_018(AIRPANDA_0235[AIRPANDA_0234[AIRPANDA_0177]]));
+            break;
+        }
+        case AIRPANDA_0143 {
+            AIRPANDA_081(AIRPANDA_0235[AIRPANDA_0234[AIRPANDA_0177]]);
+            AIRPANDA_079(ASCII_LOWER_M);
+            AIRPANDA_079(ASCII_LOWER_S);
+            break;
+        }
+        case AIRPANDA_0136 {
+            AIRPANDA_083(AIRPANDA_014(AIRPANDA_0235[AIRPANDA_0234[AIRPANDA_0177]]));
+            break;
+        }
+        case AIRPANDA_0142 {
+            AIRPANDA_083(AIRPANDA_016(AIRPANDA_0235[AIRPANDA_0234[AIRPANDA_0177]]));
+            break;
+        }
+        case AIRPANDA_0139 {
+            if(AIRPANDA_0235[AIRPANDA_0234[AIRPANDA_0177]] == AIRPANDA_0137) {
+                AIRPANDA_079(AIRPANDA_068(ASCII_UPPER_X));
+            } else {
+                AIRPANDA_083(AIRPANDA_066(XB1_RS));
+            }
+            break;
+        }
+    }
+    AIRPANDA_060(AIRPANDA_0166, AIRPANDA_0166, OLED_FONT_MEDIUM, OLED_WHITE);
+}
+function AIRPANDA_047(AIRPANDA_021, AIRPANDA_049) {
+	if(AIRPANDA_021 < 0x64) {
+		return AIRPANDA_049;
+	}
+	return 0x64 + (((AIRPANDA_021 - 0x64) / 0x2) * 0x2);
+}
+function AIRPANDA_050() {
+	AIRPANDA_0237[AIRPANDA_0222] = get_ipolar(POLAR_LS, POLAR_RADIUS);
+	if(AIRPANDA_0237[AIRPANDA_0222] < AIRPANDA_0218) {
+		return AIRPANDA_0235[AIRPANDA_0192];
+	}
+	AIRPANDA_0237[AIRPANDA_0221] = get_ipolar(POLAR_LS, POLAR_ANGLE);
+	if(AIRPANDA_0237[AIRPANDA_0221] >= 0x87 && AIRPANDA_0237[AIRPANDA_0221] <= 0xE1) {
+		if(get_ival(XB1_RT) && AIRPANDA_0235[AIRPANDA_0189] == AIRPANDA_0135) {
+			return AIRPANDA_0235[AIRPANDA_0196];
+		}
+		return AIRPANDA_0235[AIRPANDA_0193];
+	}
+	if(AIRPANDA_0237[AIRPANDA_0221] >= 0x13B || AIRPANDA_0237[AIRPANDA_0221] <= 0x2D) {
+		if(get_ival(XB1_RT) && AIRPANDA_0235[AIRPANDA_0189] == AIRPANDA_0134) {
+			return AIRPANDA_0235[AIRPANDA_0196];
+		}
+		return AIRPANDA_0235[AIRPANDA_0194];
+	}
+	if(AIRPANDA_0237[AIRPANDA_0221] >= 0x2E && AIRPANDA_0237[AIRPANDA_0221] <= 0x86) {
+		return AIRPANDA_0235[AIRPANDA_0195];
+	}
+	return AIRPANDA_0235[AIRPANDA_0192];
+}
+function AIRPANDA_051() {
+	AIRPANDA_0237[AIRPANDA_0222] = get_ipolar(POLAR_LS, POLAR_RADIUS);
+	if(AIRPANDA_0237[AIRPANDA_0222] < AIRPANDA_0218) {
+		return 0x140;
+	}
+	AIRPANDA_0237[AIRPANDA_0221] = get_ipolar(POLAR_LS, POLAR_ANGLE);
+	if(AIRPANDA_0235[AIRPANDA_0189] == AIRPANDA_0134
+		&& (AIRPANDA_0237[AIRPANDA_0221] >= 0x13B || AIRPANDA_0237[AIRPANDA_0221] <= 0x2D)) {
+		return 0x190;
+	}
+	if(AIRPANDA_0235[AIRPANDA_0189] == AIRPANDA_0135
+		&& AIRPANDA_0237[AIRPANDA_0221] >= 0x87 && AIRPANDA_0237[AIRPANDA_0221] <= 0xE1) {
+		return 0x190;
+	}
+	return 0x140;
+}
+function AIRPANDA_052() {
+	return combo_running(AIRPANDA_01) || combo_running(AIRPANDA_02);
+}
+function AIRPANDA_053() {
+	if(AIRPANDA_0235[AIRPANDA_0191] == AIRPANDA_0206) {
+		return TRUE;
+	}
+	if(AIRPANDA_0235[AIRPANDA_0191] == AIRPANDA_0141 && get_ival(XB1_LT)) {
+		return TRUE;
+	}
+	return FALSE;
+}
+function AIRPANDA_054() {
+	if(AIRPANDA_0237[AIRPANDA_0224] == AIRPANDA_0210) {
+		return;
+	}
+	switch(AIRPANDA_0237[AIRPANDA_0224]) {
+		case AIRPANDA_0211 {
+			if(get_ival(XB1_X)) {
+				if(!AIRPANDA_052()) {
+					set_val(XB1_X, 0x0);
+				}
+			} else if(!AIRPANDA_052()) {
+				AIRPANDA_0237[AIRPANDA_0224] = AIRPANDA_0210;
+			}
+			break;
+		}
+		case AIRPANDA_0212 {
+			if(get_ival(XB1_RS)) {
+				set_val(XB1_RS, 0x0);
+			} else if(!AIRPANDA_052()) {
+				AIRPANDA_0237[AIRPANDA_0224] = AIRPANDA_0210;
+			}
+			break;
+		}
+	}
+}
+function AIRPANDA_055(AIRPANDA_056, AIRPANDA_057) {
+	if(AIRPANDA_052() || AIRPANDA_0237[AIRPANDA_0224] != AIRPANDA_0210) {
+		return;
+	}
+	AIRPANDA_0237[AIRPANDA_0224] = AIRPANDA_057;
+	if(AIRPANDA_057 == AIRPANDA_0212) {
+		set_val(XB1_RS, 0x0);
+	}
+	if(AIRPANDA_053()) {
+		AIRPANDA_0237[AIRPANDA_0220] = AIRPANDA_0235[AIRPANDA_0192];
+		AIRPANDA_0237[AIRPANDA_0225] = AIRPANDA_051();
+		combo_run(AIRPANDA_02);
+	} else {
+		AIRPANDA_0237[AIRPANDA_0220] = AIRPANDA_056;
+		combo_run(AIRPANDA_01);
+	}
+}
+function AIRPANDA_058() {
+	if(AIRPANDA_0235[AIRPANDA_0190] == AIRPANDA_0137 && event_press(XB1_X)) {
+		AIRPANDA_055(AIRPANDA_050(), AIRPANDA_0211);
+		return;
+	}
+	if(AIRPANDA_0235[AIRPANDA_0190] == AIRPANDA_0138 && event_press(XB1_RS)) {
+		AIRPANDA_055(AIRPANDA_050(), AIRPANDA_0212);
+	}
+}
+function AIRPANDA_059() {
+	if(!AIRPANDA_0235[AIRPANDA_0197]
+		|| combo_running(AIRPANDA_01)
+		|| combo_running(AIRPANDA_02)) {
+		return;
+	}
+	if(abs(get_ival(XB1_LX)) > 0x14 || abs(get_ival(XB1_LY)) > 0x14) {
+		set_val(XB1_LX, (get_ival(XB1_LX) * 0x32) / 0x64);
+		set_val(XB1_LY, (get_ival(XB1_LY) * 0x32) / 0x64);
+	}
+	if(abs(get_ival(XB1_LX)) < 0x14 && abs(get_ival(XB1_LY)) < 0x14) {
+		set_val(XB1_LX, 0x0);
+		set_val(XB1_LY, 0x0);
+	}
+}
+function AIRPANDA_060(AIRPANDA_061, AIRPANDA_062, AIRPANDA_063, AIRPANDA_064) {
+	if(AIRPANDA_061 == AIRPANDA_0168) {
+		AIRPANDA_061 = OLED_WIDTH - (AIRPANDA_0231[AIRPANDA_0156] * AIRPANDA_0423[AIRPANDA_063]) - 0x3; 
+	} else if(AIRPANDA_061 == AIRPANDA_0166) {
+		AIRPANDA_061 = (OLED_WIDTH >> 0x1) - ((AIRPANDA_0231[AIRPANDA_0156] * AIRPANDA_0423[AIRPANDA_063]) >> 0x1);
+	}
+	if(AIRPANDA_062 == AIRPANDA_0167) {
+		AIRPANDA_062 = OLED_HEIGHT - AIRPANDA_0422[AIRPANDA_063] - 0x2; 
+	} else if(AIRPANDA_062 == AIRPANDA_0166) {
+		AIRPANDA_062 = (OLED_HEIGHT >> 0x1) - (AIRPANDA_0422[AIRPANDA_063] >> 0x1);
+	}
+	puts_oled(clamp(AIRPANDA_061, 0x2, 0x7F), clamp(AIRPANDA_062, 0x2, 0x3F), AIRPANDA_063, AIRPANDA_0231[AIRPANDA_0156], AIRPANDA_064);
+	AIRPANDA_0231[AIRPANDA_0156] = 0x0;
+}
+function AIRPANDA_065() {
+	if(AIRPANDA_036(AIRPANDA_0174, get_console())) {
+		AIRPANDA_0101(); 
+	}
+	if(AIRPANDA_036(AIRPANDA_0175, get_controller())) {
+		AIRPANDA_0101(); 
+		AIRPANDA_0102(); 
+		if(!AIRPANDA_0233[AIRPANDA_0176]) {
+			AIRPANDA_033(PIO_XB1, PIO_XB360);
+		}
+		else if(AIRPANDA_0233[AIRPANDA_0176]) {
+			AIRPANDA_033(PIO_PS4, PIO_PS5);
+		}
+	}
+}
+function AIRPANDA_066(AIRPANDA_031) {
+	return AIRPANDA_074(AIRPANDA_085(AIRPANDA_0233[AIRPANDA_0175]), AIRPANDA_06(AIRPANDA_031), AIRPANDA_04(AIRPANDA_031));
+}
+function AIRPANDA_068(AIRPANDA_069) {
+	if(AIRPANDA_0233[AIRPANDA_0175] == PIO_XB360 || AIRPANDA_0233[AIRPANDA_0175] == PIO_XB1) {
+		return AIRPANDA_069;	
+	}
+	switch(AIRPANDA_069) {
+		case ASCII_UPPER_A { return OLED_CROSS; }
+		case ASCII_UPPER_B { return OLED_CIRCLE; }
+		case ASCII_UPPER_X { return OLED_SQUARE; }
+		case ASCII_UPPER_Y { return OLED_TRIANGLE; }
+	}
+	return AIRPANDA_069;
+}
+function AIRPANDA_070() {
+	AIRPANDA_039();
+	if(!AIRPANDA_0231[AIRPANDA_0161] || AIRPANDA_040()) {
+		return;
+	}
+	cls_oled(OLED_BLACK); 
+	switch(AIRPANDA_0231[AIRPANDA_0164]) {
+		case AIRPANDA_0171 { AIRPANDA_099(); break; }
+		case AIRPANDA_0172 { AIRPANDA_0100(); break; }
+		case AIRPANDA_0173 { AIRPANDA_098(); break; }
+	}
+	AIRPANDA_045(); 
+	AIRPANDA_0231[AIRPANDA_0161] = FALSE; 
+}
+function AIRPANDA_071() {
+	switch(AIRPANDA_0231[AIRPANDA_0164]) {
+		case AIRPANDA_0171 { AIRPANDA_096(); return; }
+		case AIRPANDA_0172 { AIRPANDA_097(); return; }
+		case AIRPANDA_0173 { AIRPANDA_095(); return; }
+	}
+}
+function AIRPANDA_072() {
+	if(!AIRPANDA_0231[AIRPANDA_0160]) {
+		return;
+	}
+	switch(AIRPANDA_0231[AIRPANDA_0164]) {
+		case AIRPANDA_0171 { AIRPANDA_0103(AIRPANDA_0149); break; }
+		case AIRPANDA_0172 { AIRPANDA_0103(AIRPANDA_0150); break; }
+		case AIRPANDA_0173 { AIRPANDA_0103(AIRPANDA_0152); break; }
+	}
+	AIRPANDA_0231[AIRPANDA_0160] = FALSE;
+}
+function AIRPANDA_073() {
+	if(AIRPANDA_0231[AIRPANDA_0164] == AIRPANDA_0172) {
+		block_all_inputs();
+		return;
+	}
+	if(get_ival(XB1_LT)) {
+		set_val(XB1_MENU, 0x0);
+	}
+}
+function AIRPANDA_074(AIRPANDA_075, AIRPANDA_076, AIRPANDA_077) {
+	if(AIRPANDA_075) {
+		return AIRPANDA_076; 
+	}
+	return AIRPANDA_077;
+}
+function AIRPANDA_078() {
+    AIRPANDA_028(AIRPANDA_074(AIRPANDA_0237[AIRPANDA_0219], AIRPANDA_0173, AIRPANDA_0171));
+}
+function AIRPANDA_079(AIRPANDA_069) {
+	putc_oled(AIRPANDA_0231[AIRPANDA_0156] + 0x1, AIRPANDA_069); 
+	AIRPANDA_0231[AIRPANDA_0156]++; 
+}
+function AIRPANDA_081(AIRPANDA_082) {
+	if(AIRPANDA_082 < 0x0) {
+		AIRPANDA_079(ASCII_MINUS); 
+		AIRPANDA_082 = abs(AIRPANDA_082); 
+	}
+	AIRPANDA_0231[AIRPANDA_0157] = AIRPANDA_082;
+	AIRPANDA_0231[AIRPANDA_0158] = 0x0;
+	do {
+		AIRPANDA_0231[AIRPANDA_0157] /= 0xA;
+		AIRPANDA_0231[AIRPANDA_0158]++;
+	} while(AIRPANDA_0231[AIRPANDA_0157]);
+	for(AIRPANDA_0232 = 0x0; AIRPANDA_0232 < AIRPANDA_0231[AIRPANDA_0158]; AIRPANDA_0232++) {
+		AIRPANDA_0231[AIRPANDA_0159 + AIRPANDA_0232] = (AIRPANDA_082 % 0xA) + 0x30;
+		AIRPANDA_082 /= 0xA;
+	}
+	for(AIRPANDA_0232 = AIRPANDA_0231[AIRPANDA_0158] - 0x1; AIRPANDA_0232 >= 0x0; AIRPANDA_0232--) {
+		AIRPANDA_079(AIRPANDA_0231[AIRPANDA_0159 + AIRPANDA_0232]);
+	}
+}
+function AIRPANDA_083(AIRPANDA_084) {
+	do {
+		AIRPANDA_079(dint8(AIRPANDA_084)); 
+		AIRPANDA_084++; 
+	} while(dint8(AIRPANDA_084));
+}
+function AIRPANDA_085(AIRPANDA_038) {
+	return (AIRPANDA_038 == PIO_XB360) || (AIRPANDA_038 == PIO_XB1);
+}
+function AIRPANDA_087(AIRPANDA_064) {
+	AIRPANDA_0101();
+	AIRPANDA_0103(AIRPANDA_064);
+	combo_restart(AIRPANDA_00);
+}
+function AIRPANDA_089(AIRPANDA_061, AIRPANDA_062, AIRPANDA_063, AIRPANDA_064, AIRPANDA_084) {
+	AIRPANDA_083(AIRPANDA_084); 
+	AIRPANDA_060(AIRPANDA_061, AIRPANDA_062, AIRPANDA_063, AIRPANDA_064); 
+}
+function AIRPANDA_095() {
+	if(get_ival(XB1_LT)) {
+		if(event_press(XB1_MENU)) {
+			AIRPANDA_028(AIRPANDA_0172);
+			return;
+		}
+		if(event_press(XB1_VIEW)) {
+			AIRPANDA_0237[AIRPANDA_0219] = FALSE; 
+			AIRPANDA_028(AIRPANDA_0171);
+			return;
+		}
+	}
+}
+function AIRPANDA_096() {
+    if(get_ival(XB1_LT)) {
+        if(event_press(XB1_MENU)) {
+            AIRPANDA_028(AIRPANDA_0172);
+            return;
+        }
+        if(event_press(XB1_VIEW)) {
+            AIRPANDA_0237[AIRPANDA_0219] = TRUE;
+            AIRPANDA_028(AIRPANDA_0173);
+            return;
+        }
+    }
+    AIRPANDA_054();
+    AIRPANDA_058();
+    AIRPANDA_059();
+}
+function AIRPANDA_097() {
+	if(event_release(XB1_B)) {
+		AIRPANDA_0106();
+		return;
+	}
+	if(AIRPANDA_030(XB1_RIGHT, FALSE)) {
+		AIRPANDA_041(0x1);
+	}
+	else if(AIRPANDA_030(XB1_LEFT, FALSE)) {
+		AIRPANDA_041(inv(0x1));
+	}
+	else if(AIRPANDA_030(XB1_UP, AIRPANDA_0234[AIRPANDA_0182] == AIRPANDA_0143)) {
+		AIRPANDA_043(0x1);
+	}
+	else if(AIRPANDA_030(XB1_DOWN, AIRPANDA_0234[AIRPANDA_0182] == AIRPANDA_0143)) {
+		AIRPANDA_043(inv(0x1));
+	}
+}
+function AIRPANDA_098() {
+	AIRPANDA_089(AIRPANDA_0166, AIRPANDA_0166, OLED_FONT_MEDIUM, OLED_WHITE, AIRPANDA_018(0x0));
+}
+function AIRPANDA_099() {
+	AIRPANDA_089(AIRPANDA_0166, AIRPANDA_0170, OLED_FONT_MEDIUM, OLED_WHITE, AIRPANDA_08(AIRPANDA_0184));
+	AIRPANDA_089(AIRPANDA_0166, AIRPANDA_0166, OLED_FONT_MEDIUM, OLED_WHITE, AIRPANDA_08(AIRPANDA_0185));
+	AIRPANDA_083(AIRPANDA_08(AIRPANDA_0186));
+	AIRPANDA_081(0x1);
+	AIRPANDA_079(ASCII_PERIOD);
+	AIRPANDA_081(0x0);
+	AIRPANDA_060(AIRPANDA_0166, 0x29, OLED_FONT_SMALL, OLED_WHITE);
+}
+function AIRPANDA_0100() {
+	AIRPANDA_089(AIRPANDA_0166, AIRPANDA_0170, OLED_FONT_SMALL, OLED_WHITE, AIRPANDA_010(AIRPANDA_0234[AIRPANDA_0177]));
+	line_oled(0x0, 0x10, OLED_WIDTH - 0x1, 0x10, 0x1, OLED_WHITE);
+	line_oled(0x0, OLED_HEIGHT - 0x10, OLED_WIDTH - 0x1, OLED_HEIGHT - 0x10, 0x1, OLED_WHITE);
+	rect_oled(0x0, 0x0, OLED_WIDTH, OLED_HEIGHT, 0x0, OLED_WHITE);
+	AIRPANDA_046();
+}
+function AIRPANDA_0101() {
+	AIRPANDA_0231[AIRPANDA_0161] = TRUE; 
+	AIRPANDA_0231[AIRPANDA_0165] = 0x0; 
+}
+function AIRPANDA_0102() {
+	AIRPANDA_0231[AIRPANDA_0162] = 0x0; 
+	AIRPANDA_0231[AIRPANDA_0163] = 0x0; 
+}
+function AIRPANDA_0103(AIRPANDA_064) {
+	set_hsb(AIRPANDA_0375[AIRPANDA_064][AIRPANDA_0153], AIRPANDA_0375[AIRPANDA_064][AIRPANDA_0154], AIRPANDA_0375[AIRPANDA_064][AIRPANDA_0155]);
+}
+function AIRPANDA_0105() {
+    AIRPANDA_0234[AIRPANDA_0178] = inv(0x1);
+    AIRPANDA_0124();
+    if(AIRPANDA_0132(0x0, 0x1)) {
+        AIRPANDA_0132(FALSE, TRUE);
+        AIRPANDA_0132(0x4, 0x50);
+        AIRPANDA_0132(0x0, 0x2);
+        AIRPANDA_0235[AIRPANDA_0190] = AIRPANDA_0132(AIRPANDA_0137, AIRPANDA_0138);
+        AIRPANDA_0235[AIRPANDA_0192] = AIRPANDA_047(AIRPANDA_0132(0x64, 0x3E8), 0x228);
+        AIRPANDA_0235[AIRPANDA_0189] = AIRPANDA_0132(AIRPANDA_0134, AIRPANDA_0135);
+        AIRPANDA_0237[AIRPANDA_0223] = AIRPANDA_0132(0x0, 0x7F);
+        if(AIRPANDA_0237[AIRPANDA_0223] == AIRPANDA_0217
+            || AIRPANDA_0237[AIRPANDA_0223] == AIRPANDA_0216
+            || AIRPANDA_0237[AIRPANDA_0223] == AIRPANDA_0215
+            || AIRPANDA_0237[AIRPANDA_0223] == AIRPANDA_0214
+            || AIRPANDA_0237[AIRPANDA_0223] == AIRPANDA_0213) {
+            AIRPANDA_0235[AIRPANDA_0193] = AIRPANDA_047(AIRPANDA_0132(0x64, 0x3E8), 0x2B6);
+            AIRPANDA_0235[AIRPANDA_0194] = AIRPANDA_047(AIRPANDA_0132(0x64, 0x3E8), 0x2FC);
+            AIRPANDA_0235[AIRPANDA_0195] = AIRPANDA_047(AIRPANDA_0132(0x64, 0x3E8), 0x2D6);
+            if(AIRPANDA_0237[AIRPANDA_0223] == AIRPANDA_0217
+                || AIRPANDA_0237[AIRPANDA_0223] == AIRPANDA_0216
+                || AIRPANDA_0237[AIRPANDA_0223] == AIRPANDA_0215
+                || AIRPANDA_0237[AIRPANDA_0223] == AIRPANDA_0214) {
+                AIRPANDA_0235[AIRPANDA_0196] = AIRPANDA_047(AIRPANDA_0132(0x64, 0x3E8), 0x36A);
+            } else {
+                AIRPANDA_0235[AIRPANDA_0196] = 0x36A;
+            }
+            if(AIRPANDA_0237[AIRPANDA_0223] == AIRPANDA_0217
+                || AIRPANDA_0237[AIRPANDA_0223] == AIRPANDA_0216) {
+                AIRPANDA_0235[AIRPANDA_0197] = AIRPANDA_0132(FALSE, TRUE);
+                AIRPANDA_0235[AIRPANDA_0191] = AIRPANDA_0132(AIRPANDA_0140, AIRPANDA_0141);
+            } else if(AIRPANDA_0237[AIRPANDA_0223] == AIRPANDA_0215) {
+                AIRPANDA_0235[AIRPANDA_0197] = AIRPANDA_0132(FALSE, TRUE);
+                AIRPANDA_0235[AIRPANDA_0191] = AIRPANDA_0132(FALSE, TRUE);
+            } else {
+                AIRPANDA_0235[AIRPANDA_0197] = FALSE;
+                AIRPANDA_0235[AIRPANDA_0191] = AIRPANDA_0140;
+            }
+        } else {
+            AIRPANDA_0235[AIRPANDA_0193] = 0x2B6;
+            AIRPANDA_0235[AIRPANDA_0194] = 0x2FC;
+            AIRPANDA_0235[AIRPANDA_0195] = 0x2D6;
+            AIRPANDA_0235[AIRPANDA_0196] = 0x36A;
+            AIRPANDA_0235[AIRPANDA_0197] = FALSE;
+            AIRPANDA_0235[AIRPANDA_0191] = AIRPANDA_0140;
+        }
+        if(AIRPANDA_0237[AIRPANDA_0223] != AIRPANDA_0217) {
+            AIRPANDA_0235[AIRPANDA_0190] = AIRPANDA_0137;
+        }
+    } else {
+        AIRPANDA_0235[AIRPANDA_0190] = AIRPANDA_0137;
+        AIRPANDA_0235[AIRPANDA_0192] = 0x228;
+        AIRPANDA_0235[AIRPANDA_0193] = 0x2B6;
+        AIRPANDA_0235[AIRPANDA_0194] = 0x2FC;
+        AIRPANDA_0235[AIRPANDA_0195] = 0x2D6;
+        AIRPANDA_0235[AIRPANDA_0189] = AIRPANDA_0134;
+        AIRPANDA_0235[AIRPANDA_0196] = 0x36A;
+        AIRPANDA_0235[AIRPANDA_0197] = FALSE;
+        AIRPANDA_0235[AIRPANDA_0191] = AIRPANDA_0140;
+    }
+    AIRPANDA_078();
+}
+function AIRPANDA_0106() {
+    AIRPANDA_0124();
+    AIRPANDA_0130(0x1, 0x0, 0x1);
+    AIRPANDA_0130(FALSE, FALSE, TRUE);
+    AIRPANDA_0130(0x34, 0x4, 0x50);
+    AIRPANDA_0130(0x2, 0x0, 0x2);
+    AIRPANDA_0130(AIRPANDA_0235[AIRPANDA_0190], AIRPANDA_0137, AIRPANDA_0138);
+    AIRPANDA_0130(AIRPANDA_0235[AIRPANDA_0192], 0x64, 0x3E8);
+    AIRPANDA_0130(AIRPANDA_0235[AIRPANDA_0189], AIRPANDA_0134, AIRPANDA_0135);
+    AIRPANDA_0130(AIRPANDA_0217, 0x0, 0x7F);
+    AIRPANDA_0130(AIRPANDA_0235[AIRPANDA_0193], 0x64, 0x3E8);
+    AIRPANDA_0130(AIRPANDA_0235[AIRPANDA_0194], 0x64, 0x3E8);
+    AIRPANDA_0130(AIRPANDA_0235[AIRPANDA_0195], 0x64, 0x3E8);
+    AIRPANDA_0130(AIRPANDA_0235[AIRPANDA_0196], 0x64, 0x3E8);
+    AIRPANDA_0130(AIRPANDA_0235[AIRPANDA_0197], FALSE, TRUE);
+    AIRPANDA_0130(AIRPANDA_0235[AIRPANDA_0191], AIRPANDA_0140, AIRPANDA_0141);
+    AIRPANDA_078();
+}
+function AIRPANDA_0107(AIRPANDA_0108) {
+	AIRPANDA_0236[AIRPANDA_0229] = 0x0; 
+	while (AIRPANDA_0108) { 
+		AIRPANDA_0236[AIRPANDA_0229]++; 
+		AIRPANDA_0108 = abs(AIRPANDA_0108 >> 0x1);
+	}
+	return AIRPANDA_0236[AIRPANDA_0229];
+}
+function AIRPANDA_0109(AIRPANDA_0110, AIRPANDA_0111) {
+	AIRPANDA_0236[AIRPANDA_0229] = max(AIRPANDA_0107(AIRPANDA_0110), AIRPANDA_0107(AIRPANDA_0111));
+	if (AIRPANDA_0112(AIRPANDA_0110, AIRPANDA_0111)) {
+		AIRPANDA_0236[AIRPANDA_0229]++;
+	}
+	return AIRPANDA_0236[AIRPANDA_0229];
+}
+function AIRPANDA_0112(AIRPANDA_0110, AIRPANDA_0111) {
+	return (AIRPANDA_0110 < 0x0) || (AIRPANDA_0111 < 0x0);
+}
+function AIRPANDA_0115(AIRPANDA_0116) { 
+	return 0x1 << clamp(AIRPANDA_0116 - 0x1, 0x0, 0x1F);
+}
+function AIRPANDA_0117(AIRPANDA_0116) {
+	if (AIRPANDA_0116 == 0x20) return inv(0x1);
+	return 0x7FFFFFFF >> (0x1F - AIRPANDA_0116);
+}
+function AIRPANDA_0119(AIRPANDA_0116) {
+	return AIRPANDA_0117(AIRPANDA_0116 - 0x1);
+}
+function AIRPANDA_0121(AIRPANDA_0108, AIRPANDA_0116) {
+	if (AIRPANDA_0108 < 0x0) { 
+		return (abs(AIRPANDA_0108) & AIRPANDA_0119(AIRPANDA_0116)) | AIRPANDA_0115(AIRPANDA_0116);
+	}
+	return AIRPANDA_0108 & AIRPANDA_0119(AIRPANDA_0116); 
+}
+function AIRPANDA_0124() {
+	AIRPANDA_0236[AIRPANDA_0228] = SPVAR_3; 
+	AIRPANDA_0236[AIRPANDA_0226] = 0x0; 
+	AIRPANDA_0236[AIRPANDA_0230] = 0x0;
+}
+function AIRPANDA_0125(AIRPANDA_0108, AIRPANDA_0116) {
+	if (AIRPANDA_0108 & AIRPANDA_0115(AIRPANDA_0116)) {
+		return 0x0 - (AIRPANDA_0108 & AIRPANDA_0119(AIRPANDA_0116));
+	}
+	return AIRPANDA_0108 & AIRPANDA_0119(AIRPANDA_0116);
+}
+function AIRPANDA_0128(AIRPANDA_0129) {
+	return get_pvar(AIRPANDA_0129, 0x80000000, 0x7FFFFFFF, 0x0);
+}
+function AIRPANDA_0130(AIRPANDA_0108, min, max) {
+	AIRPANDA_0236[AIRPANDA_0227] = AIRPANDA_0109(min, max);
+	AIRPANDA_0108 = clamp(AIRPANDA_0108, min, max);
+	if (AIRPANDA_0112(min, max)) {
+		AIRPANDA_0108 = AIRPANDA_0121(AIRPANDA_0108, AIRPANDA_0236[AIRPANDA_0227]);
+	}
+	AIRPANDA_0108 = AIRPANDA_0108 & AIRPANDA_0117(AIRPANDA_0236[AIRPANDA_0227]); 
+	if (AIRPANDA_0236[AIRPANDA_0227] >= 0x20 - AIRPANDA_0236[AIRPANDA_0226]) { 
+		AIRPANDA_0236[AIRPANDA_0230] = AIRPANDA_0236[AIRPANDA_0230] | (AIRPANDA_0108 << AIRPANDA_0236[AIRPANDA_0226]);
+		set_pvar(AIRPANDA_0236[AIRPANDA_0228], AIRPANDA_0236[AIRPANDA_0230]);
+		AIRPANDA_0236[AIRPANDA_0228]++;
+		AIRPANDA_0236[AIRPANDA_0227] -= (0x20 - AIRPANDA_0236[AIRPANDA_0226]);
+		AIRPANDA_0108 = AIRPANDA_0108 >> (0x20 - AIRPANDA_0236[AIRPANDA_0226]);
+		AIRPANDA_0236[AIRPANDA_0226] = 0x0;
+		AIRPANDA_0236[AIRPANDA_0230] = 0x0;
+	}
+	AIRPANDA_0236[AIRPANDA_0230] = AIRPANDA_0236[AIRPANDA_0230] | (AIRPANDA_0108 << AIRPANDA_0236[AIRPANDA_0226]);
+	AIRPANDA_0236[AIRPANDA_0226] += AIRPANDA_0236[AIRPANDA_0227];
+	if (!AIRPANDA_0236[AIRPANDA_0226]) {
+		AIRPANDA_0236[AIRPANDA_0230] = 0x0;
+	}
+	set_pvar(AIRPANDA_0236[AIRPANDA_0228], AIRPANDA_0236[AIRPANDA_0230]);
+}
+function AIRPANDA_0132(min, max) {
+	AIRPANDA_0236[AIRPANDA_0227] = AIRPANDA_0109(min, max);
+	AIRPANDA_0236[AIRPANDA_0230] = (AIRPANDA_0128(AIRPANDA_0236[AIRPANDA_0228]) >> AIRPANDA_0236[AIRPANDA_0226]) & AIRPANDA_0117(AIRPANDA_0236[AIRPANDA_0227]);
+	if (AIRPANDA_0236[AIRPANDA_0227] >= 0x20 - AIRPANDA_0236[AIRPANDA_0226]) {
+		AIRPANDA_0236[AIRPANDA_0230] = (AIRPANDA_0236[AIRPANDA_0230] & AIRPANDA_0117(0x20 - AIRPANDA_0236[AIRPANDA_0226])) | ((AIRPANDA_0128(AIRPANDA_0236[AIRPANDA_0228] + 0x1) & AIRPANDA_0117(AIRPANDA_0236[AIRPANDA_0227] - (0x20 - AIRPANDA_0236[AIRPANDA_0226]))) << (0x20 - AIRPANDA_0236[AIRPANDA_0226]));
+	}
+	AIRPANDA_0236[AIRPANDA_0226] += AIRPANDA_0236[AIRPANDA_0227];
+	AIRPANDA_0236[AIRPANDA_0230] = AIRPANDA_0236[AIRPANDA_0230] & AIRPANDA_0117(AIRPANDA_0236[AIRPANDA_0227]); 
+	if (AIRPANDA_0236[AIRPANDA_0226] >= 0x20) {
+		AIRPANDA_0236[AIRPANDA_0228]++;
+		AIRPANDA_0236[AIRPANDA_0226] -= 0x20;
+	}
+	if (AIRPANDA_0112(min, max)) { 
+		AIRPANDA_0236[AIRPANDA_0230] = AIRPANDA_0125(AIRPANDA_0236[AIRPANDA_0230], AIRPANDA_0236[AIRPANDA_0227]); 
+	}
+	if (AIRPANDA_0236[AIRPANDA_0230] < min || AIRPANDA_0236[AIRPANDA_0230] > max) { 
+		return 0x0; 
+	}
+	return AIRPANDA_0236[AIRPANDA_0230];
+}
+function AIRPANDA_0133() {
+	AIRPANDA_0233[AIRPANDA_0176] = !AIRPANDA_0233[AIRPANDA_0176]; 
+	set_remapper(XB1_VIEW, PS5_TOUCH); 
+}
+combo AIRPANDA_00 {
+	wait(0xF0);
+	AIRPANDA_0231[AIRPANDA_0160] = TRUE;
+}
+combo AIRPANDA_01 {
+	set_val(XB1_X, 0x64);
+	wait(AIRPANDA_0237[AIRPANDA_0220]);
+}
+combo AIRPANDA_02 {
+	set_val(XB1_X, 0x0);
+	set_val(XB1_LX, 0x0);
+	set_val(XB1_LY, 0x0);
+	wait(AIRPANDA_0237[AIRPANDA_0225]);
+	set_val(XB1_X, 0x64);
+	set_val(XB1_LX, 0x0);
+	set_val(XB1_LY, 0x0);
+	wait(AIRPANDA_0237[AIRPANDA_0220]);
+}
+combo AIRPANDA_03 {
+	wait(0xFA0);
+	AIRPANDA_0105();
+}
+const image AIRPANDA_0434 = {0x80, 0x40, 0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0x03,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFC,  0x21,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF9,  0x24,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF8,  0xA8,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF0,  0x20,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF3,  0xFE,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF0,  0x20,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF0,  0xA8,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF9,  0x24,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFC,  0x01,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFE,  0x07,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0x1F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0x1F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFE,  0x1F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0x1E,  0x1F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFE,  0x1E,  0x1F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFE,  0x0E,  0x1F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFE,  0x70,  0x0C,  0x1F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFC,  0x27,  0x8C,  0x1F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF8,  0x1F,  0xE8,  0x3F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF8,  0x3F,  0x90,  0x3F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF8,  0x7F,  0x00,  0x3F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFC,  0x71,  0x80,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFE,  0xF1,  0xC8,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFE,  0xE1,  0xB8,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFE,  0xE3,  0x38,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFE,  0xE3,  0x90,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFE,  0xFF,  0x30,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0x7F,  0xE0,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0x1F,  0x80,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFE,  0x00,  0x00,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFC,  0x00,  0x00,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF8,  0x00,  0xFC,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xE0,  0x03,  0xFE,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xC0,  0x07,  0xFE,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0x80,  0x0F,  0xFF,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0x00,  0x1F,  0xFF,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFC,  0x00,  0x3F,  0xFF,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF0,  0x07,  0x7F,  0xFF,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xE0,  0x1F,  0x7F,  0xFF,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF9,  0x3E,  0x7F,  0xFF,  0x1F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFC,  0x3F,  0xFE,  0x0F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF0,  0x1F,  0xFC,  0x03,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xE0,  0x0F,  0xF8,  0x01,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0x80,  0x07,  0xF0,  0x00,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0x00,  0x03,  0xE0,  0x00,  0x3F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFE,  0x00,  0x00,  0x00,  0x00,  0x1E,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF8,  0x00,  0x0F,  0xF8,  0x00,  0x0C,  0x3F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF0,  0x00,  0x7F,  0xFF,  0x80,  0x00,  0x3F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xE0,  0x01,  0xFF,  0xFF,  0xE0,  0x00,  0x3F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF8,  0xC0,  0x07,  0xFF,  0xFF,  0xF8,  0x00,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF0,  0x00,  0x1F,  0xFF,  0xFF,  0xFF,  0x00,  0x7F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF0,  0x00,  0x7F,  0xFF,  0xFF,  0xFF,  0x80,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF0,  0x01,  0xFF,  0xFF,  0xFF,  0xFF,  0xE1,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xF8,  0x03,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFC,  0x0F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFE,  0x1F,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF,  0xFF};

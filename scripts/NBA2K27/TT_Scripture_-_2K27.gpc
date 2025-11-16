@@ -1,0 +1,1411 @@
+// Script by TT Scripture
+
+/*
+ 
+
+
+*/
+
+
+
+// int flick_up_shooting_active = 1;
+int full_court_green_tap_ms = 100; // configurable Full Court Green Tap hold in ms
+int full_court_green_active = 0;
+int full_court_green_timer = 0;
+int flick_sequences_enabled = 0;
+int delay_duration = 50;
+int Delay_duration_Insta = 50;
+int STICK_DOWN_VALUE = 100000;
+int STICK_UP_VALUE = -100000;
+int RX_UP_VALUE = 25;
+int random_variation_min = -4;
+int random_variation_max = 4;
+int random_hold_variation_min = -2;
+int random_hold_variation_max = 2;
+int stabilization_variation = 150000;
+int reverse_flick_mode = 1;
+int rs_shooting_active = 0;
+int rs_hold_duration = 300;
+int Insta_shot_active = 1;
+int Insta_shot_duration = 585;
+int isHolding = 0;
+int holdTimer = 0;
+int rs_is_up = 0;
+int remap_square_active = 0; // Toggle for L3/R3 remap (0 = L3, 1 = R3)
+int stamina_blocked = 0;
+// --- Idle screensaver state ---
+int saver_on = 0;
+int sx = 2, sy = 16;
+int svx = 2, svy = 2;
+int msg_w, line1_w, line2_w;
+int saver_timer = 0;
+const string saver_line1[] = { "TT Scripture V4" };
+const string saver_line2[] = { "" };
+const string tt_title[] = { "TT Scripture V4" };
+
+// ===== Menu state =====
+int startup = 1, numpgs = 11, menu_enabled = 0, page = 1, menuSelection, toggleType, pageChg_s;
+int flashtoggle, isXbox;
+
+// ===== Menu labels =====
+const string menu_header[] = { "Auto Green", "Tempo Speed (ms)", "Stability Enhancer", "Turbo Shots", "RS Shooting", "Insta Shot", "Insta Speed (ms)", "Insta Tempo (ms)", "Remap Square", "Full Court Green L1/LB", "Infinite Stamina" };
+const string pageChg[] = {"---------L2+RIGHT->", "<-L2+LEFT--L2+RIGHT->", "<-L2+LEFT---------"};
+const string item_toggle[] = {"L2 + UP/DOWN", "to change"};
+const string onOff[] = {"OFF", "ON", "", "L3", "R3"};
+const string ms[] = {"ms"};
+const string reverse_modes[] = {"Hop Jumper", "Turbo Fade"};
+
+// display for Turbo Shots page
+int isLoadingScreen = 1;
+define LoadingTimer = 2000;
+int LoadingTimeToRun = 0;
+
+// Additional variables for graph
+int graph_width;
+int x_start;
+int mid_x;
+int bar_pos;
+int infinite_stamina = 1;      // ON/OFF toggle
+int ground_control = 70;       // % of stick strength (lower = less stamina drain)
+int ground_stick_active = 1;   // must be ON
+int shooting_active = 0;       // disables stamina while shooting
+// New flag for turbo fade
+int is_turbo_fade = 0;
+int flick_up_shooting_active = 1;
+
+// ===== Init =====
+init {
+flick_up_shooting_active = 1;
+delay_duration = 50;
+Delay_duration_Insta = 50;
+reverse_flick_mode = 1;
+rs_shooting_active = 0;
+rs_hold_duration = 300;
+Insta_shot_active = 1;
+Insta_shot_duration = 585;
+remap_square_active = 0;
+stabilization_variation = 150000;
+full_court_green_tap_ms = 100;
+full_court_green_active = 0;
+full_court_green_timer = 0;
+saver_on = 0;
+saver_timer = 0;
+cls_oled(OLED_BLACK);
+}
+
+// ===== Main =====
+main {
+// Console detect
+if (get_console() == PIO_XB1) {
+isXbox = 1;
+} else {
+isXbox = 0;
+}
+
+// ===== STARTUP / LOADING =====
+
+LoadingTimeToRun += get_rtime();
+if (LoadingTimeToRun >= LoadingTimer) {
+cls_oled(OLED_BLACK);
+isLoadingScreen = 0;
+startup = 0;
+saver_on = 1;
+saver_timer = 80; // draw a saver frame soon
+}
+combo_run(Infinite_Stamina_Control);
+
+if (get_val(PS4_SQUARE)
+    || combo_running(Insta_shot_reversed)) {   // ✅ ADD THIS
+    shooting_active = 1;
+} else if (!combo_running(flick_up_rs_smooth)
+        && !combo_running(flick_up_rs_reversed)
+        && !combo_running(Insta_shot_smooth)
+        && !combo_running(Insta_shot_reversed)) { // ✅ ADD THIS
+    shooting_active = 0;
+}
+// ===== Menu open/close =====
+if (event_press(PS4_CIRCLE) && menu_enabled) { // CLOSE MENU
+menu_enabled = 0;
+combo_run(vibration_off);
+set_rgb(0,255,0);
+saver_on = 1; // enable saver when leaving menu
+} else if (!menu_enabled && get_val(PS4_L2) && event_press(PS4_OPTIONS)) { // OPEN MENU
+menu_enabled = 1;
+page = 1;
+combo_run(vibration_on);
+set_rgb(0,0,255);
+saver_on = 0; // pause saver while menu is up
+}
+
+// ===== MENU RENDER & INPUT =====
+if (menu_enabled) {
+cls_oled(OLED_BLACK);
+rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE);
+line_oled(0, 15, OLED_WIDTH - 1, 15, 1, OLED_WHITE);
+print(center_x(get_string_length(menu_header[page - 1]), OLED_FONT_SMALL_WIDTH), 4, OLED_FONT_SMALL, OLED_WHITE, pageChg[pageChg_s]);
+print(center_x(get_string_length(menu_header[page - 1]), OLED_FONT_SMALL_WIDTH), 20, OLED_FONT_SMALL, OLED_WHITE, menu_header[page - 1]);
+
+// pages with numeric edit: 2 (tempo), 3 (stability enhancer), 7 (Insta speed), 8 (Insta tempo), 10 (Square hold)
+if (page == 4) { // Turbo Shots page shows reverse_modes
+print(center_x(get_string_length(reverse_modes[reverse_flick_mode]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, reverse_modes[reverse_flick_mode]);
+} else if (page == 9) { // Remap page shows L3/R3
+print(center_x(get_string_length(onOff[remap_square_active + 3]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, onOff[remap_square_active + 3]);
+} else if (page != 2 && page != 3 && page != 7 && page != 8 && page != 10) { // other non-numeric pages show ON/OFF
+print(center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, onOff[menuSelection]);
+}
+print(center_x(get_string_length(item_toggle[toggleType]), OLED_FONT_SMALL_WIDTH), 50, OLED_FONT_SMALL, OLED_WHITE, item_toggle[toggleType]);
+
+if (page == 1) {
+pageChg_s = 0;
+} else if (page == numpgs) {
+pageChg_s = 2;
+} else {
+pageChg_s = 1;
+}
+if (page > numpgs) {
+page = numpgs;
+}
+if (page < 1) {
+page = 1;
+}
+if (get_val(PS4_L2)) {
+set_val(PS4_UP,0);
+set_val(PS4_DOWN,0);
+set_val(PS4_LEFT,0);
+set_val(PS4_RIGHT,0);
+}
+if (get_val(PS4_L2) && event_press(PS4_LEFT)) {
+page--;
+combo_run(vibration_valchg);
+}
+if (get_val(PS4_L2) && event_press(PS4_RIGHT)) {
+page++;
+combo_run(vibration_valchg);
+}
+
+// Page 1: Auto Green
+if (page == 1) {
+menuSelection = flick_up_shooting_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+flick_up_shooting_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+flick_up_shooting_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+}
+
+// Page 2: Tempo Speed (ms) -> delay_duration
+if (page == 2) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(delay_duration, FindDigits(delay_duration));
+print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+draw_x_graph(delay_duration, 0, 300, 45);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+delay_duration++;
+}
+if (event_press(PS4_DOWN)) {
+delay_duration--;
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+if (delay_duration > 300) {
+delay_duration = 300;
+}
+if (delay_duration < 0) {
+delay_duration = 0;
+}
+}
+
+// Page 3: Stability Enhancer -> stabilization_variation
+if (page == 3) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(stabilization_variation, FindDigits(stabilization_variation));
+print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+draw_x_graph(stabilization_variation, 10, 150000, 45);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+stabilization_variation++;
+}
+if (event_press(PS4_DOWN)) {
+stabilization_variation--;
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+if (stabilization_variation > 150000) {
+stabilization_variation = 150000;
+}
+if (stabilization_variation < 10) {
+stabilization_variation = 10;
+}
+}
+
+// Page 4: Turbo Shots (reverse_flick_mode ON/OFF)
+if (page == 4) {
+menuSelection = reverse_flick_mode;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+reverse_flick_mode = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+reverse_flick_mode = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+}
+
+// Page 5: RS Shooting
+if (page == 5) {
+menuSelection = rs_shooting_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+rs_shooting_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+rs_shooting_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+}
+
+// Page 6: Insta Shot
+if (page == 6) {
+menuSelection = Insta_shot_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+Insta_shot_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+Insta_shot_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+}
+
+// Page 7: Insta Speed (ms) -> Insta_shot_duration
+if (page == 7) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(Insta_shot_duration, FindDigits(Insta_shot_duration));
+print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+draw_x_graph(Insta_shot_duration, 100, 1000, 45);
+if (get_val(PS4_L2)) {
+if (get_val(PS4_R1)) {
+if (event_press(PS4_UP)) {
+Insta_shot_duration += 10;
+}
+if (event_press(PS4_DOWN)) {
+Insta_shot_duration -= 10;
+}
+} else {
+if (event_press(PS4_UP)) {
+Insta_shot_duration += 1;
+}
+if (event_press(PS4_DOWN)) {
+Insta_shot_duration -= 1;
+}
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+if (Insta_shot_duration > 1000) {
+Insta_shot_duration = 1000;
+}
+if (Insta_shot_duration < 100) {
+Insta_shot_duration = 100;
+}
+}
+
+// Page 8: Insta Tempo (ms) -> Delay_duration_Insta
+if (page == 8) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(Delay_duration_Insta, FindDigits(Delay_duration_Insta));
+print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+draw_x_graph(Delay_duration_Insta, 0, 300, 45);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+Delay_duration_Insta++;
+}
+if (event_press(PS4_DOWN)) {
+Delay_duration_Insta--;
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+if (Delay_duration_Insta > 300) {
+Delay_duration_Insta = 300;
+}
+if (Delay_duration_Insta < 0) {
+Delay_duration_Insta = 0;
+}
+}
+
+// Page 9: Remap Square (L3/R3)
+if (page == 9) {
+menuSelection = remap_square_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+remap_square_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+remap_square_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+}
+// Page 10: Full Court Green L1/LB (ms)
+if (page == 10) {
+menuSelection = 2;
+NumberToString(full_court_green_tap_ms, FindDigits(full_court_green_tap_ms));
+print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+draw_x_graph(full_court_green_tap_ms, 1, 1000, 45);
+if (event_press(PS4_UP)) full_court_green_tap_ms += 10;
+if (event_press(PS4_DOWN)) full_court_green_tap_ms -= 10;
+if (full_court_green_tap_ms > 1000) full_court_green_tap_ms = 1000;
+if (full_court_green_tap_ms < 1) full_court_green_tap_ms = 1;
+}
+// Page 11: Infinite Stamina ON/OFF
+if (page == 11) {
+menuSelection = infinite_stamina;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+    infinite_stamina = 1;
+    flashtoggle = 1;
+    combo_run(vibration_valchg);
+    combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+    infinite_stamina = 0;
+    flashtoggle = 0;
+    combo_run(vibration_valchg);
+    combo_run(flashtog);
+}
+}
+
+} // end menu_enabled
+
+// ===== Gameplay logic (no menu) =====
+if (!menu_enabled) {
+// idle visuals
+set_rgb(0,255,0);
+
+// run saver every ~80ms only when outside the menu
+if (saver_on) {
+saver_timer += get_rtime();
+if (saver_timer >= 80) {
+saver_step();
+saver_timer = 0;
+}
+}
+
+// L3/R3 Remap Logic for Square
+if (remap_square_active == 0) {
+if (get_val(PS4_L3)) {
+set_val(PS4_SQUARE, 100);
+}
+} else {
+if (get_val(PS4_R3)) {
+set_val(PS4_SQUARE, 100);
+}
+}
+
+// Full Court Green L1/LB: L1 holds Square for the configured time.
+// It is intentionally separated from Auto Green, so L1 does NOT move the RS.
+if (event_press(PS4_L1)) {
+    full_court_green_active = 1;
+    combo_run(full_court_green_tap);
+}
+
+// Auto Green: original Square behavior is kept unchanged.
+if (flick_up_shooting_active && !full_court_green_active) {
+    if (event_press(PS4_SQUARE) && !(remap_square_active == 0 && get_val(PS4_L3)) && !(remap_square_active == 1 && get_val(PS4_R3))) {
+        if (reverse_flick_mode && get_val(PS4_R2)) {
+            is_turbo_fade = 1;
+        } else {
+            is_turbo_fade = 0;
+        }
+    }
+
+    if (get_val(PS4_SQUARE) && !(remap_square_active == 0 && get_val(PS4_L3)) && !(remap_square_active == 1 && get_val(PS4_R3))) {
+        set_val(PS4_SQUARE, 0);
+        if (is_turbo_fade) {
+            set_val(PS4_RY, STICK_UP_VALUE + random(random_variation_min, random_variation_max));
+        } else {
+            set_val(PS4_RY, STICK_DOWN_VALUE + random(random_variation_min, random_variation_max));
+        }
+        set_val(PS4_RX, random(random_variation_min, random_variation_max));
+    }
+
+    if (event_release(PS4_SQUARE) && !(remap_square_active == 0 && get_val(PS4_L3)) && !(remap_square_active == 1 && get_val(PS4_R3))) {
+        if (is_turbo_fade) {
+            combo_run(flick_up_rs_reversed);
+        } else {
+            combo_run(flick_up_rs_smooth);
+        }
+        is_turbo_fade = 0;
+    }
+}
+// D-PAD DOWN → Go To Shot Insta (priority)
+if (event_press(PS4_DOWN)) {
+    combo_run(go_to_shot_insta);
+    
+}
+
+
+
+// 2. Normal Insta Shot logic
+if (Insta_shot_active) {
+    if ((remap_square_active == 0 && event_press(PS4_R3)) ||
+        (remap_square_active == 1 && event_press(PS4_L3))) {
+
+        if (reverse_flick_mode && get_val(PS4_R2)) {
+            combo_run(Insta_shot_reversed);
+        } else {
+            combo_run(Insta_shot_smooth);
+        }
+    }
+}
+
+// Insta Shot Logic (R3/L3 depending on remap)
+if (Insta_shot_active) {
+if ((remap_square_active == 0 && event_press(PS4_R3)) || (remap_square_active == 1 && event_press(PS4_L3))) {
+if (reverse_flick_mode && get_val(PS4_R2)) {
+combo_run(Insta_shot_reversed);
+} else {
+combo_run(Insta_shot_smooth);
+}
+}
+}
+
+// RS Shooting (detect manual stick hold)
+if (rs_shooting_active) {
+if (!(get_val(PS4_L2) > 20 && (get_val(PS4_R1) > 20 || get_val(PS4_LEFT) || get_val(PS4_RIGHT) || get_val(PS4_UP) || get_val(PS4_DOWN) || get_val(PS4_OPTIONS)))) {
+if (abs(get_val(PS4_RY)) > 30 || abs(get_val(PS4_RX)) > 30) {
+if (!isHolding) {
+isHolding = 1;
+holdTimer = 0;
+if (get_val(PS4_RY) < 0) {
+rs_is_up = 1;
+} else {
+rs_is_up = 0;
+}
+}
+holdTimer += get_rtime();
+} else {
+if (isHolding) {
+if (holdTimer > rs_hold_duration) {
+if (!rs_is_up) {
+combo_run(flick_up_rs_smooth);
+} else {
+combo_run(flick_up_rs_reversed);
+}
+}
+isHolding = 0;
+holdTimer = 0;
+}
+}
+}
+}
+} // end !menu_enabled
+} // end big else (post-startup)
+
+
+// ===== OLED helpers =====
+
+
+function saver_step() {
+sx += 3;
+if (sx >= OLED_HEIGHT) sx = 0;
+draw_custom_oled();
+}
+
+function draw_custom_oled() {
+cls_oled(OLED_BLACK);
+pixel_oled(70, 5, 1);
+pixel_oled(71, 5, 1);
+pixel_oled(72, 5, 1);
+pixel_oled(80, 5, 1);
+pixel_oled(81, 5, 1);
+pixel_oled(69, 6, 1);
+pixel_oled(70, 6, 1);
+pixel_oled(71, 6, 1);
+pixel_oled(72, 6, 1);
+pixel_oled(73, 6, 1);
+pixel_oled(76, 6, 1);
+pixel_oled(77, 6, 1);
+pixel_oled(81, 6, 1);
+pixel_oled(69, 7, 1);
+pixel_oled(73, 7, 1);
+pixel_oled(74, 7, 1);
+pixel_oled(81, 7, 1);
+pixel_oled(69, 8, 1);
+pixel_oled(70, 8, 1);
+pixel_oled(71, 8, 1);
+pixel_oled(72, 8, 1);
+pixel_oled(73, 8, 1);
+pixel_oled(81, 8, 1);
+pixel_oled(62, 9, 1);
+pixel_oled(70, 9, 1);
+pixel_oled(71, 9, 1);
+pixel_oled(72, 9, 1);
+pixel_oled(73, 9, 1);
+pixel_oled(81, 9, 1);
+pixel_oled(62, 10, 1);
+pixel_oled(71, 10, 1);
+pixel_oled(75, 10, 1);
+pixel_oled(76, 10, 1);
+pixel_oled(77, 10, 1);
+pixel_oled(78, 10, 1);
+pixel_oled(81, 10, 1);
+pixel_oled(55, 11, 1);
+pixel_oled(56, 11, 1);
+pixel_oled(57, 11, 1);
+pixel_oled(61, 11, 1);
+pixel_oled(74, 11, 1);
+pixel_oled(81, 11, 1);
+pixel_oled(54, 12, 1);
+pixel_oled(55, 12, 1);
+pixel_oled(56, 12, 1);
+pixel_oled(57, 12, 1);
+pixel_oled(58, 12, 1);
+pixel_oled(61, 12, 1);
+pixel_oled(74, 12, 1);
+pixel_oled(81, 12, 1);
+pixel_oled(54, 13, 1);
+pixel_oled(55, 13, 1);
+pixel_oled(56, 13, 1);
+pixel_oled(57, 13, 1);
+pixel_oled(58, 13, 1);
+pixel_oled(60, 13, 1);
+pixel_oled(74, 13, 1);
+pixel_oled(81, 13, 1);
+pixel_oled(54, 14, 1);
+pixel_oled(55, 14, 1);
+pixel_oled(56, 14, 1);
+pixel_oled(57, 14, 1);
+pixel_oled(58, 14, 1);
+pixel_oled(59, 14, 1);
+pixel_oled(60, 14, 1);
+pixel_oled(70, 14, 1);
+pixel_oled(71, 14, 1);
+pixel_oled(73, 14, 1);
+pixel_oled(74, 14, 1);
+pixel_oled(75, 14, 1);
+pixel_oled(76, 14, 1);
+pixel_oled(77, 14, 1);
+pixel_oled(78, 14, 1);
+pixel_oled(81, 14, 1);
+pixel_oled(56, 15, 1);
+pixel_oled(57, 15, 1);
+pixel_oled(58, 15, 1);
+pixel_oled(59, 15, 1);
+pixel_oled(81, 15, 1);
+pixel_oled(56, 16, 1);
+pixel_oled(57, 16, 1);
+pixel_oled(58, 16, 1);
+pixel_oled(78, 16, 1);
+pixel_oled(79, 16, 1);
+pixel_oled(80, 16, 1);
+pixel_oled(81, 16, 1);
+pixel_oled(54, 17, 1);
+pixel_oled(55, 17, 1);
+pixel_oled(56, 17, 1);
+pixel_oled(57, 17, 1);
+pixel_oled(75, 17, 1);
+pixel_oled(52, 18, 1);
+pixel_oled(53, 18, 1);
+pixel_oled(56, 18, 1);
+pixel_oled(72, 18, 1);
+pixel_oled(75, 18, 1);
+pixel_oled(51, 19, 1);
+pixel_oled(56, 19, 1);
+pixel_oled(72, 19, 1);
+pixel_oled(75, 19, 1);
+pixel_oled(50, 20, 1);
+pixel_oled(51, 20, 1);
+pixel_oled(56, 20, 1);
+pixel_oled(55, 21, 1);
+pixel_oled(56, 21, 1);
+pixel_oled(55, 22, 1);
+pixel_oled(56, 22, 1);
+pixel_oled(54, 23, 1);
+pixel_oled(55, 23, 1);
+pixel_oled(56, 23, 1);
+pixel_oled(57, 23, 1);
+pixel_oled(54, 24, 1);
+pixel_oled(57, 24, 1);
+pixel_oled(58, 24, 1);
+pixel_oled(49, 25, 1);
+pixel_oled(50, 25, 1);
+pixel_oled(51, 25, 1);
+pixel_oled(53, 25, 1);
+pixel_oled(58, 25, 1);
+pixel_oled(49, 26, 1);
+pixel_oled(52, 26, 1);
+pixel_oled(53, 26, 1);
+pixel_oled(57, 26, 1);
+pixel_oled(48, 27, 1);
+pixel_oled(56, 27, 1);
+pixel_oled(55, 28, 1);
+pixel_oled(55, 29, 1);
+pixel_oled(56, 30, 1);
+pixel_oled(49, 34, 1);
+pixel_oled(50, 34, 1);
+pixel_oled(51, 34, 1);
+pixel_oled(52, 34, 1);
+pixel_oled(53, 34, 1);
+pixel_oled(56, 34, 1);
+pixel_oled(57, 34, 1);
+pixel_oled(58, 34, 1);
+pixel_oled(61, 34, 1);
+pixel_oled(62, 34, 1);
+pixel_oled(63, 34, 1);
+pixel_oled(66, 34, 1);
+pixel_oled(67, 34, 1);
+pixel_oled(68, 34, 1);
+pixel_oled(69, 34, 1);
+pixel_oled(70, 34, 1);
+pixel_oled(71, 34, 1);
+pixel_oled(74, 34, 1);
+pixel_oled(75, 34, 1);
+pixel_oled(76, 34, 1);
+pixel_oled(77, 34, 1);
+pixel_oled(78, 34, 1);
+pixel_oled(79, 34, 1);
+pixel_oled(80, 34, 1);
+pixel_oled(48, 35, 1);
+pixel_oled(49, 35, 1);
+pixel_oled(50, 35, 1);
+pixel_oled(51, 35, 1);
+pixel_oled(52, 35, 1);
+pixel_oled(53, 35, 1);
+pixel_oled(54, 35, 1);
+pixel_oled(56, 35, 1);
+pixel_oled(57, 35, 1);
+pixel_oled(58, 35, 1);
+pixel_oled(60, 35, 1);
+pixel_oled(61, 35, 1);
+pixel_oled(62, 35, 1);
+pixel_oled(63, 35, 1);
+pixel_oled(65, 35, 1);
+pixel_oled(66, 35, 1);
+pixel_oled(67, 35, 1);
+pixel_oled(68, 35, 1);
+pixel_oled(69, 35, 1);
+pixel_oled(70, 35, 1);
+pixel_oled(71, 35, 1);
+pixel_oled(72, 35, 1);
+pixel_oled(74, 35, 1);
+pixel_oled(75, 35, 1);
+pixel_oled(76, 35, 1);
+pixel_oled(77, 35, 1);
+pixel_oled(78, 35, 1);
+pixel_oled(79, 35, 1);
+pixel_oled(80, 35, 1);
+pixel_oled(48, 36, 1);
+pixel_oled(49, 36, 1);
+pixel_oled(52, 36, 1);
+pixel_oled(53, 36, 1);
+pixel_oled(54, 36, 1);
+pixel_oled(56, 36, 1);
+pixel_oled(57, 36, 1);
+pixel_oled(58, 36, 1);
+pixel_oled(60, 36, 1);
+pixel_oled(61, 36, 1);
+pixel_oled(62, 36, 1);
+pixel_oled(65, 36, 1);
+pixel_oled(66, 36, 1);
+pixel_oled(67, 36, 1);
+pixel_oled(70, 36, 1);
+pixel_oled(71, 36, 1);
+pixel_oled(72, 36, 1);
+pixel_oled(74, 36, 1);
+pixel_oled(75, 36, 1);
+pixel_oled(78, 36, 1);
+pixel_oled(79, 36, 1);
+pixel_oled(80, 36, 1);
+pixel_oled(52, 37, 1);
+pixel_oled(53, 37, 1);
+pixel_oled(54, 37, 1);
+pixel_oled(56, 37, 1);
+pixel_oled(57, 37, 1);
+pixel_oled(58, 37, 1);
+pixel_oled(59, 37, 1);
+pixel_oled(60, 37, 1);
+pixel_oled(61, 37, 1);
+pixel_oled(70, 37, 1);
+pixel_oled(71, 37, 1);
+pixel_oled(72, 37, 1);
+pixel_oled(78, 37, 1);
+pixel_oled(79, 37, 1);
+pixel_oled(80, 37, 1);
+pixel_oled(51, 38, 1);
+pixel_oled(52, 38, 1);
+pixel_oled(53, 38, 1);
+pixel_oled(54, 38, 1);
+pixel_oled(56, 38, 1);
+pixel_oled(57, 38, 1);
+pixel_oled(58, 38, 1);
+pixel_oled(59, 38, 1);
+pixel_oled(60, 38, 1);
+pixel_oled(69, 38, 1);
+pixel_oled(70, 38, 1);
+pixel_oled(71, 38, 1);
+pixel_oled(77, 38, 1);
+pixel_oled(78, 38, 1);
+pixel_oled(79, 38, 1);
+pixel_oled(50, 39, 1);
+pixel_oled(51, 39, 1);
+pixel_oled(52, 39, 1);
+pixel_oled(53, 39, 1);
+pixel_oled(56, 39, 1);
+pixel_oled(57, 39, 1);
+pixel_oled(58, 39, 1);
+pixel_oled(59, 39, 1);
+pixel_oled(60, 39, 1);
+pixel_oled(61, 39, 1);
+pixel_oled(68, 39, 1);
+pixel_oled(69, 39, 1);
+pixel_oled(70, 39, 1);
+pixel_oled(77, 39, 1);
+pixel_oled(78, 39, 1);
+pixel_oled(79, 39, 1);
+pixel_oled(49, 40, 1);
+pixel_oled(50, 40, 1);
+pixel_oled(51, 40, 1);
+pixel_oled(52, 40, 1);
+pixel_oled(56, 40, 1);
+pixel_oled(57, 40, 1);
+pixel_oled(58, 40, 1);
+pixel_oled(59, 40, 1);
+pixel_oled(60, 40, 1);
+pixel_oled(61, 40, 1);
+pixel_oled(62, 40, 1);
+pixel_oled(67, 40, 1);
+pixel_oled(68, 40, 1);
+pixel_oled(69, 40, 1);
+pixel_oled(76, 40, 1);
+pixel_oled(77, 40, 1);
+pixel_oled(78, 40, 1);
+pixel_oled(48, 41, 1);
+pixel_oled(49, 41, 1);
+pixel_oled(50, 41, 1);
+pixel_oled(56, 41, 1);
+pixel_oled(57, 41, 1);
+pixel_oled(58, 41, 1);
+pixel_oled(60, 41, 1);
+pixel_oled(61, 41, 1);
+pixel_oled(62, 41, 1);
+pixel_oled(66, 41, 1);
+pixel_oled(67, 41, 1);
+pixel_oled(68, 41, 1);
+pixel_oled(76, 41, 1);
+pixel_oled(77, 41, 1);
+pixel_oled(78, 41, 1);
+pixel_oled(48, 42, 1);
+pixel_oled(49, 42, 1);
+pixel_oled(50, 42, 1);
+pixel_oled(51, 42, 1);
+pixel_oled(52, 42, 1);
+pixel_oled(53, 42, 1);
+pixel_oled(54, 42, 1);
+pixel_oled(56, 42, 1);
+pixel_oled(57, 42, 1);
+pixel_oled(58, 42, 1);
+pixel_oled(61, 42, 1);
+pixel_oled(62, 42, 1);
+pixel_oled(63, 42, 1);
+pixel_oled(65, 42, 1);
+pixel_oled(66, 42, 1);
+pixel_oled(67, 42, 1);
+pixel_oled(68, 42, 1);
+pixel_oled(69, 42, 1);
+pixel_oled(70, 42, 1);
+pixel_oled(71, 42, 1);
+pixel_oled(72, 42, 1);
+pixel_oled(75, 42, 1);
+pixel_oled(76, 42, 1);
+pixel_oled(77, 42, 1);
+pixel_oled(48, 43, 1);
+pixel_oled(49, 43, 1);
+pixel_oled(50, 43, 1);
+pixel_oled(51, 43, 1);
+pixel_oled(52, 43, 1);
+pixel_oled(53, 43, 1);
+pixel_oled(54, 43, 1);
+pixel_oled(56, 43, 1);
+pixel_oled(57, 43, 1);
+pixel_oled(58, 43, 1);
+pixel_oled(61, 43, 1);
+pixel_oled(62, 43, 1);
+pixel_oled(63, 43, 1);
+pixel_oled(65, 43, 1);
+pixel_oled(66, 43, 1);
+pixel_oled(67, 43, 1);
+pixel_oled(68, 43, 1);
+pixel_oled(69, 43, 1);
+pixel_oled(70, 43, 1);
+pixel_oled(71, 43, 1);
+pixel_oled(72, 43, 1);
+pixel_oled(75, 43, 1);
+pixel_oled(76, 43, 1);
+pixel_oled(77, 43, 1);
+pixel_oled(47, 45, 1);
+pixel_oled(48, 45, 1);
+pixel_oled(49, 45, 1);
+pixel_oled(52, 45, 1);
+pixel_oled(53, 45, 1);
+pixel_oled(54, 45, 1);
+pixel_oled(55, 45, 1);
+pixel_oled(57, 45, 1);
+pixel_oled(58, 45, 1);
+pixel_oled(59, 45, 1);
+pixel_oled(60, 45, 1);
+pixel_oled(63, 45, 1);
+pixel_oled(64, 45, 1);
+pixel_oled(65, 45, 1);
+pixel_oled(68, 45, 1);
+pixel_oled(69, 45, 1);
+pixel_oled(70, 45, 1);
+pixel_oled(73, 45, 1);
+pixel_oled(74, 45, 1);
+pixel_oled(75, 45, 1);
+pixel_oled(78, 45, 1);
+pixel_oled(79, 45, 1);
+pixel_oled(80, 45, 1);
+pixel_oled(81, 45, 1);
+pixel_oled(47, 46, 1);
+pixel_oled(48, 46, 1);
+pixel_oled(49, 46, 1);
+pixel_oled(50, 46, 1);
+pixel_oled(52, 46, 1);
+pixel_oled(53, 46, 1);
+pixel_oled(54, 46, 1);
+pixel_oled(55, 46, 1);
+pixel_oled(57, 46, 1);
+pixel_oled(58, 46, 1);
+pixel_oled(59, 46, 1);
+pixel_oled(60, 46, 1);
+pixel_oled(61, 46, 1);
+pixel_oled(62, 46, 1);
+pixel_oled(63, 46, 1);
+pixel_oled(64, 46, 1);
+pixel_oled(65, 46, 1);
+pixel_oled(67, 46, 1);
+pixel_oled(68, 46, 1);
+pixel_oled(69, 46, 1);
+pixel_oled(70, 46, 1);
+pixel_oled(72, 46, 1);
+pixel_oled(73, 46, 1);
+pixel_oled(74, 46, 1);
+pixel_oled(75, 46, 1);
+pixel_oled(76, 46, 1);
+pixel_oled(77, 46, 1);
+pixel_oled(78, 46, 1);
+pixel_oled(79, 46, 1);
+pixel_oled(80, 46, 1);
+pixel_oled(81, 46, 1);
+pixel_oled(47, 47, 1);
+pixel_oled(50, 47, 1);
+pixel_oled(52, 47, 1);
+pixel_oled(53, 47, 1);
+pixel_oled(57, 47, 1);
+pixel_oled(58, 47, 1);
+pixel_oled(60, 47, 1);
+pixel_oled(61, 47, 1);
+pixel_oled(62, 47, 1);
+pixel_oled(63, 47, 1);
+pixel_oled(67, 47, 1);
+pixel_oled(68, 47, 1);
+pixel_oled(72, 47, 1);
+pixel_oled(73, 47, 1);
+pixel_oled(79, 47, 1);
+pixel_oled(47, 48, 1);
+pixel_oled(48, 48, 1);
+pixel_oled(49, 48, 1);
+pixel_oled(50, 48, 1);
+pixel_oled(52, 48, 1);
+pixel_oled(53, 48, 1);
+pixel_oled(54, 48, 1);
+pixel_oled(55, 48, 1);
+pixel_oled(57, 48, 1);
+pixel_oled(58, 48, 1);
+pixel_oled(59, 48, 1);
+pixel_oled(60, 48, 1);
+pixel_oled(62, 48, 1);
+pixel_oled(63, 48, 1);
+pixel_oled(64, 48, 1);
+pixel_oled(65, 48, 1);
+pixel_oled(67, 48, 1);
+pixel_oled(68, 48, 1);
+pixel_oled(69, 48, 1);
+pixel_oled(70, 48, 1);
+pixel_oled(72, 48, 1);
+pixel_oled(73, 48, 1);
+pixel_oled(79, 48, 1);
+pixel_oled(47, 49, 1);
+pixel_oled(48, 49, 1);
+pixel_oled(49, 49, 1);
+pixel_oled(52, 49, 1);
+pixel_oled(53, 49, 1);
+pixel_oled(57, 49, 1);
+pixel_oled(58, 49, 1);
+pixel_oled(59, 49, 1);
+pixel_oled(60, 49, 1);
+pixel_oled(62, 49, 1);
+pixel_oled(63, 49, 1);
+pixel_oled(67, 49, 1);
+pixel_oled(68, 49, 1);
+pixel_oled(72, 49, 1);
+pixel_oled(73, 49, 1);
+pixel_oled(79, 49, 1);
+pixel_oled(47, 50, 1);
+pixel_oled(52, 50, 1);
+pixel_oled(53, 50, 1);
+pixel_oled(54, 50, 1);
+pixel_oled(55, 50, 1);
+pixel_oled(57, 50, 1);
+pixel_oled(58, 50, 1);
+pixel_oled(60, 50, 1);
+pixel_oled(62, 50, 1);
+pixel_oled(63, 50, 1);
+pixel_oled(67, 50, 1);
+pixel_oled(68, 50, 1);
+pixel_oled(69, 50, 1);
+pixel_oled(70, 50, 1);
+pixel_oled(72, 50, 1);
+pixel_oled(73, 50, 1);
+pixel_oled(74, 50, 1);
+pixel_oled(75, 50, 1);
+pixel_oled(76, 50, 1);
+pixel_oled(79, 50, 1);
+pixel_oled(47, 51, 1);
+pixel_oled(52, 51, 1);
+pixel_oled(53, 51, 1);
+pixel_oled(54, 51, 1);
+pixel_oled(55, 51, 1);
+pixel_oled(57, 51, 1);
+pixel_oled(60, 51, 1);
+pixel_oled(63, 51, 1);
+pixel_oled(68, 51, 1);
+pixel_oled(69, 51, 1);
+pixel_oled(70, 51, 1);
+pixel_oled(73, 51, 1);
+pixel_oled(74, 51, 1);
+pixel_oled(75, 51, 1);
+pixel_oled(79, 51, 1);
+pixel_oled(47, 53, 1);
+pixel_oled(48, 53, 1);
+pixel_oled(49, 53, 1);
+pixel_oled(50, 53, 1);
+pixel_oled(52, 53, 1);
+pixel_oled(53, 53, 1);
+pixel_oled(54, 53, 1);
+pixel_oled(55, 53, 1);
+pixel_oled(57, 53, 1);
+pixel_oled(58, 53, 1);
+pixel_oled(62, 53, 1);
+pixel_oled(63, 53, 1);
+pixel_oled(64, 53, 1);
+pixel_oled(65, 53, 1);
+pixel_oled(68, 53, 1);
+pixel_oled(69, 53, 1);
+pixel_oled(70, 53, 1);
+pixel_oled(73, 53, 1);
+pixel_oled(74, 53, 1);
+pixel_oled(75, 53, 1);
+pixel_oled(76, 53, 1);
+pixel_oled(78, 53, 1);
+pixel_oled(79, 53, 1);
+pixel_oled(80, 53, 1);
+pixel_oled(81, 53, 1);
+pixel_oled(47, 54, 1);
+pixel_oled(50, 54, 1);
+pixel_oled(52, 54, 1);
+pixel_oled(53, 54, 1);
+pixel_oled(57, 54, 1);
+pixel_oled(58, 54, 1);
+pixel_oled(62, 54, 1);
+pixel_oled(63, 54, 1);
+pixel_oled(68, 54, 1);
+pixel_oled(69, 54, 1);
+pixel_oled(70, 54, 1);
+pixel_oled(72, 54, 1);
+pixel_oled(73, 54, 1);
+pixel_oled(76, 54, 1);
+pixel_oled(78, 54, 1);
+pixel_oled(47, 55, 1);
+pixel_oled(48, 55, 1);
+pixel_oled(49, 55, 1);
+pixel_oled(50, 55, 1);
+pixel_oled(52, 55, 1);
+pixel_oled(53, 55, 1);
+pixel_oled(54, 55, 1);
+pixel_oled(55, 55, 1);
+pixel_oled(57, 55, 1);
+pixel_oled(58, 55, 1);
+pixel_oled(62, 55, 1);
+pixel_oled(63, 55, 1);
+pixel_oled(64, 55, 1);
+pixel_oled(65, 55, 1);
+pixel_oled(67, 55, 1);
+pixel_oled(68, 55, 1);
+pixel_oled(70, 55, 1);
+pixel_oled(72, 55, 1);
+pixel_oled(73, 55, 1);
+pixel_oled(74, 55, 1);
+pixel_oled(75, 55, 1);
+pixel_oled(78, 55, 1);
+pixel_oled(79, 55, 1);
+pixel_oled(80, 55, 1);
+pixel_oled(47, 56, 1);
+pixel_oled(48, 56, 1);
+pixel_oled(49, 56, 1);
+pixel_oled(50, 56, 1);
+pixel_oled(52, 56, 1);
+pixel_oled(53, 56, 1);
+pixel_oled(57, 56, 1);
+pixel_oled(58, 56, 1);
+pixel_oled(62, 56, 1);
+pixel_oled(63, 56, 1);
+pixel_oled(67, 56, 1);
+pixel_oled(68, 56, 1);
+pixel_oled(69, 56, 1);
+pixel_oled(70, 56, 1);
+pixel_oled(74, 56, 1);
+pixel_oled(75, 56, 1);
+pixel_oled(76, 56, 1);
+pixel_oled(78, 56, 1);
+pixel_oled(79, 56, 1);
+pixel_oled(47, 57, 1);
+pixel_oled(49, 57, 1);
+pixel_oled(50, 57, 1);
+pixel_oled(52, 57, 1);
+pixel_oled(53, 57, 1);
+pixel_oled(57, 57, 1);
+pixel_oled(58, 57, 1);
+pixel_oled(62, 57, 1);
+pixel_oled(63, 57, 1);
+pixel_oled(67, 57, 1);
+pixel_oled(68, 57, 1);
+pixel_oled(69, 57, 1);
+pixel_oled(70, 57, 1);
+pixel_oled(71, 57, 1);
+pixel_oled(72, 57, 1);
+pixel_oled(73, 57, 1);
+pixel_oled(75, 57, 1);
+pixel_oled(76, 57, 1);
+pixel_oled(78, 57, 1);
+pixel_oled(47, 58, 1);
+pixel_oled(50, 58, 1);
+pixel_oled(52, 58, 1);
+pixel_oled(53, 58, 1);
+pixel_oled(54, 58, 1);
+pixel_oled(55, 58, 1);
+pixel_oled(57, 58, 1);
+pixel_oled(58, 58, 1);
+pixel_oled(59, 58, 1);
+pixel_oled(60, 58, 1);
+pixel_oled(62, 58, 1);
+pixel_oled(63, 58, 1);
+pixel_oled(64, 58, 1);
+pixel_oled(65, 58, 1);
+pixel_oled(66, 58, 1);
+pixel_oled(67, 58, 1);
+pixel_oled(70, 58, 1);
+pixel_oled(71, 58, 1);
+pixel_oled(73, 58, 1);
+pixel_oled(74, 58, 1);
+pixel_oled(75, 58, 1);
+pixel_oled(78, 58, 1);
+pixel_oled(79, 58, 1);
+pixel_oled(80, 58, 1);
+pixel_oled(81, 58, 1);
+}
+
+function draw_tt_scripture_screen() {
+cls_oled(OLED_BLACK);
+
+// Falling line splash screen behind the centered name.
+rect_oled(8, (sx + 0) % OLED_HEIGHT, 1, 7, OLED_WHITE, OLED_WHITE);
+rect_oled(18, (sx + 21) % OLED_HEIGHT, 1, 5, OLED_WHITE, OLED_WHITE);
+rect_oled(30, (sx + 43) % OLED_HEIGHT, 1, 8, OLED_WHITE, OLED_WHITE);
+rect_oled(45, (sx + 12) % OLED_HEIGHT, 1, 6, OLED_WHITE, OLED_WHITE);
+rect_oled(59, (sx + 35) % OLED_HEIGHT, 1, 9, OLED_WHITE, OLED_WHITE);
+rect_oled(73, (sx + 5) % OLED_HEIGHT, 1, 5, OLED_WHITE, OLED_WHITE);
+rect_oled(88, (sx + 49) % OLED_HEIGHT, 1, 8, OLED_WHITE, OLED_WHITE);
+rect_oled(102, (sx + 27) % OLED_HEIGHT, 1, 6, OLED_WHITE, OLED_WHITE);
+rect_oled(118, (sx + 14) % OLED_HEIGHT, 1, 9, OLED_WHITE, OLED_WHITE);
+
+rect_oled(14, (sx + 33) % OLED_HEIGHT, 2, 3, OLED_WHITE, OLED_WHITE);
+rect_oled(37, (sx + 7) % OLED_HEIGHT, 2, 2, OLED_WHITE, OLED_WHITE);
+rect_oled(69, (sx + 58) % OLED_HEIGHT, 2, 3, OLED_WHITE, OLED_WHITE);
+rect_oled(111, (sx + 41) % OLED_HEIGHT, 2, 2, OLED_WHITE, OLED_WHITE);
+
+rect_oled(14, 20, 100, 24, OLED_BLACK, OLED_BLACK);
+print(center_x(get_string_length(saver_line1[0]), OLED_FONT_SMALL_WIDTH), 24, OLED_FONT_SMALL, OLED_WHITE, saver_line1[0]);
+line_oled(22, 37, 106, 37, 2, OLED_WHITE);
+line_oled(30, 40, 98, 40, 1, OLED_WHITE);
+}
+// New function for mapping values
+function map(val, in_min, in_max, out_min, out_max) {
+return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+// New function to draw X-axis graph
+function draw_x_graph(value, min_val, max_val, y_pos) {
+graph_width = 100;
+x_start = (OLED_WIDTH - graph_width) / 2;
+mid_x = x_start + graph_width / 2;
+bar_pos = map(value, min_val, max_val, 0, graph_width);
+
+// Draw axis line
+line_oled(x_start, y_pos, x_start + graph_width, y_pos, 1, OLED_WHITE);
+
+// Draw center tick
+line_oled(mid_x, y_pos - 3, mid_x, y_pos + 3, 1, OLED_WHITE);
+
+// Draw left tick
+line_oled(x_start, y_pos - 2, x_start, y_pos + 2, 1, OLED_WHITE);
+
+// Draw right tick
+line_oled(x_start + graph_width, y_pos - 2, x_start + graph_width, y_pos + 2, 1, OLED_WHITE);
+
+// Draw bar from start to position
+rect_oled(x_start, y_pos - 2, bar_pos, 4, 1, OLED_WHITE);
+}
+
+// ===== Combos =====
+// Full Court Green L1/LB: L1 -> Square hold only. No RS movement/flick.
+combo full_court_green_tap {
+    set_val(PS4_L1, 0);
+    set_val(PS4_SQUARE, 100);
+    wait(full_court_green_tap_ms);
+    set_val(PS4_SQUARE, 0);
+    full_court_green_active = 0;
+}
+
+combo flick_up_rs_smooth {
+set_val(PS4_RY, -50 + random(random_hold_variation_min, random_hold_variation_max));
+set_val(PS4_RX, 20 + random(random_hold_variation_min, random_hold_variation_max));
+wait(delay_duration);
+set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+wait(300);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+
+combo flick_up_rs_reversed {
+set_val(PS4_RY, 50 + random(random_hold_variation_min, random_hold_variation_max));
+set_val(PS4_RX, -20 + random(random_hold_variation_min, random_hold_variation_max));
+wait(delay_duration);
+set_val(PS4_RY, 100 + random(random_variation_min, random_variation_max));
+set_val(PS4_RX, -25 + random(random_variation_min, random_variation_max));
+wait(300);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+combo Infinite_Stamina_Control {
+    if (infinite_stamina
+        && ground_stick_active
+        && !shooting_active
+        && !get_val(PS4_SQUARE)
+        && !get_val(PS4_R3)
+        && !combo_running(Insta_shot_smooth)
+        && !combo_running(flick_up_rs_smooth)
+        && !combo_running(flick_up_rs_reversed)
+    ) {
+        if (abs(get_val(PS4_LX)) > 20 || abs(get_val(PS4_LY)) > 20) {
+            set_val(PS4_LX, (get_val(PS4_LX) * ground_control) / 100);
+            set_val(PS4_LY, (get_val(PS4_LY) * ground_control) / 100);
+        } else {
+            set_val(PS4_LX, 0);
+            set_val(PS4_LY, 0);
+        }
+    }
+}
+combo Insta_shot_smooth {
+
+// Initial pull (small humanization OK)
+set_val(PS4_RY, STICK_DOWN_VALUE);
+set_val(PS4_RX, 0);
+wait(Insta_shot_duration);
+
+// Gather / settle (VERY small variance)
+set_val(PS4_RY, -55 + random(-1, 1));
+set_val(PS4_RX, 18);
+wait(Delay_duration_Insta);
+
+// FINAL SNAP – NO RANDOMNESS
+set_val(PS4_RY, -100);
+set_val(PS4_RX, 25);
+wait(260);
+
+// Release
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+combo go_to_shot_insta {
+
+    set_val(PS4_RY, STICK_UP_VALUE);
+    set_val(PS4_RX, 0);
+    wait(1985);
+
+    set_val(PS4_RY, 55 + random(-1, 1));
+    set_val(PS4_RX, -18);
+    wait(Delay_duration_Insta);
+
+    set_val(PS4_RY, 100);
+    set_val(PS4_RX, -25);
+    wait(250);
+
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+
+combo Insta_shot_reversed {
+
+    stamina_blocked = 1; // 🔴 STOP stamina logic
+
+    // Initial pull
+    set_val(PS4_RY, STICK_UP_VALUE);
+    set_val(PS4_RX, 0);
+    wait(871);
+
+    // Gather
+    set_val(PS4_RY, 55);
+    set_val(PS4_RX, -18);
+    wait(Delay_duration_Insta);
+
+    // FINAL SNAP
+    set_val(PS4_RY, 100);
+    set_val(PS4_RX, -25);
+    wait(500);
+
+    // Release
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+
+    stamina_blocked = 0; // 🟢 TURN stamina back on
+}
+
+// ===== UI effects =====
+combo flashtog {
+if (!flashtoggle) {
+set_rgb(255, 0, 0);
+} else {
+set_rgb(0, 255, 0);
+}
+wait(1000);
+set_rgb(0, 0, 255);
+}
+
+combo flashedit {
+set_rgb(0, 0, 0);
+wait(150);
+set_rgb(0, 0, 255);
+}
+
+combo vibration_on {
+set_rumble(RUMBLE_A, 100);
+wait(200);
+set_rumble(RUMBLE_A, 0);
+}
+
+combo vibration_off {
+set_rumble(RUMBLE_A, 50);
+wait(200);
+set_rumble(RUMBLE_A, 0);
+}
+
+combo vibration_valchg {
+set_rumble(RUMBLE_A, 50);
+wait(50);
+set_rumble(RUMBLE_A, 0);
+}
+
+// ===== Small helpers =====
+function center_x(f_chars, f_font) {
+return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+
+int bufferIndex, digitIndex, charIndex;
+function NumberToString(f_val, f_digits) {
+bufferIndex = 1;
+digitIndex = 10000;
+if (f_val < 0) {
+putc_oled(bufferIndex, 45);
+bufferIndex += 1;
+f_val = abs(f_val);
+}
+for (charIndex = 5; charIndex >= 1; charIndex--) {
+if (f_digits >= charIndex) {
+putc_oled(bufferIndex, (f_val / digitIndex) + 48);
+f_val %= digitIndex;
+bufferIndex++;
+if (charIndex == 4) {
+putc_oled(bufferIndex, 44);
+bufferIndex++;
+}
+}
+digitIndex /= 10;
+}
+puts_oled(center_x(bufferIndex + 1, OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, bufferIndex - 1, OLED_WHITE);
+}
+
+int logVal;
+function FindDigits(num) {
+logVal = 0;
+do {
+num /= 10;
+logVal++;
+} while (num);
+return logVal;
+}
+
+int stringLength;
+function get_string_length(offset) {
+stringLength = 0;
+while (duint8(offset++)) {
+stringLength++;
+}
+return stringLength + 1;
+}����������������

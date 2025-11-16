@@ -1,0 +1,1011 @@
+int flick_up_shooting_active = 1;
+int flick_sequences_enabled = 0;
+int delay_duration = 60;
+int Delay_duration_Insta = 60;
+int STICK_DOWN_VALUE = 100000;
+int STICK_UP_VALUE = -100000;
+int RX_UP_VALUE = 25;
+int random_variation_min = -4;
+int random_variation_max = 4;
+int random_hold_variation_min = -2;
+int random_hold_variation_max = 2;
+int stabilization_variation = 300000;
+int reverse_flick_mode = 1;
+int rs_shooting_active = 0;
+int rs_hold_duration = 500;
+int Insta_shot_active = 1;
+int Insta_shot_duration = 615;
+int go_to_duration = 2030;
+int isHolding = 0;
+int holdTimer = 0;
+int rs_is_up = 0;
+int remap_square_active = 0; // Toggle for L3/R3 remap (0 = L3, 1 = R3)
+int stamina_blocked = 0;
+// --- Idle screensaver state ---
+int saver_on = 0;
+int sx = 2, sy = 16;
+int svx = 2, svy = 2;
+int msg_w, line1_w, line2_w;
+int saver_timer = 0;
+const string saver_line1[] = { "TikTok @margielq" };
+const string saver_line2[] = { "2K27 V2" };
+const string tt_title[] = { "#1 Zen Script" };
+
+// ===== Intro image =====
+const image intro_picture[] = {
+    {
+        128, 64,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0D, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x08, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x0C, 0x33, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x23, 0x06, 0x34, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x0E, 0x02, 0x47, 0x06, 0x39, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x0F, 0x03, 0x31, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x0F, 0x83, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x50, 0x1E, 0x03, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x04, 0x0C, 0x8F, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x01, 0x18, 0x38, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x0E, 0x73, 0xB9, 0x40, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x26, 0x72, 0x02, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x04, 0xE1, 0xA0, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x05, 0x60, 0x50, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x41, 0x68, 0x00, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x0A, 0x3B, 0x10, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x23, 0x1A, 0x2A, 0x48, 0xE8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x34, 0x10, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x05, 0x36, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x06, 0x90, 0x35, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x15, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x1A, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x1A, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3A, 0x5B, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x40, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3C, 0x90, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3A, 0x10, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x38, 0xA0, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x75, 0x10, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x81, 0xF8, 0x28, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x5A, 0x93, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x20, 0x0E, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x68, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x60, 0x08, 0x01, 0x50, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x18, 0x69, 0x08, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0A, 0x40, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x00, 0x50, 0x09, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x40, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x30, 0x62, 0x00, 0x09, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x88, 0x40, 0x88, 0x40, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x51, 0x04, 0x82, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x44, 0x00, 0x08, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x4A, 0x80, 0x84, 0x8C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x82, 0x80, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x05, 0x08, 0x83, 0x0A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x65, 0x05, 0x85, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x31, 0x10, 0x05, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24, 0x15, 0x03, 0xA0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x08, 0x09, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x12, 0x01, 0x00, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    }
+};
+
+// ===== Menu state =====
+int startup = 1, numpgs = 7, menu_enabled = 0, page = 1, menuSelection, toggleType, pageChg_s;
+int flashtoggle, isXbox;
+
+// ===== Menu labels =====
+const string menu_header[] = { "Infinite Stamina", "Tempo Speed (ms)", "Stability", "RS Hold (ms)", "Insta Speed (ms)", "Insta Tempo (ms)", "Go-To (ms)" };
+const string pageChg[] = {"L2 + RIGHT", "L2 LEFT / RIGHT", "L2 + LEFT"};
+const string item_toggle[] = {"L2 + UP/DOWN", "to change"};
+const string onOff[] = {"OFF", "ON", "", "L3", "R3"};
+const string ms[] = {"ms"};
+const string reverse_modes[] = {"Hop Jumper", "Turbo Fade"};
+
+// display for Turbo Shots page
+int isLoadingScreen = 1;
+define LoadingTimer = 5000;
+int LoadingTimeToRun = 0;
+
+// Additional variables for graph
+int graph_width;
+int x_start;
+int mid_x;
+int bar_pos;
+int intro_bar_pos;
+int anim_frame;
+int ball_x;
+int ball_y;
+int star_tick = 0, star_timer = 0;
+int intro_x = 20, intro_y = 24, intro_vx = 2, intro_vy = 1;
+int idle_x = 6, idle_y = 16, idle_vx = 2, idle_vy = 1;
+int bounce_timer = 0;
+int rgb_timer = 0, rgb_phase = 0;
+int infinite_stamina = 0;      // ON/OFF toggle
+int ground_control = 70;       // % of stick strength (lower = less stamina drain)
+int ground_stick_active = 1;   // must be ON
+int shooting_active = 0;       // disables stamina while shooting
+// New flag for turbo fade
+int is_turbo_fade = 0;
+
+// ===== Init =====
+init {
+flick_up_shooting_active = 1;
+delay_duration = 60;
+Delay_duration_Insta = 60;
+reverse_flick_mode = 1;
+rs_shooting_active = 0;
+rs_hold_duration = 500;
+Insta_shot_active = 1;
+Insta_shot_duration = 615;
+go_to_duration = 2030;
+remap_square_active = 0;
+stabilization_variation = 300000;
+saver_on = 0;
+saver_timer = 0;
+star_tick = 0; star_timer = 0;
+intro_x = 20; intro_y = 24; intro_vx = 2; intro_vy = 1;
+idle_x = 6; idle_y = 16; idle_vx = 2; idle_vy = 1;
+bounce_timer = 0;
+rgb_timer = 0; rgb_phase = 0;
+cls_oled(OLED_BLACK);
+}
+
+// ===== Main =====
+main {
+// Console detect
+if (get_console() == PIO_XB1) {
+isXbox = 1;
+} else {
+isXbox = 0;
+}
+update_star_tick();
+update_rgb_rainbow();
+
+// ===== STARTUP / LOADING =====
+
+if (isLoadingScreen) {
+LoadingTimeToRun += get_rtime();
+draw_startup_screen();
+if (LoadingTimeToRun >= LoadingTimer) {
+cls_oled(OLED_BLACK);
+isLoadingScreen = 0;
+startup = 0;
+saver_on = 1;
+saver_timer = 80; // draw a saver frame soon
+}
+}
+combo_run(Infinite_Stamina_Control);
+
+if (get_val(PS4_SQUARE)
+    || combo_running(Insta_shot_reversed)) {   //  ADD THIS
+    shooting_active = 1;
+} else if (!combo_running(flick_up_rs_smooth)
+        && !combo_running(flick_up_rs_reversed)
+        && !combo_running(Insta_shot_smooth)
+        && !combo_running(Insta_shot_reversed)) { //  ADD THIS
+    shooting_active = 0;
+}
+// ===== Menu open/close =====
+if (event_press(PS4_CIRCLE) && menu_enabled) { // CLOSE MENU
+menu_enabled = 0;
+combo_run(vibration_off);
+update_rgb_rainbow();
+saver_on = 1; // enable saver when leaving menu
+} else if (!menu_enabled && get_val(PS4_L2) && event_press(PS4_OPTIONS)) { // OPEN MENU
+menu_enabled = 1;
+page = 1;
+combo_run(vibration_on);
+update_rgb_rainbow();
+saver_on = 0; // pause saver while menu is up
+}
+
+// ===== MENU RENDER & INPUT =====
+if (menu_enabled) {
+cls_oled(OLED_BLACK);
+draw_values_basketball_background();
+
+if (page == 1) {
+pageChg_s = 0;
+} else if (page == numpgs) {
+pageChg_s = 2;
+} else {
+pageChg_s = 1;
+}
+
+if (page > numpgs) page = numpgs;
+if (page < 1) page = 1;
+
+print(center_x(get_string_length(pageChg[pageChg_s]), OLED_FONT_SMALL_WIDTH), 4, OLED_FONT_SMALL, OLED_WHITE, pageChg[pageChg_s]);
+print(center_x(get_string_length(menu_header[page - 1]), OLED_FONT_SMALL_WIDTH), 20, OLED_FONT_SMALL, OLED_WHITE, menu_header[page - 1]);
+
+if (page == 1) {
+menuSelection = infinite_stamina;
+toggleType = 0;
+print(center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, onOff[menuSelection]);
+} else {
+toggleType = 0;
+if (page == 2) {
+NumberToString(delay_duration, FindDigits(delay_duration));
+print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+} else if (page == 3) {
+StabilityToString(stabilization_variation);
+} else if (page == 4) {
+NumberToString(rs_hold_duration, FindDigits(rs_hold_duration));
+print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+} else if (page == 5) {
+NumberToString(Insta_shot_duration, FindDigits(Insta_shot_duration));
+print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+} else if (page == 6) {
+NumberToString(Delay_duration_Insta, FindDigits(Delay_duration_Insta));
+print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+} else if (page == 7) {
+GoToToString(go_to_duration);
+}
+}
+
+print(center_x(get_string_length(item_toggle[toggleType]), OLED_FONT_SMALL_WIDTH), 50, OLED_FONT_SMALL, OLED_WHITE, item_toggle[toggleType]);
+
+if (get_val(PS4_L2)) {
+set_val(PS4_UP,0);
+set_val(PS4_DOWN,0);
+set_val(PS4_LEFT,0);
+set_val(PS4_RIGHT,0);
+}
+
+if (get_val(PS4_L2) && event_press(PS4_LEFT)) {
+page--;
+combo_run(vibration_valchg);
+}
+if (get_val(PS4_L2) && event_press(PS4_RIGHT)) {
+page++;
+combo_run(vibration_valchg);
+}
+
+if (page == 1) {
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+infinite_stamina = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+infinite_stamina = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+}
+
+if (page == 2 && get_val(PS4_L2)) {
+if (event_press(PS4_UP)) delay_duration++;
+if (event_press(PS4_DOWN)) delay_duration--;
+if (delay_duration > 300) delay_duration = 300;
+if (delay_duration < 0) delay_duration = 0;
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) { combo_run(vibration_valchg); combo_run(flashedit); }
+}
+
+if (page == 3 && get_val(PS4_L2)) {
+if (get_val(PS4_R1)) {
+if (event_press(PS4_UP)) stabilization_variation += 10000;
+if (event_press(PS4_DOWN)) stabilization_variation -= 10000;
+} else {
+if (event_press(PS4_UP)) stabilization_variation += 1000;
+if (event_press(PS4_DOWN)) stabilization_variation -= 1000;
+}
+if (stabilization_variation > 500000) stabilization_variation = 500000;
+if (stabilization_variation < 1000) stabilization_variation = 1000;
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) { combo_run(vibration_valchg); combo_run(flashedit); }
+}
+
+if (page == 4 && get_val(PS4_L2)) {
+if (get_val(PS4_R1)) {
+if (event_press(PS4_UP)) rs_hold_duration += 10;
+if (event_press(PS4_DOWN)) rs_hold_duration -= 10;
+} else {
+if (event_press(PS4_UP)) rs_hold_duration++;
+if (event_press(PS4_DOWN)) rs_hold_duration--;
+}
+if (rs_hold_duration > 1000) rs_hold_duration = 1000;
+if (rs_hold_duration < 0) rs_hold_duration = 0;
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) { combo_run(vibration_valchg); combo_run(flashedit); }
+}
+
+if (page == 5 && get_val(PS4_L2)) {
+if (get_val(PS4_R1)) {
+if (event_press(PS4_UP)) Insta_shot_duration += 10;
+if (event_press(PS4_DOWN)) Insta_shot_duration -= 10;
+} else {
+if (event_press(PS4_UP)) Insta_shot_duration++;
+if (event_press(PS4_DOWN)) Insta_shot_duration--;
+}
+if (Insta_shot_duration > 1000) Insta_shot_duration = 1000;
+if (Insta_shot_duration < 100) Insta_shot_duration = 100;
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) { combo_run(vibration_valchg); combo_run(flashedit); }
+}
+
+if (page == 6 && get_val(PS4_L2)) {
+if (event_press(PS4_UP)) Delay_duration_Insta++;
+if (event_press(PS4_DOWN)) Delay_duration_Insta--;
+if (Delay_duration_Insta > 300) Delay_duration_Insta = 300;
+if (Delay_duration_Insta < 0) Delay_duration_Insta = 0;
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) { combo_run(vibration_valchg); combo_run(flashedit); }
+}
+
+if (page == 7 && get_val(PS4_L2)) {
+if (get_val(PS4_R1)) {
+if (event_press(PS4_UP)) go_to_duration += 10;
+if (event_press(PS4_DOWN)) go_to_duration -= 10;
+} else {
+if (event_press(PS4_UP)) go_to_duration++;
+if (event_press(PS4_DOWN)) go_to_duration--;
+}
+if (go_to_duration > 4000) go_to_duration = 4000;
+if (go_to_duration < 500) go_to_duration = 500;
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) { combo_run(vibration_valchg); combo_run(flashedit); }
+}
+} // end menu_enabled
+
+// ===== Gameplay logic (no menu) =====
+if (!menu_enabled) {
+// idle visuals
+update_rgb_rainbow();
+
+// run saver every ~80ms only when outside the menu
+if (saver_on) {
+saver_timer += get_rtime();
+if (saver_timer >= 80) {
+saver_step();
+saver_timer = 0;
+}
+}
+
+// L3/R3 Remap Logic for Square
+if (remap_square_active == 0) {
+if (get_val(PS4_L3)) {
+set_val(PS4_SQUARE, 100);
+}
+} else {
+if (get_val(PS4_R3)) {
+set_val(PS4_SQUARE, 100);
+}
+}
+
+// Detect press of Square for flag
+if (event_press(PS4_SQUARE) && !(remap_square_active == 0 && get_val(PS4_L3)) && !(remap_square_active == 1 && get_val(PS4_R3))) {
+if (reverse_flick_mode && get_val(PS4_R2)) {
+is_turbo_fade = 1;
+} else {
+is_turbo_fade = 0;
+}
+}
+
+// Auto Green (flick-up) logic
+if (flick_up_shooting_active) {
+if (!(remap_square_active == 0 && get_val(PS4_L3)) && !(remap_square_active == 1 && get_val(PS4_R3)) && get_val(PS4_SQUARE)) {
+set_val(PS4_SQUARE, 0);
+if (is_turbo_fade) {
+set_val(PS4_RY, STICK_UP_VALUE + random(random_variation_min, random_variation_max));
+} else {
+set_val(PS4_RY, STICK_DOWN_VALUE + random(random_variation_min, random_variation_max));
+}
+set_val(PS4_RX, random(random_variation_min, random_variation_max));
+}
+if (!(remap_square_active == 0 && get_val(PS4_L3)) && !(remap_square_active == 1 && get_val(PS4_R3)) && event_release(PS4_SQUARE)) {
+if (is_turbo_fade) {
+combo_run(flick_up_rs_reversed);
+} else {
+combo_run(flick_up_rs_smooth);
+}
+is_turbo_fade = 0;
+}
+}
+// D-PAD DOWN -> Go To Shot Insta (priority)
+if (event_press(PS4_DOWN)) {
+    combo_run(go_to_shot_insta);
+    
+}
+
+
+
+// 2. Normal Insta Shot logic
+if (Insta_shot_active) {
+    if ((remap_square_active == 0 && event_press(PS4_R3)) ||
+        (remap_square_active == 1 && event_press(PS4_L3))) {
+
+        if (reverse_flick_mode && get_val(PS4_R2)) {
+            combo_run(Insta_shot_reversed);
+        } else {
+            combo_run(Insta_shot_smooth);
+        }
+    }
+}
+
+// Insta Shot Logic (R3/L3 depending on remap)
+if (Insta_shot_active) {
+if ((remap_square_active == 0 && event_press(PS4_R3)) || (remap_square_active == 1 && event_press(PS4_L3))) {
+if (reverse_flick_mode && get_val(PS4_R2)) {
+combo_run(Insta_shot_reversed);
+} else {
+combo_run(Insta_shot_smooth);
+}
+}
+}
+
+// RS Shooting (detect manual stick hold)
+if (rs_shooting_active) {
+if (!(get_val(PS4_L2) > 20 && (get_val(PS4_R1) > 20 || get_val(PS4_LEFT) || get_val(PS4_RIGHT) || get_val(PS4_UP) || get_val(PS4_DOWN) || get_val(PS4_OPTIONS)))) {
+if (abs(get_val(PS4_RY)) > 30 || abs(get_val(PS4_RX)) > 30) {
+if (!isHolding) {
+isHolding = 1;
+holdTimer = 0;
+if (get_val(PS4_RY) < 0) {
+rs_is_up = 1;
+} else {
+rs_is_up = 0;
+}
+}
+holdTimer += get_rtime();
+} else {
+if (isHolding) {
+if (holdTimer > rs_hold_duration) {
+if (!rs_is_up) {
+combo_run(flick_up_rs_smooth);
+} else {
+combo_run(flick_up_rs_reversed);
+}
+}
+isHolding = 0;
+holdTimer = 0;
+}
+}
+}
+}
+} // end !menu_enabled
+} // end big else (post-startup)
+
+
+// ===== OLED helpers =====
+
+
+function saver_step() {
+draw_tt_scripture_screen();
+}
+
+function update_star_tick() {
+star_timer += get_rtime();
+if (star_timer >= 120) {
+star_tick++;
+if (star_tick > 11) star_tick = 0;
+star_timer = 0;
+}
+}
+
+function update_intro_bounce() {
+bounce_timer += get_rtime();
+if (bounce_timer >= 80) {
+intro_x += intro_vx;
+intro_y += intro_vy;
+if (intro_x <= 0 || intro_x >= 62) intro_vx = -intro_vx;
+if (intro_y <= 0 || intro_y >= 54) intro_vy = -intro_vy;
+bounce_timer = 0;
+}
+}
+
+function step_idle_bounce() {
+idle_x += idle_vx;
+idle_y += idle_vy;
+if (idle_x <= 0 || idle_x >= 38) idle_vx = -idle_vx;
+if (idle_y <= 0 || idle_y >= 44) idle_vy = -idle_vy;
+}
+
+function draw_values_basketball_background() {
+cls_oled(OLED_BLACK);
+
+// ===== FLOATING FLAMING BASKETBALL =====
+// Ball moves through four positions around the branding.
+// Pixel-art only: filled rectangles, no line effects.
+
+if (star_tick < 3) {
+// Upper-left ball
+rect_oled(12, 8, 10, 10, TRUE, OLED_WHITE);
+rect_oled(10, 11, 14, 4, TRUE, OLED_WHITE);
+rect_oled(15, 6, 4, 14, TRUE, OLED_WHITE);
+rect_oled(12, 10, 10, 2, TRUE, OLED_BLACK);
+rect_oled(12, 15, 10, 2, TRUE, OLED_BLACK);
+rect_oled(16, 8, 2, 10, TRUE, OLED_BLACK);
+
+// Flame tail
+rect_oled(5, 11, 5, 4, TRUE, OLED_WHITE);
+rect_oled(2, 12, 3, 2, TRUE, OLED_WHITE);
+rect_oled(7, 8, 4, 2, TRUE, OLED_WHITE);
+rect_oled(7, 16, 4, 2, TRUE, OLED_WHITE);
+
+} else if (star_tick < 6) {
+// Upper-right ball
+rect_oled(105, 9, 10, 10, TRUE, OLED_WHITE);
+rect_oled(103, 12, 14, 4, TRUE, OLED_WHITE);
+rect_oled(108, 7, 4, 14, TRUE, OLED_WHITE);
+rect_oled(105, 11, 10, 2, TRUE, OLED_BLACK);
+rect_oled(105, 16, 10, 2, TRUE, OLED_BLACK);
+rect_oled(109, 9, 2, 10, TRUE, OLED_BLACK);
+
+// Flame tail
+rect_oled(117, 12, 5, 4, TRUE, OLED_WHITE);
+rect_oled(122, 13, 3, 2, TRUE, OLED_WHITE);
+rect_oled(116, 9, 4, 2, TRUE, OLED_WHITE);
+rect_oled(116, 17, 4, 2, TRUE, OLED_WHITE);
+
+} else if (star_tick < 9) {
+// Lower-right ball
+rect_oled(104, 45, 10, 10, TRUE, OLED_WHITE);
+rect_oled(102, 48, 14, 4, TRUE, OLED_WHITE);
+rect_oled(107, 43, 4, 14, TRUE, OLED_WHITE);
+rect_oled(104, 47, 10, 2, TRUE, OLED_BLACK);
+rect_oled(104, 52, 10, 2, TRUE, OLED_BLACK);
+rect_oled(108, 45, 2, 10, TRUE, OLED_BLACK);
+
+// Flame tail
+rect_oled(116, 48, 5, 4, TRUE, OLED_WHITE);
+rect_oled(121, 49, 4, 2, TRUE, OLED_WHITE);
+rect_oled(115, 45, 4, 2, TRUE, OLED_WHITE);
+rect_oled(115, 53, 4, 2, TRUE, OLED_WHITE);
+
+} else {
+// Lower-left ball
+rect_oled(13, 44, 10, 10, TRUE, OLED_WHITE);
+rect_oled(11, 47, 14, 4, TRUE, OLED_WHITE);
+rect_oled(16, 42, 4, 14, TRUE, OLED_WHITE);
+rect_oled(13, 46, 10, 2, TRUE, OLED_BLACK);
+rect_oled(13, 51, 10, 2, TRUE, OLED_BLACK);
+rect_oled(17, 44, 2, 10, TRUE, OLED_BLACK);
+
+// Flame tail
+rect_oled(6, 47, 5, 4, TRUE, OLED_WHITE);
+rect_oled(2, 48, 4, 2, TRUE, OLED_WHITE);
+rect_oled(7, 44, 4, 2, TRUE, OLED_WHITE);
+rect_oled(7, 52, 4, 2, TRUE, OLED_WHITE);
+}
+
+// Animated embers following the ball
+if ((star_tick % 2) == 0) {
+rect_oled(30, 7, 2, 2, TRUE, OLED_WHITE);
+rect_oled(95, 55, 2, 2, TRUE, OLED_WHITE);
+rect_oled(5, 31, 1, 1, TRUE, OLED_WHITE);
+rect_oled(121, 32, 1, 1, TRUE, OLED_WHITE);
+} else {
+rect_oled(34, 10, 1, 1, TRUE, OLED_WHITE);
+rect_oled(91, 52, 1, 1, TRUE, OLED_WHITE);
+rect_oled(8, 35, 2, 2, TRUE, OLED_WHITE);
+rect_oled(118, 28, 2, 2, TRUE, OLED_WHITE);
+}
+
+// Small flame flicker accents
+if (star_tick == 2 || star_tick == 5 || star_tick == 8 || star_tick == 11) {
+rect_oled(27, 13, 3, 2, TRUE, OLED_WHITE);
+rect_oled(98, 49, 3, 2, TRUE, OLED_WHITE);
+}
+
+
+}
+
+function draw_star_background() {
+// Animated circuit-portal background for idle + values screens.
+
+// Corner brackets
+line_oled(2, 2, 18, 2, 1, OLED_WHITE);
+line_oled(2, 2, 2, 12, 1, OLED_WHITE);
+line_oled(109, 2, 125, 2, 1, OLED_WHITE);
+line_oled(125, 2, 125, 12, 1, OLED_WHITE);
+line_oled(2, 61, 18, 61, 1, OLED_WHITE);
+line_oled(2, 51, 2, 61, 1, OLED_WHITE);
+line_oled(109, 61, 125, 61, 1, OLED_WHITE);
+line_oled(125, 51, 125, 61, 1, OLED_WHITE);
+
+// Circuit traces
+line_oled(7, 16, 29, 16, 1, OLED_WHITE);
+line_oled(29, 16, 29, 23, 1, OLED_WHITE);
+line_oled(99, 16, 120, 16, 1, OLED_WHITE);
+line_oled(99, 16, 99, 23, 1, OLED_WHITE);
+
+line_oled(7, 46, 29, 46, 1, OLED_WHITE);
+line_oled(29, 39, 29, 46, 1, OLED_WHITE);
+line_oled(99, 46, 120, 46, 1, OLED_WHITE);
+line_oled(99, 39, 99, 46, 1, OLED_WHITE);
+
+// Animated pulse nodes
+if (star_tick < 3) {
+rect_oled(27, 21, 4, 4, TRUE, OLED_WHITE);
+rect_oled(97, 37, 4, 4, TRUE, OLED_WHITE);
+} else if (star_tick < 6) {
+rect_oled(97, 21, 4, 4, TRUE, OLED_WHITE);
+rect_oled(27, 37, 4, 4, TRUE, OLED_WHITE);
+} else if (star_tick < 9) {
+rect_oled(5, 14, 4, 4, TRUE, OLED_WHITE);
+rect_oled(118, 44, 4, 4, TRUE, OLED_WHITE);
+} else {
+rect_oled(118, 14, 4, 4, TRUE, OLED_WHITE);
+rect_oled(5, 44, 4, 4, TRUE, OLED_WHITE);
+}
+
+// Moving top/bottom scan accents
+line_oled(40 + star_tick * 2, 7, 48 + star_tick * 2, 7, 1, OLED_WHITE);
+line_oled(79 - star_tick * 2, 56, 87 - star_tick * 2, 56, 1, OLED_WHITE);
+}
+
+function draw_star(x_pos, y_pos, seed) {
+if (((star_tick + seed) % 3) != 0) {
+rect_oled(x_pos, y_pos, 1, 1, OLED_WHITE, OLED_WHITE);
+}
+}
+
+function draw_startup_screen() {
+cls_oled(OLED_BLACK);
+image_oled(0, 0, TRUE, FALSE, intro_picture[0]);
+}
+
+function draw_tt_scripture_screen() {
+cls_oled(OLED_BLACK);
+
+// ===== FLOATING FLAMING BASKETBALL =====
+// Ball moves through four positions around the branding.
+// Pixel-art only: filled rectangles, no line effects.
+
+if (star_tick < 3) {
+// Upper-left ball
+rect_oled(12, 8, 10, 10, TRUE, OLED_WHITE);
+rect_oled(10, 11, 14, 4, TRUE, OLED_WHITE);
+rect_oled(15, 6, 4, 14, TRUE, OLED_WHITE);
+rect_oled(12, 10, 10, 2, TRUE, OLED_BLACK);
+rect_oled(12, 15, 10, 2, TRUE, OLED_BLACK);
+rect_oled(16, 8, 2, 10, TRUE, OLED_BLACK);
+
+// Flame tail
+rect_oled(5, 11, 5, 4, TRUE, OLED_WHITE);
+rect_oled(2, 12, 3, 2, TRUE, OLED_WHITE);
+rect_oled(7, 8, 4, 2, TRUE, OLED_WHITE);
+rect_oled(7, 16, 4, 2, TRUE, OLED_WHITE);
+
+} else if (star_tick < 6) {
+// Upper-right ball
+rect_oled(105, 9, 10, 10, TRUE, OLED_WHITE);
+rect_oled(103, 12, 14, 4, TRUE, OLED_WHITE);
+rect_oled(108, 7, 4, 14, TRUE, OLED_WHITE);
+rect_oled(105, 11, 10, 2, TRUE, OLED_BLACK);
+rect_oled(105, 16, 10, 2, TRUE, OLED_BLACK);
+rect_oled(109, 9, 2, 10, TRUE, OLED_BLACK);
+
+// Flame tail
+rect_oled(117, 12, 5, 4, TRUE, OLED_WHITE);
+rect_oled(122, 13, 3, 2, TRUE, OLED_WHITE);
+rect_oled(116, 9, 4, 2, TRUE, OLED_WHITE);
+rect_oled(116, 17, 4, 2, TRUE, OLED_WHITE);
+
+} else if (star_tick < 9) {
+// Lower-right ball
+rect_oled(104, 45, 10, 10, TRUE, OLED_WHITE);
+rect_oled(102, 48, 14, 4, TRUE, OLED_WHITE);
+rect_oled(107, 43, 4, 14, TRUE, OLED_WHITE);
+rect_oled(104, 47, 10, 2, TRUE, OLED_BLACK);
+rect_oled(104, 52, 10, 2, TRUE, OLED_BLACK);
+rect_oled(108, 45, 2, 10, TRUE, OLED_BLACK);
+
+// Flame tail
+rect_oled(116, 48, 5, 4, TRUE, OLED_WHITE);
+rect_oled(121, 49, 4, 2, TRUE, OLED_WHITE);
+rect_oled(115, 45, 4, 2, TRUE, OLED_WHITE);
+rect_oled(115, 53, 4, 2, TRUE, OLED_WHITE);
+
+} else {
+// Lower-left ball
+rect_oled(13, 44, 10, 10, TRUE, OLED_WHITE);
+rect_oled(11, 47, 14, 4, TRUE, OLED_WHITE);
+rect_oled(16, 42, 4, 14, TRUE, OLED_WHITE);
+rect_oled(13, 46, 10, 2, TRUE, OLED_BLACK);
+rect_oled(13, 51, 10, 2, TRUE, OLED_BLACK);
+rect_oled(17, 44, 2, 10, TRUE, OLED_BLACK);
+
+// Flame tail
+rect_oled(6, 47, 5, 4, TRUE, OLED_WHITE);
+rect_oled(2, 48, 4, 2, TRUE, OLED_WHITE);
+rect_oled(7, 44, 4, 2, TRUE, OLED_WHITE);
+rect_oled(7, 52, 4, 2, TRUE, OLED_WHITE);
+}
+
+// Animated embers following the ball
+if ((star_tick % 2) == 0) {
+rect_oled(30, 7, 2, 2, TRUE, OLED_WHITE);
+rect_oled(95, 55, 2, 2, TRUE, OLED_WHITE);
+rect_oled(5, 31, 1, 1, TRUE, OLED_WHITE);
+rect_oled(121, 32, 1, 1, TRUE, OLED_WHITE);
+} else {
+rect_oled(34, 10, 1, 1, TRUE, OLED_WHITE);
+rect_oled(91, 52, 1, 1, TRUE, OLED_WHITE);
+rect_oled(8, 35, 2, 2, TRUE, OLED_WHITE);
+rect_oled(118, 28, 2, 2, TRUE, OLED_WHITE);
+}
+
+// Small flame flicker accents
+if (star_tick == 2 || star_tick == 5 || star_tick == 8 || star_tick == 11) {
+rect_oled(27, 13, 3, 2, TRUE, OLED_WHITE);
+rect_oled(98, 49, 3, 2, TRUE, OLED_WHITE);
+}
+
+// Clean professional center plate
+rect_oled(24, 22, 80, 20, TRUE, OLED_BLACK);
+
+print(center_x(get_string_length(saver_line1[0]), OLED_FONT_SMALL_WIDTH), 24, OLED_FONT_SMALL, OLED_WHITE, saver_line1[0]);
+print(center_x(get_string_length(saver_line2[0]), OLED_FONT_SMALL_WIDTH), 35, OLED_FONT_SMALL, OLED_WHITE, saver_line2[0]);
+}
+
+function update_rgb_rainbow() {
+set_rgb(255, 0, 0);
+}
+
+// New function for mapping values
+function map(val, in_min, in_max, out_min, out_max) {
+return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+// New function to draw X-axis graph
+function draw_x_graph(value, min_val, max_val, y_pos) {
+graph_width = 100;
+x_start = (OLED_WIDTH - graph_width) / 2;
+mid_x = x_start + graph_width / 2;
+bar_pos = map(value, min_val, max_val, 0, graph_width);
+
+// Draw axis line
+line_oled(x_start, y_pos, x_start + graph_width, y_pos, 1, OLED_WHITE);
+
+// Draw center tick
+line_oled(mid_x, y_pos - 3, mid_x, y_pos + 3, 1, OLED_WHITE);
+
+// Draw left tick
+line_oled(x_start, y_pos - 2, x_start, y_pos + 2, 1, OLED_WHITE);
+
+// Draw right tick
+line_oled(x_start + graph_width, y_pos - 2, x_start + graph_width, y_pos + 2, 1, OLED_WHITE);
+
+// Draw bar from start to position
+rect_oled(x_start, y_pos - 2, bar_pos, 4, 1, OLED_WHITE);
+}
+
+// ===== Combos =====
+combo flick_up_rs_smooth {
+set_val(PS4_RY, -50 + random(random_hold_variation_min, random_hold_variation_max));
+set_val(PS4_RX, 20 + random(random_hold_variation_min, random_hold_variation_max));
+wait(delay_duration);
+set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+wait(300);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+
+combo flick_up_rs_reversed {
+set_val(PS4_RY, 50 + random(random_hold_variation_min, random_hold_variation_max));
+set_val(PS4_RX, -20 + random(random_hold_variation_min, random_hold_variation_max));
+wait(delay_duration);
+set_val(PS4_RY, 100 + random(random_variation_min, random_variation_max));
+set_val(PS4_RX, -25 + random(random_variation_min, random_variation_max));
+wait(300);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+combo Infinite_Stamina_Control {
+    if (infinite_stamina
+        && ground_stick_active
+        && !shooting_active
+        && !get_val(PS4_SQUARE)
+        && !get_val(PS4_R3)
+        && !combo_running(Insta_shot_smooth)
+        && !combo_running(flick_up_rs_smooth)
+        && !combo_running(flick_up_rs_reversed)
+    ) {
+        if (abs(get_val(PS4_LX)) > 20 || abs(get_val(PS4_LY)) > 20) {
+            set_val(PS4_LX, (get_val(PS4_LX) * ground_control) / 100);
+            set_val(PS4_LY, (get_val(PS4_LY) * ground_control) / 100);
+        } else {
+            set_val(PS4_LX, 0);
+            set_val(PS4_LY, 0);
+        }
+    }
+}
+combo Insta_shot_smooth {
+
+// Initial pull (small humanization OK)
+set_val(PS4_RY, STICK_DOWN_VALUE);
+set_val(PS4_RX, 0);
+wait(Insta_shot_duration);
+
+// Gather / settle (VERY small variance)
+set_val(PS4_RY, -55 + random(-1, 1));
+set_val(PS4_RX, 18);
+wait(Delay_duration_Insta);
+
+// FINAL SNAP - NO RANDOMNESS
+set_val(PS4_RY, -100);
+set_val(PS4_RX, 25);
+wait(260);
+
+// Release
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+combo go_to_shot_insta {
+
+    set_val(PS4_RY, STICK_UP_VALUE);
+    set_val(PS4_RX, 0);
+    wait(go_to_duration);
+
+    set_val(PS4_RY, 55);
+    set_val(PS4_RX, -18);
+    wait(Delay_duration_Insta);
+
+    set_val(PS4_RY, 100);
+    set_val(PS4_RX, -25);
+    wait(260);
+
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+
+combo Insta_shot_reversed {
+
+    stamina_blocked = 1; //  STOP stamina logic
+
+    // Initial pull
+    set_val(PS4_RY, STICK_UP_VALUE);
+    set_val(PS4_RX, 0);
+    wait(871);
+
+    // Gather
+    set_val(PS4_RY, 55);
+    set_val(PS4_RX, -18);
+    wait(Delay_duration_Insta);
+
+    // FINAL SNAP
+    set_val(PS4_RY, 100);
+    set_val(PS4_RX, -25);
+    wait(500);
+
+    // Release
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+
+    stamina_blocked = 0; //  TURN stamina back on
+}
+
+// ===== UI effects =====
+combo flashtog {
+if (!flashtoggle) {
+set_rgb(255, 0, 0);
+} else {
+set_rgb(255, 0, 0);
+}
+wait(1000);
+set_rgb(255, 0, 0);
+}
+
+combo flashedit {
+set_rgb(255, 0, 0);
+wait(150);
+set_rgb(255, 0, 0);
+}
+
+combo vibration_on {
+set_rumble(RUMBLE_A, 100);
+wait(200);
+set_rumble(RUMBLE_A, 0);
+}
+
+combo vibration_off {
+set_rumble(RUMBLE_A, 50);
+wait(200);
+set_rumble(RUMBLE_A, 0);
+}
+
+combo vibration_valchg {
+set_rumble(RUMBLE_A, 50);
+wait(50);
+set_rumble(RUMBLE_A, 0);
+}
+
+// ===== Small helpers =====
+function center_x(f_chars, f_font) {
+return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+
+int bufferIndex, digitIndex, charIndex;
+function NumberToString(f_val, f_digits) {
+bufferIndex = 1;
+digitIndex = 10000;
+if (f_val < 0) {
+putc_oled(bufferIndex, 45);
+bufferIndex += 1;
+f_val = abs(f_val);
+}
+for (charIndex = 5; charIndex >= 1; charIndex--) {
+if (f_digits >= charIndex) {
+putc_oled(bufferIndex, (f_val / digitIndex) + 48);
+f_val %= digitIndex;
+bufferIndex++;
+if (charIndex == 4) {
+putc_oled(bufferIndex, 44);
+bufferIndex++;
+}
+}
+digitIndex /= 10;
+}
+puts_oled(center_x(bufferIndex + 1, OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, bufferIndex - 1, OLED_WHITE);
+}
+
+function StabilityToString(f_val) {
+if (f_val < 100000) {
+NumberToString(f_val, FindDigits(f_val));
+} else {
+bufferIndex = 1;
+digitIndex = 100000;
+for (charIndex = 6; charIndex >= 1; charIndex--) {
+putc_oled(bufferIndex, (f_val / digitIndex) + 48);
+f_val %= digitIndex;
+bufferIndex++;
+if (charIndex == 4) {
+putc_oled(bufferIndex, 44);
+bufferIndex++;
+}
+digitIndex /= 10;
+}
+puts_oled(center_x(bufferIndex + 1, OLED_FONT_SMALL_WIDTH), 30, OLED_FONT_SMALL, bufferIndex - 1, OLED_WHITE);
+}
+}
+
+function GoToToString(f_val) {
+bufferIndex = 1;
+digitIndex = 1000;
+for (charIndex = 4; charIndex >= 1; charIndex--) {
+putc_oled(bufferIndex, (f_val / digitIndex) + 48);
+f_val %= digitIndex;
+bufferIndex++;
+digitIndex /= 10;
+}
+putc_oled(bufferIndex, 32);
+bufferIndex++;
+putc_oled(bufferIndex, 109);
+bufferIndex++;
+putc_oled(bufferIndex, 115);
+bufferIndex++;
+puts_oled(center_x(bufferIndex + 1, OLED_FONT_SMALL_WIDTH), 30, OLED_FONT_SMALL, bufferIndex - 1, OLED_WHITE);
+}
+
+int logVal;
+function FindDigits(num) {
+logVal = 0;
+do {
+num /= 10;
+logVal++;
+} while (num);
+return logVal;
+}
+
+int stringLength;
+function get_string_length(offset) {
+stringLength = 0;
+while (duint8(offset++)) {
+stringLength++;
+}
+return stringLength + 1;
+}ú¼‰ºˆ¸‹¿º‰¸ÉùÉ ���������������� ����������������

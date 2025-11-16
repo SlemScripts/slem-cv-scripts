@@ -1,0 +1,1732 @@
+//discord.gg/orla
+//discord.gg/orla /$$$$$$ /$$$$$$$ /$$ /$$$$$$  discord.gg/orla
+//discord.gg/orla /$$__ $$| $$__ $$| $$ /$$__ $$ discord.gg/orla
+//discord.gg/orla | $$ \ $$| $$ \ $$| $$ | $$ \ $$ discord.gg/orla
+//discord.gg/orla | $$ | $$| $$$$$$$/| $$ | $$$$$$$$ discord.gg/orla
+//discord.gg/orla | $$ | $$| $$__ $$| $$ | $$__ $$ discord.gg/orla
+//discord.gg/orla | $$ | $$| $$ \ $$| $$ | $$ | $$ discord.gg/orla
+//discord.gg/orla | $$$$$$/| $$ | $$| $$$$$$$$| $$ | $$ discord.gg/orla
+//discord.gg/orla  \______/ |__/ |__/|________/|__/ |__/ discord.gg/orla
+//                  __ _ __  __       __
+//  | ] (_) | ]   / /  [ |
+//  .--.| |  __  .--. .---. .--. _ .--. .--.| |  .--./) .--./) / /  .--. _ .--. | |  ,--.
+/// /'\ ' | [ | ( (\] / /'\] / .'\ \ [ /'\] / /'\' | / /'\; / /'\; / //  .'\ \ [ /'\]| | '\ :
+//| \__/ | | |  '.'.  | \__.  | \__. | | | | \__/ |  _ \ \._// \ \._/// / | \__. | | | | | //
+// |   ,// '.__.;__][___][\__) )'.___.' '.__.' [___] '.__.;__](_).',__  .',__/  _/  '.__.' [___] [___]'-;__/
+//                             ( ( __))( ( __))
+
+//========================================================
+// posted by : MR MENCHO  (@f_r_e_e_z_y)
+// user id   : 1399512068314628176
+// posted    : 2026-09-06 11:14:49 EDT
+// channel   : #NBA27
+// trace     : ams5mgh3qats.1349bddac5
+// discord.gg/orla
+//========================================================
+/*
+
+
+        ████████╗░██████╗░░██████╗░███████╗
+// build ams5mgh3qats.1349bddac5
+        ╚══██╔══╝██╔════╝░██╔═══██╗██╔════╝
+        ░░░██║░░░██║░░███╗██║░░░██║███████╗
+        ░░░██║░░░██║░░░██║██║░░░██║╚════██║
+        ░░░██║░░░╚██████╔╝╚██████╔╝███████║
+        ░░░╚═╝░░░░╚═════╝░░╚═════╝░╚══════╝
+        ░█████╗░██╗░░░██╗████████╗░██████╗░░██████╗░██████╗░███████╗███████╗███╗░░░██╗
+        ██╔══██╗██║░░░██║╚══██╔══╝██╔═══██╗██╔════╝░██╔══██╗██╔════╝██╔════╝████╗░░██║
+        ███████║██║░░░██║░░░██║░░░██║░░░██║██║░░███╗██████╔╝█████╗░░█████╗░░██╔██╗░██║
+        ██╔══██║██║░░░██║░░░██║░░░██║░░░██║██║░░░██║██╔══██╗██╔══╝░░██╔══╝░░██║╚██╗██║
+        ██║░░██║╚██████╔╝░░░██║░░░╚██████╔╝╚██████╔╝██║░░██║███████╗███████╗██║░╚████║
+        ╚═╝░░╚═╝░╚═════╝░░░░╚═╝░░░░╚═════╝░░╚═════╝░╚═╝░░╚═╝╚══════╝╚══════╝╚═╝░░╚═══╝
+                                                      T H E  G O D  O F  S C R I P T S
+
+    Script : NBA2k27 TGOS AUTOGREEN SCRIPT
+    Author : TheGodOfScripts
+    Discord: https://discord.gg/orla
+    Store  : https://payhip.com/thegodofscripts
+    Contact: TheGodOfScripts@gmail.com
+    Release: 2.0
+
+    v2.0 - Shot pipeline rebuilt on discrete step timing.
+           - Safe Mode and the whole interpolating motion engine are gone.
+             Every shot is once again a discrete set_val step sequence.
+           - Smart Shot Detection: Insta Shot now picks its own dip offset
+             from what the sticks were doing (fade / off-dribble / standing).
+           - Go-To Shot on D-pad Down, with its own speed page.
+           - Infinite Stamina, now a menu toggle rather than always-on.
+           - Factory reset: hold L1+R1 (LB+RB) through the boot animation
+             for one second to wipe all five profiles back to defaults.
+*/
+
+// discord.gg/orla
+// ===== Persistent storage map =====
+// This is every slot the script writes. Nothing else on the device is touched.
+//
+//   SPVAR_11        last menu page
+//   SPVAR_20        active profile slot (1-5)
+//   SPVAR_23        layout signature - see INIT_SIGNATURE
+//   pvar 30..49     the five profiles, 4 pvars each (PVAR_BASE / PVAR_OFFSET)
+//
+// v1 also declared PVAR_TEMPO_MS, PVAR_STABILITY, PVAR_REVERSE_MODE,
+// PVAR_RS_SHOOT, PVAR_REMAP_SQ, PVAR_DUNK_METER, PVAR_AUTO_SHOT_ACTIVE,
+// PVAR_AUTO_SHOT_DUR, PVAR_AUTO_TEMPO, PVAR_NODIP_ENABLED and
+// PVAR_NODIP_VALUE. Those predate the bitfield profiles and were never read
+// or written, so they are gone - they only implied slots this script owned.
+define PVAR_LAST_PAGE       = SPVAR_11;
+define PVAR_PROFILE_SLOT    = SPVAR_20;
+define PVAR_INIT            = SPVAR_23;
+
+define PROFILE_MIN = 1;
+define PROFILE_MAX = 5;
+
+// Written to PVAR_INIT once the profile block has been laid down. Any other
+// value - including a fresh device, or leftovers from another script that
+// happened to use this slot - forces every profile back to defaults.
+// A small ordinal like 1/2/3 is a bad sentinel: those bytes turn up in stale
+// EEPROM by chance, and a false match boots the customer into decoded garbage.
+// BUMP THIS ON EVERY RELEASE THAT CHANGES THE PROFILE BITFIELD LAYOUT.
+define INIT_SIGNATURE = 197;
+// discord.gg/orla
+
+// ===== Intro sequence =====
+define INTRO_ON_MS   = 100;  // word lit during a blink
+define INTRO_OFF_MS  = 70;   // word dark during a blink
+define INTRO_BLINKS  = 2;    // blinks before the word settles
+define INTRO_HOLD_MS = 300;  // solid hold once it settles
+define INTRO_GAP_MS  = 80;   // blank between words
+define INTRO_WORDS   = 4;
+
+define GREEN_R = 0;
+define GREEN_G = 200;
+define GREEN_B = 0;
+define STAR_COUNT = 42;
+
+define REPEAT_INITIAL_MS = 250;
+define REPEAT_RATE_SLOW  = 90;
+define REPEAT_ACCEL_AT   = 500;
+define REPEAT_RATE_FAST  = 40;
+
+int flick_up_shooting_active = 0;
+// discord.gg/orla
+int delay_duration = 0;
+int Delay_duration_Insta = 0;
+int STICK_DOWN_VALUE = 100;
+int STICK_UP_VALUE = -100;
+int RX_UP_VALUE = 25;
+int random_variation_min = -4;
+int random_variation_max = 4;
+int random_hold_variation_min = -2;
+int random_hold_variation_max = 2;
+int stabilization_variation = 0;
+
+int reverse_flick_mode = 0;
+int rs_shooting_active = 0;
+int rs_hold_duration = 300;
+
+int Insta_shot_active = 0;
+int Insta_shot_duration = 100;
+int goto_shot_duration = 2230;
+
+int isHolding = 0;
+int holdTimer = 0;
+// discord.gg/orla
+int rs_is_up = 0;
+int remap_square_active = 0;
+int meter_dunk_active = 0;
+int r2_recent_ms = 0;
+
+// ----- Infinite Stamina (ground control) -----
+// While ON and not shooting, the left stick is scaled back so the player
+// jogs instead of sprinting, and is hard-centred below the deadzone.
+// ground_control is the percentage the stick is scaled to - drop it for a
+// heavier nerf, raise it toward 100 for a lighter one.
+int infinite_stamina = 0;
+int ground_control = 70;
+
+// ----- Dunk Meter -----
+int dm_engaged = 0;
+
+// AutoGreen dip target while Square is held
+int ag_target = 0;
+
+// ----- Smart Shot Detection -----
+// Insta Shot picks its own dip offset from what the sticks were doing at the
+// moment it fired. Tune these two to your jumper; the rest is engine state.
+int off_dribble_offset = -20;  // subtracted for off-dribble shots
+int fade_offset        = 30;   // added for fades / moving shots
+int dynamic_offset     = 0;    // engine - do not change
+int rs_recent_timer    = 0;    // engine - do not change
+int is_off_dribble     = 0;    // engine - do not change
+
+// discord.gg/orla
+// No-Dip Shot variables
+int NODIP_SHOT_ENABLED = 0;
+int NODIP_SHOT_DISPLAY_VALUE = 15;
+int NODIP_SHOT_TIMING_MS_ACTUAL = 300;
+int NODIP_MIN_MS, NODIP_MAX_MS, NODIP_RANDOM_OFFSET;
+int nodip_for_this_shot = 0;
+int use_nodip;
+
+// Turbo fade flag (set on R2 + Square when Turbo Fade mode is active)
+int is_turbo_fade = 0;
+
+// Shot-pipeline state, used to keep RS Shooting from reacting to the
+// stick values this script injects itself.
+int square_held = 0;
+int shot_engine_busy = 0;
+
+// discord.gg/orla
+int last_menu_page = 1;
+int rpt_up_held = 0, rpt_dn_held = 0;
+int rpt_up_bucket = 0, rpt_dn_bucket = 0;
+int rpt_up_total = 0, rpt_dn_total = 0;
+int rpt_rate_up = 0, rpt_rate_dn = 0;
+int dt_menu = 0;
+int step = 1;
+int current_profile = 1;
+
+int star_x[STAR_COUNT];
+int star_y[STAR_COUNT];
+int star_vx[STAR_COUNT];
+int star_brightness[STAR_COUNT];
+int star_index;
+int profile_idx, profile_width;
+
+// ----- factory reset chord -----
+// L1+R1 (LB+RB) held through the intro wipes all five profiles. This is the
+// support answer for a customer whose settings have ended up scrambled -
+// without it the only remedy is reflashing a build with a new signature.
+define RESET_HOLD_MS = 1000;   // how long the chord must be held
+define RESET_SHOW_MS = 1500;   // how long the confirmation stays up
+int reset_hold_t = 0;
+// discord.gg/orla
+int reset_done = 0;
+int reset_show_t = 0;
+int reset_bar = 0;
+
+// ----- intro sequence -----
+int intro_word = 0;    // which word is on screen
+int intro_step = 0;    // 0 blinking, 1 solid hold, 2 blank gap
+int intro_blink = 0;
+int intro_vis = 1;
+int intro_t = 0;
+
+int saver_on = 0;
+int sx = 2, sy = 16;
+int svx = 2, svy = 2;
+int msg_w, line1_w, line2_w;
+int saver_timer = 0;
+int saver_line1_x, saver_line2_x;
+int saver_line1_y, saver_line2_y;
+int saver_brand_x, saver_brand_y;
+
+int graph_width;
+int x_start;
+int mid_x;
+int bar_pos;
+
+// discord.gg/orla
+// Menu system: 4 categories, 15 pages total
+// AutoGreen(1-5) | Insta Shot(6-8) | Misc(9-14) | Profile(15)
+int startup = 1, numpgs = 15, menu_enabled = 0, page = 1, menuSelection, toggleType, pageChg_s;
+int flashtoggle, isXbox;
+int p_start, val0, val1, val2;
+int isLoadingScreen = 1;
+
+int menu_mode = 0;
+int category_index = 0;
+int i;
+int c_y;
+int p_len;
+int p_x;
+int str_len;
+int x_pos;
+int p_idx;
+int dot_count;
+int dot_start_x;
+int menu_scroll_y = 0;
+int menu_target_y = 0;
+int menu_r1 = 0;
+
+const string CATEGORIES[] = { "AutoGreen", "Insta Shot", "Misc", "Profile" };
+const int16 CAT_START[]  = {  1,  6,  9, 15 };
+const int16 CAT_COUNT[]  = {  5,  3,  6,  1 };
+
+// discord.gg/orla
+const string ARROW_L[] = { "< " };
+const string ARROW_R[] = { " >" };
+
+const string version_txt[] = { "v1.0" };
+const string profile_labels[] = {
+    "Profile: 1",
+    "Profile: 2",
+    "Profile: 3",
+    "Profile: 4",
+    "Profile: 5"
+};
+
+const string saver_line1_ps[] = { "L2 + Options" };
+const string saver_line1_xb[] = { " LT + Start" };
+const string saver_line2_any[] = { " to open menu" };
+const string brand_txt[] = { "TGOS AUTOGREEN" };
+const string main_menu_title[] = { "MAIN MENU" };
+const string reset_hint[] = { "RESETTING..." };
+const string reset_done_txt[] = { "PROFILES RESET" };
+
+const image word_2k27[] = {
+    {
+// discord.gg/orla
+        128, 48,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x1f, 0xe0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0xf8, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x7f, 0xfc, 0x00, 0xff, 0xe0, 0x7f, 0xe0, 0x1f, 0xff, 0x00, 0xff, 0xff, 0xf8, 0x00,
+	0x00, 0x01, 0xff, 0xfe, 0x00, 0xff, 0xe0, 0x7f, 0xe0, 0x7f, 0xff, 0x80, 0xff, 0xff, 0xf8, 0x00,
+	0x00, 0x03, 0xff, 0xff, 0x00, 0xff, 0xe0, 0x7f, 0xe0, 0xff, 0xff, 0xc0, 0xff, 0xff, 0xf8, 0x00,
+	0x00, 0x03, 0xff, 0xff, 0x80, 0xff, 0xe0, 0xff, 0xc0, 0xff, 0xff, 0xe0, 0xff, 0xff, 0xf8, 0x00,
+	0x00, 0x07, 0xff, 0xff, 0xc0, 0xff, 0xe0, 0xff, 0xc1, 0xff, 0xff, 0xf0, 0xff, 0xff, 0xf8, 0x00,
+	0x00, 0x07, 0xfc, 0xff, 0xc0, 0xff, 0xe1, 0xff, 0xc1, 0xff, 0x3f, 0xf0, 0xff, 0xff, 0xf8, 0x00,
+	0x00, 0x0f, 0xf8, 0x7f, 0xc0, 0xff, 0xe1, 0xff, 0x83, 0xfe, 0x1f, 0xf0, 0x00, 0x3f, 0xf8, 0x00,
+	0x00, 0x0f, 0xf8, 0x7f, 0xe0, 0xff, 0xe1, 0xff, 0x83, 0xfe, 0x1f, 0xf8, 0x00, 0x3f, 0xf8, 0x00,
+	0x00, 0x0f, 0xf8, 0x7f, 0xe0, 0xff, 0xe3, 0xff, 0x83, 0xfe, 0x1f, 0xf8, 0x00, 0x3f, 0xf8, 0x00,
+	0x00, 0x0f, 0xf8, 0x7f, 0xe0, 0xff, 0xe3, 0xff, 0x03, 0xfe, 0x1f, 0xf8, 0x00, 0x3f, 0xf8, 0x00,
+	0x00, 0x0f, 0xf8, 0x7f, 0xe0, 0xff, 0xe7, 0xff, 0x03, 0xfe, 0x1f, 0xf8, 0x00, 0x3f, 0xf0, 0x00,
+	0x00, 0x0f, 0xf8, 0x7f, 0xe0, 0xff, 0xe7, 0xff, 0x03, 0xfe, 0x1f, 0xf8, 0x00, 0x7f, 0xf0, 0x00,
+	0x00, 0x0f, 0xf8, 0x7f, 0xe0, 0xff, 0xe7, 0xfe, 0x03, 0xfe, 0x1f, 0xf8, 0x00, 0x7f, 0xf0, 0x00,
+	0x00, 0x0f, 0xf8, 0xff, 0xe0, 0xff, 0xef, 0xfe, 0x03, 0xfe, 0x3f, 0xf8, 0x00, 0x7f, 0xf0, 0x00,
+	0x00, 0x00, 0x00, 0xff, 0xe0, 0xff, 0xef, 0xfe, 0x00, 0x00, 0x3f, 0xf8, 0x00, 0x7f, 0xf0, 0x00,
+	0x00, 0x00, 0x01, 0xff, 0xc0, 0xff, 0xff, 0xfc, 0x00, 0x00, 0x7f, 0xf0, 0x00, 0x7f, 0xe0, 0x00,
+	0x00, 0x00, 0x01, 0xff, 0xc0, 0xff, 0xff, 0xfc, 0x00, 0x00, 0x7f, 0xf0, 0x00, 0xff, 0xe0, 0x00,
+	0x00, 0x00, 0x01, 0xff, 0xc0, 0xff, 0xff, 0xfc, 0x00, 0x00, 0x7f, 0xf0, 0x00, 0xff, 0xe0, 0x00,
+	0x00, 0x00, 0x03, 0xff, 0x80, 0xff, 0xff, 0xf8, 0x00, 0x00, 0xff, 0xe0, 0x00, 0xff, 0xe0, 0x00,
+	0x00, 0x00, 0x03, 0xff, 0x80, 0xff, 0xff, 0xf8, 0x00, 0x00, 0xff, 0xe0, 0x00, 0xff, 0xe0, 0x00,
+	0x00, 0x00, 0x07, 0xff, 0x80, 0xff, 0xff, 0xf8, 0x00, 0x01, 0xff, 0xe0, 0x00, 0xff, 0xc0, 0x00,
+	0x00, 0x00, 0x07, 0xff, 0x00, 0xff, 0xff, 0xfc, 0x00, 0x01, 0xff, 0xc0, 0x01, 0xff, 0xc0, 0x00,
+	0x00, 0x00, 0x0f, 0xff, 0x00, 0xff, 0xff, 0xfc, 0x00, 0x03, 0xff, 0xc0, 0x01, 0xff, 0xc0, 0x00,
+	0x00, 0x00, 0x0f, 0xfe, 0x00, 0xff, 0xff, 0xfc, 0x00, 0x03, 0xff, 0x80, 0x01, 0xff, 0xc0, 0x00,
+	0x00, 0x00, 0x1f, 0xfe, 0x00, 0xff, 0xff, 0xfe, 0x00, 0x07, 0xff, 0x80, 0x01, 0xff, 0xc0, 0x00,
+	0x00, 0x00, 0x1f, 0xfc, 0x00, 0xff, 0xff, 0xfe, 0x00, 0x07, 0xff, 0x00, 0x01, 0xff, 0x80, 0x00,
+	0x00, 0x00, 0x3f, 0xfc, 0x00, 0xff, 0xef, 0xfe, 0x00, 0x0f, 0xff, 0x00, 0x03, 0xff, 0x80, 0x00,
+	0x00, 0x00, 0x3f, 0xf8, 0x00, 0xff, 0xef, 0xff, 0x00, 0x0f, 0xfe, 0x00, 0x03, 0xff, 0x80, 0x00,
+	0x00, 0x00, 0x7f, 0xf0, 0x00, 0xff, 0xef, 0xff, 0x00, 0x1f, 0xfc, 0x00, 0x03, 0xff, 0x80, 0x00,
+	0x00, 0x00, 0x7f, 0xf0, 0x00, 0xff, 0xe7, 0xff, 0x00, 0x1f, 0xfc, 0x00, 0x03, 0xff, 0x80, 0x00,
+	0x00, 0x00, 0xff, 0xe0, 0x00, 0xff, 0xe7, 0xff, 0x80, 0x3f, 0xf8, 0x00, 0x03, 0xff, 0x00, 0x00,
+	0x00, 0x00, 0xff, 0xe0, 0x00, 0xff, 0xe7, 0xff, 0x80, 0x3f, 0xf8, 0x00, 0x07, 0xff, 0x00, 0x00,
+	0x00, 0x01, 0xff, 0xc0, 0x00, 0xff, 0xe3, 0xff, 0x80, 0x7f, 0xf0, 0x00, 0x07, 0xff, 0x00, 0x00,
+	0x00, 0x01, 0xff, 0xc0, 0x00, 0xff, 0xe3, 0xff, 0x80, 0x7f, 0xf0, 0x00, 0x07, 0xff, 0x00, 0x00,
+	0x00, 0x03, 0xff, 0x80, 0x00, 0xff, 0xe3, 0xff, 0xc0, 0xff, 0xe0, 0x00, 0x07, 0xff, 0x00, 0x00,
+	0x00, 0x03, 0xff, 0x00, 0x00, 0xff, 0xe1, 0xff, 0xc0, 0xff, 0xc0, 0x00, 0x07, 0xff, 0x00, 0x00,
+	0x00, 0x07, 0xff, 0x00, 0x00, 0xff, 0xe1, 0xff, 0xc1, 0xff, 0xc0, 0x00, 0x0f, 0xfe, 0x00, 0x00,
+	0x00, 0x07, 0xff, 0xff, 0xc0, 0xff, 0xe0, 0xff, 0xe1, 0xff, 0xff, 0xf0, 0x0f, 0xfe, 0x00, 0x00,
+	0x00, 0x0f, 0xff, 0xff, 0xc0, 0xff, 0xe0, 0xff, 0xe3, 0xff, 0xff, 0xf0, 0x0f, 0xfe, 0x00, 0x00,
+	0x00, 0x0f, 0xff, 0xff, 0xc0, 0xff, 0xe0, 0xff, 0xe3, 0xff, 0xff, 0xf0, 0x0f, 0xfe, 0x00, 0x00,
+	0x00, 0x0f, 0xff, 0xff, 0xc0, 0xff, 0xe0, 0x7f, 0xf3, 0xff, 0xff, 0xf0, 0x1f, 0xfe, 0x00, 0x00,
+	0x00, 0x0f, 0xff, 0xff, 0xc0, 0xff, 0xe0, 0x7f, 0xf3, 0xff, 0xff, 0xf0, 0x1f, 0xfc, 0x00, 0x00,
+	0x00, 0x0f, 0xff, 0xff, 0xc0, 0xff, 0xe0, 0x7f, 0xf3, 0xff, 0xff, 0xf0, 0x1f, 0xfc, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    }
+// discord.gg/orla
+};
+
+const image word_auto[] = {
+    {
+        128, 48,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0f, 0xf8, 0x00, 0x00,
+	0x00, 0x01, 0xff, 0xfe, 0x01, 0xff, 0xc7, 0xff, 0x3f, 0xff, 0xff, 0xc0, 0x3f, 0xfe, 0x00, 0x00,
+	0x00, 0x01, 0xff, 0xfe, 0x01, 0xff, 0xc7, 0xff, 0x3f, 0xff, 0xff, 0xc0, 0xff, 0xff, 0x80, 0x00,
+	0x00, 0x01, 0xff, 0xfe, 0x01, 0xff, 0xc7, 0xff, 0x3f, 0xff, 0xff, 0xc1, 0xff, 0xff, 0xc0, 0x00,
+	0x00, 0x01, 0xff, 0xfe, 0x01, 0xff, 0xc7, 0xff, 0x3f, 0xff, 0xff, 0xc3, 0xff, 0xff, 0xe0, 0x00,
+	0x00, 0x01, 0xff, 0xfe, 0x01, 0xff, 0xc7, 0xff, 0x3f, 0xff, 0xff, 0xc3, 0xff, 0xff, 0xe0, 0x00,
+	0x00, 0x03, 0xff, 0xff, 0x01, 0xff, 0xc7, 0xff, 0x3f, 0xff, 0xff, 0xc7, 0xff, 0xff, 0xf0, 0x00,
+	0x00, 0x03, 0xff, 0xff, 0x01, 0xff, 0xc7, 0xff, 0x3f, 0xff, 0xff, 0xc7, 0xff, 0x3f, 0xf0, 0x00,
+	0x00, 0x03, 0xff, 0xff, 0x01, 0xff, 0xc7, 0xff, 0x3f, 0xff, 0xff, 0xcf, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x03, 0xff, 0xff, 0x01, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x03, 0xfe, 0xff, 0x01, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x03, 0xfe, 0xff, 0x01, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x03, 0xfe, 0xff, 0x81, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x03, 0xfe, 0xff, 0x81, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x07, 0xfe, 0xff, 0x81, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x07, 0xfe, 0xff, 0x81, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x07, 0xfe, 0xff, 0x81, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x07, 0xfe, 0xff, 0x81, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x07, 0xfe, 0xff, 0xc1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x07, 0xfe, 0xff, 0xc1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x07, 0xfc, 0x7f, 0xc1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x0f, 0xfc, 0x7f, 0xc1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x0f, 0xfc, 0x7f, 0xc1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x0f, 0xfc, 0x7f, 0xc1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x0f, 0xfc, 0x7f, 0xe1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x0f, 0xfc, 0x7f, 0xe1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x0f, 0xfc, 0x7f, 0xe1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x0f, 0xfc, 0x7f, 0xe1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x1f, 0xff, 0xff, 0xe1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x1f, 0xff, 0xff, 0xe1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x1f, 0xff, 0xff, 0xe1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x1f, 0xff, 0xff, 0xf1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x1f, 0xff, 0xff, 0xf1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x1f, 0xff, 0xff, 0xf1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x1f, 0xff, 0xff, 0xf1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x1f, 0xf8, 0x3f, 0xf1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x0f, 0xfe, 0x3f, 0xf8, 0x00,
+	0x00, 0x3f, 0xf8, 0x3f, 0xf1, 0xff, 0xc7, 0xff, 0x00, 0x7f, 0xf0, 0x07, 0xfe, 0x7f, 0xf0, 0x00,
+	0x00, 0x3f, 0xf8, 0x3f, 0xf8, 0xff, 0xff, 0xfe, 0x00, 0x7f, 0xf0, 0x07, 0xff, 0xff, 0xf0, 0x00,
+	0x00, 0x3f, 0xf8, 0x3f, 0xf8, 0xff, 0xff, 0xfe, 0x00, 0x7f, 0xf0, 0x03, 0xff, 0xff, 0xe0, 0x00,
+	0x00, 0x3f, 0xf8, 0x3f, 0xf8, 0x7f, 0xff, 0xfc, 0x00, 0x7f, 0xf0, 0x03, 0xff, 0xff, 0xe0, 0x00,
+	0x00, 0x3f, 0xf8, 0x3f, 0xf8, 0x3f, 0xff, 0xf8, 0x00, 0x7f, 0xf0, 0x01, 0xff, 0xff, 0xc0, 0x00,
+	0x00, 0x3f, 0xf8, 0x3f, 0xf8, 0x1f, 0xff, 0xf0, 0x00, 0x7f, 0xf0, 0x00, 0xff, 0xff, 0x80, 0x00,
+	0x00, 0x3f, 0xf8, 0x3f, 0xf8, 0x07, 0xff, 0xe0, 0x00, 0x7f, 0xf0, 0x00, 0x3f, 0xfe, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0f, 0xf8, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    }
+// discord.gg/orla
+};
+
+const image word_green[] = {
+    {
+        128, 48,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x0f, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x7f, 0xfc, 0x00, 0xff, 0xff, 0x80, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xf8, 0x1f, 0xf0,
+	0x00, 0xff, 0xff, 0x00, 0xff, 0xff, 0xe0, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xfc, 0x1f, 0xf0,
+	0x01, 0xff, 0xff, 0x80, 0xff, 0xff, 0xf8, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xfc, 0x1f, 0xf0,
+	0x03, 0xff, 0xff, 0xc0, 0xff, 0xff, 0xf8, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xfc, 0x1f, 0xf0,
+	0x07, 0xff, 0xff, 0xe0, 0xff, 0xff, 0xfc, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xfe, 0x1f, 0xf0,
+	0x07, 0xff, 0xff, 0xe0, 0xff, 0xff, 0xfc, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xfe, 0x1f, 0xf0,
+	0x0f, 0xfe, 0x7f, 0xe0, 0xff, 0xff, 0xfe, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xfe, 0x1f, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xcf, 0xfe, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xff, 0x1f, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xff, 0x1f, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xff, 0x1f, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xff, 0x9f, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xff, 0x9f, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xff, 0x9f, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xff, 0xdf, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xff, 0xdf, 0xf0,
+	0x0f, 0xfc, 0x00, 0x00, 0xff, 0xcf, 0xfe, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xff, 0xdf, 0xf0,
+	0x0f, 0xfc, 0x00, 0x00, 0xff, 0xff, 0xfc, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xff, 0xff, 0xf0,
+	0x0f, 0xfc, 0x00, 0x00, 0xff, 0xff, 0xfc, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xff, 0xff, 0xf0,
+	0x0f, 0xfc, 0x00, 0x00, 0xff, 0xff, 0xf0, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xff, 0xff, 0xf0,
+	0x0f, 0xfc, 0xff, 0xf0, 0xff, 0xff, 0xc0, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xff, 0xff, 0xf0,
+	0x0f, 0xfc, 0xff, 0xf0, 0xff, 0xff, 0xf8, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xff, 0xff, 0xf0,
+	0x0f, 0xfc, 0xff, 0xf0, 0xff, 0xff, 0xfc, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xff, 0xff, 0xf0,
+	0x0f, 0xfc, 0xff, 0xf0, 0xff, 0xcf, 0xfc, 0x1f, 0xff, 0xf0, 0xff, 0xff, 0x87, 0xff, 0xff, 0xf0,
+	0x0f, 0xfc, 0xff, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xff, 0xff, 0xf0,
+	0x0f, 0xfc, 0xff, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xfd, 0xff, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xfd, 0xff, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xfd, 0xff, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xfc, 0xff, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xfc, 0xff, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xfc, 0xff, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xfc, 0xff, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xf8, 0x00, 0xff, 0xc0, 0x07, 0xfc, 0x7f, 0xf0,
+	0x0f, 0xfc, 0x3f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xff, 0xf8, 0xff, 0xff, 0xc7, 0xfc, 0x7f, 0xf0,
+	0x0f, 0xfe, 0x7f, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xff, 0xf8, 0xff, 0xff, 0xc7, 0xfc, 0x7f, 0xf0,
+	0x07, 0xff, 0xff, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xff, 0xf8, 0xff, 0xff, 0xc7, 0xfc, 0x7f, 0xf0,
+	0x07, 0xff, 0xff, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xff, 0xf8, 0xff, 0xff, 0xc7, 0xfc, 0x3f, 0xf0,
+	0x03, 0xff, 0xff, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xff, 0xf8, 0xff, 0xff, 0xc7, 0xfc, 0x3f, 0xf0,
+	0x03, 0xff, 0xf7, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xff, 0xf8, 0xff, 0xff, 0xc7, 0xfc, 0x3f, 0xf0,
+	0x01, 0xff, 0xf7, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xff, 0xf8, 0xff, 0xff, 0xc7, 0xfc, 0x1f, 0xf0,
+	0x00, 0x7f, 0xe7, 0xf0, 0xff, 0xc7, 0xfe, 0x1f, 0xff, 0xf8, 0xff, 0xff, 0xc7, 0xfc, 0x1f, 0xf0,
+	0x00, 0x1f, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    }
+// discord.gg/orla
+};
+
+const image word_on[] = {
+    {
+        128, 48,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0xfc, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x1f, 0xff, 0x00, 0x3f, 0xe0, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x7f, 0xff, 0xc0, 0x3f, 0xe0, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe0, 0x3f, 0xf0, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x01, 0xff, 0xff, 0xf0, 0x3f, 0xf0, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x01, 0xff, 0xff, 0xf0, 0x3f, 0xf0, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x03, 0xff, 0xff, 0xf8, 0x3f, 0xf8, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x03, 0xff, 0x9f, 0xf8, 0x3f, 0xf8, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xf8, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xfc, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xfc, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xfc, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xfe, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xfe, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xfe, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xff, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xff, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xff, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xff, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xf7, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xf7, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xf7, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xf7, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xf3, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xf3, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xf3, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xf1, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xf1, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x07, 0xff, 0x1f, 0xfc, 0x3f, 0xf1, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x03, 0xff, 0x3f, 0xf8, 0x3f, 0xf1, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x03, 0xff, 0xff, 0xf8, 0x3f, 0xf0, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x01, 0xff, 0xff, 0xf0, 0x3f, 0xf0, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x01, 0xff, 0xff, 0xf0, 0x3f, 0xf0, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xe0, 0x3f, 0xf0, 0xff, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x7f, 0xff, 0xc0, 0x3f, 0xf0, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x1f, 0xff, 0x00, 0x3f, 0xf0, 0x7f, 0xe0, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0xfc, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    }
+// discord.gg/orla
+};
+
+const string menu_header[] = {
+    "AutoGreen",             // page 1  - cat 0 (AutoGreen)
+    "Tempo Speed (ms)",      // page 2
+    "Turbo Shots",           // page 3
+    "RS Shooting",           // page 4
+    "Remap Button",          // page 5
+    "Insta Shot",            // page 6  - cat 1 (Insta Shot)
+    "Insta Speed (ms)",      // page 7
+    "Insta Tempo (ms)",      // page 8
+    "Dunk Meter",            // page 9  - cat 2 (Misc)
+    "No-Dip Shot",           // page 10
+    "No-Dip Tempo",          // page 11
+    "Stability Enhancer",    // page 12
+    "Go-To Speed (ms)",      // page 13
+    "Infinite Stamina",      // page 14
+    "Profile Select"         // page 15 - cat 3 (Profile)
+};
+
+const string pageChg[] = { "" };
+const string onOff[] = { "OFF", "ON", "", "L3", "R3" };
+const string ms[] = { "ms" };
+const string reverse_modes[] = { "Hop Jumper", "Turbo Fade" };
+const string remap_modes_ps[] = { "L3", "R3" };
+const string remap_modes_xb[] = { "LS", "RS" };
+// discord.gg/orla
+
+// ===== Profile bitfield packing =====
+define PVAR_BASE = 30;
+define PVAR_OFFSET = 4;
+
+function SaveProfile(idx) {
+    p_start = PVAR_BASE + (idx - 1) * PVAR_OFFSET;
+    val0 = 0;
+    val1 = 0;
+    val2 = 0;
+
+    if(flick_up_shooting_active) val0 = val0 | 1;
+    if(reverse_flick_mode)       val0 = val0 | 2;
+    if(rs_shooting_active)       val0 = val0 | 4;
+    if(meter_dunk_active)        val0 = val0 | 8;
+    if(Insta_shot_active)        val0 = val0 | 16;
+    val0 = val0 | (remap_square_active << 5);
+    if(NODIP_SHOT_ENABLED)       val0 = val0 | (1 << 7);
+// discord.gg/orla
+    // bit 8 held Safe Mode in v1; reused for Infinite Stamina in v2
+    if(infinite_stamina)         val0 = val0 | (1 << 8);
+
+    set_pvar(p_start, val0);
+
+    val1 = delay_duration;
+    val1 = val1 | (stabilization_variation << 9);
+    val1 = val1 | (Delay_duration_Insta << 16);
+    set_pvar(p_start + 1, val1);
+
+    val2 = Insta_shot_duration;
+    val2 = val2 | (NODIP_SHOT_DISPLAY_VALUE << 10);
+    // 500-3500 needs 12 bits; bits 16-27 are free in val2
+    val2 = val2 | (goto_shot_duration << 16);
+    set_pvar(p_start + 2, val2);
+
+    set_pvar(p_start + 3, 0);
+}
+
+function LoadProfile(idx) {
+    p_start = PVAR_BASE + (idx - 1) * PVAR_OFFSET;
+    val0 = get_pvar(p_start, -2147483648, 2147483647, 0);
+    val1 = get_pvar(p_start + 1, -2147483648, 2147483647, 0);
+    val2 = get_pvar(p_start + 2, -2147483648, 2147483647, 0);
+
+    flick_up_shooting_active = (val0 & 1);
+    reverse_flick_mode       = (val0 >> 1) & 1;
+    rs_shooting_active       = (val0 >> 2) & 1;
+    meter_dunk_active        = (val0 >> 3) & 1;
+    Insta_shot_active        = (val0 >> 4) & 1;
+// discord.gg/orla
+    remap_square_active      = (val0 >> 5) & 3;
+    if (remap_square_active > 1) remap_square_active = 0;
+    NODIP_SHOT_ENABLED       = (val0 >> 7) & 1;
+    infinite_stamina         = (val0 >> 8) & 1;
+
+    delay_duration = val1 & 511;
+    stabilization_variation = (val1 >> 9) & 127;
+    Delay_duration_Insta = (val1 >> 16) & 511;
+
+    Insta_shot_duration = val2 & 1023;
+    NODIP_SHOT_DISPLAY_VALUE = (val2 >> 10) & 63;
+    if (NODIP_SHOT_DISPLAY_VALUE < 1) NODIP_SHOT_DISPLAY_VALUE = 15;
+    if (NODIP_SHOT_DISPLAY_VALUE > 30) NODIP_SHOT_DISPLAY_VALUE = 30;
+
+    goto_shot_duration = (val2 >> 16) & 4095;
+// discord.gg/orla
+    if (goto_shot_duration < 500) goto_shot_duration = 2230;
+    if (goto_shot_duration > 3500) goto_shot_duration = 3500;
+
+    update_nodip_window();
+}
+
+// Every profile back to the shipping state. Called on first run, and by the
+// L1+R1 reset chord during the intro. Single source of truth so the two paths
+// can never drift apart.
+function ApplyShippingDefaults() {
+    // Tuned against the step-combo shot shape this build uses. These differ
+    // from the v1 values, which were tuned for the old interpolated engine.
+    flick_up_shooting_active = 1;
+    delay_duration = 30;
+    stabilization_variation = 34;
+    reverse_flick_mode = 1;
+    rs_shooting_active = 0;
+    Insta_shot_active = 1;
+    Insta_shot_duration = 500;
+    Delay_duration_Insta = 30;
+    goto_shot_duration = 2230;
+    remap_square_active = 0;
+    meter_dunk_active = 0;
+    infinite_stamina = 0;
+    NODIP_SHOT_ENABLED = 0;
+// discord.gg/orla
+    NODIP_SHOT_DISPLAY_VALUE = 15;
+    update_nodip_window();
+
+    SaveProfile(1);
+    SaveProfile(2);
+    SaveProfile(3);
+    SaveProfile(4);
+    SaveProfile(5);
+
+    current_profile = 1;
+    last_menu_page = 1;
+    set_pvar(PVAR_PROFILE_SLOT, 1);
+    set_pvar(PVAR_LAST_PAGE, 1);
+    set_pvar(PVAR_INIT, INIT_SIGNATURE);
+}
+// discord.gg/orla
+
+// ===== Init =====
+init {
+    // First-run / layout-version default initialization.
+    // v2 moved the bitfield around - Safe Mode vacated bit 8 of val0 (now
+    // Infinite Stamina) and Go-To Speed took bits 16-27 of val2 - so a v1
+    // profile must be re-defaulted rather than misdecoded. A device that has
+    // never run this script lands here too, which is what gives every customer
+    // an identical out-of-the-box state.
+    if (get_pvar(PVAR_INIT, 0, 255, 0) != INIT_SIGNATURE) {
+        ApplyShippingDefaults();
+    }
+
+    current_profile = get_pvar(PVAR_PROFILE_SLOT, PROFILE_MIN, PROFILE_MAX, 1);
+    LoadProfile(current_profile);
+    last_menu_page = get_pvar(PVAR_LAST_PAGE, 1, numpgs, 1);
+
+    rs_hold_duration = 300;
+    isHolding = 0;
+    holdTimer = 0;
+    rs_is_up = 0;
+// discord.gg/orla
+
+    dynamic_offset = 0;
+    rs_recent_timer = 0;
+    is_off_dribble = 0;
+
+    update_nodip_window();
+
+    set_rgb(GREEN_R, GREEN_G, GREEN_B);
+    saver_on = 0;
+    saver_timer = 0;
+    cls_oled(OLED_BLACK);
+
+    isLoadingScreen = 1;
+    startup = 1;
+    starfield_init();
+    intro_word = 0;
+    intro_step = 0;
+    intro_blink = 0;
+    intro_vis = 1;
+    intro_t = 0;
+}
+
+// ===== Main =====
+main {
+    if (get_console() == PIO_XB1) { isXbox = 1; } else { isXbox = 0; }
+
+    // ===== Intro: 2K27 / AUTO / GREEN / ON, each flashing then settling =====
+    if (startup && isLoadingScreen) {
+
+        // ----- Factory reset chord: hold L1+R1 through the intro -----
+        // Handled here rather than in init{} because the controller is not
+        // reliably enumerated yet when init{} runs, so get_val() there cannot
+        // be trusted to see the chord.
+        if (reset_done) {
+// discord.gg/orla
+            // Confirmation notice, then straight out of the intro.
+            reset_show_t = reset_show_t + get_rtime();
+            cls_oled(OLED_BLACK);
+            print(center_x(get_string_length(reset_done_txt[0]), OLED_FONT_SMALL_WIDTH),
+                  26, OLED_FONT_SMALL, OLED_WHITE, reset_done_txt[0]);
+            if (reset_show_t >= RESET_SHOW_MS) {
+                cls_oled(OLED_BLACK);
+                isLoadingScreen = 0;
+                startup = 0;
+                saver_on = 1;
+                saver_timer = 80;
+                saver_init_static();
+            }
+        }
+        else if (get_val(PS4_L1) && get_val(PS4_R1) && reset_hold_t < RESET_HOLD_MS) {
+            reset_hold_t = reset_hold_t + get_rtime();
+            if (reset_hold_t >= RESET_HOLD_MS) {
+                ApplyShippingDefaults();
+                LoadProfile(current_profile);
+                reset_done = 1;
+                reset_show_t = 0;
+                combo_run(vibration_on);
+            } else {
+                // Progress bar, so the customer can see the hold registering.
+                cls_oled(OLED_BLACK);
+// discord.gg/orla
+                print(center_x(get_string_length(reset_hint[0]), OLED_FONT_SMALL_WIDTH),
+                      20, OLED_FONT_SMALL, OLED_WHITE, reset_hint[0]);
+                reset_bar = (reset_hold_t * 100) / RESET_HOLD_MS;
+                if (reset_bar > 100) reset_bar = 100;
+                rect_oled(14, 38, 100, 6, 0, OLED_WHITE);
+                rect_oled(14, 38, reset_bar, 6, 1, OLED_WHITE);
+            }
+        }
+        else {
+
+        if (!get_val(PS4_L1) || !get_val(PS4_R1)) { reset_hold_t = 0; }
+
+        intro_t = intro_t + get_rtime();
+
+        if (intro_step == 0) {
+            if (intro_vis) {
+                if (intro_t >= INTRO_ON_MS) {
+                    intro_t = 0;
+                    intro_vis = 0;
+                    intro_blink = intro_blink + 1;
+                    if (intro_blink >= INTRO_BLINKS) {
+                        intro_step = 1;
+                        intro_vis = 1;
+                    }
+                }
+            } else {
+// discord.gg/orla
+                if (intro_t >= INTRO_OFF_MS) {
+                    intro_t = 0;
+                    intro_vis = 1;
+                }
+            }
+        }
+        else if (intro_step == 1) {
+            if (intro_t >= INTRO_HOLD_MS) {
+                intro_t = 0;
+                intro_step = 2;
+                intro_vis = 0;
+            }
+        }
+        else {
+            if (intro_t >= INTRO_GAP_MS) {
+                intro_t = 0;
+                intro_step = 0;
+                intro_blink = 0;
+                intro_vis = 1;
+                intro_word = intro_word + 1;
+            }
+        }
+
+        cls_oled(OLED_BLACK);
+
+        if (intro_word < INTRO_WORDS && intro_vis) {
+            if (intro_word == 0) {
+                image_oled(0, 8, TRUE, FALSE, word_2k27[0]);
+            } else if (intro_word == 1) {
+// discord.gg/orla
+                image_oled(0, 8, TRUE, FALSE, word_auto[0]);
+            } else if (intro_word == 2) {
+                image_oled(0, 8, TRUE, FALSE, word_green[0]);
+            } else {
+                // final frame sits higher to make room for the status line
+                image_oled(0, 2, TRUE, FALSE, word_on[0]);
+
+                profile_idx = current_profile - 1;
+                if (profile_idx < 0) profile_idx = 0;
+                if (profile_idx > (PROFILE_MAX - 1)) profile_idx = PROFILE_MAX - 1;
+                print(2, 54, OLED_FONT_SMALL, OLED_WHITE, version_txt[0]);
+                profile_width = (get_string_length(profile_labels[profile_idx]) - 1) * OLED_FONT_SMALL_WIDTH;
+                print(OLED_WIDTH - profile_width - 4, 54, OLED_FONT_SMALL, OLED_WHITE, profile_labels[profile_idx]);
+            }
+        }
+
+        if (intro_word >= INTRO_WORDS) {
+            cls_oled(OLED_BLACK);
+            isLoadingScreen = 0;
+            startup = 0;
+            saver_on = 1;
+            saver_timer = 80;
+            saver_init_static();
+        }
+// discord.gg/orla
+
+        }   // end of the "no reset chord" branch
+    } else {
+        // ===== Menu open/close =====
+        if (event_press(PS4_CIRCLE) && menu_enabled) {
+            if (menu_mode == 1) {
+                menu_mode = 0;
+                combo_run(vibration_valchg);
+                set_val(PS4_CIRCLE, 0);
+            } else {
+                menu_enabled = 0;
+                // The blanking block below is skipped once menu_enabled clears,
+                // so this frame's Circle press has to be eaten here.
+                set_val(PS4_CIRCLE, 0);
+                combo_run(vibration_off);
+                set_rgb(GREEN_R, GREEN_G, GREEN_B);
+                saver_on = 1;
+                saver_init_static();
+                last_menu_page = page;
+
+// discord.gg/orla
+                SaveProfile(current_profile);
+                set_pvar(PVAR_LAST_PAGE, last_menu_page);
+                set_pvar(PVAR_PROFILE_SLOT, current_profile);
+            }
+        }
+        else if (!menu_enabled && get_val(PS4_L2) && event_press(PS4_OPTIONS)) {
+            menu_enabled = 1;
+            page = last_menu_page;
+
+            if (page >= 1 && page <= 5) category_index = 0;
+            else if (page >= 6 && page <= 8) category_index = 1;
+            else if (page >= 9 && page <= 14) category_index = 2;
+            else category_index = 3;
+
+            menu_mode = 0;
+            menu_scroll_y = category_index * 25;
+
+            combo_run(vibration_on);
+            set_rgb(0, 0, 255);
+            saver_on = 0;
+        }
+
+        // ===== Menu rendering & input =====
+        if (menu_enabled) {
+            dt_menu = get_rtime();
+            repeat_update(dt_menu);
+// discord.gg/orla
+            starfield_step();
+            cls_oled(OLED_BLACK);
+            starfield_draw();
+
+            // Latch R1 before blanking - page 7 uses it as the x10 step modifier.
+            menu_r1 = get_val(PS4_R1);
+
+            // Swallow every input the menu consumes so none of it reaches the game.
+            // OPTIONS especially: without this, opening the menu also opens the
+            // in-game pause menu on the same frame.
+            set_val(PS4_UP, 0); set_val(PS4_DOWN, 0);
+            set_val(PS4_LEFT, 0); set_val(PS4_RIGHT, 0);
+            set_val(PS4_CROSS, 0); set_val(PS4_CIRCLE, 0);
+            set_val(PS4_OPTIONS, 0); set_val(PS4_L2, 0);
+            set_val(PS4_R1, 0);
+
+            if (menu_mode == 0) {
+                // Category selector
+                menu_target_y = category_index * 25;
+// discord.gg/orla
+                if (menu_scroll_y < menu_target_y) menu_scroll_y = menu_scroll_y + 2;
+                if (menu_scroll_y > menu_target_y) menu_scroll_y = menu_scroll_y - 2;
+
+                for(i = 0; i < 4; i++) {
+                    c_y = 25 + (i * 25) - menu_scroll_y;
+
+                    if (c_y >= -15 && c_y <= 70) {
+                        str_len = get_string_length(CATEGORIES[i]);
+
+                        if (i == category_index) {
+                             x_pos = center_x(str_len, OLED_FONT_MEDIUM_WIDTH);
+                             print(x_pos, c_y, OLED_FONT_MEDIUM, OLED_WHITE, CATEGORIES[i]);
+                             line_oled(39, c_y + 19, 89, c_y + 19, 3, OLED_WHITE);
+                        } else {
+                             x_pos = center_x(str_len, OLED_FONT_SMALL_WIDTH);
+                             print(x_pos, c_y + 3, OLED_FONT_SMALL, OLED_WHITE, CATEGORIES[i]);
+// build ams5mgh3qats.1349bddac5
+                        }
+                    }
+// discord.gg/orla
+                }
+
+                if (event_press(PS4_UP)) {
+                    category_index--;
+                    if(category_index < 0) category_index = 3;
+                    combo_run(vibration_valchg);
+                }
+                if (event_press(PS4_DOWN)) {
+                    category_index++;
+                    if(category_index > 3) category_index = 0;
+                    combo_run(vibration_valchg);
+                }
+                if (event_press(PS4_CROSS)) {
+                    menu_mode = 1;
+                    if (last_menu_page >= CAT_START[category_index] && last_menu_page < (CAT_START[category_index] + CAT_COUNT[category_index])) {
+                        page = last_menu_page;
+                    } else {
+// discord.gg/orla
+                        page = CAT_START[category_index];
+                    }
+                    combo_run(vibration_valchg);
+                }
+            } else {
+                // Page display
+                p_len = get_string_length(menu_header[page - 1]);
+                p_x = center_x(p_len, OLED_FONT_SMALL_WIDTH);
+
+                print(p_x, 10, OLED_FONT_SMALL, OLED_WHITE, menu_header[page - 1]);
+
+                print(2, 25, OLED_FONT_SMALL, OLED_WHITE, ARROW_L[0]);
+                print(115, 25, OLED_FONT_SMALL, OLED_WHITE, ARROW_R[0]);
+
+                dot_count = CAT_COUNT[category_index];
+                dot_start_x = 64 - ((dot_count * 10) / 2);
+                p_idx = page - CAT_START[category_index];
+
+                for(i = 0; i < dot_count; i++) {
+                    if (i == p_idx) {
+                        rect_oled(dot_start_x + (i * 10), 58, 5, 5, 1, 1);
+                    } else {
+                        rect_oled(dot_start_x + (i * 10) + 1, 59, 3, 3, 1, 1);
+                    }
+// discord.gg/orla
+                }
+
+                if (event_press(PS4_LEFT)) {
+                    page--;
+                    if (page < CAT_START[category_index]) page = CAT_START[category_index] + CAT_COUNT[category_index] - 1;
+                    combo_run(vibration_valchg);
+                }
+                if (event_press(PS4_RIGHT)) {
+                    page++;
+                    if (page >= CAT_START[category_index] + CAT_COUNT[category_index]) page = CAT_START[category_index];
+                    combo_run(vibration_valchg);
+                }
+
+                if (event_press(PS4_LEFT) || event_press(PS4_RIGHT)) {
+                        last_menu_page = page;
+                        set_pvar(PVAR_LAST_PAGE, last_menu_page);
+                }
+
+                // Page 1: AutoGreen (on/off)
+                if (page == 1) {
+                    menuSelection = flick_up_shooting_active; toggleType = 0;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { flick_up_shooting_active = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { flick_up_shooting_active = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                }
+// discord.gg/orla
+
+                // Page 2: Tempo Speed (ms)
+                if (page == 2) {
+                    menuSelection = 2; toggleType = 0;
+                    NumberToString(delay_duration, FindDigits(delay_duration));
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(delay_duration, 0, 300, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { delay_duration++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { delay_duration--; }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (delay_duration > 300) { delay_duration = 300; }
+                    if (delay_duration < 0) { delay_duration = 0; }
+                }
+
+                // Page 3: Turbo Shots
+                if (page == 3) {
+                    menuSelection = reverse_flick_mode; toggleType = 0;
+                    print(
+                        center_x(get_string_length(reverse_modes[reverse_flick_mode]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        reverse_modes[reverse_flick_mode]
+                    );
+                    if (event_press(PS4_UP)) { reverse_flick_mode = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { reverse_flick_mode = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                }
+
+                // Page 4: RS Shooting
+                if (page == 4) {
+// discord.gg/orla
+                    menuSelection = rs_shooting_active; toggleType = 0;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { rs_shooting_active = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { rs_shooting_active = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                }
+
+                // Page 5: Remap Button
+                if (page == 5) {
+                    menuSelection = remap_square_active; toggleType = 0;
+                    if (isXbox) {
+                        print(
+                            center_x(get_string_length(remap_modes_xb[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                            30, OLED_FONT_MEDIUM, OLED_WHITE,
+                            remap_modes_xb[menuSelection]
+                        );
+                    } else {
+                        print(
+                            center_x(get_string_length(remap_modes_ps[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                            30, OLED_FONT_MEDIUM, OLED_WHITE,
+                            remap_modes_ps[menuSelection]
+                        );
+                    }
+// discord.gg/orla
+                    if (event_press(PS4_UP)) { remap_square_active = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { remap_square_active = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                }
+
+                // Page 6: Insta Shot (on/off)
+                if (page == 6) {
+                    menuSelection = Insta_shot_active; toggleType = 0;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { Insta_shot_active = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { Insta_shot_active = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                }
+
+// discord.gg/orla
+                // Page 7: Insta Speed (ms)
+                if (page == 7) {
+                    menuSelection = 2; toggleType = 0;
+                    NumberToString(Insta_shot_duration, FindDigits(Insta_shot_duration));
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(Insta_shot_duration, 100, 1000, 45);
+                    if (menu_r1) { step = 10; } else { step = 1; }
+                    if (event_press(PS4_UP) || repeat_up_due()) { Insta_shot_duration += step; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { Insta_shot_duration -= step; }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (Insta_shot_duration > 1000) { Insta_shot_duration = 1000; }
+                    if (Insta_shot_duration < 100) { Insta_shot_duration = 100; }
+                }
+
+// discord.gg/orla
+                // Page 8: Insta Tempo (ms)
+                if (page == 8) {
+                    menuSelection = 2; toggleType = 0;
+                    NumberToString(Delay_duration_Insta, FindDigits(Delay_duration_Insta));
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(Delay_duration_Insta, 0, 300, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { Delay_duration_Insta++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { Delay_duration_Insta--; }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (Delay_duration_Insta > 300) { Delay_duration_Insta = 300; }
+                    if (Delay_duration_Insta < 0) { Delay_duration_Insta = 0; }
+                }
+
+                // Page 9: Dunk Meter
+                if (page == 9) {
+// discord.gg/orla
+                    menuSelection = meter_dunk_active; toggleType = 0;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { meter_dunk_active = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { meter_dunk_active = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                }
+
+                // Page 10: No-Dip Shot (on/off)
+                if (page == 10) {
+                    menuSelection = NODIP_SHOT_ENABLED; toggleType = 0;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { NODIP_SHOT_ENABLED = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { NODIP_SHOT_ENABLED = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+// discord.gg/orla
+                }
+
+                // Page 11: No-Dip Tempo (1-30, maps to 120-420ms)
+                if (page == 11) {
+                    menuSelection = 2; toggleType = 0;
+                    NumberToString(NODIP_SHOT_DISPLAY_VALUE, FindDigits(NODIP_SHOT_DISPLAY_VALUE));
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(NODIP_SHOT_DISPLAY_VALUE, 1, 30, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { NODIP_SHOT_DISPLAY_VALUE++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { NODIP_SHOT_DISPLAY_VALUE--; }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (NODIP_SHOT_DISPLAY_VALUE > 30) { NODIP_SHOT_DISPLAY_VALUE = 30; }
+                    if (NODIP_SHOT_DISPLAY_VALUE < 1) { NODIP_SHOT_DISPLAY_VALUE = 1; }
+                    update_nodip_window();
+                }
+
+                // Page 12: Stability Enhancer (10-100)
+                if (page == 12) {
+                    menuSelection = 2; toggleType = 0;
+                    NumberToString(stabilization_variation, FindDigits(stabilization_variation));
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(stabilization_variation, 10, 100, 45);
+                    if (event_press(PS4_UP) || repeat_up_due()) { stabilization_variation++; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { stabilization_variation--; }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (stabilization_variation > 100) { stabilization_variation = 100; }
+// discord.gg/orla
+                    if (stabilization_variation < 10) { stabilization_variation = 10; }
+                }
+
+                // Page 13: Go-To Speed (ms) - D-pad Down shot
+                if (page == 13) {
+                    menuSelection = 2; toggleType = 0;
+                    NumberToString(goto_shot_duration, FindDigits(goto_shot_duration));
+                    print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+                    draw_x_graph(goto_shot_duration, 500, 3500, 45);
+                    if (menu_r1) { step = 10; } else { step = 1; }
+                    if (event_press(PS4_UP) || repeat_up_due()) { goto_shot_duration += step; }
+                    if (event_press(PS4_DOWN) || repeat_down_due()) { goto_shot_duration -= step; }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN) || repeat_up_due() || repeat_down_due()) {
+                        combo_run(vibration_valchg); combo_run(flashedit);
+                    }
+                    if (goto_shot_duration > 3500) { goto_shot_duration = 3500; }
+                    if (goto_shot_duration < 500) { goto_shot_duration = 500; }
+                }
+
+                // Page 14: Infinite Stamina
+                if (page == 14) {
+                    menuSelection = infinite_stamina; toggleType = 0;
+                    print(
+                        center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        onOff[menuSelection]
+                    );
+                    if (event_press(PS4_UP)) { infinite_stamina = 1; flashtoggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                    if (event_press(PS4_DOWN)) { infinite_stamina = 0; flashtoggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+                }
+// discord.gg/orla
+
+                // Page 15: Profile Select
+                if (page == 15) {
+                    menuSelection = current_profile;
+                    toggleType = 0;
+                    profile_idx = current_profile - 1;
+                    if (profile_idx < 0) profile_idx = 0;
+                    if (profile_idx > (PROFILE_MAX - 1)) profile_idx = PROFILE_MAX - 1;
+
+                    print(
+                        center_x(get_string_length(profile_labels[profile_idx]), OLED_FONT_MEDIUM_WIDTH),
+                        30, OLED_FONT_MEDIUM, OLED_WHITE,
+                        profile_labels[profile_idx]
+                    );
+
+                    // set_pvar writes flash. It belongs inside the press handlers -
+                    // at main-loop rate it would burn the EEPROM just by sitting here.
+                    if (event_press(PS4_UP)) {
+                        SaveProfile(current_profile);
+                        current_profile++;
+                        if (current_profile > PROFILE_MAX) current_profile = PROFILE_MIN;
+                        LoadProfile(current_profile);
+                        set_pvar(PVAR_PROFILE_SLOT, current_profile);
+                        combo_run(vibration_valchg);
+                        combo_run(flashtog);
+                    }
+                    if (event_press(PS4_DOWN)) {
+// discord.gg/orla
+                        SaveProfile(current_profile);
+                        current_profile--;
+                        if (current_profile < PROFILE_MIN) current_profile = PROFILE_MAX;
+                        LoadProfile(current_profile);
+                        set_pvar(PVAR_PROFILE_SLOT, current_profile);
+                        combo_run(vibration_valchg);
+                        combo_run(flashtog);
+                    }
+                }
+            }
+        }
+
+        // ===== Gameplay logic (menu closed) =====
+        if (!menu_enabled) {
+            set_rgb(GREEN_R, GREEN_G, GREEN_B);
+
+            if (saver_on) {
+                saver_timer += get_rtime();
+                if (saver_timer >= 80) {
+                    saver_step();
+                    saver_timer = 0;
+                }
+            }
+
+// discord.gg/orla
+            // ===== Timing trackers =====
+            r2_recent_ms -= get_rtime();
+            if (r2_recent_ms < 0) r2_recent_ms = 0;
+            if (get_val(PS4_R2) > 30) r2_recent_ms = 200;
+
+            // ===== L3/R3 remap =====
+            if (remap_square_active == 0) {
+                if (get_val(PS4_L3)) { set_val(PS4_SQUARE, 100); }
+            } else {
+                if (get_val(PS4_R3)) { set_val(PS4_SQUARE, 100); }
+            }
+
+            // Latched here, after the remap injects Square but before AutoGreen
+            // zeroes it, so the guard below can tell a real shot is in progress.
+            square_held = (get_val(PS4_SQUARE) > 0);
+
+            // Every shot path drives RX/RY itself and get_val() reports those
+            // injected values straight back. Computed before anything reads the
+            // right stick, so neither Smart Shot Detection nor RS Shooting can
+            // latch onto this script's own output and fire a phantom shot.
+            shot_engine_busy = square_held
+                || combo_running(flick_up_rs_smooth)
+                || combo_running(flick_up_rs_reversed)
+                || combo_running(flick_up_rs_smooth_nodip)
+                || combo_running(flick_up_rs_reversed_nodip)
+                || combo_running(Insta_shot_smooth)
+                || combo_running(Insta_shot_reversed)
+                || combo_running(Insta_shot_smooth_nodip)
+                || combo_running(Insta_shot_reversed_nodip)
+                || combo_running(go_to_shot_insta);
+// discord.gg/orla
+
+            // ===== Smart Shot Detection =====
+            // Tracks whether the right stick was moving recently, so an Insta
+            // Shot fired straight out of a dribble move can shave its dip.
+            // Gated on shot_engine_busy - without it every shot would mark
+            // itself as an off-dribble and bias the one after it.
+            if (!shot_engine_busy) {
+                if (abs(get_val(PS4_RX)) > 20 || abs(get_val(PS4_RY)) > 20) {
+                    is_off_dribble = 1;
+                    rs_recent_timer = 0;
+                } else if (is_off_dribble) {
+                    rs_recent_timer += get_rtime();
+                    if (rs_recent_timer > 600) { is_off_dribble = 0; }
+                }
+            }
+
+            // ===== Detect turbo fade and no-dip flags on Square press =====
+            if (event_press(PS4_SQUARE) && !(remap_square_active == 0 && get_val(PS4_L3)) && !(remap_square_active == 1 && get_val(PS4_R3))) {
+                if (reverse_flick_mode && get_val(PS4_R2)) {
+                    is_turbo_fade = 1;
+// discord.gg/orla
+                } else {
+                    is_turbo_fade = 0;
+                }
+                nodip_for_this_shot = (NODIP_SHOT_ENABLED && get_val(PS4_L2) > 5);
+            }
+
+            // ===== AutoGreen (flick-up) logic =====
+            if (flick_up_shooting_active) {
+                if (!(remap_square_active == 0 && get_val(PS4_L3)) && !(remap_square_active == 1 && get_val(PS4_R3)) && get_val(PS4_SQUARE)) {
+                    set_val(PS4_SQUARE, 0);
+                    if (is_turbo_fade) { ag_target = STICK_UP_VALUE; }
+                    else { ag_target = STICK_DOWN_VALUE; }
+
+                    // The dip is held at full deflection. An earlier form of
+                    // this scaled the target by 1000 and added random() on top,
+                    // but at that magnitude the axis saturates and the variation
+                    // was dead - same output, written honestly.
+                    // For a live +/-4 wobble here, use:
+                    //   set_val(PS4_RY, ag_target + random(random_variation_min, random_variation_max));
+                    set_val(PS4_RY, ag_target);
+                    set_val(PS4_RX, random(random_variation_min, random_variation_max));
+                }
+                if (!(remap_square_active == 0 && get_val(PS4_L3)) && !(remap_square_active == 1 && get_val(PS4_R3)) && event_release(PS4_SQUARE)) {
+                    use_nodip = nodip_for_this_shot;
+// discord.gg/orla
+                    if (is_turbo_fade) {
+                        if (use_nodip) combo_run(flick_up_rs_reversed_nodip);
+                        else combo_run(flick_up_rs_reversed);
+                    } else {
+                        if (use_nodip) combo_run(flick_up_rs_smooth_nodip);
+                        else combo_run(flick_up_rs_smooth);
+                    }
+                    is_turbo_fade = 0;
+                }
+            }
+
+            // ===== Insta Shot logic =====
+            if (Insta_shot_active) {
+                if ((remap_square_active == 0 && event_press(PS4_R3)) || (remap_square_active == 1 && event_press(PS4_L3))) {
+                    nodip_for_this_shot = (NODIP_SHOT_ENABLED && get_val(PS4_L2) > 5);
+
+                    // Pick this shot's dip offset from what the sticks were
+                    // doing at the instant it fired.
+                    if (abs(get_val(PS4_LX)) > 20 || abs(get_val(PS4_LY)) > 20) {
+// discord.gg/orla
+                        dynamic_offset = fade_offset;        // fade / moving
+                    } else if (is_off_dribble) {
+                        dynamic_offset = off_dribble_offset; // off the dribble
+                    } else {
+                        dynamic_offset = 0;                  // standing still
+                    }
+
+                    if (reverse_flick_mode && get_val(PS4_R2)) {
+                        if (nodip_for_this_shot) combo_run(Insta_shot_reversed_nodip);
+                        else combo_run(Insta_shot_reversed);
+                    } else {
+                        if (nodip_for_this_shot) combo_run(Insta_shot_smooth_nodip);
+                        else combo_run(Insta_shot_smooth);
+                    }
+                }
+            }
+
+            // ===== Go-To Shot =====
+            // D-pad Down. Guarded on L2 being clear so it cannot fire off an
+            // icon-pass or play-call press.
+            if (event_press(PS4_DOWN) && !get_val(PS4_L2) && !shot_engine_busy) {
+                combo_run(go_to_shot_insta);
+            }
+
+            // ===== RS Shooting logic =====
+            if (rs_shooting_active) {
+                // shot_engine_busy is computed at the top of this block, before
+                // anything has read the right stick this poll.
+                if (shot_engine_busy) {
+                    isHolding = 0;
+// discord.gg/orla
+                    holdTimer = 0;
+                }
+                else if (!(get_val(PS4_L2) > 20 && (get_val(PS4_R1) > 20 || get_val(PS4_LEFT) || get_val(PS4_RIGHT) || get_val(PS4_UP) || get_val(PS4_DOWN) || get_val(PS4_OPTIONS)))) {
+                    if (abs(get_val(PS4_RY)) > 30 || abs(get_val(PS4_RX)) > 30) {
+                        if (!isHolding) {
+                            isHolding = 1;
+                            holdTimer = 0;
+                            if (get_val(PS4_RY) < 0) { rs_is_up = 1; } else { rs_is_up = 0; }
+                        }
+                        holdTimer += get_rtime();
+                    } else {
+                        if (isHolding) {
+                            if (holdTimer > rs_hold_duration) {
+                                if (!rs_is_up) {
+                                    if (NODIP_SHOT_ENABLED) combo_run(flick_up_rs_smooth_nodip);
+// discord.gg/orla
+                                    else combo_run(flick_up_rs_smooth);
+                                } else {
+                                    if (NODIP_SHOT_ENABLED) combo_run(flick_up_rs_reversed_nodip);
+                                    else combo_run(flick_up_rs_reversed);
+                                }
+                            }
+                            isHolding = 0;
+                            holdTimer = 0;
+                        }
+                    }
+                }
+            }
+
+            // ===== Dunk Meter logic =====
+            // Skipped while a shot is in flight so it cannot fight the combo
+            // for the right stick.
+            if (meter_dunk_active && !shot_engine_busy) {
+                dm_engaged = ((get_val(PS4_R2) > 30 || r2_recent_ms > 0) && get_val(PS4_L1));
+
+                if (dm_engaged) {
+                    set_val(PS4_RY, 100);
+                    set_val(PS4_R2, 100);
+                } else if (event_release(PS4_L1) || event_release(PS4_R2)) {
+                    set_val(PS4_RY, 0);
+// discord.gg/orla
+                    set_val(PS4_R2, 0);
+                }
+            }
+
+            // ===== Infinite Stamina (ground control) =====
+            // Inline rather than a combo: a combo with no wait() runs its whole
+            // body in a single poll anyway, so this just saves a combo slot.
+            // Suppressed while a shot is live so it cannot fight the shot
+            // logic for the left stick during a fade or a moving jumper.
+            if (infinite_stamina && !shot_engine_busy
+                && !(remap_square_active == 0 && get_val(PS4_R3))
+                && !(remap_square_active == 1 && get_val(PS4_L3))) {
+                if (abs(get_val(PS4_LX)) > 20 || abs(get_val(PS4_LY)) > 20) {
+                    set_val(PS4_LX, (get_val(PS4_LX) * ground_control) / 100);
+                    set_val(PS4_LY, (get_val(PS4_LY) * ground_control) / 100);
+// discord.gg/orla
+                } else {
+                    set_val(PS4_LX, 0);
+                    set_val(PS4_LY, 0);
+                }
+            }
+        }
+    }
+}
+
+// ===== Shot combos =====
+// Note the Insta combos use -55/+18 and a 260 ms hold, where the flick uses
+// -50/+20 and 300 ms - that asymmetry is deliberate, not a transcription slip.
+combo flick_up_rs_smooth {
+    set_val(PS4_RY, -50 + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, 20 + random(random_hold_variation_min, random_hold_variation_max));
+    wait(delay_duration + random(-3, 3));
+// discord.gg/orla
+    set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+    wait(300 + random(-5, 5));
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+combo flick_up_rs_reversed {
+    set_val(PS4_RY, 50 + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, -20 + random(random_hold_variation_min, random_hold_variation_max));
+    wait(delay_duration + random(-3, 3));
+    set_val(PS4_RY, 100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, -25 + random(random_variation_min, random_variation_max));
+    wait(300 + random(-5, 5));
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+combo Insta_shot_smooth {
+    set_val(PS4_RY, STICK_DOWN_VALUE);
+    set_val(PS4_RX, 0);
+    wait(Insta_shot_duration + dynamic_offset + random(-3, 3));
+
+    set_val(PS4_RY, -55 + random(-2, 2));
+    set_val(PS4_RX, 18 + random(-2, 2));
+    wait(Delay_duration_Insta + random(-2, 2));
+// discord.gg/orla
+
+    set_val(PS4_RY, -100);
+    set_val(PS4_RX, 25);
+    wait(260);
+
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+// The 871 ms dip is hardcoded - the Insta Speed page does NOT drive this one.
+// Left alone on purpose so turbo-fade timing is unchanged.
+combo Insta_shot_reversed {
+    set_val(PS4_RY, STICK_UP_VALUE);
+    set_val(PS4_RX, 0);
+    wait(871 + dynamic_offset + random(-4, 4));
+
+    set_val(PS4_RY, 55 + random(-2, 2));
+    set_val(PS4_RX, -18 + random(-2, 2));
+    wait(Delay_duration_Insta + random(-2, 2));
+
+    set_val(PS4_RY, 100);
+    set_val(PS4_RX, -25);
+    wait(500);
+
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+// discord.gg/orla
+combo go_to_shot_insta {
+    set_val(PS4_RY, STICK_UP_VALUE);
+    set_val(PS4_RX, 0);
+    wait(goto_shot_duration + random(-4, 4));
+
+    set_val(PS4_RY, 55 + random(-2, 2));
+    set_val(PS4_RX, -18 + random(-2, 2));
+    wait(Delay_duration_Insta + random(-2, 2));
+
+    set_val(PS4_RY, 100);
+    set_val(PS4_RX, -25);
+    wait(260);
+
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+// ===== No-Dip Shot combos =====
+combo flick_up_rs_smooth_nodip {
+    set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+    wait(NODIP_SHOT_TIMING_MS_ACTUAL);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+combo flick_up_rs_reversed_nodip {
+    set_val(PS4_RY, 100 + random(random_variation_min, random_variation_max));
+// discord.gg/orla
+    set_val(PS4_RX, -25 + random(random_variation_min, random_variation_max));
+    wait(NODIP_SHOT_TIMING_MS_ACTUAL);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+combo Insta_shot_smooth_nodip {
+    set_val(PS4_RY, STICK_DOWN_VALUE + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, random(random_variation_min, random_variation_max));
+    wait(Insta_shot_duration + dynamic_offset);
+    set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+    wait(NODIP_SHOT_TIMING_MS_ACTUAL);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+combo Insta_shot_reversed_nodip {
+    set_val(PS4_RY, STICK_UP_VALUE + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, random(random_variation_min, random_variation_max));
+    wait(Insta_shot_duration + dynamic_offset);
+    set_val(PS4_RY, 100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, -25 + random(random_variation_min, random_variation_max));
+// discord.gg/orla
+    wait(NODIP_SHOT_TIMING_MS_ACTUAL);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+// ===== UI effect combos =====
+combo flashtog {
+    if (!flashtoggle) {
+        set_rgb(255, 0, 0);
+    } else {
+        set_rgb(0, 255, 0);
+    }
+    wait(1000);
+    set_rgb(0, 0, 255);
+}
+
+combo flashedit {
+    set_rgb(0, 0, 0);
+    wait(150);
+    set_rgb(0, 0, 255);
+}
+
+combo vibration_on {
+    set_rumble(RUMBLE_A, 100);
+    wait(200);
+    set_rumble(RUMBLE_A, 0);
+}
+
+// discord.gg/orla
+combo vibration_off {
+    set_rumble(RUMBLE_A, 50);
+    wait(200);
+    set_rumble(RUMBLE_A, 0);
+}
+
+combo vibration_valchg {
+    set_rumble(RUMBLE_A, 50);
+    wait(50);
+    set_rumble(RUMBLE_A, 0);
+}
+
+// ===== Helper functions =====
+function center_x(f_chars, f_font) {
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+
+int bufferIndex, digitIndex, charIndex;
+function NumberToString(f_val, f_digits) {
+    bufferIndex = 1;
+    digitIndex = 10000;
+    if (f_val < 0) { putc_oled(bufferIndex, 45); bufferIndex += 1; f_val = abs(f_val); }
+    for (charIndex = 5; charIndex >= 1; charIndex--) {
+        if (f_digits >= charIndex) {
+// discord.gg/orla
+            putc_oled(bufferIndex, (f_val / digitIndex) + 48);
+            f_val %= digitIndex;
+            bufferIndex++;
+            if (charIndex == 4) { putc_oled(bufferIndex, 44); bufferIndex++; }
+        }
+        digitIndex /= 10;
+    }
+    puts_oled(center_x(bufferIndex + 1, OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, bufferIndex - 1, OLED_WHITE);
+}
+
+int logVal;
+function FindDigits(num) {
+    logVal = 0;
+    do { num /= 10; logVal++; } while (num);
+    return logVal;
+}
+
+int stringLength;
+function get_string_length(offset) {
+    stringLength = 0;
+    while (duint8(offset++)) { stringLength++; }
+    return stringLength + 1;
+}
+
+function update_nodip_window() {
+// discord.gg/orla
+    NODIP_MIN_MS = 120;
+    NODIP_MAX_MS = 420;
+    NODIP_SHOT_TIMING_MS_ACTUAL =
+        NODIP_MIN_MS +
+        ((NODIP_MAX_MS - NODIP_MIN_MS) * (NODIP_SHOT_DISPLAY_VALUE - 1)) / 29;
+}
+
+// ===== Screensaver =====
+function saver_step() {
+    starfield_step();
+    cls_oled(OLED_BLACK);
+    starfield_draw();
+
+    print(saver_brand_x, saver_brand_y, OLED_FONT_SMALL, OLED_WHITE, brand_txt[0]);
+
+    if (isXbox) {
+// discord.gg/orla
+        print(saver_line1_x, saver_line1_y, OLED_FONT_SMALL, OLED_WHITE, saver_line1_xb[0]);
+    } else {
+        print(saver_line1_x, saver_line1_y, OLED_FONT_SMALL, OLED_WHITE, saver_line1_ps[0]);
+    }
+    print(saver_line2_x, saver_line2_y, OLED_FONT_SMALL, OLED_WHITE, saver_line2_any[0]);
+}
+
+function saver_init_static() {
+    saver_brand_x = center_x(get_string_length(brand_txt[0]), OLED_FONT_SMALL_WIDTH);
+    saver_brand_y = 10;
+
+    if (isXbox) {
+        saver_line1_x = center_x(get_string_length(saver_line1_xb[0]), OLED_FONT_SMALL_WIDTH);
+    } else {
+        saver_line1_x = center_x(get_string_length(saver_line1_ps[0]), OLED_FONT_SMALL_WIDTH);
+    }
+    saver_line2_x = center_x(get_string_length(saver_line2_any[0]), OLED_FONT_SMALL_WIDTH);
+
+// discord.gg/orla
+    saver_line1_y = 30;
+    saver_line2_y = 42;
+}
+
+// ===== Repeat/hold system for value pages =====
+function repeat_update(dt) {
+    if (get_val(PS4_L2) && get_val(PS4_UP)) {
+        if (!rpt_up_held) { rpt_up_held = 1; rpt_up_bucket = 0; rpt_up_total = 0; }
+        rpt_up_bucket += dt;
+        rpt_up_total += dt;
+    } else {
+        rpt_up_held = 0; rpt_up_bucket = 0; rpt_up_total = 0;
+    }
+    if (get_val(PS4_L2) && get_val(PS4_DOWN)) {
+        if (!rpt_dn_held) { rpt_dn_held = 1; rpt_dn_bucket = 0; rpt_dn_total = 0; }
+        rpt_dn_bucket += dt;
+        rpt_dn_total += dt;
+    } else {
+        rpt_dn_held = 0; rpt_dn_bucket = 0; rpt_dn_total = 0;
+    }
+}
+
+// discord.gg/orla
+function repeat_up_due() {
+    if (!rpt_up_held) return 0;
+    if (rpt_up_total < REPEAT_INITIAL_MS) return 0;
+
+    if (rpt_up_total >= REPEAT_ACCEL_AT) { rpt_rate_up = REPEAT_RATE_FAST; }
+    else { rpt_rate_up = REPEAT_RATE_SLOW; }
+
+    if (rpt_up_bucket >= rpt_rate_up) {
+        rpt_up_bucket -= rpt_rate_up;
+        return 1;
+    }
+    return 0;
+}
+
+function repeat_down_due() {
+    if (!rpt_dn_held) return 0;
+    if (rpt_dn_total < REPEAT_INITIAL_MS) return 0;
+
+// discord.gg/orla
+    if (rpt_dn_total >= REPEAT_ACCEL_AT) { rpt_rate_dn = REPEAT_RATE_FAST; }
+    else { rpt_rate_dn = REPEAT_RATE_SLOW; }
+
+    if (rpt_dn_bucket >= rpt_rate_dn) {
+        rpt_dn_bucket -= rpt_rate_dn;
+        return 1;
+    }
+    return 0;
+}
+
+function map(val, in_min, in_max, out_min, out_max) {
+    return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+function draw_x_graph(value, min_val, max_val, y_pos) {
+    graph_width = 100;
+    x_start = (OLED_WIDTH - graph_width) / 2;
+// discord.gg/orla
+    mid_x = x_start + graph_width / 2;
+    bar_pos = map(value, min_val, max_val, 0, graph_width);
+    line_oled(x_start, y_pos, x_start + graph_width, y_pos, 1, OLED_WHITE);
+    line_oled(mid_x, y_pos - 3, mid_x, y_pos + 3, 1, OLED_WHITE);
+    line_oled(x_start, y_pos - 2, x_start, y_pos + 2, 1, OLED_WHITE);
+    line_oled(x_start + graph_width, y_pos - 2, x_start + graph_width, y_pos + 2, 1, OLED_WHITE);
+    rect_oled(x_start, y_pos - 2, bar_pos, 4, 1, OLED_WHITE);
+}
+
+// ===== Starfield animation =====
+function starfield_init() {
+    for (star_index = 0; star_index < STAR_COUNT; star_index++) {
+        star_x[star_index] = random(0, OLED_WIDTH - 1);
+        star_y[star_index] = random(0, OLED_HEIGHT - 1);
+        star_vx[star_index] = 1 + random(0, 2);
+        star_brightness[star_index] = random(0, 2);
+    }
+
+}
+// discord.gg/orla
+
+function starfield_step() {
+    for (star_index = 0; star_index < STAR_COUNT; star_index++) {
+        star_x[star_index] += star_vx[star_index];
+        if (star_x[star_index] >= OLED_WIDTH) {
+            star_x[star_index] = 0;
+            star_y[star_index] = random(0, OLED_HEIGHT - 1);
+            star_vx[star_index] = 1 + random(0, 2);
+            star_brightness[star_index] = random(0, 2);
+        }
+        if(random(0, 20) == 0) { star_brightness[star_index] = random(0, 2); }
+    }
+}
+
+function starfield_draw() {
+    for (star_index = 0; star_index < STAR_COUNT; star_index++) {
+        if(star_brightness[star_index] > 0) {
+            pixel_oled(star_x[star_index], star_y[star_index], 1);
+        }
+    }
+// discord.gg/orla
+}
+// build ams5mgh3qats.1349bddac5

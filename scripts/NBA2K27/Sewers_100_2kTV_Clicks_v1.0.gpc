@@ -1,0 +1,470 @@
+/*
+    Sewer's 2KTV Clicker - PS5 / Cronus Zen
+
+    Toggle: Options / Start
+
+    After activation and release, wait 1.5 seconds. Then replay
+    retained recording steps 1-25 and loop them indefinitely.
+*/
+
+define STATE_ACTIVATION_WAIT = 0;
+define STATE_WAIT_1610       = 1;
+define STATE_CROSS_140       = 2;
+define STATE_WAIT_580        = 3;
+define STATE_CROSS_120       = 4;
+define STATE_WAIT_20         = 5;
+define STATE_CROSS_110       = 6;
+define STATE_WAIT_80_A       = 7;
+define STATE_CROSS_130       = 8;
+define STATE_WAIT_60         = 9;
+define STATE_CROSS_100       = 10;
+define STATE_WAIT_70         = 11;
+define STATE_CROSS_80        = 12;
+define STATE_WAIT_1100       = 13;
+define STATE_R2_120          = 14;
+define STATE_WAIT_8700       = 15;
+define STATE_R2_140          = 16;
+define STATE_WAIT_3370       = 17;
+define STATE_CROSS_80_B      = 18;
+define STATE_WAIT_80_B       = 19;
+define STATE_CROSS_90        = 20;
+define STATE_WAIT_50         = 21;
+define STATE_CROSS_70        = 22;
+define STATE_WAIT_120        = 23;
+define STATE_CROSS_90_B      = 24;
+define STATE_WAIT_80_END     = 25;
+
+define ACTIVATION_WAIT_MS = 1500;
+define OLED_FRAME_MS      = 500;
+
+// OLED strings:
+// 0  = "Sewer's 2KTV"
+// 13 = "Auto Clicker"
+// 26 = "Press Options"
+// 40 = "Start / Stop"
+data(
+    0x53,0x65,0x77,0x65,0x72,0x27,0x73,0x20,0x32,0x4B,0x54,0x56,0x00,
+    0x41,0x75,0x74,0x6F,0x20,0x43,0x6C,0x69,0x63,0x6B,0x65,0x72,0x00,
+    0x50,0x72,0x65,0x73,0x73,0x20,0x4F,0x70,0x74,0x69,0x6F,0x6E,0x73,0x00,
+    0x53,0x74,0x61,0x72,0x74,0x20,0x2F,0x20,0x53,0x74,0x6F,0x70,0x00
+);
+
+int script_enabled = FALSE;
+int toggle_lock = FALSE;
+int sequence_state = STATE_ACTIVATION_WAIT;
+int sequence_timer = 0;
+int oled_timer = 0;
+int oled_frame = 0;
+int text_length = 0;
+int text_x = 0;
+int glyph_width = 0;
+
+init {
+    draw_screen();
+}
+
+main {
+    if(event_press(PS5_OPTIONS)) {
+        script_enabled = !script_enabled;
+        toggle_lock = TRUE;
+        sequence_state = STATE_ACTIVATION_WAIT;
+        sequence_timer = 0;
+    }
+
+    // Wait for Options / Start to be released before starting.
+    // The button is intentionally allowed to pass through to the game.
+    if(toggle_lock) {
+        if(!get_ival(PS5_OPTIONS)) {
+            toggle_lock = FALSE;
+            sequence_timer = 0;
+        }
+    }
+
+    // Start only after both activation buttons have been fully released.
+    if(script_enabled && !toggle_lock) {
+        run_sequence();
+    }
+
+    // OLED animation uses an independent timer and cannot advance the sequence.
+    oled_timer = oled_timer + get_rtime();
+    if(oled_timer >= OLED_FRAME_MS) {
+        oled_timer = 0;
+        oled_frame = (oled_frame + 1) % 8;
+        draw_screen();
+    }
+}
+
+/* Retired hand-authored sequence retained only for reference.
+function run_sequence() {
+    sequence_timer = sequence_timer + get_rtime();
+
+    switch(sequence_state) {
+        case STATE_STARTUP_WAIT {
+            if(sequence_timer >= ACTIVATION_WAIT_MS) {
+                next_state(STATE_STARTUP_CROSS);
+            }
+            break;
+        }
+
+        case STATE_STARTUP_CROSS {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= CROSS_TAP_MS) {
+                next_state(STATE_STARTUP_MENU_WAIT);
+            }
+            break;
+        }
+
+        case STATE_STARTUP_MENU_WAIT {
+            if(sequence_timer >= STARTUP_MENU_WAIT_MS) {
+                next_state(STATE_STARTUP_CROSS_TWO);
+            }
+            break;
+        }
+
+        case STATE_STARTUP_CROSS_TWO {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= CROSS_TAP_MS) {
+                next_state(STATE_BEFORE_DPAD_WAIT);
+            }
+            break;
+        }
+
+        case STATE_BEFORE_DPAD_WAIT {
+            if(sequence_timer >= BEFORE_DPAD_WAIT_MS) {
+                next_state(STATE_DOWN_ONE);
+            }
+            break;
+        }
+
+        case STATE_DOWN_ONE {
+            set_val(PS5_DOWN, 100);
+            if(sequence_timer >= DPAD_TAP_MS) {
+                next_state(STATE_DOWN_GAP_ONE);
+            }
+            break;
+        }
+
+        case STATE_DOWN_GAP_ONE {
+            if(sequence_timer >= DPAD_GAP_MS) {
+                next_state(STATE_DOWN_TWO);
+            }
+            break;
+        }
+
+        case STATE_DOWN_TWO {
+            set_val(PS5_DOWN, 100);
+            if(sequence_timer >= DPAD_TAP_MS) {
+                next_state(STATE_DOWN_GAP_TWO);
+            }
+            break;
+        }
+
+        case STATE_DOWN_GAP_TWO {
+            if(sequence_timer >= DPAD_GAP_MS) {
+                next_state(STATE_DOWN_THREE);
+            }
+            break;
+        }
+
+        case STATE_DOWN_THREE {
+            set_val(PS5_DOWN, 100);
+            if(sequence_timer >= DPAD_TAP_MS) {
+                next_state(STATE_DOWN_GAP_THREE);
+            }
+            break;
+        }
+
+        case STATE_DOWN_GAP_THREE {
+            if(sequence_timer >= DPAD_GAP_MS) {
+                next_state(STATE_DOWN_FOUR);
+            }
+            break;
+        }
+
+        case STATE_DOWN_FOUR {
+            set_val(PS5_DOWN, 100);
+            if(sequence_timer >= DPAD_TAP_MS) {
+                next_state(STATE_POST_DPAD_CROSS);
+            }
+            break;
+        }
+
+        case STATE_POST_DPAD_CROSS {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= CROSS_TAP_MS) {
+                next_state(STATE_POST_DPAD_GAP);
+            }
+            break;
+        }
+
+        case STATE_POST_DPAD_GAP {
+            if(sequence_timer >= POST_DPAD_GAP_MS) {
+                next_state(STATE_LOOP_CROSS_ONE);
+            }
+            break;
+        }
+
+        case STATE_LOOP_CROSS_ONE {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= CROSS_TAP_MS) {
+                next_state(STATE_LOOP_R2_ONE_WAIT);
+            }
+            break;
+        }
+
+        case STATE_LOOP_R2_ONE_WAIT {
+            if(sequence_timer >= LOOP_AFTER_CROSS_MS) {
+                next_state(STATE_LOOP_R2_ONE);
+            }
+            break;
+        }
+
+        case STATE_LOOP_R2_ONE {
+            set_val(PS5_R2, 100);
+            if(sequence_timer >= TRIGGER_TAP_MS) {
+                next_state(STATE_LOOP_R2_TWO_WAIT);
+            }
+            break;
+        }
+
+        case STATE_LOOP_R2_TWO_WAIT {
+            if(sequence_timer >= LOOP_LONG_WAIT_MS) {
+                next_state(STATE_LOOP_R2_TWO);
+            }
+            break;
+        }
+
+        case STATE_LOOP_R2_TWO {
+            set_val(PS5_R2, 100);
+            if(sequence_timer >= TRIGGER_TAP_MS) {
+                next_state(STATE_LOOP_FINAL_WAIT);
+            }
+            break;
+        }
+
+        case STATE_LOOP_FINAL_WAIT {
+            if(sequence_timer >= LOOP_LONG_WAIT_MS) {
+                burst_count = 0;
+                next_state(STATE_LOOP_BURST_DOWN);
+            }
+            break;
+        }
+
+        case STATE_LOOP_BURST_DOWN {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= BURST_TAP_MS) {
+                burst_count++;
+
+                if(burst_count >= 5) {
+                    next_state(STATE_LOOP_RESTART_WAIT);
+                } else {
+                    next_state(STATE_LOOP_BURST_GAP);
+                }
+            }
+            break;
+        }
+
+        case STATE_LOOP_BURST_GAP {
+            if(sequence_timer >= BURST_GAP_MS) {
+                next_state(STATE_LOOP_BURST_DOWN);
+            }
+            break;
+        }
+
+        case STATE_LOOP_RESTART_WAIT {
+            if(sequence_timer >= LOOP_RESTART_WAIT_MS) {
+                // Repeat from overall step 13 indefinitely.
+                next_state(STATE_LOOP_CROSS_ONE);
+            }
+            break;
+        }
+    }
+}
+
+*/
+
+function run_sequence() {
+    sequence_timer = sequence_timer + get_rtime();
+
+    switch(sequence_state) {
+        case STATE_ACTIVATION_WAIT {
+            if(sequence_timer >= ACTIVATION_WAIT_MS) next_state(STATE_WAIT_1610);
+            break;
+        }
+        case STATE_WAIT_1610 {
+            if(sequence_timer >= 1610) next_state(STATE_CROSS_140);
+            break;
+        }
+        case STATE_CROSS_140 {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= 140) next_state(STATE_WAIT_580);
+            break;
+        }
+        case STATE_WAIT_580 {
+            if(sequence_timer >= 580) next_state(STATE_CROSS_120);
+            break;
+        }
+        case STATE_CROSS_120 {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= 120) next_state(STATE_WAIT_20);
+            break;
+        }
+        case STATE_WAIT_20 {
+            if(sequence_timer >= 20) next_state(STATE_CROSS_110);
+            break;
+        }
+        case STATE_CROSS_110 {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= 110) next_state(STATE_WAIT_80_A);
+            break;
+        }
+        case STATE_WAIT_80_A {
+            if(sequence_timer >= 80) next_state(STATE_CROSS_130);
+            break;
+        }
+        case STATE_CROSS_130 {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= 130) next_state(STATE_WAIT_60);
+            break;
+        }
+        case STATE_WAIT_60 {
+            if(sequence_timer >= 60) next_state(STATE_CROSS_100);
+            break;
+        }
+        case STATE_CROSS_100 {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= 100) next_state(STATE_WAIT_70);
+            break;
+        }
+        case STATE_WAIT_70 {
+            if(sequence_timer >= 70) next_state(STATE_CROSS_80);
+            break;
+        }
+        case STATE_CROSS_80 {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= 80) next_state(STATE_WAIT_1100);
+            break;
+        }
+        case STATE_WAIT_1100 {
+            if(sequence_timer >= 1100) next_state(STATE_R2_120);
+            break;
+        }
+        case STATE_R2_120 {
+            set_val(PS5_R2, 100);
+            if(sequence_timer >= 120) next_state(STATE_WAIT_8700);
+            break;
+        }
+        case STATE_WAIT_8700 {
+            if(sequence_timer >= 8700) next_state(STATE_R2_140);
+            break;
+        }
+        case STATE_R2_140 {
+            set_val(PS5_R2, 100);
+            if(sequence_timer >= 140) next_state(STATE_WAIT_3370);
+            break;
+        }
+        case STATE_WAIT_3370 {
+            if(sequence_timer >= 3370) next_state(STATE_CROSS_80_B);
+            break;
+        }
+        case STATE_CROSS_80_B {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= 80) next_state(STATE_WAIT_80_B);
+            break;
+        }
+        case STATE_WAIT_80_B {
+            if(sequence_timer >= 80) next_state(STATE_CROSS_90);
+            break;
+        }
+        case STATE_CROSS_90 {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= 90) next_state(STATE_WAIT_50);
+            break;
+        }
+        case STATE_WAIT_50 {
+            if(sequence_timer >= 50) next_state(STATE_CROSS_70);
+            break;
+        }
+        case STATE_CROSS_70 {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= 70) next_state(STATE_WAIT_120);
+            break;
+        }
+        case STATE_WAIT_120 {
+            if(sequence_timer >= 120) next_state(STATE_CROSS_90_B);
+            break;
+        }
+        case STATE_CROSS_90_B {
+            set_val(PS5_CROSS, 100);
+            if(sequence_timer >= 90) next_state(STATE_WAIT_80_END);
+            break;
+        }
+        case STATE_WAIT_80_END {
+            if(sequence_timer >= 80) next_state(STATE_WAIT_1610);
+            break;
+        }
+    }
+}
+
+function next_state(new_state) {
+    sequence_state = new_state;
+    sequence_timer = 0;
+}
+
+function draw_screen() {
+    cls_oled(OLED_BLACK);
+
+    // Smaller bold title lines fit comfortably within the OLED width.
+    draw_centered(0, 4, OLED_FONT_SMALL, OLED_WHITE, TRUE);
+    draw_centered(13, 16, OLED_FONT_SMALL, OLED_WHITE, TRUE);
+
+    // Two short instruction lines remain fully visible.
+    draw_centered(26, 33, OLED_FONT_SMALL, OLED_WHITE, FALSE);
+    draw_centered(40, 43, OLED_FONT_SMALL, OLED_WHITE, FALSE);
+
+    draw_clock();
+}
+
+function draw_centered(data_offset, y, font, color, bold_text) {
+    text_length = 0;
+
+    while(dint8(data_offset + text_length)) {
+        putc_oled(text_length + 1, dint8(data_offset + text_length));
+        text_length++;
+    }
+
+    if(font == OLED_FONT_MEDIUM) {
+        glyph_width = OLED_FONT_MEDIUM_WIDTH;
+    } else {
+        glyph_width = OLED_FONT_SMALL_WIDTH;
+    }
+
+    text_x = (OLED_WIDTH - (text_length * glyph_width)) / 2;
+    text_x = clamp(text_x, 0, OLED_WIDTH - (text_length * glyph_width));
+    puts_oled(text_x, y, font, text_length, color);
+
+    // A one-pixel duplicate creates bold text without clipping its right edge.
+    if(bold_text && text_x + (text_length * glyph_width) < OLED_WIDTH) {
+        puts_oled(text_x + 1, y, font, text_length, color);
+    }
+}
+
+function draw_clock() {
+    // Small animated clock remains isolated in the lower-right corner.
+    rect_oled(108, 46, 19, 18, FALSE, OLED_WHITE);
+    line_oled(117, 49, 117, 49, 1, OLED_WHITE);
+    line_oled(117, 60, 117, 60, 1, OLED_WHITE);
+    line_oled(111, 54, 111, 54, 1, OLED_WHITE);
+    line_oled(124, 54, 124, 54, 1, OLED_WHITE);
+
+    switch(oled_frame) {
+        case 0 { line_oled(117, 54, 117, 49, 1, OLED_WHITE); break; }
+        case 1 { line_oled(117, 54, 121, 50, 1, OLED_WHITE); break; }
+        case 2 { line_oled(117, 54, 124, 54, 1, OLED_WHITE); break; }
+        case 3 { line_oled(117, 54, 121, 58, 1, OLED_WHITE); break; }
+        case 4 { line_oled(117, 54, 117, 60, 1, OLED_WHITE); break; }
+        case 5 { line_oled(117, 54, 113, 58, 1, OLED_WHITE); break; }
+        case 6 { line_oled(117, 54, 111, 54, 1, OLED_WHITE); break; }
+        case 7 { line_oled(117, 54, 113, 50, 1, OLED_WHITE); break; }
+    }
+}

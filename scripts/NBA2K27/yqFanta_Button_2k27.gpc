@@ -1,0 +1,949 @@
+//discord.gg/orla
+//discord.gg/orla /$$$$$$ /$$$$$$$ /$$ /$$$$$$  discord.gg/orla
+//discord.gg/orla /$$__ $$| $$__ $$| $$ /$$__ $$ discord.gg/orla
+//discord.gg/orla | $$ \ $$| $$ \ $$| $$ | $$ \ $$ discord.gg/orla
+//discord.gg/orla | $$ | $$| $$$$$$$/| $$ | $$$$$$$$ discord.gg/orla
+//discord.gg/orla | $$ | $$| $$__ $$| $$ | $$__ $$ discord.gg/orla
+//discord.gg/orla | $$ | $$| $$ \ $$| $$ | $$ | $$ discord.gg/orla
+//discord.gg/orla | $$$$$$/| $$ | $$| $$$$$$$$| $$ | $$ discord.gg/orla
+//discord.gg/orla  \______/ |__/ |__/|________/|__/ |__/ discord.gg/orla
+//                  __ _ __  __       __
+//  | ] (_) | ]   / /  [ |
+//  .--.| |  __  .--. .---. .--. _ .--. .--.| |  .--./) .--./) / /  .--. _ .--. | |  ,--.
+/// /'\ ' | [ | ( (\] / /'\] / .'\ \ [ /'\] / /'\' | / /'\; / /'\; / //  .'\ \ [ /'\]| | '\ :
+//| \__/ | | |  '.'.  | \__.  | \__. | | | | \__/ |  _ \ \._// \ \._/// / | \__. | | | | | //
+// |   ,// '.__.;__][___][\__) )'.___.' '.__.' [___] '.__.;__](_).',__  .',__/  _/  '.__.' [___] [___]'-;__/
+//                             ( ( __))( ( __))
+
+//========================================================
+// posted by : Illusive  (@mjcrabbs)
+// user id   : 892924985625174077
+// posted    : 2026-09-05 15:44:00 EDT
+// channel   : #NBA27
+// trace     : 6s83hngpau65.cc572acc24
+// discord.gg/orla
+//========================================================
+int  FadeRH =922;    int  ShotH =664;   int  FadeLH =925;    int  CatchH =664;   // CHANGE TO SET INITIAL VALUES
+int shotButton = XB1_X;  int catchButton = XB1_LB; // CHANGE VALUES THROUGH ZEN
+
+                                                                                                                             
+// build 6s83hngpau65.cc572acc24
+                                                                                                                             
+  
+/*                                       */
+const string Misc[] = { "On" , "Off" , "2k27" , "Button Script" , "By" , "yFqnta" , "KillSwitch" , "Enabled" , "Disabled" , "" };  
+const string ModNames[] = { "MyTypaShot","DefenceTendos", "Dribbling","" }; 
+const string ValNames[] = { "Shoot","Catch","FadeLeft","FadeRight","" }; 
+define AmountOfMods = 2
+define AmountOfValues = 3;  
+int DisplayTitle = TRUE;
+int ScreenSaver, BlankScreen, ModMenu, DisplayMenu, EditMenu, Toggle, ValNameIdx, ModNameIdx, KillSwitch, GreenBean, Dribbling, DefenseBoost;
+init {vm_tctrl(-6); 
+    	   CatchV = get_pvar(SPVAR_1,  100, 1500, CatchV); 
+   		   CatchH = get_pvar(SPVAR_1,  100, 1500, CatchH);  
+   		   FadeRV = get_pvar(SPVAR_2,  100, 1500, FadeRV); 
+   		   FadeRH = get_pvar(SPVAR_2,  100, 1500, FadeRH); 
+   		   FadeLV = get_pvar(SPVAR_3,  100, 1500, FadeLV); 
+   		   FadeLH = get_pvar(SPVAR_3,  100, 1500, FadeLH); 
+   		   ShotV = get_pvar(SPVAR_4,  100, 1500, ShotV); 
+   		   ShotH = get_pvar(SPVAR_4,  100, 1500, ShotH);  
+}
+init {
+    CatchV = CatchH - 5;
+    FadeLV = FadeLH - 5;
+// discord.gg/orla
+    FadeRV = FadeRH - 5;
+    ShotV = ShotH - 5;
+}
+    int combo_step_time_leftS;
+       int combo_step_time_leftFL;
+         int combo_step_time_leftFR;
+          int combo_step_time_left;
+          int CatchV, FadeLV, FadeRV, ShotV ;
+int  percentageBoost = 11;
+main{
+set_val(TRACE_1,ShotH);
+set_val(TRACE_2,CatchH);
+set_val(TRACE_3,FadeLH);
+set_val(TRACE_4,FadeRH);
+set_val(TRACE_1, combo_step_time_leftS);
+set_val(TRACE_2, combo_step_time_left);
+set_val(TRACE_1, combo_step_time_leftFL);
+set_val(TRACE_4, combo_step_time_leftFR);
+if(get_ival(PS4_L2)) {
+if(event_press(PS4_OPTIONS)) {
+	ModMenu = TRUE;      
+	DisplayMenu = TRUE;       
+	EditMenu = FALSE;     
+if(!ModMenu) DisplayTitle = TRUE;} 
+if(event_press(PS4_PS)){ 
+	KillSwitch =! KillSwitch; 
+	combo_run(KillSwitch)} 	
+	set_val(PS4_OPTIONS,0);
+	set_val(PS4_PS,0);}
+
+// discord.gg/orla
+if(!DisplayTitle) {
+if(ModMenu) {
+	ModNameIdx = MenuNavigation(ModNameIdx,0,3);   
+	GreenBean = ToggleSwitch(ModNameIdx == 0,GreenBean);
+	DefenseBoost = ToggleSwitch(ModNameIdx == 1,DefenseBoost);
+	Dribbling = ToggleSwitch(ModNameIdx == 2,Dribbling);}
+if(EditMenu) {
+	ValNameIdx = MenuNavigation(ValNameIdx,0,4); 
+	ShotH  = EditValues(ValNameIdx , 0, ShotH , 100, 1000);
+	CatchH  = EditValues(ValNameIdx , 1,CatchH , 100, 1000);
+	FadeLH  = EditValues(ValNameIdx , 2,FadeLH , 100, 1000);
+	FadeRH  = EditValues(ValNameIdx , 3,FadeRH , 100, 1000);
+	if(ModNameIdx == 0) ValNameIdx = cycle(ValNameIdx,0,3); } } 
+if(DisplayMenu){ 
+	cls_oled(OLED_BLACK);  
+	rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE); 
+	line_oled(0, 27, OLED_WIDTH - 1, 27, 1, OLED_WHITE); 
+if(EditMenu) {
+	print(center_x(get_valName_chars(ValNameIdx), OLED_FONT_MEDIUM_WIDTH),7,OLED_FONT_MEDIUM,OLED_WHITE,ValNames[ValNameIdx]); } 
+else if(ModMenu) { 
+	print(center_x(get_modName_chars(ModNameIdx), OLED_FONT_MEDIUM_WIDTH),7,OLED_FONT_MEDIUM,OLED_WHITE,ModNames[ModNameIdx]);  
+if(Toggle == 1)
+	print(center_x(get_misc_chars(0), OLED_FONT_MEDIUM_WIDTH),37,OLED_FONT_MEDIUM,OLED_WHITE,Misc[0]);	
+else if(Toggle == 0)
+	print(center_x(get_misc_chars(1), OLED_FONT_MEDIUM_WIDTH),37,OLED_FONT_MEDIUM,OLED_WHITE,Misc[1]); }
+	DisplayMenu = FALSE; } 
+if(!ModMenu && !EditMenu) {
+// discord.gg/orla
+	if(DisplayTitle) { 
+		cls_oled(OLED_BLACK); 
+		rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE); 
+		print(center_x(get_misc_chars(2), OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,Misc[2]); 
+		print(center_x(get_misc_chars(3), OLED_FONT_SMALL_WIDTH),22,OLED_FONT_SMALL,OLED_WHITE,Misc[3]); 
+		print(center_x(get_misc_chars(4), OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL,OLED_WHITE,Misc[4]); 
+		print(center_x(get_misc_chars(5), OLED_FONT_SMALL_WIDTH),50,OLED_FONT_SMALL,OLED_WHITE,Misc[5]); 
+		DisplayTitle = FALSE;
+		ScreenSaver  = TRUE; }
+if(ScreenSaver) {
+	BlankScreen += get_rtime();
+if(BlankScreen >= 5000) {
+	cls_oled(OLED_BLACK);
+	BlankScreen = 0;
+	ScreenSaver = TRUE; } } } 
+if(!KillSwitch){
+if(!GreenBean){colourled(21);}
+if(GreenBean){
+// discord.gg/orla
+ if(event_press(shotButton) && !combo_running(ShotS)){ // check if the combo is active 
+    if(combo_current_step(ShotS)) { // counts the running time of button  
+    	combo_run(ShotS);
+    	}
+    	 
+    if(combo_step_time_leftS == ShotH){ // counts HoldTime left to run combo
+    	combo_restart(ShotS);} //resets combo runtime to 0 
+    	}
+        combo_step_time_leftS = ShotH; // Update combo_step_time_left
+    
+     if(get_val(PS4_LX) <=-25 && event_press(shotButton) && !combo_running(FadeL)){{ // check if the combo is active 
+    if(combo_current_step(FadeL)) { // counts the running time of button  
+    	combo_run(FadeL);
+    	}
+    }	 
+    if(combo_step_time_leftFL == FadeLH){ // counts HoldTime left to run combo
+    	combo_restart(FadeL);} //resets combo runtime to 0 
+    	}
+        combo_step_time_leftFL = FadeLH; // Update combo_step_time_left
+        if(get_val(PS4_LX) >=25 && event_press(shotButton) && !combo_running(FadeR)){{ // check if the combo is active 
+    if(combo_current_step(FadeR)) { // counts the running time of button  
+    	combo_run(FadeR);
+// discord.gg/orla
+    	}
+    }	 
+    if(combo_step_time_leftFR == FadeRH){ // counts HoldTime left to run combo
+    	combo_restart(FadeR);} //resets combo runtime to 0 
+    	}
+        combo_step_time_leftFR = FadeRH; // Update combo_step_time_left
+         if(event_press(catchButton) && !combo_running(CatchS)){ // check if the combo is active 
+    if(combo_current_step(CatchS)) { // counts the running time of button  
+    	combo_run(CatchS);
+    	}
+    	 
+    if(combo_step_time_left == CatchH){ // counts HoldTime left to run combo
+    	combo_restart(CatchS);} //resets combo runtime to 0 
+    	}
+        combo_step_time_left = CatchH; // Update combo_step_time_left
+        }
+if(!DefenseBoost){colourled(18);}
+if(DefenseBoost){
+// discord.gg/orla
+     if(get_val(PS4_L2) >=15 && event_press(shotButton)){
+                combo_run(STEAL);
+            }
+		if(get_val(PS4_L2)){
+			combo_run(ALTERNATE_STEP);
+			}
+		}
+
+if(!Dribbling){colourled(19);}
+if(Dribbling){
+if (event_press(PS4_L3)) 
+        {
+            set_val(PS4_R2,0);
+            combo_run(BoostLH);
+        }
+        
+        if (event_press(PS4_R3)) 
+        {
+            set_val(PS4_R2,0);
+            combo_run(BoostRH);
+        }
+    }
+}
+		   }
+	 combo STEAL {
+// discord.gg/orla
+    set_val(shotButton,100);
+    set_val(PS4_LX,0);
+    set_val(PS4_LY,0);
+    wait(50);
+    set_val(PS4_LX,0);
+    set_val(PS4_LY,0);
+    wait(300);
+    set_val (shotButton, 0)
+}
+	  combo ShotS {
+    	set_val(shotButton, 100);// remove this to Automate Shot Block by using "//"
+    	wait(abs(ShotH));
+    	set_val(shotButton, 0); 
+    	wait(abs(ShotV - get_rtime() + isqrt(percentageBoost)));
+    	//Holdtime = random(Holdtime,Holdtime + 5);// remove this to Automate Shot by using "//"
+    	}
+// discord.gg/orla
+    	  combo FadeL {
+    	set_val(shotButton, 100);// remove this to Automate Shot Block by using "//"
+    	wait(abs(FadeLH));
+    	set_val(shotButton, 0); 
+    	wait(abs(FadeLV - get_rtime() + isqrt(percentageBoost)));
+    	//Holdtime = random(Holdtime,Holdtime + 5);// remove this to Automate Shot by using "//"
+    	}
+    	 combo FadeR {
+    	set_val(shotButton, 100);// remove this to Automate Shot Block by using "//"
+    	wait(abs(FadeRH));
+    	set_val(shotButton, 0); 
+    	wait(abs(FadeRV - get_rtime() + isqrt(percentageBoost)));
+    	//Holdtime = random(Holdtime,Holdtime + 5);// remove this to Automate Shot by using "//"
+    	}
+    	combo  CatchS {
+// discord.gg/orla
+	set_val(PS4_CIRCLE, 100);
+	set_val(PS4_TRIANGLE, 100);
+	wait(225);
+	set_val(PS4_CIRCLE, 0);
+	set_val(PS4_TRIANGLE, 0);
+	wait(25);
+	set_val(shotButton, 100);
+	wait(abs(CatchH));
+	set_val(shotButton, 0);
+	wait(abs(CatchV - get_rtime() + isqrt(percentageBoost)));
+	}
+combo ALTERNATE_STEP{
+	set_val(PS4_R2,0);
+    set_val(PS4_L2,100);
+    wait(100);
+    set_val(PS4_R2,100);
+    set_val(PS4_L2,0);
+}
+    //Left hand Boost
+combo BoostLH
+{
+    	set_val(PS5_R2, 28);
+	wait(10);
+	set_val(PS5_R2, 48);
+// discord.gg/orla
+	wait(10);
+	set_val(PS5_R2, 62);
+	wait(10);
+	set_val(PS5_R2, 78);
+	wait(10);
+	set_val(PS5_R2, 90);
+	wait(10);
+	set_val(PS5_R2, 97);
+	wait(10);
+	set_val(PS5_R2, 100);
+	wait(80);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 31);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 71);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 100);
+	wait(50);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 96);
+	wait(10);
+// discord.gg/orla
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, -59);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 0);
+	wait(560);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -30);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -60);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -90);
+	set_val(PS5_LY, -40);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -97);
+	set_val(PS5_LY, -40);
+	wait(50);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -63);
+	set_val(PS5_LY, -32);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 29);
+	set_val(PS5_LY, 27);
+// discord.gg/orla
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 0);
+	set_val(PS5_LY, 0);
+	wait(30);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 34);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 70);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 100);
+	wait(50);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 64);
+	wait(10);
+	set_val(PS5_R2, 100);
+// discord.gg/orla
+	set_val(PS5_RY, -23);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 0);
+	wait(650);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 20);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 35);
+	set_val(PS5_LY, -33);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 47);
+	set_val(PS5_LY, -65);
+	wait(10);
+	set_val(PS5_R2, 100);
+// discord.gg/orla
+	set_val(PS5_LX, 54);
+	set_val(PS5_LY, -100);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 57);
+	set_val(PS5_LY, -100);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 60);
+	set_val(PS5_LY, -100);
+	wait(30);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 53);
+	set_val(PS5_LY, -72);
+	wait(10);
+// discord.gg/orla
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 0);
+	set_val(PS5_LY, 0);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 47);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 90);
+	set_val(PS5_LY, 22);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 100);
+	set_val(PS5_LY, 0);
+	wait(30);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 79);
+	wait(10);
+// discord.gg/orla
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, -45);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, -21);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 0);
+	wait(560);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -27);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -57);
+	set_val(PS5_LY, -23);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -86);
+	set_val(PS5_LY, -42);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -95);
+	set_val(PS5_LY, -47);
+	wait(60);
+// discord.gg/orla
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -85);
+	set_val(PS5_LY, -35);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 25);
+	set_val(PS5_LY, 0);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 0);
+	wait(20);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 26);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 60);
+// discord.gg/orla
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 100);
+	wait(20);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 23);
+	set_val(PS5_RY, 100);
+	wait(40);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 21);
+	set_val(PS5_RY, 27);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 0);
+	set_val(PS5_RY, 0);
+	wait(690);
+	set_val(PS5_R2, 100);
+// discord.gg/orla
+	set_val(PS5_LX, 35);
+	set_val(PS5_LY, -30);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 52);
+	set_val(PS5_LY, -67);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 60);
+	set_val(PS5_LY, -99);
+	wait(70);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 56);
+	set_val(PS5_LY, -99);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 20);
+	set_val(PS5_LY, -24);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 0);
+// discord.gg/orla
+	set_val(PS5_LY, 0);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 49);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 100);
+	wait(40);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 59);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, -24);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, -20);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 0);
+	wait(580);
+// discord.gg/orla
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -21);
+// build 6s83hngpau65.cc572acc24
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -48);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -78);
+	set_val(PS5_LY, -30);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -96);
+	set_val(PS5_LY, -42);
+	wait(90);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -65);
+	set_val(PS5_LY, -32);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 27);
+	set_val(PS5_LX, 27);
+	set_val(PS5_LY, 26);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 63);
+	set_val(PS5_LX, 0);
+// discord.gg/orla
+	set_val(PS5_LY, 0);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 100);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 23);
+	set_val(PS5_RY, 100);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 28);
+	set_val(PS5_RY, 100);
+	wait(30);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 34);
+// discord.gg/orla
+	set_val(PS5_RY, 60);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 0);
+	set_val(PS5_RY, -23);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 0);
+	wait(620);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 20);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 41);
+	set_val(PS5_LY, -35);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 54);
+	set_val(PS5_LY, -82);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 57);
+	set_val(PS5_LY, -100);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 60);
+	set_val(PS5_LY, -100);
+	wait(70);
+// discord.gg/orla
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 56);
+	set_val(PS5_LY, -100);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 52);
+	set_val(PS5_LY, -92);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 49);
+	set_val(PS5_LY, -80);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 38);
+	set_val(PS5_LX, 0);
+	set_val(PS5_LY, 54);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 78);
+	set_val(PS5_LY, 0);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 100);
+	wait(40);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 0);
+	wait(650);
+	set_val(PS5_R2, 100);
+// discord.gg/orla
+	set_val(PS5_LX, -42);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -71);
+	set_val(PS5_LY, -30);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -94);
+	set_val(PS5_LY, -47);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -97);
+	set_val(PS5_LY, -43);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, -99);
+	set_val(PS5_LY, -38);
+// discord.gg/orla
+	wait(80);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 27);
+	set_val(PS5_LX, -100);
+	set_val(PS5_LY, -36);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 63);
+	set_val(PS5_LX, -82);
+	set_val(PS5_LY, -34);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 100);
+	set_val(PS5_LX, 35);
+	set_val(PS5_LY, 34);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 26);
+	set_val(PS5_RY, 100);
+	set_val(PS5_LX, 0);
+	set_val(PS5_LY, 23);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 30);
+// discord.gg/orla
+	set_val(PS5_RY, 100);
+	set_val(PS5_LY, 0);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 28);
+	set_val(PS5_RY, 100);
+	wait(20);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 0);
+	set_val(PS5_RY, -27);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 0);
+	wait(620);
+	set_val(PS5_R2, 100);
+// discord.gg/orla
+	set_val(PS5_LX, 25);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 41);
+	set_val(PS5_LY, -40);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 52);
+	set_val(PS5_LY, -94);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_LX, 53);
+	set_val(PS5_LY, -100);
+	wait(80);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 29);
+	set_val(PS5_LX, 22);
+	set_val(PS5_LY, -32);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 67);
+	set_val(PS5_LX, 0);
+	set_val(PS5_LY, 0);
+	wait(10);
+// discord.gg/orla
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 23);
+	set_val(PS5_RY, 100);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 20);
+	set_val(PS5_RY, 100);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 22);
+	set_val(PS5_RY, 100);
+	wait(40);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RX, 0);
+	set_val(PS5_RY, -26);
+	wait(10);
+	set_val(PS5_R2, 100);
+	set_val(PS5_RY, 0);
+	wait(120);
+	set_val(PS5_R2, 87);
+	wait(10);
+	set_val(PS5_R2, 39);
+	wait(10);
+// discord.gg/orla
+	set_val(PS5_R2, 0);
+}
+
+//Right hand Boost
+combo BoostRH {
+    set_val(PS5_R2, 40);
+    wait(10);
+    set_val(PS5_R2, 64);
+    wait(10);
+    set_val(PS5_R2, 94);
+    wait(10);
+    set_val(PS5_R2, 100);
+    wait(110);
+    set_val(PS5_R2, 100);
+    set_val(PS5_RY, 60);
+    wait(10);
+    set_val(PS5_R2, 100);
+    set_val(PS5_RY, 100);
+    wait(70);
+    set_val(PS5_R2, 100);
+// discord.gg/orla
+    set_val(PS5_RY, -32);
+    wait(10);
+    set_val(PS5_R2, 100);
+    set_val(PS5_RY, 23);
+    wait(10);
+    set_val(PS5_R2, 100);
+    set_val(PS5_RY, 0);
+    wait(280);
+    set_val(PS5_R2, 100);
+    set_val(PS5_RX, 27);
+    set_val(PS5_RY, 27);
+    wait(10);
+    set_val(PS5_R2, 100);
+    set_val(PS5_RX, 48);
+    set_val(PS5_RY, 62);
+    wait(10);
+    set_val(PS5_R2, 100);
+    set_val(PS5_RX, 69);
+    set_val(PS5_RY, 85);
+// discord.gg/orla
+    wait(10);
+    set_val(PS5_R2, 100);
+    set_val(PS5_RX, 80);
+    set_val(PS5_RY, 78);
+    wait(10);
+    set_val(PS5_R2, 100);
+    set_val(PS5_RX, 80);
+    set_val(PS5_RY, 76);
+    wait(40);
+    set_val(PS5_R2, 100);
+    set_val(PS5_RX, 63);
+    set_val(PS5_RY, 65);
+    wait(10);
+    set_val(PS5_R2, 100);
+    set_val(PS5_RX, -29);
+    set_val(PS5_RY, -33);
+    wait(10);
+    set_val(PS5_R2, 100);
+    set_val(PS5_RX, 0);
+    set_val(PS5_RY, 0);
+    wait(680);
+// discord.gg/orla
+    set_val(PS5_R2, 89);
+    wait(10);
+    set_val(PS5_R2, 47);
+    wait(10);
+    set_val(PS5_R2, 0);
+}
+combo save {
+save_edit();
+}
+function save_edit(){
+set_pvar(SPVAR_1,ShotH);
+set_pvar(SPVAR_2,CatchH);
+set_pvar(SPVAR_3,FadeLH);
+set_pvar(SPVAR_4,FadeRH);
+}
+function MenuNavigation(f_modorval,f_min,f_max) {
+if(get_val(PS4_L2)<=50){
+ if(event_press(PS4_RIGHT)){ f_modorval = cycle(f_modorval + 1, f_min , f_max  ); DisplayMenu = TRUE; }     
+  if(event_press(PS4_LEFT)){ f_modorval = cycle(f_modorval - 1, f_min , f_max  ); DisplayMenu = TRUE; } 
+	set_val(PS4_RIGHT,0); 
+	set_val(PS4_LEFT,0);  
+	}
+if(f_modorval == 0){
+ if(event_press(PS4_CROSS)){ 
+        	ValNameIdx  = AmountOfValues + 1; 
+        	EditMenu    = TRUE;
+// discord.gg/orla
+        	ModMenu     = FALSE;
+        	DisplayMenu = TRUE; }
+	set_val(PS4_CROSS,0); 
+    }
+if(ModMenu){
+if(event_press(PS4_CIRCLE)){    
+        	DisplayTitle = TRUE;
+        	ModMenu      = FALSE; 
+        	DisplayMenu  = FALSE; } 
+	set_val(PS4_CIRCLE,0); }
+if(EditMenu){
+if(event_press(PS4_CIRCLE)){       
+        	EditMenu     = FALSE; 
+       		ModMenu      = TRUE;
+        	DisplayMenu  = TRUE; }
+// discord.gg/orla
+	set_val(PS4_CIRCLE,0); 
+    } 
+    return f_modorval; 
+} 
+function ToggleSwitch(f_name,f_val) { 
+if(f_name){       
+ if(event_press(PS4_UP) || event_press(PS4_DOWN)){
+ f_val =! f_val; 
+ DisplayMenu = TRUE; } 
+ Toggle = f_val
+set_val(PS4_UP,0); 
+set_val(PS4_DOWN,0); }
+return f_val;
+}
+function EditValues(f_idx,f_num,ValueIndex,ValueIndexMin,ValueIndexMax) {  
+if(f_num == f_idx){ 
+if(get_val(PS4_L2)>=75){ 
+if(event_press(PS4_UP)){ 
+	ValueIndex = cycle(ValueIndex + 1, ValueIndexMin,ValueIndexMax); DisplayMenu = TRUE; combo_run(save); }
+// discord.gg/orla
+if(event_press(PS4_DOWN)){ 
+	ValueIndex = cycle(ValueIndex - 1, ValueIndexMin,ValueIndexMax); DisplayMenu = TRUE; combo_run(save); }
+set_val(PS4_UP,0); set_val(PS4_DOWN,0); }
+if(get_ival(PS4_L2)>=75){
+if(event_press(PS4_RIGHT)){ 
+	ValueIndex = cycle(ValueIndex + 10, ValueIndexMin,ValueIndexMax); DisplayMenu = TRUE; combo_run(save); }
+if(event_press(PS4_LEFT)){ 
+	ValueIndex = cycle(ValueIndex - 10, ValueIndexMin,ValueIndexMax); DisplayMenu = TRUE; combo_run(save); }
+set_val(PS4_RIGHT,0); set_val(PS4_LEFT,0); }
+number_to_string(ValueIndex,find_digits(ValueIndex));}
+    return ValueIndex;                
+ }
+combo KillSwitch { 
+cls_oled(OLED_BLACK); 
+if(KillSwitch){  
+print(center_x(get_misc_chars(6), OLED_FONT_SMALL_WIDTH),15,OLED_FONT_SMALL,OLED_WHITE,Misc[6]);
+print(center_x(get_misc_chars(7), OLED_FONT_SMALL_WIDTH),30,OLED_FONT_SMALL,OLED_WHITE,Misc[7]);}
+if(!KillSwitch){ 
+// discord.gg/orla
+print(center_x(get_misc_chars(6), OLED_FONT_SMALL_WIDTH),15,OLED_FONT_SMALL,OLED_WHITE,Misc[6]);
+print(center_x(get_misc_chars(8), OLED_FONT_SMALL_WIDTH),30,OLED_FONT_SMALL,OLED_WHITE,Misc[8]);} 
+wait(1500);
+DisplayTitle = TRUE;
+} 
+function cycle(f_val, f_lo, f_hi) {
+if(f_val > f_hi) return f_lo;
+if(f_val < f_lo) return f_hi;
+return f_val;
+}
+function get_misc_chars(f_idx){
+if (Misc[f_idx + 1] != -1) 
+return Misc[f_idx + 1] - Misc[f_idx] - 1;
+return sizeof(Misc) - Misc[f_idx];		
+}
+function get_modName_chars(f_idx){
+if (ModNames[f_idx + 1] != -1) 
+return ModNames[f_idx + 1] - ModNames[f_idx] - 1;
+// discord.gg/orla
+return sizeof(ModNames) - ModNames[f_idx];		
+}
+function get_valName_chars(f_idx){
+if (ValNames[f_idx + 1] != -1) 
+return ValNames[f_idx + 1] - ValNames[f_idx] - 1;
+return sizeof(ValNames) - ValNames[f_idx];		
+}
+function center_x(f_chars,f_font) {
+return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+} 
+function number_to_string(value,f_digits){
+	i = 1;  c_val = 10000;
+	if(value < 0){ putc_oled(i,45); i += 1; value = abs(value); } 
+	for(c = 5; c >= 1; c--){ 
+	if(f_digits >= c){ putc_oled(i,ASCII_NUM[value / c_val]); value = value % c_val; i +=  1;
+    if(c == 4){ putc_oled(i,44); i += 1; } } c_val /= 10; }
+    	puts_oled(center_x(i - 1,OLED_FONT_LARGE_WIDTH),37,OLED_FONT_LARGE,i - 1,OLED_WHITE); 
+}  
+function find_digits(f_num) {
+    f_num = abs(f_num);
+    if(f_num / 10000 > 0) return 5;
+    if(f_num /  1000 > 0) return 4;
+    if(f_num /   100 > 0) return 3;
+    if(f_num /    10 > 0) return 2;
+                          return 1;
+}
+	const uint8 ASCII_NUM[] = {48,49,50,51,52,53,54,55,56,57};
+	int i;
+// discord.gg/orla
+	int c,c_val;
+					  
+
+define Off = 0:	    
+define DimBlue	= 1;  
+define DimRed= 2;	  
+define DimGreen =  3;	
+define DimPink = 4;
+define DimSkyBlue = 5;
+define DimYellow	= 6;
+define DimWhite	= 7;
+define Blue	=  8;
+define Red	= 9;		
+define Green	= 10;	
+define Pink	= 11;	
+// discord.gg/orla
+define SkyBlue = 12;		
+define Yellow	= 13;	
+define White	= 14;	
+define BrightBlue = 15;	
+define  BrightRed = 16;	
+define BrightGreen = 17;
+define BrightPink = 18;	
+define BrightSkyBlue = 19;
+define BrightYellow = 20;
+define  Brightwhite	= 	21;
+             
+data 					  
+(0,0,0,0,//-- Off	    
+1,0,0,0, //-- Dim Blue	  
+0,1,0,0, //-- Dim Red		  
+0,0,1,0, //-- Dim Green	
+0,0,0,1, //-- Dim Pink	
+1,0,1,0, //-- Dim SkyBlue	
+0,1,1,0, //-- Dim Yellow	
+1,1,1,0, //-- Dim White	
+2,0,0,0, //-- Blue		
+0,2,0,0, //-- Red			
+3,3,3,3, //-- Green		
+0,0,0,2, //-- Pink		
+2,0,2,0, //-- SkyBlue		
+0,2,2,0, //-- Yellow		
+2,2,2,0, //-- White		
+3,0,0,0, //-- Bright Blue	
+0,2,0,0, //-- Bright Red	
+0,0,3,0, //-- Bright Green
+0,0,0,3, //-- Bright Pink	
+3,0,3,0, //-- Bright SkyBlue
+0,3,3,0, //-- Bright Yellow
+3,3,3,0  //-- Bright white
+);		
+// discord.gg/orla
+
+int data_indx;
+function colourled(color) {  
+    for( data_indx = 0; data_indx < 3; data_indx++ ) {
+        set_led(data_indx,duint8 ((color * 3) + data_indx));
+    }
+} ����������������
+ ����������������
+// build 6s83hngpau65.cc572acc24

@@ -1,0 +1,1675 @@
+// █████╗ ██████╗  ██████╗ ██╗  ██╗██╗
+// ██╔══██╗██╔══██╗██╔═══██╗██║ ██╔╝██║
+// ███████║██████╔╝██║   ██║█████╔╝ ██║
+// ██╔══██║██╔══██╗██║   ██║██╔═██╗ ██║
+// ██║  ██║██████╔╝╚██████╔╝██║  ██╗██║
+// ╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝
+// discord.gg/cyzens
+// Script by Sonder
+/*
+
+
+
+*/
+
+
+
+// int flick_up_shooting_active = 1;
+int flick_sequences_enabled = 0;
+int delay_duration = 50;
+int Delay_duration_Insta = 50;
+int STICK_DOWN_VALUE = 100000;
+int STICK_UP_VALUE = -100000;
+int RX_UP_VALUE = 25;
+// discord.gg/cyzens
+int reverse_flick_mode = 1;
+int Insta_shot_active = 1;
+int Insta_shot_duration = 650;
+int DL_Insta_shot_active = 1;
+int DL_Insta_shot_duration = 650;
+int DL_Delay_duration_Insta = 50;
+int go_to_shot_duration = 2000;
+int go_to_shot_active = 1;
+int spot_take_active = 0;
+
+// --- Fade L/R (ported from APEX_V2, Tempo follows Sonder's direct-ms/no-RNG logic) ---
+int fadeL_active = 0;
+int fadeL_timing = 400;   // ms, charge phase (same range/meaning as APEX FadeL Timing)
+int fadeL_tempo  = 50;    // ms, gather phase (Sonder-style: direct ms, deterministic, no RNG)
+int fadeR_active = 0;
+// discord.gg/cyzens
+int fadeR_timing = 400;
+int fadeR_tempo  = 50;
+define FADE_LAT = 25;     // LX lean needed to read a fade direction on R3
+
+// --- Profile System (5 slots, ported from v7RC's auto-packing engine) ---
+define PROFILE_COUNT = 5;
+int active_profile = 0; // 0-4
+int profile_flick_up[5];
+int profile_delay[5];
+int profile_reverse[5];
+int profile_insta_active[5];
+int profile_insta_dur[5];
+int profile_insta_tempo[5];
+int profile_dl_active[5];
+int profile_dl_dur[5];
+int profile_dl_tempo[5];
+// discord.gg/cyzens
+int profile_go_to_shot[5];
+int profile_go_to_shot_active[5];
+int profile_spot_take[5];
+int profile_fadeL_active[5];
+int profile_fadeL_timing[5];
+int profile_fadeL_tempo[5];
+int profile_fadeR_active[5];
+int profile_fadeR_timing[5];
+int profile_fadeR_tempo[5];
+const string profile_labels[] = { "Profile 1", "Profile 2", "Profile 3", "Profile 4", "Profile 5" };
+// --- End Profile System ---
+// --- Idle screensaver state ---
+int saver_on = 0;
+int sx = 2, sy = 16;
+int svx = 2, svy = 2;
+int msg_w, line1_w, line2_w;
+// discord.gg/cyzens
+int saver_timer = 0;
+const string saver_line1[] = { "Sonder V3" };
+const string saver_line2[] = { "" };
+const string tt_title[] = { "Sonder V3" };
+
+// ===== Menu state =====
+int startup = 1, numpgs = 25, menu_enabled = 0, page = 1, menuSelection, toggleType, pageChg_s;
+int flashtoggle, isXbox;
+
+// ===== Menu labels =====
+const string menu_header[] = { "Square Tempo", "Tempo Speed (ms)", "Turbo Shots", "Insta Shot", "Insta Speed (ms)", "Insta Tempo (ms)", "Auto No Dip", "Auto No Dip Speed (ms)", "Auto No Dip Tempo (ms)", "Go To Shot", "Go To Shot (ms)", "Spot Take", "Fade LEFT Shot", "FadeL Timing", "FadeL Tempo", "Fade RIGHT Shot", "FadeR Timing", "FadeR Tempo", "Profile Select", "Infinite Stamina", "Ground Control %", "Defense Boost", "Auto Contest", "Side Step Boost", "Zen Colour" };
+const string auto_contest_label[] = {"OFF", "CONTEST", "LOCKDOWN"};
+const string pageChg[] = {"---------L2+RIGHT->", "<-L2+LEFT--L2+RIGHT->", "<-L2+LEFT---------"};
+const string item_toggle[] = {"L2 + UP/DOWN", "to change"};
+const string onOff[] = {"OFF", "ON"};
+// discord.gg/cyzens
+const string ms[] = {"ms"};
+const string reverse_modes[] = {"Hop Jumper", "Turbo Fade"};
+const string spot_take_hint[] = {"Hold X"};
+
+// display for Turbo Shots page
+int isLoadingScreen = 1;
+define LoadingTimer = 2000;
+int LoadingTimeToRun = 0;
+
+// Additional variables for graph
+int graph_width;
+int x_start;
+int mid_x;
+int bar_pos;
+int infinite_stamina = 1;      // ON/OFF toggle
+int ground_control = 70;       // % of stick strength (lower = less stamina drain)
+// discord.gg/cyzens
+int ground_stick_active = 1;   // must be ON
+int shooting_active = 0;       // disables stamina control while shooting
+int defense_boost_active = 0;  // Defense Boost: amplifies RS-Y while L2+R2 held
+int auto_contest_mode = 0;     // Auto Contest: 0=OFF, 1=CONTEST, 2=LOCKDOWN
+int side_step_boost_active = 0; // used by Auto Contest LOCKDOWN mode
+int zen_colour = 3;             // idle LED colour index: 0=YELLOW,1=PURPLE,2=BLUE,3=GREEN,4=WHITE,5=RED,6=CYAN
+const string zen_colour_names[] = {"YELLOW", "PURPLE", "BLUE", "GREEN", "WHITE", "RED", "CYAN"};
+function APPLY_ZEN_COLOUR() {
+if (zen_colour == 0) {
+set_rgb(255, 153, 0);
+} else if (zen_colour == 1) {
+set_rgb(128, 0, 128);
+} else if (zen_colour == 2) {
+set_rgb(0, 0, 255);
+} else if (zen_colour == 3) {
+set_rgb(0, 255, 0);
+// discord.gg/cyzens
+} else if (zen_colour == 4) {
+set_rgb(255, 255, 255);
+} else if (zen_colour == 5) {
+set_rgb(255, 0, 0);
+} else if (zen_colour == 6) {
+set_rgb(0, 255, 255);
+}
+}
+// New flag for turbo fade
+int is_turbo_fade = 0;
+int l3_square_prev = 0, l3_square_guard = 0; // tracks L3 across the 1-frame gap before event_release(PS4_SQUARE) fires
+int flick_up_shooting_active = 1;
+
+// ===== Profile helpers =====
+function save_profile() {
+// discord.gg/cyzens
+    profile_flick_up[active_profile]     = flick_up_shooting_active;
+    profile_delay[active_profile]        = delay_duration;
+    profile_reverse[active_profile]      = reverse_flick_mode;
+    profile_insta_active[active_profile] = Insta_shot_active;
+    profile_insta_dur[active_profile]    = Insta_shot_duration;
+    profile_insta_tempo[active_profile]  = Delay_duration_Insta;
+    profile_dl_active[active_profile]    = DL_Insta_shot_active;
+    profile_dl_dur[active_profile]       = DL_Insta_shot_duration;
+    profile_dl_tempo[active_profile]     = DL_Delay_duration_Insta;
+    profile_go_to_shot[active_profile]   = go_to_shot_duration;
+    profile_go_to_shot_active[active_profile] = go_to_shot_active;
+    profile_spot_take[active_profile]    = spot_take_active;
+    profile_fadeL_active[active_profile] = fadeL_active;
+    profile_fadeL_timing[active_profile] = fadeL_timing;
+    profile_fadeL_tempo[active_profile]  = fadeL_tempo;
+    profile_fadeR_active[active_profile] = fadeR_active;
+// discord.gg/cyzens
+    profile_fadeR_timing[active_profile] = fadeR_timing;
+    profile_fadeR_tempo[active_profile]  = fadeR_tempo;
+}
+
+function load_profile() {
+    flick_up_shooting_active = profile_flick_up[active_profile];
+    delay_duration            = profile_delay[active_profile];
+    reverse_flick_mode        = profile_reverse[active_profile];
+    Insta_shot_active         = profile_insta_active[active_profile];
+    Insta_shot_duration       = profile_insta_dur[active_profile];
+    Delay_duration_Insta      = profile_insta_tempo[active_profile];
+    DL_Insta_shot_active      = profile_dl_active[active_profile];
+    DL_Insta_shot_duration    = profile_dl_dur[active_profile];
+    DL_Delay_duration_Insta   = profile_dl_tempo[active_profile];
+    go_to_shot_duration       = profile_go_to_shot[active_profile];
+    go_to_shot_active         = profile_go_to_shot_active[active_profile];
+// discord.gg/cyzens
+    spot_take_active          = profile_spot_take[active_profile];
+    fadeL_active               = profile_fadeL_active[active_profile];
+    fadeL_timing               = profile_fadeL_timing[active_profile];
+    fadeL_tempo                = profile_fadeL_tempo[active_profile];
+    fadeR_active                = profile_fadeR_active[active_profile];
+    fadeR_timing                = profile_fadeR_timing[active_profile];
+    fadeR_tempo                 = profile_fadeR_tempo[active_profile];
+}
+
+// ===== Persistent Save/Load (auto-packing spvar engine, ported from v7RC) =====
+int spvar_current_bit, spvar_current_slot, spvar_current_value, spvar_tmp, spvar_bits;
+
+function get_bit_count(val) {
+    spvar_tmp = 0;
+    while (val) { spvar_tmp++; val = abs(val >> 1); }
+// discord.gg/cyzens
+    return spvar_tmp;
+}
+function get_bit_count2(val1, val2) {
+    spvar_tmp = max(get_bit_count(val1), get_bit_count(val2));
+    if (is_signed2(val1, val2)) { spvar_tmp++; }
+    return spvar_tmp;
+}
+function is_signed2(val1, val2) { return val1 < 0 || val2 < 0; }
+function make_sign(bits) { return 1 << clamp(bits - 1, 0, 31); }
+function make_full_mask(bits) {
+    if (bits == 32) { return -1; }
+    return 0x7FFFFFFF >> (31 - bits);
+}
+function make_sign_mask(bits) { return make_full_mask(bits - 1); }
+function pack_i(val, bits) {
+    if (val < 0) { return (abs(val) & make_sign_mask(bits)) | make_sign(bits); }
+// discord.gg/cyzens
+    return val & make_sign_mask(bits);
+}
+function unpack_i(val, bits) {
+    if (val & make_sign(bits)) { return 0 - (val & make_sign_mask(bits)); }
+    return val & make_sign_mask(bits);
+}
+function read_spvar_slot(slot) { return get_pvar(slot, 0x80000000, 0x7FFFFFFF, 0); }
+
+function save_spvar(val, min, max) {
+    spvar_bits = get_bit_count2(min, max);
+    val = clamp(val, min, max);
+    if (is_signed2(min, max)) { val = pack_i(val, spvar_bits); }
+    val = val & make_full_mask(spvar_bits);
+    if (spvar_bits >= 32 - spvar_current_bit) {
+        spvar_current_value = spvar_current_value | (val << spvar_current_bit);
+        set_pvar(spvar_current_slot, spvar_current_value);
+// discord.gg/cyzens
+        spvar_current_slot++;
+        spvar_bits -= (32 - spvar_current_bit);
+        val = val >> (32 - spvar_current_bit);
+        spvar_current_bit = 0;
+        spvar_current_value = 0;
+    }
+    spvar_current_value = spvar_current_value | (val << spvar_current_bit);
+    spvar_current_bit += spvar_bits;
+    if (!spvar_current_bit) { spvar_current_value = 0; }
+    set_pvar(spvar_current_slot, spvar_current_value);
+}
+
+function read_spvar(min, max, def) {
+    spvar_bits = get_bit_count2(min, max);
+    spvar_current_value = (read_spvar_slot(spvar_current_slot) >> spvar_current_bit) & make_full_mask(spvar_bits);
+    if (spvar_bits >= 32 - spvar_current_bit) {
+// discord.gg/cyzens
+        spvar_current_value = (spvar_current_value & make_full_mask(32 - spvar_current_bit)) | ((read_spvar_slot(spvar_current_slot + 1) & make_full_mask(spvar_bits - (32 - spvar_current_bit))) << (32 - spvar_current_bit));
+    }
+    spvar_current_bit += spvar_bits;
+    spvar_current_value = spvar_current_value & make_full_mask(spvar_bits);
+    if (spvar_current_bit >= 32) { spvar_current_slot++; spvar_current_bit -= 32; }
+    if (is_signed2(min, max)) { spvar_current_value = unpack_i(spvar_current_value, spvar_bits); }
+    if (spvar_current_value < min || spvar_current_value > max) { return def; }
+    return spvar_current_value;
+}
+
+int prof_i;
+function Save() {
+    spvar_current_slot  = SPVAR_1;
+    spvar_current_bit   = 0;
+    spvar_current_value = 0;
+// discord.gg/cyzens
+
+    save_spvar(1, 0, 1);                  // save marker
+    save_spvar(active_profile, 0, 4);     // active profile index
+
+    for (prof_i = 0; prof_i < PROFILE_COUNT; prof_i++) {
+        save_spvar(profile_flick_up[prof_i],     0, 1);
+        save_spvar(profile_delay[prof_i],        0, 300);
+        save_spvar(profile_reverse[prof_i],      0, 1);
+        save_spvar(profile_insta_active[prof_i], 0, 1);
+        save_spvar(profile_insta_dur[prof_i],     100, 1000);
+        save_spvar(profile_insta_tempo[prof_i],   0, 300);
+        save_spvar(profile_dl_active[prof_i],     0, 1);
+        save_spvar(profile_dl_dur[prof_i],        100, 1000);
+        save_spvar(profile_dl_tempo[prof_i],      0, 300);
+        save_spvar(profile_go_to_shot[prof_i],    200, 3000);
+        save_spvar(profile_go_to_shot_active[prof_i], 0, 1);
+// discord.gg/cyzens
+        save_spvar(profile_spot_take[prof_i],     0, 1);
+        save_spvar(profile_fadeL_active[prof_i],  0, 1);
+        save_spvar(profile_fadeL_timing[prof_i],  0, 9999);
+        save_spvar(profile_fadeL_tempo[prof_i],   0, 300);
+        save_spvar(profile_fadeR_active[prof_i],  0, 1);
+        save_spvar(profile_fadeR_timing[prof_i],  0, 9999);
+        save_spvar(profile_fadeR_tempo[prof_i],   0, 300);
+    }
+
+    // Global settings (not per-profile)
+    save_spvar(infinite_stamina,        0, 1);
+    save_spvar(ground_control,          10, 100);
+    save_spvar(defense_boost_active,    0, 1);
+    save_spvar(auto_contest_mode,       0, 2);
+    save_spvar(side_step_boost_active,  0, 1);
+    save_spvar(zen_colour,              0, 6);
+// discord.gg/cyzens
+}
+
+function Load() {
+    spvar_current_slot  = SPVAR_1;
+    spvar_current_bit   = 0;
+    spvar_current_value = 0;
+
+    if (read_spvar(0, 1, 0) == 1) {
+        active_profile = read_spvar(0, 4, 0);
+
+        for (prof_i = 0; prof_i < PROFILE_COUNT; prof_i++) {
+            profile_flick_up[prof_i]     = read_spvar(0, 1, 1);
+            profile_delay[prof_i]        = read_spvar(0, 300, 50);
+            profile_reverse[prof_i]      = read_spvar(0, 1, 1);
+            profile_insta_active[prof_i] = read_spvar(0, 1, 1);
+// discord.gg/cyzens
+            profile_insta_dur[prof_i]    = read_spvar(100, 1000, 591);
+            profile_insta_tempo[prof_i]  = read_spvar(0, 300, 49);
+            profile_dl_active[prof_i]    = read_spvar(0, 1, 1);
+            profile_dl_dur[prof_i]       = read_spvar(100, 1000, 591);
+            profile_dl_tempo[prof_i]     = read_spvar(0, 300, 49);
+            profile_go_to_shot[prof_i]   = read_spvar(200, 3000, 2000);
+            profile_go_to_shot_active[prof_i] = read_spvar(0, 1, 1);
+            profile_spot_take[prof_i]    = read_spvar(0, 1, 0);
+            profile_fadeL_active[prof_i] = read_spvar(0, 1, 0);
+            profile_fadeL_timing[prof_i] = read_spvar(0, 9999, 400);
+            profile_fadeL_tempo[prof_i]  = read_spvar(0, 300, 50);
+            profile_fadeR_active[prof_i] = read_spvar(0, 1, 0);
+            profile_fadeR_timing[prof_i] = read_spvar(0, 9999, 400);
+            profile_fadeR_tempo[prof_i]  = read_spvar(0, 300, 50);
+        }
+
+// discord.gg/cyzens
+        // Global settings (not per-profile) — order must match Save()
+        infinite_stamina       = read_spvar(0, 1, 1);
+        ground_control          = read_spvar(10, 100, 70);
+        defense_boost_active    = read_spvar(0, 1, 0);
+        auto_contest_mode       = read_spvar(0, 2, 0);
+        side_step_boost_active  = read_spvar(0, 1, 0);
+        zen_colour              = read_spvar(0, 6, 3);
+
+        load_profile(); // apply active profile's values
+    } else {
+        Save(); // first-time init: write defaults
+    }
+}
+
+// ===== Init =====
+init {
+// discord.gg/cyzens
+    active_profile = 0;
+    for (prof_i = 0; prof_i < PROFILE_COUNT; prof_i++) {
+        profile_flick_up[prof_i]     = 1;
+        profile_delay[prof_i]        = 50;
+        profile_reverse[prof_i]      = 1;
+        profile_insta_active[prof_i] = 1;
+        profile_insta_dur[prof_i]    = 591;
+        profile_insta_tempo[prof_i]  = 49;
+        profile_dl_active[prof_i]    = 1;
+        profile_dl_dur[prof_i]       = 591;
+        profile_dl_tempo[prof_i]     = 49;
+        profile_go_to_shot[prof_i]   = 2000;
+        profile_go_to_shot_active[prof_i] = 1;
+        profile_spot_take[prof_i]    = 0;
+        profile_fadeL_active[prof_i] = 0;
+// discord.gg/cyzens
+        profile_fadeL_timing[prof_i] = 400;
+        profile_fadeL_tempo[prof_i]  = 50;
+        profile_fadeR_active[prof_i] = 0;
+        profile_fadeR_timing[prof_i] = 400;
+        profile_fadeR_tempo[prof_i]  = 50;
+    }
+
+    Load(); // pulls saved profiles from flash, or writes defaults on first run
+
+    saver_on = 0;
+    saver_timer = 0;
+    cls_oled(OLED_BLACK);
+    APPLY_ZEN_COLOUR();
+}
+
+// ===== Main =====
+// discord.gg/cyzens
+main {
+// Console detect
+if (get_console() == PIO_XB1) {
+isXbox = 1;
+} else {
+isXbox = 0;
+}
+
+// ===== STARTUP / LOADING =====
+
+LoadingTimeToRun += get_rtime();
+if (LoadingTimeToRun >= LoadingTimer) {
+cls_oled(OLED_BLACK);
+isLoadingScreen = 0;
+startup = 0;
+saver_on = 1;
+// discord.gg/cyzens
+saver_timer = 80; // draw a saver frame soon
+}
+combo_run(Infinite_Stamina_Control);
+
+if (get_val(PS4_SQUARE) || get_val(PS4_L3)
+    || combo_running(Insta_shot_smooth)
+    || combo_running(Insta_shot_reversed)
+    || combo_running(DL_Insta_shot_smooth)
+    || combo_running(DL_Insta_shot_reversed)) {
+    shooting_active = 1;
+} else if (!combo_running(flick_up_rs_smooth)
+        && !combo_running(flick_up_rs_reversed)
+        && !combo_running(Insta_shot_smooth)
+        && !combo_running(Insta_shot_reversed)
+        && !combo_running(DL_Insta_shot_smooth)
+// discord.gg/cyzens
+        && !combo_running(DL_Insta_shot_reversed)
+        && !combo_running(shot_fade_L)
+        && !combo_running(shot_fade_R)
+        && !combo_running(go_to_shot_insta)
+        && !combo_running(spot_take_combo)) {
+    shooting_active = 0;
+}
+
+// ===== Menu open/close =====
+if (event_press(PS4_CIRCLE) && menu_enabled) { // CLOSE MENU
+menu_enabled = 0;
+save_profile(); // commit live values into active profile slot
+Save(); // persist all 5 profiles to flash
+combo_run(vibration_off);
+APPLY_ZEN_COLOUR();
+saver_on = 1; // enable saver when leaving menu
+// discord.gg/cyzens
+} else if (!menu_enabled && get_val(PS4_L2) && event_press(PS4_OPTIONS)) { // OPEN MENU
+menu_enabled = 1;
+page = 1;
+combo_run(vibration_on);
+set_rgb(0,0,255);
+saver_on = 0; // pause saver while menu is up
+}
+
+// ===== MENU RENDER & INPUT =====
+if (menu_enabled) {
+cls_oled(OLED_BLACK);
+rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE);
+line_oled(0, 15, OLED_WIDTH - 1, 15, 1, OLED_WHITE);
+print(center_x(get_string_length(menu_header[page - 1]), OLED_FONT_SMALL_WIDTH), 4, OLED_FONT_SMALL, OLED_WHITE, pageChg[pageChg_s]);
+print(center_x(get_string_length(menu_header[page - 1]), OLED_FONT_SMALL_WIDTH), 20, OLED_FONT_SMALL, OLED_WHITE, menu_header[page - 1]);
+
+// discord.gg/cyzens
+// pages with numeric edit: 2,5,6,8,9,10
+if (page == 3) { // Turbo Shots page shows reverse_modes
+print(center_x(get_string_length(reverse_modes[reverse_flick_mode]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, reverse_modes[reverse_flick_mode]);
+} else if (page == 12) { // Spot Take page shows ON/OFF, plus Hold X hint when active
+if (spot_take_active) {
+print(center_x(get_string_length(spot_take_hint[0]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, spot_take_hint[0]);
+} else {
+print(center_x(get_string_length(onOff[0]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, onOff[0]);
+}
+} else if (page == 19) { // Profile Select page shows profile name
+print(center_x(get_string_length(profile_labels[active_profile]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, profile_labels[active_profile]);
+} else if (page == 23) { // Auto Contest page shows OFF/CONTEST/LOCKDOWN
+print(center_x(get_string_length(auto_contest_label[auto_contest_mode]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, auto_contest_label[auto_contest_mode]);
+} else if (page == 25) { // Zen Colour page shows colour name
+print(center_x(get_string_length(zen_colour_names[zen_colour]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, zen_colour_names[zen_colour]);
+// discord.gg/cyzens
+} else if (page != 2 && page != 5 && page != 6 && page != 8 && page != 9 && page != 11 && page != 14 && page != 15 && page != 17 && page != 18 && page != 21) { // other non-numeric pages show ON/OFF
+print(center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, OLED_WHITE, onOff[menuSelection]);
+}
+print(center_x(get_string_length(item_toggle[toggleType]), OLED_FONT_SMALL_WIDTH), 50, OLED_FONT_SMALL, OLED_WHITE, item_toggle[toggleType]);
+
+if (page == 1) {
+pageChg_s = 0;
+} else if (page == numpgs) {
+pageChg_s = 2;
+} else {
+pageChg_s = 1;
+}
+if (page > numpgs) {
+page = numpgs;
+}
+if (page < 1) {
+// discord.gg/cyzens
+page = 1;
+}
+if (get_val(PS4_L2)) {
+set_val(PS4_UP,0);
+set_val(PS4_DOWN,0);
+set_val(PS4_LEFT,0);
+set_val(PS4_RIGHT,0);
+}
+if (get_val(PS4_L2) && event_press(PS4_LEFT)) {
+page--;
+combo_run(vibration_valchg);
+}
+if (get_val(PS4_L2) && event_press(PS4_RIGHT)) {
+page++;
+combo_run(vibration_valchg);
+}
+// discord.gg/cyzens
+
+// Page 1: Square Tempo (Auto Green toggle)
+if (page == 1) {
+menuSelection = flick_up_shooting_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+flick_up_shooting_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+flick_up_shooting_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+// discord.gg/cyzens
+combo_run(flashtog);
+}
+}
+
+// Page 2: Tempo Speed (ms) -> delay_duration
+if (page == 2) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(delay_duration, FindDigits(delay_duration));
+draw_x_graph(delay_duration, 0, 300, 45);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+delay_duration++;
+}
+if (event_press(PS4_DOWN)) {
+delay_duration--;
+// discord.gg/cyzens
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+if (delay_duration > 300) {
+delay_duration = 300;
+}
+if (delay_duration < 0) {
+delay_duration = 0;
+}
+}
+
+// Page 3: Turbo Shots (reverse_flick_mode ON/OFF)
+if (page == 3) {
+// discord.gg/cyzens
+menuSelection = reverse_flick_mode;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+reverse_flick_mode = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+reverse_flick_mode = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+}
+// discord.gg/cyzens
+
+// Page 4: Insta Shot (R3)
+if (page == 4) {
+menuSelection = Insta_shot_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+Insta_shot_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+Insta_shot_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+// discord.gg/cyzens
+}
+}
+
+// Page 5: Insta Speed (ms) -> Insta_shot_duration
+if (page == 5) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(Insta_shot_duration, FindDigits(Insta_shot_duration));
+draw_x_graph(Insta_shot_duration, 100, 1000, 45);
+if (get_val(PS4_L2)) {
+if (get_val(PS4_R1)) {
+if (event_press(PS4_UP)) {
+Insta_shot_duration += 10;
+}
+if (event_press(PS4_DOWN)) {
+Insta_shot_duration -= 10;
+// discord.gg/cyzens
+}
+} else {
+if (event_press(PS4_UP)) {
+Insta_shot_duration += 1;
+}
+if (event_press(PS4_DOWN)) {
+Insta_shot_duration -= 1;
+}
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+if (Insta_shot_duration > 1000) {
+// discord.gg/cyzens
+Insta_shot_duration = 1000;
+}
+if (Insta_shot_duration < 100) {
+Insta_shot_duration = 100;
+}
+}
+
+// Page 6: Insta Tempo (ms) -> Delay_duration_Insta
+if (page == 6) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(Delay_duration_Insta, FindDigits(Delay_duration_Insta));
+draw_x_graph(Delay_duration_Insta, 0, 300, 45);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+Delay_duration_Insta++;
+// discord.gg/cyzens
+}
+if (event_press(PS4_DOWN)) {
+Delay_duration_Insta--;
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+if (Delay_duration_Insta > 300) {
+Delay_duration_Insta = 300;
+}
+if (Delay_duration_Insta < 0) {
+Delay_duration_Insta = 0;
+}
+}
+// discord.gg/cyzens
+
+// Page 7: Auto No Dip (bound to D-Pad Left)
+if (page == 7) {
+menuSelection = DL_Insta_shot_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+DL_Insta_shot_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+DL_Insta_shot_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+// discord.gg/cyzens
+}
+}
+
+// Page 8: Auto No Dip Speed (ms) -> DL_Insta_shot_duration
+if (page == 8) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(DL_Insta_shot_duration, FindDigits(DL_Insta_shot_duration));
+draw_x_graph(DL_Insta_shot_duration, 100, 1000, 45);
+if (get_val(PS4_L2)) {
+if (get_val(PS4_R1)) {
+if (event_press(PS4_UP)) {
+DL_Insta_shot_duration += 10;
+}
+if (event_press(PS4_DOWN)) {
+// discord.gg/cyzens
+DL_Insta_shot_duration -= 10;
+}
+} else {
+if (event_press(PS4_UP)) {
+DL_Insta_shot_duration += 1;
+}
+if (event_press(PS4_DOWN)) {
+DL_Insta_shot_duration -= 1;
+}
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+if (DL_Insta_shot_duration > 1000) {
+// discord.gg/cyzens
+DL_Insta_shot_duration = 1000;
+}
+if (DL_Insta_shot_duration < 100) {
+DL_Insta_shot_duration = 100;
+}
+}
+
+// Page 9: Auto No Dip Tempo (ms) -> DL_Delay_duration_Insta
+if (page == 9) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(DL_Delay_duration_Insta, FindDigits(DL_Delay_duration_Insta));
+draw_x_graph(DL_Delay_duration_Insta, 0, 300, 45);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+DL_Delay_duration_Insta++;
+// discord.gg/cyzens
+}
+if (event_press(PS4_DOWN)) {
+DL_Delay_duration_Insta--;
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+if (DL_Delay_duration_Insta > 300) {
+DL_Delay_duration_Insta = 300;
+}
+if (DL_Delay_duration_Insta < 0) {
+DL_Delay_duration_Insta = 0;
+}
+// discord.gg/cyzens
+}
+
+// Page 10: Go To Shot (enable toggle)
+if (page == 10) {
+menuSelection = go_to_shot_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+go_to_shot_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+go_to_shot_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+// discord.gg/cyzens
+combo_run(flashtog);
+}
+}
+
+// Page 11: Go To Shot (ms) -> go_to_shot_duration
+if (page == 11) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(go_to_shot_duration, FindDigits(go_to_shot_duration));
+draw_x_graph(go_to_shot_duration, 200, 3000, 45);
+if (get_val(PS4_L2)) {
+if (get_val(PS4_R1)) {
+if (event_press(PS4_UP)) {
+go_to_shot_duration += 10;
+}
+if (event_press(PS4_DOWN)) {
+// discord.gg/cyzens
+go_to_shot_duration -= 10;
+}
+} else {
+if (event_press(PS4_UP)) {
+go_to_shot_duration += 1;
+}
+if (event_press(PS4_DOWN)) {
+go_to_shot_duration -= 1;
+}
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+// discord.gg/cyzens
+if (go_to_shot_duration > 3000) {
+go_to_shot_duration = 3000;
+}
+if (go_to_shot_duration < 200) {
+go_to_shot_duration = 200;
+}
+}
+
+// Page 12: Spot Take (spams Cross/A while held)
+if (page == 12) {
+menuSelection = spot_take_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+spot_take_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+// discord.gg/cyzens
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+spot_take_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+}
+// Page 13: Fade LEFT Shot (enable toggle) — ported from APEX
+if (page == 13) {
+menuSelection = fadeL_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+fadeL_active = 1;
+flashtoggle = 1;
+// discord.gg/cyzens
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+fadeL_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+}
+
+// Page 14: FadeL Timing (ms) -> fadeL_timing (range matches APEX's FadeL Timing)
+if (page == 14) {
+menuSelection = 2;
+toggleType = 0;
+// discord.gg/cyzens
+NumberToString(fadeL_timing, FindDigits(fadeL_timing));
+draw_x_graph(fadeL_timing, 0, 9999, 45);
+if (get_val(PS4_L2)) {
+if (get_val(PS4_R1)) {
+if (event_press(PS4_UP)) {
+fadeL_timing += 10;
+}
+if (event_press(PS4_DOWN)) {
+fadeL_timing -= 10;
+}
+} else {
+if (event_press(PS4_UP)) {
+fadeL_timing += 1;
+}
+if (event_press(PS4_DOWN)) {
+fadeL_timing -= 1;
+// discord.gg/cyzens
+}
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+if (fadeL_timing > 9999) {
+fadeL_timing = 9999;
+}
+if (fadeL_timing < 0) {
+fadeL_timing = 0;
+}
+}
+
+// Page 15: FadeL Tempo (ms) -> fadeL_tempo — Sonder tempo logic: direct ms, deterministic, no RNG
+// discord.gg/cyzens
+if (page == 15) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(fadeL_tempo, FindDigits(fadeL_tempo));
+draw_x_graph(fadeL_tempo, 0, 300, 45);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+fadeL_tempo++;
+}
+if (event_press(PS4_DOWN)) {
+fadeL_tempo--;
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+// discord.gg/cyzens
+}
+}
+if (fadeL_tempo > 300) {
+fadeL_tempo = 300;
+}
+if (fadeL_tempo < 0) {
+fadeL_tempo = 0;
+}
+}
+
+// Page 16: Fade RIGHT Shot (enable toggle) — ported from APEX
+if (page == 16) {
+menuSelection = fadeR_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+fadeR_active = 1;
+// discord.gg/cyzens
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+fadeR_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+}
+
+// Page 17: FadeR Timing (ms) -> fadeR_timing
+if (page == 17) {
+menuSelection = 2;
+toggleType = 0;
+// discord.gg/cyzens
+NumberToString(fadeR_timing, FindDigits(fadeR_timing));
+draw_x_graph(fadeR_timing, 0, 9999, 45);
+if (get_val(PS4_L2)) {
+if (get_val(PS4_R1)) {
+if (event_press(PS4_UP)) {
+fadeR_timing += 10;
+}
+if (event_press(PS4_DOWN)) {
+fadeR_timing -= 10;
+}
+} else {
+if (event_press(PS4_UP)) {
+fadeR_timing += 1;
+}
+if (event_press(PS4_DOWN)) {
+// discord.gg/cyzens
+fadeR_timing -= 1;
+}
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+if (fadeR_timing > 9999) {
+fadeR_timing = 9999;
+}
+if (fadeR_timing < 0) {
+fadeR_timing = 0;
+}
+}
+
+// discord.gg/cyzens
+// Page 18: FadeR Tempo (ms) -> fadeR_tempo — Sonder tempo logic: direct ms, deterministic, no RNG
+if (page == 18) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(fadeR_tempo, FindDigits(fadeR_tempo));
+draw_x_graph(fadeR_tempo, 0, 300, 45);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+fadeR_tempo++;
+}
+if (event_press(PS4_DOWN)) {
+fadeR_tempo--;
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+// discord.gg/cyzens
+}
+}
+if (fadeR_tempo > 300) {
+fadeR_tempo = 300;
+}
+if (fadeR_tempo < 0) {
+fadeR_tempo = 0;
+}
+}
+
+// Page 19: Profile Select
+if (page == 19) {
+menuSelection = active_profile;
+toggleType = 1;
+if (get_val(PS4_L2)) {
+// discord.gg/cyzens
+if (event_press(PS4_UP)) {
+save_profile(); // stash current live settings into current slot
+active_profile++;
+if (active_profile > 4) {
+active_profile = 0;
+}
+load_profile(); // pull in new slot's settings
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+if (event_press(PS4_DOWN)) {
+save_profile();
+active_profile--;
+if (active_profile < 0) {
+active_profile = 4;
+}
+// discord.gg/cyzens
+load_profile();
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+}
+
+// Page 20: Infinite Stamina (ground-stick drain reduction)
+if (page == 20) {
+menuSelection = infinite_stamina;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+infinite_stamina = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+// discord.gg/cyzens
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+infinite_stamina = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+}
+
+// Page 21: Ground Control % -> ground_control
+if (page == 21) {
+menuSelection = 2;
+toggleType = 0;
+NumberToStringPct(ground_control, FindDigits(ground_control));
+draw_x_graph(ground_control, 10, 100, 45);
+// discord.gg/cyzens
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+ground_control++;
+}
+if (event_press(PS4_DOWN)) {
+ground_control--;
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+if (ground_control > 100) {
+ground_control = 100;
+}
+if (ground_control < 10) {
+// discord.gg/cyzens
+ground_control = 10;
+}
+}
+
+// Page 22: Defense Boost (amplifies RS-Y while L2+R2 held)
+if (page == 22) {
+menuSelection = defense_boost_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+defense_boost_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+defense_boost_active = 0;
+// discord.gg/cyzens
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+}
+
+// Page 23: Auto Contest (OFF / CONTEST / LOCKDOWN)
+if (page == 23) {
+menuSelection = auto_contest_mode;
+toggleType = 1;
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+auto_contest_mode++;
+if (auto_contest_mode > 2) {
+auto_contest_mode = 0;
+}
+// discord.gg/cyzens
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+if (event_press(PS4_DOWN)) {
+auto_contest_mode--;
+if (auto_contest_mode < 0) {
+auto_contest_mode = 2;
+}
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+}
+}
+
+// Page 24: Side Step Boost (used by Auto Contest LOCKDOWN)
+// discord.gg/cyzens
+if (page == 24) {
+menuSelection = side_step_boost_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+side_step_boost_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+side_step_boost_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+}
+}
+// discord.gg/cyzens
+
+// Page 25: Zen Colour (idle LED colour, previews live)
+if (page == 25) {
+menuSelection = zen_colour;
+toggleType = 1;
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+zen_colour++;
+if (zen_colour > 6) {
+zen_colour = 0;
+}
+APPLY_ZEN_COLOUR();
+combo_run(vibration_valchg);
+}
+if (event_press(PS4_DOWN)) {
+zen_colour--;
+// discord.gg/cyzens
+if (zen_colour < 0) {
+zen_colour = 6;
+}
+APPLY_ZEN_COLOUR();
+combo_run(vibration_valchg);
+}
+}
+}
+} // end menu_enabled
+
+// ===== Gameplay logic (no menu) =====
+if (!menu_enabled) {
+// idle visuals
+APPLY_ZEN_COLOUR();
+
+// discord.gg/cyzens
+// run saver every ~80ms only when outside the menu
+if (saver_on) {
+saver_timer += get_rtime();
+if (saver_timer >= 80) {
+saver_step();
+saver_timer = 0;
+}
+}
+
+// L3 hardcoded as Square remap
+if (get_val(PS4_L3)) {
+set_val(PS4_SQUARE, 100);
+}
+// l3_square_guard covers this frame AND the next, since event_release(PS4_SQUARE)
+// fires one frame after L3 actually releases -- checking get_val(PS4_L3) alone
+// at that point would already read 0 and fail to suppress it
+// discord.gg/cyzens
+l3_square_guard = get_val(PS4_L3) || l3_square_prev;
+l3_square_prev = get_val(PS4_L3);
+
+// Detect press of Square for flag (only for the physical Square button, not the L3 remap)
+if (event_press(PS4_SQUARE) && !l3_square_guard) {
+if (reverse_flick_mode && get_val(PS4_R2)) {
+is_turbo_fade = 1;
+} else {
+is_turbo_fade = 0;
+}
+}
+
+// Auto Green (flick-up) logic — skips Square presses that came from the L3 remap,
+// so L3 passes through as a real Square press instead of being converted to a flick shot
+if (flick_up_shooting_active) {
+if (!l3_square_guard && get_val(PS4_SQUARE)) {
+// discord.gg/cyzens
+set_val(PS4_SQUARE, 0);
+if (is_turbo_fade) {
+set_val(PS4_RY, STICK_UP_VALUE);
+} else {
+set_val(PS4_RY, STICK_DOWN_VALUE);
+}
+set_val(PS4_RX, 0);
+}
+if (!l3_square_guard && event_release(PS4_SQUARE)) {
+if (is_turbo_fade) {
+combo_run(flick_up_rs_reversed);
+} else {
+combo_run(flick_up_rs_smooth);
+}
+is_turbo_fade = 0;
+// discord.gg/cyzens
+}
+}
+// D-PAD DOWN → Go To Shot Insta (priority)
+if (go_to_shot_active && event_press(PS4_DOWN)) {
+    combo_run(go_to_shot_insta);
+}
+
+// Insta Shot Logic (R3 — L3 is fully consumed by the Square remap above)
+// Fade L/R (ported from APEX): same R3/L3 trigger, but if R2 is held and
+// the left stick is leaned past FADE_LAT, fire the directional fade combo
+// instead. Fade runs off its own toggle, independent of Insta_shot_active —
+// only the plain Insta Shot fallback below still respects that toggle.
+if (event_press(PS4_R3)) {
+if (!combo_running(shot_fade_L) && !combo_running(shot_fade_R) &&
+get_val(PS4_R2) > 20 && (fadeL_active || fadeR_active) && abs(get_val(PS4_LX)) >= FADE_LAT) {
+if (get_val(PS4_LX) < 0 && fadeL_active) {
+// discord.gg/cyzens
+combo_run(shot_fade_L);
+} else if (get_val(PS4_LX) > 0 && fadeR_active) {
+combo_run(shot_fade_R);
+} else if (Insta_shot_active) {
+if (reverse_flick_mode && get_val(PS4_R2)) {
+combo_run(Insta_shot_reversed);
+} else {
+combo_run(Insta_shot_smooth);
+}
+}
+} else if (Insta_shot_active) {
+if (reverse_flick_mode && get_val(PS4_R2)) {
+combo_run(Insta_shot_reversed);
+} else {
+combo_run(Insta_shot_smooth);
+}
+// discord.gg/cyzens
+}
+}
+
+// Auto No Dip Logic (D-Pad Left) — separate speed/tempo
+if (DL_Insta_shot_active) {
+if (event_press(PS4_LEFT)) {
+if (reverse_flick_mode && get_val(PS4_R2)) {
+combo_run(DL_Insta_shot_reversed);
+} else {
+combo_run(DL_Insta_shot_smooth);
+}
+}
+}
+
+// Spot Take (spams Cross/A at 19ms while held)
+// discord.gg/cyzens
+if (spot_take_active) {
+if (get_val(PS4_CROSS)) {
+combo_run(spot_take_combo);
+}
+}
+
+// Defense Boost: amplify RS-Y push while L2+R2 are both held
+if (defense_boost_active) {
+if (get_val(PS4_L2) > 20 && get_val(PS4_R2) > 20) {
+set_val(PS4_RY, (get_val(PS4_RY) * 13) / 10);
+}
+}
+
+// Auto Contest: only active in a defensive stance (L2 held)
+if (auto_contest_mode && get_val(PS4_L2)) {
+if (auto_contest_mode == 1) {
+// discord.gg/cyzens
+// CONTEST: hold R2 to raise hands
+if (get_val(PS4_R2)) {
+set_val(PS4_TRIANGLE, 100);
+}
+}
+if (auto_contest_mode == 2) {
+// LOCKDOWN: same auto-contest, plus optional side-step snap
+if (get_val(PS4_R2)) {
+set_val(PS4_TRIANGLE, 100);
+if (side_step_boost_active) {
+if (get_val(PS4_LX) > 20) {
+set_val(PS4_LX, 100);
+}
+if (get_val(PS4_LX) < -20) {
+set_val(PS4_LX, -100);
+}
+// discord.gg/cyzens
+}
+}
+}
+}
+} // end !menu_enabled
+} // end big else (post-startup)
+
+
+// ===== OLED helpers =====
+
+
+function saver_step() {
+cls_oled(OLED_BLACK);
+print(sx, sy, OLED_FONT_SMALL, OLED_WHITE, saver_line1[0]);
+
+// discord.gg/cyzens
+msg_w = (get_string_length(saver_line1[0]) - 1) * OLED_FONT_SMALL_WIDTH;
+
+sx += svx;
+sy += svy;
+
+if (sx <= 1 || sx >= (OLED_WIDTH - msg_w - 1)) {
+svx = -svx;
+}
+if (sy <= 1 || sy >= (OLED_HEIGHT - 14 - 1)) {
+svy = -svy;
+}
+}
+// New function for mapping values
+function map(val, in_min, in_max, out_min, out_max) {
+return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+// discord.gg/cyzens
+
+// New function to draw X-axis graph
+function draw_x_graph(value, min_val, max_val, y_pos) {
+graph_width = 100;
+x_start = (OLED_WIDTH - graph_width) / 2;
+mid_x = x_start + graph_width / 2;
+bar_pos = map(value, min_val, max_val, 0, graph_width);
+
+// Draw axis line
+line_oled(x_start, y_pos, x_start + graph_width, y_pos, 1, OLED_WHITE);
+
+// Draw center tick
+line_oled(mid_x, y_pos - 3, mid_x, y_pos + 3, 1, OLED_WHITE);
+
+// Draw left tick
+line_oled(x_start, y_pos - 2, x_start, y_pos + 2, 1, OLED_WHITE);
+// discord.gg/cyzens
+
+// Draw right tick
+line_oled(x_start + graph_width, y_pos - 2, x_start + graph_width, y_pos + 2, 1, OLED_WHITE);
+
+// Draw bar from start to position
+rect_oled(x_start, y_pos - 2, bar_pos, 4, 1, OLED_WHITE);
+}
+
+// ===== Combos =====
+combo flick_up_rs_smooth {
+set_val(PS4_RY, -50);
+set_val(PS4_RX, 20);
+wait(delay_duration);
+set_val(PS4_RY, -100);
+set_val(PS4_RX, 25);
+// discord.gg/cyzens
+wait(301);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+
+combo flick_up_rs_reversed {
+set_val(PS4_RY, 50);
+set_val(PS4_RX, -20);
+wait(delay_duration);
+set_val(PS4_RY, 100);
+set_val(PS4_RX, -25);
+wait(301);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+combo Infinite_Stamina_Control {
+// discord.gg/cyzens
+    if (infinite_stamina
+        && ground_stick_active
+        && !shooting_active
+        && !get_val(PS4_SQUARE)
+        && !get_val(PS4_L3)
+        && !get_val(PS4_R3)
+        && !combo_running(Insta_shot_smooth)
+        && !combo_running(Insta_shot_reversed)
+        && !combo_running(flick_up_rs_smooth)
+        && !combo_running(flick_up_rs_reversed)
+        && !combo_running(DL_Insta_shot_smooth)
+        && !combo_running(DL_Insta_shot_reversed)
+        && !combo_running(shot_fade_L)
+        && !combo_running(shot_fade_R)
+        && !combo_running(go_to_shot_insta)
+        && !combo_running(spot_take_combo)
+// discord.gg/cyzens
+    ) {
+        if (abs(get_val(PS4_LX)) > 20 || abs(get_val(PS4_LY)) > 20) {
+            set_val(PS4_LX, (get_val(PS4_LX) * ground_control) / 100);
+            set_val(PS4_LY, (get_val(PS4_LY) * ground_control) / 100);
+        } else {
+            set_val(PS4_LX, 0);
+            set_val(PS4_LY, 0);
+        }
+    }
+}
+combo Insta_shot_smooth {
+
+// Initial pull
+set_val(PS4_RY, STICK_DOWN_VALUE);
+set_val(PS4_RX, 0);
+// discord.gg/cyzens
+wait(Insta_shot_duration);
+
+// Gather / settle
+set_val(PS4_RY, -55);
+set_val(PS4_RX, 18);
+wait(Delay_duration_Insta);
+
+// FINAL SNAP – NO RANDOMNESS
+set_val(PS4_RY, -100);
+set_val(PS4_RX, 25);
+wait(260);
+
+// Release
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+// discord.gg/cyzens
+combo go_to_shot_insta {
+
+    set_val(PS4_RY, STICK_UP_VALUE);
+    set_val(PS4_RX, 0);
+    wait(go_to_shot_duration);
+
+    set_val(PS4_RY, 55);
+    set_val(PS4_RX, -18);
+    wait(Delay_duration_Insta);
+
+    set_val(PS4_RY, 100);
+    set_val(PS4_RX, -25);
+    wait(260);
+
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+// discord.gg/cyzens
+}
+
+
+combo Insta_shot_reversed {
+
+    // Initial pull
+    set_val(PS4_RY, STICK_UP_VALUE);
+    set_val(PS4_RX, 0);
+    wait(871);
+
+    // Gather
+    set_val(PS4_RY, 55);
+    set_val(PS4_RX, -18);
+    wait(Delay_duration_Insta);
+
+// discord.gg/cyzens
+    // FINAL SNAP
+    set_val(PS4_RY, 100);
+    set_val(PS4_RX, -25);
+    wait(500);
+
+    // Release
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+// ===== Fade L/R combos (ported from APEX_V2's shot_fade) =====
+// Reverse-flick fade shape: UP flick charges the turbo fade (Timing), glide
+// rhythm (Tempo), then a fixed-length DOWN release with no RNG at all —
+// matches Sonder's deterministic combo style (see Insta_shot_smooth above).
+combo shot_fade_L {
+set_val(PS4_RY, STICK_UP_VALUE);
+// discord.gg/cyzens
+set_val(PS4_RX, -8);
+wait(fadeL_timing);
+
+set_val(PS4_RY, 50);
+set_val(PS4_RX, -22);
+wait(fadeL_tempo);
+
+set_val(PS4_RY, STICK_DOWN_VALUE);
+set_val(PS4_RX, -22);
+wait(300);
+
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+
+combo shot_fade_R {
+// discord.gg/cyzens
+set_val(PS4_RY, STICK_UP_VALUE);
+set_val(PS4_RX, 8);
+wait(fadeR_timing);
+
+set_val(PS4_RY, 50);
+set_val(PS4_RX, 22);
+wait(fadeR_tempo);
+
+set_val(PS4_RY, STICK_DOWN_VALUE);
+set_val(PS4_RX, 22);
+wait(300);
+
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+
+// discord.gg/cyzens
+// ===== Auto No Dip combos (D-Pad Left, separate speed/tempo) =====
+combo DL_Insta_shot_smooth {
+
+// Initial pull
+set_val(PS4_RY, STICK_DOWN_VALUE);
+set_val(PS4_RX, 0);
+wait(DL_Insta_shot_duration);
+
+// Gather / settle
+set_val(PS4_RY, -55);
+set_val(PS4_RX, 18);
+wait(DL_Delay_duration_Insta);
+
+// FINAL SNAP – NO RANDOMNESS
+set_val(PS4_RY, -100);
+// discord.gg/cyzens
+set_val(PS4_RX, 25);
+wait(260);
+
+// Release
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+
+combo DL_Insta_shot_reversed {
+
+    // Initial pull
+    set_val(PS4_RY, STICK_UP_VALUE);
+    set_val(PS4_RX, 0);
+    wait(871);
+
+    // Gather
+// discord.gg/cyzens
+    set_val(PS4_RY, 55);
+    set_val(PS4_RX, -18);
+    wait(DL_Delay_duration_Insta);
+
+    // FINAL SNAP
+    set_val(PS4_RY, 100);
+    set_val(PS4_RX, -25);
+    wait(500);
+
+    // Release
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+// ===== Spot Take (from MDM script, retimed to 19ms) =====
+combo spot_take_combo {
+// discord.gg/cyzens
+set_val(PS4_CROSS, 100);
+wait(18);
+set_val(PS4_CROSS, 0);
+wait(18);
+set_val(PS4_CROSS, 100);
+wait(18);
+set_val(PS4_CROSS, 0);
+wait(18);
+set_val(PS4_CROSS, 100);
+wait(18);
+set_val(PS4_CROSS, 0);
+}
+
+// ===== UI effects =====
+combo flashtog {
+// discord.gg/cyzens
+if (!flashtoggle) {
+set_rgb(255, 0, 0);
+} else {
+set_rgb(0, 255, 0);
+}
+wait(1000);
+set_rgb(0, 0, 255);
+}
+
+combo flashedit {
+set_rgb(0, 0, 0);
+wait(150);
+set_rgb(0, 0, 255);
+}
+
+combo vibration_on {
+// discord.gg/cyzens
+set_rumble(RUMBLE_A, 100);
+wait(200);
+set_rumble(RUMBLE_A, 0);
+}
+
+combo vibration_off {
+set_rumble(RUMBLE_A, 50);
+wait(200);
+set_rumble(RUMBLE_A, 0);
+}
+
+combo vibration_valchg {
+set_rumble(RUMBLE_A, 50);
+wait(50);
+set_rumble(RUMBLE_A, 0);
+}
+// discord.gg/cyzens
+
+// ===== Small helpers =====
+function center_x(f_chars, f_font) {
+return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+
+int bufferIndex, digitIndex, charIndex;
+function NumberToString(f_val, f_digits) {
+bufferIndex = 1;
+digitIndex = 10000;
+if (f_val < 0) {
+putc_oled(bufferIndex, 45);
+bufferIndex += 1;
+f_val = abs(f_val);
+}
+// discord.gg/cyzens
+for (charIndex = 5; charIndex >= 1; charIndex--) {
+if (f_digits >= charIndex) {
+putc_oled(bufferIndex, (f_val / digitIndex) + 48);
+f_val %= digitIndex;
+bufferIndex++;
+if (charIndex == 4) {
+putc_oled(bufferIndex, 44);
+bufferIndex++;
+}
+}
+digitIndex /= 10;
+}
+putc_oled(bufferIndex, 109); // 'm'
+bufferIndex++;
+putc_oled(bufferIndex, 115); // 's'
+bufferIndex++;
+// discord.gg/cyzens
+puts_oled(center_x(bufferIndex + 1, OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, bufferIndex - 1, OLED_WHITE);
+}
+
+function NumberToStringPct(f_val, f_digits) {
+bufferIndex = 1;
+digitIndex = 10000;
+if (f_val < 0) {
+putc_oled(bufferIndex, 45);
+bufferIndex += 1;
+f_val = abs(f_val);
+}
+for (charIndex = 5; charIndex >= 1; charIndex--) {
+if (f_digits >= charIndex) {
+putc_oled(bufferIndex, (f_val / digitIndex) + 48);
+f_val %= digitIndex;
+bufferIndex++;
+// discord.gg/cyzens
+if (charIndex == 4) {
+putc_oled(bufferIndex, 44);
+bufferIndex++;
+}
+}
+digitIndex /= 10;
+}
+putc_oled(bufferIndex, 37); // '%'
+bufferIndex++;
+puts_oled(center_x(bufferIndex + 1, OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, bufferIndex - 1, OLED_WHITE);
+}
+
+int logVal;
+function FindDigits(num) {
+logVal = 0;
+// discord.gg/cyzens
+do {
+num /= 10;
+logVal++;
+} while (num);
+return logVal;
+}
+
+int stringLength;
+function get_string_length(offset) {
+stringLength = 0;
+while (duint8(offset++)) {
+stringLength++;
+}
+return stringLength + 1;
+}
+
+// discord.gg/cyzens

@@ -1,0 +1,542 @@
+/*
+
+Ehloc best auto green v2
+
+
+*/
+
+
+
+
+
+
+
+//INSTRUCTIONS
+//â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ
+/*// YOU CAN CHANGE THE SHOOT VALUES HERE OR ON THE OLED
+â•‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•‘
+â•‘													  				  verm_v2 auto green   								        â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£ 
+â•‘  PLEASE READ BEFORE ASKING ANY QUESTIONS                                                                                                      â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£ 
+â•‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•‘
+â•‘       MENU 			     	        XBOX    	  	PS5      		HOW TO USE                                                      	    â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¦â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¦â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¦â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£ 
+â•‘ ENTER MENU                      â•‘   LT+MENU     â•‘  L2+OPTIONS   â•‘ ENTERS THE MENU TO ENABLE TIMINGS                                           â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£ 
+â•‘ ENABLE/DISABLE SCRIPT           â•‘     RS        â•‘      R3       â•‘ IN MENU MODE CHANGE BETWEEN ENABLE / DISABLE                                â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£ 
+â•‘ ENTER SHOT TIMING               â•‘      A        â•‘      X        â•‘ WILL ENABLE THE ABILITY TO ADJUST TIMING                                    â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£ 
+â•‘ PLUS ONE TIMING                 â•‘ LT+UP DPAD    â•‘ L2+UP DPAD    â•‘ ALLOWS THE USER TO ADJUST TIMING BY ONE FOR SPECIFIC GREEN WINDOW           â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£ 
+â•‘ MINUS ONE TIMING                â•‘ LT+DOWN DPAD  â•‘ L2+DOWN DPAD  â•‘ ALLOWS THE USER TO ADJUST TIMING BY ONE FOR SPECIFIC GREEN WINDOW           â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£ 
+â•‘ ADD FIVE TO TIMING              â•‘ LT+LEFT DPAD  â•‘ L2+LEFT DPAD  â•‘ ALLOWS THE USER TO ADJUST TIMING BY FIVE FOR QUICK CHANGES TO GREEN RELEASE â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£ 
+â•‘ MINUS FIVE TO TIMINGS           â•‘ LT+RIGHT DPAD â•‘ L2+RIGHT DPAD â•‘ ALLOWS THE USER TO ADJUST TIMING BY FIVE FOR QUICK CHANGES TO GREEN RELEASE â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£ 
+â•‘ NAVEGATION BETWEEN TIMINGS      â•‘   LS or RS    â•‘   L3 or R3    â•‘ TOGGLE ON TIMINGS AS WELL AS SWAP BETWEEN THEM WHEN EDITING THE VALUES      â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£
+â•‘ ENABLE/DISABLE ADVANCED DEFENSE â•‘   ON on menu  â•‘  OFF on menu  â•‘ WHEN ENABLED WILL ATTEMPT TO RUN A SEQUENCE TO GET MORE STEALS / BUMPS      â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•©â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•©â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•©â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£ 
+â•‘â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ•‘
+â•‘        SHOOTING		     	        XBOX    	  	PS5      		HOW TO USE                                                      	    â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¦â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¦â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¦â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£ 
+â•‘ NORMAL SHOT                     â•‘     TAP X     â•‘  TAP  SQUARE  â•‘ SHOOT WILL AUTO GREEN WHEN YOU FIND THE CORRECT VALUE                       â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£
+â•‘ CATCH AND SHOOT                 â•‘   DOWN DPAD   â•‘   DOWN DPAD   â•‘ SHOOT WILL TIME FOR CATCH AND SHOOT WHEN VALUE FOUND                        â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£
+â•‘ FREETHROW SHOOT                 â•‘    DPAD UP    â•‘    DPAD UP    â•‘ SHOOT WILL TIME FOR FREETHROW WHEN VALUE FOUND                              â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£ 
+â•‘ FADE LEFT                       â•‘ HOLD LS LEFT  â•‘ HOLD L3 LEFT  â•‘ HOLD LEFT STICK TO THE LEFT AND TAP NORMAL SHOOT BOTON AND YOU WILL SHOOT   â•‘
+â•‘                                 â•‘   AND TAP X   â•‘ AND TAP SQUAREâ•‘                     														â•‘
+â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•¬â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£ 
+â•‘ FADE RIGHT                      â•‘ HOLD LS RIGHT â•‘ HOLD L3 RIGHT â•‘ HOLD RIGHT STICK TO THE RIGHT AND TAP NORMAL SHOOT BOTON AND YOU WILL SHOOT â•‘ 
+â•‘ 						          â•‘    AND TAP X  â•‘ AND TAP SQUAREâ•‘                     														â•‘
+â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•©â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•©â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•©â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• 
+*/
+// INITIALIZATION OF VARIABLES
+//â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ
+	int standstill = 642;
+	int Catch = 548;
+	int Leftsidefade= 916; 
+	int Rightsidefade = 876;
+	int Nodip = 550;
+//â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ
+
+	const string Misc[] = { "On" , "Off" , "2K26" , " Ehloc_v2" , "Square" , "AutoGreen" , "KillSwitch" , "Enabled" , "Disabled" , "" };  
+	const string ModNames[] = { "Holy thumb","Defense", "" }; 
+	const string ValNames[] = { "standstill","Catch","Leftfade","Rightfade","Nodip","" };
+	define AmountOfMods = 2
+	define AmountOfValues = 3;  
+	int DisplayTitle = TRUE;
+	int Movement = 30;
+	int ScreenSaver, BlankScreen, ModMenu, DisplayMenu, EditMenu, Toggle, ValNameIdx, ModNameIdx, KillSwitch, Moving, GreenShot, Shooter, CnSTime, FadeL, FadeR, Adv_Def;
+	
+//â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ
+
+// INIT SECTION
+init {
+	vm_tctrl(-6); 
+	standstill = get_pvar(SPVAR_1,100,1000,standstill);
+	Catch = get_pvar(SPVAR_2,100,1000,Catch);
+	Leftsidefade = get_pvar(SPVAR_3,100,1000,Leftsidefade);
+	Rightsidefade = get_pvar(SPVAR_4,100,1000,Rightsidefade);
+	Nodip = get_pvar(SPVAR_5,100,1000,Nodip);
+}
+
+// MAIN PROCEDURE
+//â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ
+main{
+	set_val(TRACE_1,standstill);
+	set_val(TRACE_2,Catch);
+	set_val(TRACE_3,Leftsidefade);
+	set_val(TRACE_4,Rightsidefade);
+	set_val(TRACE_5,Nodip);
+	
+	if(get_ival(PS5_L2)) {
+		if(event_press(XB1_MENU)) {
+			ModMenu = TRUE;      
+			DisplayMenu = TRUE;       
+			EditMenu = FALSE;     
+			if(!ModMenu) DisplayTitle = TRUE;
+		} 
+		if(event_press(XB1_XBOX)){ 
+			KillSwitch =! KillSwitch; 
+			combo_run(KillSwitch)
+		} 	
+		set_val(XB1_MENU,0);
+		set_val(XB1_XBOX,0);
+	}
+	
+	if(!DisplayTitle) {
+		if(ModMenu) {
+			ModNameIdx = MenuNavigation(ModNameIdx,0,1);   
+			GreenShot = ToggleSwitch(ModNameIdx == 0,GreenShot);
+			Adv_Def = ToggleSwitch(ModNameIdx == 1,Adv_Def);
+		}
+		if(EditMenu) {
+			ValNameIdx = MenuNavigation(ValNameIdx,0,4); 
+			standstill  = EditValues(ValNameIdx , 0, standstill , 100, 1000);
+			Catch  = EditValues(ValNameIdx , 1,Catch , 100, 1000);
+			Leftsidefade  = EditValues(ValNameIdx , 2,Leftsidefade , 100, 1000);
+			Rightsidefade  = EditValues(ValNameIdx , 3,Rightsidefade , 100, 1000);
+			Nodip  = EditValues(ValNameIdx , 4,Nodip , 100, 1000);
+			
+			if(ModNameIdx == 0) ValNameIdx = cycle(ValNameIdx,0,4);
+		}
+	}
+	
+	if(DisplayMenu){ 
+		cls_oled(OLED_BLACK);  
+		rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE); 
+		line_oled(0, 27, OLED_WIDTH - 1, 27, 1, OLED_WHITE); 
+		if(EditMenu) {
+			print(center_x(get_valName_chars(ValNameIdx), OLED_FONT_MEDIUM_WIDTH),7,OLED_FONT_MEDIUM,OLED_WHITE,ValNames[ValNameIdx]);
+		} 
+		else if(ModMenu) { 
+			print(center_x(get_modName_chars(ModNameIdx), OLED_FONT_MEDIUM_WIDTH),7,OLED_FONT_MEDIUM,OLED_WHITE,ModNames[ModNameIdx]);  
+			if(Toggle == 1)
+				print(center_x(get_misc_chars(0), OLED_FONT_MEDIUM_WIDTH),37,OLED_FONT_MEDIUM,OLED_WHITE,Misc[0]);	
+			else if(Toggle == 0)
+				print(center_x(get_misc_chars(1), OLED_FONT_MEDIUM_WIDTH),37,OLED_FONT_MEDIUM,OLED_WHITE,Misc[1]); 
+		}
+		DisplayMenu = FALSE;
+	}
+	
+	if(!ModMenu && !EditMenu) {
+		if(DisplayTitle) { 
+			cls_oled(OLED_BLACK); 
+			rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE); 
+			print(center_x(get_misc_chars(2), OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,Misc[2]); 
+			print(center_x(get_misc_chars(3), OLED_FONT_SMALL_WIDTH),22,OLED_FONT_SMALL,OLED_WHITE,Misc[3]); 
+			print(center_x(get_misc_chars(4), OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL,OLED_WHITE,Misc[4]); 
+			print(center_x(get_misc_chars(5), OLED_FONT_SMALL_WIDTH),50,OLED_FONT_SMALL,OLED_WHITE,Misc[5]); 
+			DisplayTitle = FALSE;
+			ScreenSaver  = TRUE;
+		}
+		if(ScreenSaver) {
+			BlankScreen += get_rtime();
+			if(BlankScreen >= 5000) {
+				cls_oled(OLED_BLACK);
+				BlankScreen = 0;
+				ScreenSaver = TRUE;
+			}
+		}
+	}
+	
+/*	                      ____ ___  __  __ ____   ___    ____  _     ___   ____ _  __                       
+ _____ _____ _____ _____ / ___/ _ \|  \/  | __ ) / _ \  | __ )| |   / _ \ / ___| |/ /____ _____ _____ _____ 
+|_____|_____|_____|_____| |  | | | | |\/| |  _ \| | | | |  _ \| |  | | | | |   | ' /_____|_____|_____|_____|
+|_____|_____|_____|_____| |__| |_| | |  | | |_) | |_| | | |_) | |__| |_| | |___| . \_____|_____|_____|_____|
+                         \____\___/|_|  |_|____/ \___/  |____/|_____\___/ \____|_|\_\                       
+*/                         
+	
+	if(!KillSwitch){
+		if(!GreenShot){colourled(0);}
+		if(GreenShot){
+			//â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ IDENTIFYING SHOT IN MOTION LEFT  â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ
+			if((get_val(PS5_LX)<= -25) || (get_val(XB1_LX)<= -25)){	
+				if (event_press(PS5_SQUARE) || event_press(XB1_X)) 
+						combo_run(Leftsidefade);
+			}
+			
+			//â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ IDENTIFYING SHOT IN MOTION RIGHT  â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ
+		 	if((get_val(PS5_LX)>= 25) || (get_val(XB1_LX)>= 25)){			
+				if (event_press(PS5_SQUARE) || event_press(XB1_X)) 
+				    combo_run(Rightsidefade);
+		    }
+			
+			//â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ IDENTIFYING SHOT CATCH&SHOT  â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ
+ 			if (event_press(PS5_DOWN) || event_press(XB1_DOWN))
+				combo_run(Catch); 
+				
+			//â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ IDENTIFYING SHOT FREETHROW  â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ
+ 			if (event_press(PS5_UP) || event_press(XB1_UP))
+				combo_run(Nodip); 
+			
+			//â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ IDENTIFYING NORMAL SHOT  â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ
+			if (event_press(PS5_SQUARE) || event_press(XB1_X))
+				combo_run(standstill);
+			
+			//â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ IDENTIFYING ADVANCE DEFENSE  â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ
+            if(Adv_Def){
+             if(get_val(PS5_L2) && get_val(PS5_R2)){
+			   combo_run(altStep);
+			   combo_run(advDef);
+			   combo_run(RUMBLE);
+			  
+		   }
+	 }
+		    }
+		}
+	}
+//â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ
+
+// FUCNTION SECTION
+//â–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆâ–ˆ
+combo standstill {
+	if (!DisplayMenu && !ModMenu && !EditMenu) {
+		show_value_OLED (0, standstill)
+	}
+	
+	set_val(PS5_SQUARE,150);
+	wait(standstill);
+	set_val(PS5_SQUARE,0);
+	wait(50);
+}
+
+combo Catch{
+	if (!DisplayMenu && !ModMenu && !EditMenu) {
+		show_value_OLED (1, Catch)
+	}
+	
+	set_val(PS5_SQUARE,100);
+	wait(Catch);
+	set_val(PS5_SQUARE,0);
+	wait(20);
+}
+
+combo Nodip{
+	if (!DisplayMenu && !ModMenu && !EditMenu) {
+		show_value_OLED (4, Nodip)
+	}
+	
+	set_val(PS5_SQUARE,100);
+	wait(Nodip);
+	set_val(PS5_SQUARE,0);
+	wait(20);
+}
+
+combo Leftsidefade{
+	if (!DisplayMenu && !ModMenu && !EditMenu) {
+		show_value_OLED (2, Leftsidefade)
+	}
+	
+	set_val(PS5_SQUARE,100);
+	wait(Leftsidefade);
+	set_val(PS5_SQUARE,0);
+	wait(20);
+}
+
+combo Rightsidefade{
+	if (!DisplayMenu && !ModMenu && !EditMenu) {
+		show_value_OLED (3, Rightsidefade)
+	}
+	
+	set_val(PS5_SQUARE,100);
+	wait(Rightsidefade);
+	set_val(PS5_SQUARE,0);
+	wait(20);
+}
+
+	combo altStep { 
+	set_val(XB1_RT, 0.0);
+	set_val(XB1_LT, 100);
+	wait(10);
+	set_val(XB1_LT, 0.0);
+	set_val(XB1_RT, 100);
+	wait(10);
+	}
+	combo advDef { 
+	set_val(4, 0);
+	set_val(9, 05);
+	wait(60);
+	set_val(7, 0);
+	set_val(4,100);
+	set_val(9, -05);
+	wait(20);
+	}
+	combo quickStop { 
+	block_all_input()
+	deadzone(XB1_LX,XB1_LY, -5,-5);
+    set_val(7, get_ptime(20)>= 100);
+    wait(shotValue/2);
+    set_val(7, 0);
+	}
+	combo RUMBLE {
+	set_rumble(RUMBLE_A, 50);
+	wait(200);
+	set_rumble(RUMBLE_A, 0);
+	}
+	function block_all_input() {
+	set_val(09, 0);
+	set_val(10, 0);
+	set_val(11, 0);
+	set_val(12, 0);
+	set_val(07, 100);
+}
+
+combo save {
+	save_edit();
+}
+
+/*
+                         _____ _   _ _   _  ____ _____ ___ ___  _   _ ____                          
+ _____ _____ _____ _____|  ___| | | | \ | |/ ___|_   _|_ _/ _ \| \ | / ___| _____ _____ _____ _____ 
+|_____|_____|_____|_____| |_  | | | |  \| | |     | |  | | | | |  \| \___ \|_____|_____|_____|_____|
+|_____|_____|_____|_____|  _| | |_| | |\  | |___  | |  | | |_| | |\  |___) |_____|_____|_____|_____|
+                        |_|    \___/|_| \_|\____| |_| |___\___/|_| \_|____/                         
+   */ 
+
+// Shows in OLED Screen info of Shoot
+function show_value_OLED (idPosShoot, valueShoot) {
+	cls_oled(OLED_BLACK);  
+	rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE); 
+	line_oled(0, 27, OLED_WIDTH - 1, 27, 1, OLED_WHITE); 
+	print(center_x(get_valName_chars(idPosShoot), OLED_FONT_MEDIUM_WIDTH),7,OLED_FONT_MEDIUM,OLED_WHITE,ValNames[idPosShoot]);
+
+	number_to_string(valueShoot,find_digits(valueShoot))
+}
+
+function save_edit(){
+	set_pvar(SPVAR_1,standstill);
+	set_pvar(SPVAR_2,Catch);
+	set_pvar(SPVAR_3,Leftsidefade);
+	set_pvar(SPVAR_4,Rightsidefade);
+	set_pvar(SPVAR_5,Nodip);
+}
+
+function MenuNavigation(f_modorval, f_min, f_max) {
+    if(get_val(PS4_L2) <= 50) {
+        if(event_press(PS4_RIGHT)) {
+            f_modorval = cycle(f_modorval + 1, f_min, f_max);
+            DisplayMenu = TRUE;
+        }
+
+        if(event_press(PS4_LEFT)) {
+            f_modorval = cycle(f_modorval - 1, f_min, f_max);
+            DisplayMenu = TRUE;
+        }
+
+        set_val(PS4_RIGHT, 0);
+        set_val(PS4_LEFT, 0);
+    }
+
+    if(f_modorval == 0) {
+        if(event_press(PS4_CROSS)) {
+            ValNameIdx = AmountOfValues + 1;
+            EditMenu = TRUE;
+            ModMenu = FALSE;
+            DisplayMenu = TRUE;
+        }
+
+        set_val(PS4_CROSS, 0);
+    }
+
+    if(ModMenu) {
+        if(event_press(PS4_CIRCLE)) {
+            DisplayTitle = TRUE;
+            ModMenu = FALSE;
+            DisplayMenu = FALSE;
+        }
+
+        set_val(PS4_CIRCLE, 0);
+    }
+
+    if(EditMenu) {
+        if(event_press(PS4_CIRCLE)) {
+            EditMenu = FALSE;
+            ModMenu = TRUE;
+            DisplayMenu = TRUE;
+        }
+
+        set_val(PS4_CIRCLE, 0);
+    }
+
+    return f_modorval;
+}
+
+function ToggleSwitch(f_name, f_val) {
+    if(f_name) {
+        if(event_press(PS4_UP) || event_press(PS4_DOWN)) {
+            f_val = !f_val;
+            DisplayMenu = TRUE;
+        }
+
+        Toggle = f_val;
+        set_val(PS4_UP, 0);
+        set_val(PS4_DOWN, 0);
+    }
+
+    return f_val;
+}
+
+function EditValues(f_idx,f_num,ValueIndex,ValueIndexMin,ValueIndexMax) {  
+	if(f_num == f_idx){ 
+		if(get_ival(PS5_L2)>=25){ 
+			if(event_press(PS5_UP)){ 
+				ValueIndex = cycle(ValueIndex + 1, ValueIndexMin,ValueIndexMax); 
+				DisplayMenu = TRUE; 
+				combo_run(save); 
+			}
+			if(event_press(PS5_DOWN)){ 
+				ValueIndex = cycle(ValueIndex - 1, ValueIndexMin,ValueIndexMax); 
+				DisplayMenu = TRUE; 
+				combo_run(save);
+			}
+			set_val(PS5_UP,0);
+			set_val(PS5_DOWN,0);
+		}
+		
+		if(get_ival(PS5_L2)>=25){
+			if(event_press(PS5_RIGHT)){ 
+				ValueIndex = cycle(ValueIndex + 10, ValueIndexMin,ValueIndexMax); 
+				DisplayMenu = TRUE; 
+				combo_run(save);
+			}
+			if(event_press(PS5_LEFT)){ 
+				ValueIndex = cycle(ValueIndex - 10, ValueIndexMin,ValueIndexMax); 
+				DisplayMenu = TRUE; 
+				combo_run(save);
+			}
+			set_val(PS5_RIGHT,0); 
+			set_val(PS5_LEFT,0);
+		}
+		number_to_string(ValueIndex,find_digits(ValueIndex))
+	}
+	return ValueIndex;                
+ }
+ 
+combo KillSwitch { 
+	cls_oled(OLED_BLACK); 
+	if(KillSwitch){  
+		print(center_x(get_misc_chars(6), OLED_FONT_SMALL_WIDTH),15,OLED_FONT_SMALL,OLED_WHITE,Misc[6]);
+		print(center_x(get_misc_chars(7), OLED_FONT_SMALL_WIDTH),30,OLED_FONT_SMALL,OLED_WHITE,Misc[7]);
+	}
+	if(!KillSwitch){ 
+		print(center_x(get_misc_chars(6), OLED_FONT_SMALL_WIDTH),15,OLED_FONT_SMALL,OLED_WHITE,Misc[6]);
+		print(center_x(get_misc_chars(8), OLED_FONT_SMALL_WIDTH),30,OLED_FONT_SMALL,OLED_WHITE,Misc[8]);
+	} 
+	wait(1500);
+	DisplayTitle = TRUE;
+}
+
+function cycle(f_val, f_lo, f_hi) {
+	if(f_val > f_hi) return f_lo;
+	if(f_val < f_lo) return f_hi;
+	return f_val;
+}
+
+function get_misc_chars(f_idx){
+	if (Misc[f_idx + 1] != -1) 
+	return Misc[f_idx + 1] - Misc[f_idx] - 1;
+	return sizeof(Misc) - Misc[f_idx];		
+}
+
+function get_modName_chars(f_idx){
+	if (ModNames[f_idx + 1] != -1) 
+	return ModNames[f_idx + 1] - ModNames[f_idx] - 1;
+	return sizeof(ModNames) - ModNames[f_idx];		
+}
+
+function get_valName_chars(f_idx){
+	if (ValNames[f_idx + 1] != -1) 
+	return ValNames[f_idx + 1] - ValNames[f_idx] - 1;
+	return sizeof(ValNames) - ValNames[f_idx];		
+}
+
+function center_x(f_chars,f_font) {
+	return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+
+function number_to_string(value,f_digits){
+	i = 1;  
+	c_val = 10000;
+	if(value < 0){ putc_oled(i,45); i += 1; value = abs(value); }
+	
+	for(c = 5; c >= 1; c--){ 
+		if(f_digits >= c){
+			putc_oled(i,ASCII_NUM[value / c_val]);
+			value = value % c_val;
+			i +=  1;
+	    	if(c == 4){
+	    		putc_oled(i,44); 
+	    		i += 1;
+    		}
+		}
+		c_val /= 10;
+    }
+    
+    puts_oled(center_x(i - 1,OLED_FONT_LARGE_WIDTH),37,OLED_FONT_LARGE,i - 1,OLED_WHITE); 
+} 
+
+function find_digits(f_num) {
+    f_num = abs(f_num);
+    if(f_num / 10000 > 0) return 5;
+    if(f_num /  1000 > 0) return 4;
+    if(f_num /   100 > 0) return 3;
+    if(f_num /    10 > 0) return 2;
+            			  return 1;
+}
+
+const uint8 ASCII_NUM[] = {48,49,50,51,52,53,54,55,56,57};
+int i;
+int c,c_val;
+
+define ColorOFF  = 0;
+define Blue      = 1;
+define Red       = 2;
+define Green     = 3;
+define Pink      = 4;
+define SkyBlue   = 5;
+define Yellow    = 6;
+define White     = 7;                    
+data(                 
+  0,0,0, //0. ColorOFF
+  2,0,0, //1. Blue     
+  0,2,0, //2. Red      
+  0,0,2, //3. Green    
+  2,2,0, //4. Pink     
+  2,0,2, //5. SkyBlue 
+  0,2,2, //6. Yellow   
+  2,2,2  //7. White    
+);
+
+int data_indx;
+function colourled(color) {  
+    for( data_indx = 0; data_indx < 3; data_indx++ ) {
+        set_led(data_indx,duint8 ((color * 3) + data_indx));
+    }
+} ú¾Œ¾‰¸ˆ¹‰º‹ÍúÊúÃ ����������������

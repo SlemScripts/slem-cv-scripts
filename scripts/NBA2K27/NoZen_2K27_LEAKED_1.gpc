@@ -1,0 +1,1807 @@
+/*
+
+$$\   $$\  $$$$$$\  $$$$$$$$\ $$$$$$$$\ $$\   $$\
+$$$\  $$ |$$  __$$\ \____$$  |$$  _____|$$$\  $$ |
+$$$$\ $$ |$$ /  $$ |    $$  / $$ |      $$$$\ $$ |
+$$ $$\$$ |$$ |  $$ |   $$  /  $$$$$\    $$ $$\$$ |
+$$ \$$$$ |$$ |  $$ |  $$  /   $$  __|   $$ \$$$$ |
+$$ |\$$$ |$$ |  $$ | $$  /    $$ |      $$ |\$$$ |
+$$ | \$$ | $$$$$$  |$$$$$$$$\ $$$$$$$$\ $$ | \$$ |
+\__|  \__| \______/ \________|\________|\__|  \__|
+
+Author : nolifekrisu
+Website:
+Release: 1.0
+
+██╗░██████╗░███╗░░██╗░█████╗░██████╗░███████╗
+██║██╔════╝░████╗░██║██╔══██╗██╔══██╗██╔════╝
+██║██║░░██╗░██╔██╗██║██║░░██║██████╔╝█████╗░░
+██║██║░░╚██╗██║╚████║██║░░██║██╔══██╗██╔══╝░░
+██║╚██████╔╝██║░╚███║╚█████╔╝██║░░██║███████╗
+╚═╝░╚═════╝░╚═╝░░╚══╝░╚════╝░╚═╝░░╚═╝╚══════╝
+
+██████╗░░█████╗░  ███╗░░██╗░█████╗░████████╗  ████████╗░█████╗░██╗░░░██╗░█████╗░██╗░░██╗
+██╔══██╗██╔══██╗  ████╗░██║██╔══██╗╚══██╔══╝  ╚══██╔══╝██╔══██╗██║░░░██║██╔══██╗██║░░██║
+██║░░██║██║░░██║  ██╔██╗██║██║░░██║░░░██║░░░  ░░░██║░░░██║░░██║██║░░░██║██║░░╚═╝███████║
+██║░░██║██║░░██║  ██║╚████║██║░░██║░░░██║░░░  ░░░██║░░░██║░░██║██║░░░██║██║░░██╗██╔══██║
+██████╔╝╚█████╔╝  ██║░╚███║╚█████╔╝░░░██║░░░  ░░░██║░░░╚█████╔╝╚██████╔╝╚█████╔╝██║░░██║
+╚═════╝░░╚════╝░  ╚═╝░░╚══╝░╚════╝░░░░╚═╝░░░  ░░░╚═╝░░░░╚════╝░░╚═════╝░░╚════╝░╚═╝░░╚═╝
+*/
+
+define NOZEN_001 = SPVAR_1;
+define NOZEN_002 = SPVAR_2;
+define NOZEN_003 = SPVAR_3;
+define NOZEN_004 = SPVAR_4;
+define NOZEN_005 = SPVAR_5;
+define NOZEN_006 = SPVAR_6;
+define NOZEN_007 = SPVAR_7;
+define NOZEN_008 = SPVAR_8;
+define NOZEN_009 = SPVAR_9;
+define NOZEN_010 = SPVAR_10;
+define NOZEN_011 = 0x9c4;
+define NOZEN_012 = 0x9c4;
+define NOZEN_013 = 0x7d0;
+define NOZEN_014 = SPVAR_12;
+define NOZEN_015 = SPVAR_13;
+define NOZEN_016 = SPVAR_14;
+define NOZEN_017 = SPVAR_15;
+define NOZEN_018 = SPVAR_16;
+define NOZEN_019 = SPVAR_17;
+define NOZEN_020 = SPVAR_18;
+define NOZEN_021 = SPVAR_19;
+define NOZEN_022 = SPVAR_20;
+define NOZEN_023 = 1;
+define NOZEN_024 = 5;
+define NOZEN_025 = 1;
+define NOZEN_026 = 0xa;
+define NOZEN_027 = 1;
+define NOZEN_028 = SPVAR_11;
+define NOZEN_029 = 0;
+define NOZEN_030 = 0x80;
+define NOZEN_031 = 0x80;
+define NOZEN_032 = 0xfa;
+define NOZEN_033 = 0x5a;
+define NOZEN_034 = 0x1f4;
+define NOZEN_035 = 0x28;
+define NOZEN_036 = 0x2a;
+define NOZEN_037 = SPVAR_21;
+
+define NOZEN_038    = 0;
+define NOZEN_039 = 1;
+define NOZEN_040        = 0x12c;
+
+define NOZEN_PMEM0 = SPVAR_22;
+define NOZEN_PMEM1 = SPVAR_23;
+
+define NOZEN_041 = PS4_UP;
+define NOZEN_042 = PS4_UP;
+define NOZEN_043 = PS4_DOWN;
+define NOZEN_044 = PS4_DOWN;
+define NOZEN_045 = PS4_CROSS;
+
+int NOZEN_0100 = 1;
+int NOZEN_0101 = 0, NOZEN_0102 = 0;
+int NOZEN_0103 = 0, NOZEN_0104 = 0;
+int NOZEN_0105 = 0, NOZEN_0106 = 0;
+int NOZEN_0107 = 0, NOZEN_0108 = 0;
+int NOZEN_0109 = 0;
+int NOZEN_0110 = 1;
+int NOZEN_0111 = 1;
+int NOZEN_0112 = 0;
+int NOZEN_0113 = 0x32;
+int NOZEN_0114 = 0x64;
+int NOZEN_0115 = -100;
+int NOZEN_0116 = 0x19;
+int NOZEN_0117 = -4;
+int NOZEN_0118 = 4;
+int NOZEN_0119 = -2;
+int NOZEN_0120 = 2;
+int NOZEN_0121 = 0x22;
+int NOZEN_0122 = 1;
+int NOZEN_0123 = 0;
+int NOZEN_0124 = 0x12c;
+int NOZEN_0125 = 0;
+int NOZEN_0126 = 0;
+int NOZEN_0127 = 0;
+int NOZEN_0128 = 0;
+int NOZEN_0129 = 0;
+int NOZEN_0130 = 0;
+int NOZEN_0131 = 0;
+int NOZEN_0132 = 0;
+int NOZEN_0133 = 0;
+int NOZEN_0134 = 0;
+int NOZEN_0135 = TRUE;
+int NOZEN_0136 = FALSE;
+int NOZEN_0137 = 0x21;
+int NOZEN_0138 = 0x21;
+int NOZEN_0139 = 0x22;
+int NOZEN_0140 = 0;
+int NOZEN_0141;
+int NOZEN_0142;
+int NOZEN_0143;
+int NOZEN_0144;
+int NOZEN_0145 = 0;
+int NOZEN_0146 = 0;
+int NOZEN_0147[NOZEN_036];
+int NOZEN_0148[NOZEN_036];
+int NOZEN_0149[NOZEN_036];
+int NOZEN_0150 = 0;
+int NOZEN_0151 = 0;
+int NOZEN_0152 = 0;
+int NOZEN_0153;
+int NOZEN_0154;
+int NOZEN_0155 = 0;
+int NOZEN_0156 = NOZEN_026;
+int NOZEN_0157 = NOZEN_027;
+int NOZEN_0158;
+int NOZEN_0159;
+int NOZEN_0160;
+int NOZEN_0161;
+int NOZEN_0162, NOZEN_0163;
+int NOZEN_0164, NOZEN_0165;
+int NOZEN_0166, NOZEN_0167;
+int NOZEN_0168, NOZEN_0169;
+int NOZEN_0170;
+int NOZEN_0171 = 0;
+int NOZEN_0172 = 0x50;
+int NOZEN_0173 = 1;
+int NOZEN_0174 = 0;
+int NOZEN_0175 = 0;
+int NOZEN_0176 = 0x1f4;
+int NOZEN_0177 = 0x32;
+int NOZEN_0178 = 0;
+int NOZEN_0179 = 0;
+int NOZEN_0180 = 0;
+int NOZEN_0181 = 0;
+int NOZEN_0182 = 0;
+int NOZEN_0183 = 0;
+int NOZEN_0184 = 0;
+int NOZEN_0185 = 0;
+int NOZEN_0186 = 0;
+int NOZEN_0187 = 0;
+int NOZEN_0188 = 0;
+int NOZEN_0189 = 0xf;
+int NOZEN_0190 = 0x12c;
+int NOZEN_0191, NOZEN_0192, NOZEN_0193;
+int NOZEN_0194 = 1;
+int NOZEN_0195, NOZEN_0196, NOZEN_0197, NOZEN_0198;
+int NOZEN_0199 = 0;
+int NOZEN_0200 = 0;
+int NOZEN_0201 = 0;
+int NOZEN_0202 = 0;
+int NOZEN_0203 = 0;
+int NOZEN_0204 = 0;
+int NOZEN_0205;
+int NOZEN_0206 = 0;
+int NOZEN_0207 = 0x46;
+int NOZEN_0208 = 1;
+
+int NOZEN_0209 = 0;
+int NOZEN_0210 = 0;
+int NOZEN_0211 = 0;
+int NOZEN_0212 = 0;
+
+int NOZEN_0213 = 0;
+int NOZEN_0214 = 0;
+int NOZEN_0215 = 0;
+int NOZEN_0216 = 0;
+int NOZEN_0217 = 0;
+int NOZEN_0218 = 0;
+int NOZEN_0219 = 0;
+
+const string NOZEN_S001[] = { "nozenscripts.com", "NoZen+" };
+const string NOZEN_S002[] = { "v4.0" };
+const string NOZEN_S003[] = {
+"Profile: 1",
+"Profile: 2",
+"Profile: 3",
+"Profile: 4",
+"Profile: 5"
+};
+
+int NOZEN_0220, NOZEN_0221;
+int NOZEN_0222, NOZEN_0223;
+int NOZEN_0224, NOZEN_0225;
+int NOZEN_0226, NOZEN_0227;
+
+int NOZEN_0228 = 0;
+int NOZEN_0229 = 0;
+int NOZEN_0230 = 0x708;
+
+int NOZEN_0231 = 0;
+int NOZEN_0232 = 1;
+int NOZEN_0233 = 0xa;
+int NOZEN_0234 = 0xe;
+int NOZEN_0235 = 0;
+
+int NOZEN_0236 = 0;
+int NOZEN_0237 = 2, NOZEN_0238 = 0x10;
+int NOZEN_0239 = 2, NOZEN_0240 = 2;
+int NOZEN_0241, NOZEN_0242, NOZEN_0243;
+int NOZEN_0244 = 0;
+
+const string NOZEN_S004[] = { "L2 + Options" };
+const string NOZEN_S005[] = { " LT + Start"  };
+const string NOZEN_S006[] = { " to open menu" };
+const string NOZEN_S007[] = { "NoZen+" };
+
+const string NOZEN_S008[]   = { "ENTER KEY" };
+const string NOZEN_S009[]   = { "nozen.gg" };
+const string NOZEN_S010[]   = { "WRONG KEY" };
+const string NOZEN_S011[]   = { "TRY AGAIN" };
+const string NOZEN_S012[]      = { "UNLOCKED!" };
+const string NOZEN_S013[] = { "WELCOME!" };
+const string NOZEN_S014[]   = { ". . . . ." };
+const string NOZEN_S015[]   = { "* . . . ." };
+const string NOZEN_S016[]   = { "* * . . ." };
+const string NOZEN_S017[]   = { "* * * . ." };
+const string NOZEN_S018[]   = { "* * * * ." };
+
+const string NOZEN_S019[] = { "NoZen+ Trial Ended" };
+const string NOZEN_S020[] = { "Renew at" };
+const string NOZEN_S021[] = { "nozen.gg" };
+
+int NOZEN_0245 = 1, NOZEN_0246 = 0x17, NOZEN_0247 = 0, NOZEN_0248 = 1, NOZEN_0249, NOZEN_0250, NOZEN_0251;
+int NOZEN_0252, NOZEN_0253;
+
+const string NOZEN_S022[] = {
+"Button Rhythm",
+"Tempo (ms)",
+"Fade Tempo Toggle",
+"Fade Tempo (ms)",
+"No-Dip Shot",
+"No-Dip Tempo (ms)",
+"Auto Shot",
+"Auto Shot Timing",
+"Auto Shot Tempo",
+"Auto Shot Remap",
+"Stability (ms)",
+"Dribble D-Pad Up",
+"Dribble D-Pad Down",
+"Dribble D-Pad L",
+"Dribble D-Pad R",
+"Turbo Shot",
+"RS Shooting",
+"Button Remap",
+"QuickStop Mode",
+"Dunk Meter",
+"Defense Assist",
+"Unlimited Stamina",
+"Profile Select"
+};
+
+const string NOZEN_S023[] = {""};
+const string NOZEN_S024[] = {"Off", "On", "", "LB/L1", "RS/R3"};
+const string NOZEN_S025[] = {"ms"};
+const string NOZEN_S026[] = { "Off", "Auto QS", "LT/L2 QS" };
+const string NOZEN_S027[] = {"Hop Jumper", "Turbo Fade"};
+const string NOZEN_S028[] = { "Off", "LB/L1", "R3/RS" };
+const string NOZEN_S029[] = { "Off", "Auto QS", "L2 QS" };
+const string NOZEN_S030[] = { "Off", "Auto QS", "LT QS" };
+const string NOZEN_S031[] = { "Off", "L1", "R3", "L3" };
+const string NOZEN_S032[] = { "Off", "LB", "RS", "LS" };
+const string NOZEN_S033[] = { "Square", "L1", "R3", "L3" };
+const string NOZEN_S034[] = { "X", "LB", "RS", "LS" };
+const string NOZEN_S035[] = {"Off", "BTB Spam", "Curry", "D Booker"};
+const string NOZEN_S036[] = {"Off", "BTB Spam", "Curry", "D Booker"};
+const string NOZEN_S037[] = {"Off", "B Break", "Escape", "Momentum"};
+int NOZEN_0254 = 1;
+
+int NOZEN_0255;
+int NOZEN_0256;
+int NOZEN_0257;
+int NOZEN_0258;
+int NOZEN_0259 = 0;
+
+function pmem_read(pmem_slot) {
+    if (pmem_slot == NOZEN_038) {
+        return get_pvar(NOZEN_PMEM0, 0, 1, 0);
+    }
+    return get_pvar(NOZEN_PMEM1, 0, 0x7530, 0);
+}
+
+function pmem_write(pmem_slot, pmem_val) {
+    if (pmem_slot == NOZEN_038) {
+        set_pvar(NOZEN_PMEM0, pmem_val);
+    } else {
+        set_pvar(NOZEN_PMEM1, pmem_val);
+    }
+}
+
+init {
+
+NOZEN_0213 = 1;
+NOZEN_0214 = 0;
+NOZEN_0215 = 0;
+NOZEN_0217 = 0;
+
+NOZEN_0194 = get_pvar(NOZEN_022, NOZEN_023, NOZEN_024, 1);
+NOZEN_0111 = get_pvar(NOZEN_001, 0, 1, 1);
+NOZEN_0113 = get_pvar(NOZEN_002, 0, 0x12c, 0x32);
+NOZEN_0121 = get_pvar(NOZEN_003, 0xa, 0x64, 0x64);
+NOZEN_0112 = get_pvar(NOZEN_004, 0, 1, 1);
+NOZEN_0122 = get_pvar(NOZEN_005, 0, 1, 1);
+NOZEN_0123 = get_pvar(NOZEN_006, 0, 1, 0);
+NOZEN_0128 = get_pvar(NOZEN_007, 0, 3, 0);
+NOZEN_0129 = get_pvar(NOZEN_008, 0, 2, 0);
+NOZEN_0131 = get_pvar(NOZEN_009, 0, 1, 0);
+NOZEN_0132 = get_pvar(NOZEN_010, 0, 1, 0);
+NOZEN_0100 = get_pvar(NOZEN_028, 1, NOZEN_0246, 1);
+NOZEN_0172 = get_pvar(NOZEN_014, 0, 0x12c, NOZEN_0113);
+NOZEN_0173 = get_pvar(NOZEN_015, 0, 1, 1);
+NOZEN_0178 = get_pvar(NOZEN_016, 0, 3, 0);
+NOZEN_0175 = get_pvar(NOZEN_017, 0, 1, 0);
+NOZEN_0176 = get_pvar(NOZEN_018, 0x64, 0x3e8, 0x1f4);
+NOZEN_0177 = get_pvar(NOZEN_019, 0, 0x12c, 0x32);
+NOZEN_0188 = get_pvar(NOZEN_020, 0, 1, 0);
+NOZEN_0189 = get_pvar(NOZEN_021, 1, 0x1e, 0xf);
+NOZEN_0206 = get_pvar(NOZEN_037, 0, 1, 0);
+
+NOZEN_F014();
+
+set_rgb(NOZEN_029, NOZEN_030, NOZEN_031);
+NOZEN_0236 = 0;
+NOZEN_0244 = 0;
+cls_oled(OLED_BLACK);
+
+NOZEN_0254 = 1;
+NOZEN_0245 = 1;
+NOZEN_F021();
+NOZEN_0150 = 0;
+NOZEN_0151 = 0;
+
+NOZEN_F020();
+NOZEN_F014();
+NOZEN_F024();
+
+if (pmem_read(NOZEN_038) != 1) {
+pmem_write(NOZEN_038, 1);
+pmem_write(NOZEN_039, 0);
+NOZEN_0210 = 0;
+} else {
+NOZEN_0210 = pmem_read(NOZEN_039);
+}
+if (NOZEN_0210 >= NOZEN_040) {
+NOZEN_0209 = 1;
+}
+}
+
+main {
+
+NOZEN_0212 = get_rtime();
+NOZEN_0211 += NOZEN_0212;
+if (NOZEN_0211 >= 0xea60) {
+NOZEN_0211 -= 0xea60;
+NOZEN_0210++;
+pmem_write(NOZEN_039, NOZEN_0210);
+if (NOZEN_0210 >= NOZEN_040) {
+NOZEN_0209 = 1;
+}
+}
+
+if (NOZEN_0209) {
+set_rgb(0xff, 0, 0);
+set_val(PS4_CROSS, 0);    set_val(PS4_CIRCLE, 0);
+set_val(PS4_TRIANGLE, 0); set_val(PS4_SQUARE, 0);
+set_val(PS4_L1, 0);       set_val(PS4_R1, 0);
+set_val(PS4_L2, 0);       set_val(PS4_R2, 0);
+set_val(PS4_L3, 0);       set_val(PS4_R3, 0);
+set_val(PS4_UP, 0);       set_val(PS4_DOWN, 0);
+set_val(PS4_LEFT, 0);     set_val(PS4_RIGHT, 0);
+set_val(PS4_OPTIONS, 0);
+cls_oled(OLED_BLACK);
+print(NOZEN_F001(NOZEN_F004(NOZEN_S019[0]), OLED_FONT_MEDIUM_WIDTH), 8,  OLED_FONT_MEDIUM, OLED_WHITE, NOZEN_S019[0]);
+print(NOZEN_F001(NOZEN_F004(NOZEN_S020[0]), OLED_FONT_SMALL_WIDTH),  0x1c, OLED_FONT_SMALL,  OLED_WHITE, NOZEN_S020[0]);
+print(NOZEN_F001(NOZEN_F004(NOZEN_S021[0]), OLED_FONT_SMALL_WIDTH),  0x2a, OLED_FONT_SMALL,  OLED_WHITE, NOZEN_S021[0]);
+} else
+
+if (NOZEN_0213 && !NOZEN_0254) {
+set_rgb(0xff, 0, 0);
+set_val(PS4_CROSS, 0);    set_val(PS4_CIRCLE, 0);
+set_val(PS4_TRIANGLE, 0); set_val(PS4_SQUARE, 0);
+set_val(PS4_L1, 0);       set_val(PS4_R1, 0);
+set_val(PS4_L2, 0);       set_val(PS4_R2, 0);
+set_val(PS4_L3, 0);       set_val(PS4_R3, 0);
+set_val(PS4_UP, 0);       set_val(PS4_DOWN, 0);
+set_val(PS4_LEFT, 0);     set_val(PS4_RIGHT, 0);
+set_val(PS4_OPTIONS, 0);
+if (NOZEN_0217) {
+set_rgb(0, 0xff, 0);
+NOZEN_0218 += NOZEN_0212;
+if (NOZEN_0218 >= 0x5dc) {
+NOZEN_0213 = 0;
+NOZEN_0217 = 0;
+NOZEN_0218 = 0;
+NOZEN_0236 = 1;
+NOZEN_F017();
+}
+}
+if (NOZEN_0215) {
+NOZEN_0216 += NOZEN_0212;
+if (NOZEN_0216 >= 0x5dc) {
+NOZEN_0215 = 0;
+NOZEN_0216 = 0;
+}
+}
+NOZEN_F006();
+if (!NOZEN_0215 && !NOZEN_0217) {
+if      (event_press(PS4_CROSS))    { NOZEN_F005(PS4_CROSS); }
+else if (event_press(PS4_CIRCLE))   { NOZEN_F005(PS4_CIRCLE); }
+else if (event_press(PS4_TRIANGLE)) { NOZEN_F005(PS4_TRIANGLE); }
+else if (event_press(PS4_SQUARE))   { NOZEN_F005(PS4_SQUARE); }
+else if (event_press(PS4_UP))       { NOZEN_F005(PS4_UP); }
+else if (event_press(PS4_DOWN))     { NOZEN_F005(PS4_DOWN); }
+else if (event_press(PS4_LEFT))     { NOZEN_F005(PS4_LEFT); }
+else if (event_press(PS4_RIGHT))    { NOZEN_F005(PS4_RIGHT); }
+else if (event_press(PS4_L1))       { NOZEN_F005(PS4_L1); }
+else if (event_press(PS4_R1))       { NOZEN_F005(PS4_R1); }
+}
+} else {
+
+NOZEN_0179 = 0;
+NOZEN_0180 = 0;
+NOZEN_0140 += NOZEN_0212;
+set_rgb(NOZEN_029, NOZEN_030, NOZEN_031);
+
+if (get_console() == PIO_XB1) { NOZEN_0253 = 1; } else { NOZEN_0253 = 0; }
+
+if (NOZEN_0245 && NOZEN_0254) {
+NOZEN_0152 = NOZEN_0212;
+NOZEN_0151 += NOZEN_0152;
+NOZEN_0229 += NOZEN_0152;
+
+NOZEN_F022();
+
+cls_oled(OLED_BLACK);
+NOZEN_F023();
+if (NOZEN_0150 == 0) {
+print(NOZEN_0153, NOZEN_0154, OLED_FONT_MEDIUM, OLED_WHITE, NOZEN_S007[0]);
+print(NOZEN_F001(NOZEN_F004(NOZEN_S001[0]), OLED_FONT_SMALL_WIDTH), NOZEN_0154 + 0xe, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S001[0]);
+
+if (NOZEN_0151 >= NOZEN_011) {
+NOZEN_0150 = 3;
+NOZEN_0151 = 0;
+NOZEN_0155 = NOZEN_025;
+}
+}
+else if (NOZEN_0150 == 1) {
+if (NOZEN_0155 < NOZEN_0156) NOZEN_0155 += NOZEN_0157;
+NOZEN_0153 += NOZEN_0155;
+
+if (NOZEN_0153 < OLED_WIDTH && (NOZEN_0153 + NOZEN_0161) > 0) {
+print(NOZEN_0153, NOZEN_0154, OLED_FONT_MEDIUM, OLED_WHITE, NOZEN_S007[0]);
+} else {
+NOZEN_0153 = OLED_WIDTH;
+NOZEN_0155 = 0;
+}
+if (NOZEN_0153 >= OLED_WIDTH && NOZEN_0151 >= NOZEN_013) {
+NOZEN_0150 = 2;
+NOZEN_0151 = 0;
+}
+}
+else if (NOZEN_0150 == 2) {
+print(NOZEN_0220, NOZEN_0222, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S001[0]);
+print(NOZEN_0221, NOZEN_0223, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S001[1]);
+
+if (NOZEN_0228 == 0) {
+if (NOZEN_0231 < NOZEN_0233) {
+NOZEN_0231 += NOZEN_0232;
+}
+
+NOZEN_0220 += NOZEN_0231;
+NOZEN_0221 += NOZEN_0231;
+
+if (NOZEN_0220 >= NOZEN_0224) {
+NOZEN_0220 = NOZEN_0224;
+}
+if (NOZEN_0221 >= NOZEN_0225) {
+NOZEN_0221 = NOZEN_0225;
+}
+
+if (NOZEN_0220 == NOZEN_0224 && NOZEN_0221 == NOZEN_0225) {
+NOZEN_0228 = 1;
+NOZEN_0229 = 0;
+NOZEN_0231 = 4;
+}
+}
+else if (NOZEN_0228 == 1) {
+if (NOZEN_0229 >= NOZEN_0230) {
+NOZEN_0228 = 2;
+NOZEN_0229 = 0;
+}
+}
+else {
+if (NOZEN_0231 < NOZEN_0234) {
+NOZEN_0231 += NOZEN_0232;
+}
+
+NOZEN_0220 += NOZEN_0231;
+NOZEN_0221 += NOZEN_0231;
+
+if (NOZEN_0220 > OLED_WIDTH) {
+NOZEN_0150 = 3;
+NOZEN_0151 = 0;
+}
+}
+}
+
+if (NOZEN_0150 == 3) {
+cls_oled(OLED_BLACK);
+NOZEN_0254 = 0;
+NOZEN_0245 = 0;
+NOZEN_0236 = 1;
+NOZEN_0244 = 0x50;
+NOZEN_F017();
+}
+} else {
+if (event_release(PS4_SQUARE)) {
+if (NOZEN_0130) {
+combo_stop(NOZEN_C023);
+combo_run(NOZEN_C024);
+NOZEN_0130 = 0;
+}
+}
+if (event_press(PS4_CIRCLE) && NOZEN_0247) {
+
+NOZEN_0247 = 0;
+combo_run(NOZEN_C004);
+set_rgb(0,0xff,0);
+NOZEN_0236 = 1;
+NOZEN_F017();
+
+set_pvar(NOZEN_001, NOZEN_0111);
+set_pvar(NOZEN_002, NOZEN_0113);
+set_pvar(NOZEN_003, NOZEN_0121);
+set_pvar(NOZEN_004, NOZEN_0112);
+set_pvar(NOZEN_005, NOZEN_0122);
+set_pvar(NOZEN_006, NOZEN_0123);
+set_pvar(NOZEN_007, NOZEN_0128);
+set_pvar(NOZEN_008, NOZEN_0129);
+set_pvar(NOZEN_009, NOZEN_0131);
+set_pvar(NOZEN_010, NOZEN_0132);
+NOZEN_0100 = NOZEN_0248;
+set_pvar(NOZEN_028, NOZEN_0100);
+set_pvar(NOZEN_014, NOZEN_0172);
+set_pvar(NOZEN_015, NOZEN_0173);
+set_pvar(NOZEN_016, NOZEN_0178);
+set_pvar(NOZEN_017, NOZEN_0175);
+set_pvar(NOZEN_018, NOZEN_0176);
+set_pvar(NOZEN_019, NOZEN_0177);
+set_pvar(NOZEN_037, NOZEN_0206);
+}
+else if (!NOZEN_0247 && get_val(PS4_L2) && event_press(PS4_OPTIONS)) {
+NOZEN_0247 = 1;
+NOZEN_0248 = NOZEN_0100;
+combo_run(NOZEN_C003);
+set_rgb(0,0,0xff);
+NOZEN_0236 = 0;
+}
+
+if (NOZEN_0247) {
+NOZEN_0109 = NOZEN_0212;
+NOZEN_F013(NOZEN_0109);
+NOZEN_F022();
+cls_oled(OLED_BLACK);
+NOZEN_F023();
+print(
+NOZEN_F001(NOZEN_F004(NOZEN_S022[NOZEN_0248 - 1]), OLED_FONT_SMALL_WIDTH),
+0x14, OLED_FONT_SMALL, OLED_WHITE,
+NOZEN_S022[NOZEN_0248 - 1]
+);
+
+if (NOZEN_0248 == 0x10) {
+print(
+NOZEN_F001(NOZEN_F004(NOZEN_S027[NOZEN_0122]), OLED_FONT_MEDIUM_WIDTH),
+0x1e, OLED_FONT_MEDIUM, OLED_WHITE,
+NOZEN_S027[NOZEN_0122]
+);
+}
+
+if (NOZEN_0248 == 1
+|| NOZEN_0248 == 3
+|| NOZEN_0248 == 5
+|| NOZEN_0248 == 7
+|| NOZEN_0248 == 0x14
+|| NOZEN_0248 == 0x15
+) {
+print(
+NOZEN_F001(NOZEN_F004(NOZEN_S024[NOZEN_0249]), OLED_FONT_MEDIUM_WIDTH),
+0x1e, OLED_FONT_MEDIUM, OLED_WHITE,
+NOZEN_S024[NOZEN_0249]
+);
+}
+if (NOZEN_0248 == 1) { NOZEN_0251 = 0; } else if (NOZEN_0248 == NOZEN_0246) { NOZEN_0251 = 2; } else { NOZEN_0251 = 1; }
+if (NOZEN_0248 > NOZEN_0246) { NOZEN_0248 = NOZEN_0246; }
+if (NOZEN_0248 < 1) { NOZEN_0248 = 1; }
+if (get_val(PS4_L2)) { set_val(PS4_UP,0); set_val(PS4_DOWN,0); set_val(PS4_LEFT,0); set_val(PS4_RIGHT,0); }
+if (get_val(PS4_L2) && event_press(PS4_LEFT)) { NOZEN_0248--; combo_run(NOZEN_C005); }
+if (get_val(PS4_L2) && event_press(PS4_RIGHT)) { NOZEN_0248++; combo_run(NOZEN_C005); }
+if (get_val(PS4_L2) && (event_press(PS4_LEFT) || event_press(PS4_RIGHT))) {
+if (NOZEN_0248 < 1) NOZEN_0248 = 1;
+if (NOZEN_0248 > NOZEN_0246) NOZEN_0248 = NOZEN_0246;
+NOZEN_0100 = NOZEN_0248;
+set_pvar(NOZEN_028, NOZEN_0100);
+}
+
+if (NOZEN_0248 == 1) {
+NOZEN_0249 = NOZEN_0111; NOZEN_0250 = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) { NOZEN_0111 = 1; NOZEN_0252 = 1; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) { NOZEN_0111 = 0; NOZEN_0252 = 0; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+set_pvar(NOZEN_001, NOZEN_0111);
+}
+
+if (NOZEN_0248 == 2) {
+NOZEN_0249 = 2; NOZEN_0250 = 0;
+NOZEN_F002(NOZEN_0113, NOZEN_F003(NOZEN_0113));
+print(0x46, 0x1e, OLED_FONT_MEDIUM, OLED_WHITE, NOZEN_S025[0]);
+NOZEN_F019(NOZEN_0113, 0, 0x12c, 0x2d);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)   || NOZEN_F015())   { NOZEN_0113++; }
+if (event_press(PS4_DOWN) || NOZEN_F016()) { NOZEN_0113--; }
+if (event_press(PS4_UP) || event_press(PS4_DOWN) || NOZEN_F015() || NOZEN_F016()) {
+combo_run(NOZEN_C005); combo_run(NOZEN_C002);
+}
+}
+if (NOZEN_0113 > 0x12c) { NOZEN_0113 = 0x12c; }
+if (NOZEN_0113 < 0) { NOZEN_0113 = 0; }
+set_pvar(NOZEN_002, NOZEN_0113);
+}
+
+if (NOZEN_0248 == 3) {
+NOZEN_0249 = NOZEN_0173; NOZEN_0250 = 0;
+
+if (get_val(PS4_L2) && event_press(PS4_UP))   { NOZEN_0173 = 1; NOZEN_0252 = 1; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) { NOZEN_0173 = 0; NOZEN_0252 = 0; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+
+set_pvar(NOZEN_015, NOZEN_0173);
+}
+
+if (NOZEN_0248 == 4) {
+NOZEN_0249 = 2; NOZEN_0250 = 0;
+NOZEN_F002(NOZEN_0172, NOZEN_F003(NOZEN_0172));
+print(0x46, 0x1e, OLED_FONT_MEDIUM, OLED_WHITE, NOZEN_S025[0]);
+NOZEN_F019(NOZEN_0172, 0, 0x12c, 0x2d);
+
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP) || NOZEN_F015()) { NOZEN_0172++; }
+if (event_press(PS4_DOWN) || NOZEN_F016()) { NOZEN_0172--; }
+if (event_press(PS4_UP) || event_press(PS4_DOWN) || NOZEN_F015() || NOZEN_F016()) {
+combo_run(NOZEN_C005); combo_run(NOZEN_C002);
+}
+}
+if (NOZEN_0172 > 0x12c) { NOZEN_0172 = 0x12c; }
+if (NOZEN_0172 <   0) { NOZEN_0172 = 0; }
+set_pvar(NOZEN_014, NOZEN_0172);
+}
+
+if (NOZEN_0248 == 5) {
+NOZEN_0249 = NOZEN_0188; NOZEN_0250 = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) { NOZEN_0188 = 1; NOZEN_0252 = 1; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) { NOZEN_0188 = 0; NOZEN_0252 = 0; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+set_pvar(NOZEN_020, NOZEN_0188);
+}
+
+if (NOZEN_0248 == 6) {
+NOZEN_0249 = 2; NOZEN_0250 = 0;
+NOZEN_F002(NOZEN_0189, NOZEN_F003(NOZEN_0189));
+print(0x46, 0x1e, OLED_FONT_MEDIUM, OLED_WHITE, NOZEN_S025[0]);
+NOZEN_F019(NOZEN_0189, 1, 0x1e, 0x2d);
+
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP) || NOZEN_F015()) { NOZEN_0189++; }
+if (event_press(PS4_DOWN) || NOZEN_F016()) { NOZEN_0189--; }
+if (event_press(PS4_UP) || event_press(PS4_DOWN) || NOZEN_F015() || NOZEN_F016()) {
+combo_run(NOZEN_C005); combo_run(NOZEN_C002);
+}
+}
+if (NOZEN_0189 < 1) NOZEN_0189 = 1;
+if (NOZEN_0189 > 0x1e) NOZEN_0189 = 0x1e;
+
+NOZEN_F014();
+set_pvar(NOZEN_021, NOZEN_0189);
+}
+
+if (NOZEN_0248 == 7) {
+NOZEN_0249 = NOZEN_0175; NOZEN_0250 = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) { NOZEN_0175 = 1; NOZEN_0252 = 1; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) { NOZEN_0175 = 0; NOZEN_0252 = 0; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+set_pvar(NOZEN_017, NOZEN_0175);
+}
+
+if (NOZEN_0248 == 8) {
+NOZEN_0249 = 2; NOZEN_0250 = 0;
+NOZEN_F002(NOZEN_0176, NOZEN_F003(NOZEN_0176));
+print(0x46, 0x1e, OLED_FONT_MEDIUM, OLED_WHITE, NOZEN_S025[0]);
+NOZEN_F019(NOZEN_0176, 0x64, 0x3e8, 0x2d);
+if (get_val(PS4_L2)) {
+if (get_val(PS4_R1)) { NOZEN_0110 = 0xa; } else { NOZEN_0110 = 1; }
+
+if (event_press(PS4_UP) || NOZEN_F015()) { NOZEN_0176 += NOZEN_0110; }
+if (event_press(PS4_DOWN) || NOZEN_F016()) { NOZEN_0176 -= NOZEN_0110; }
+if (event_press(PS4_UP) || event_press(PS4_DOWN) || NOZEN_F015() || NOZEN_F016()) {
+combo_run(NOZEN_C005); combo_run(NOZEN_C002);
+}
+}
+if (NOZEN_0176 > 0x3e8) { NOZEN_0176 = 0x3e8; }
+if (NOZEN_0176 < 0x64) { NOZEN_0176 = 0x64;  }
+set_pvar(NOZEN_018, NOZEN_0176);
+}
+
+if (NOZEN_0248 == 9) {
+NOZEN_0249 = 2; NOZEN_0250 = 0;
+NOZEN_F002(NOZEN_0177, NOZEN_F003(NOZEN_0177));
+print(0x46, 0x1e, OLED_FONT_MEDIUM, OLED_WHITE, NOZEN_S025[0]);
+NOZEN_F019(NOZEN_0177, 0, 0x12c, 0x2d);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP) || NOZEN_F015()) { NOZEN_0177++; }
+if (event_press(PS4_DOWN) || NOZEN_F016()) { NOZEN_0177--; }
+if (event_press(PS4_UP) || event_press(PS4_DOWN) || NOZEN_F015() || NOZEN_F016()) {
+combo_run(NOZEN_C005); combo_run(NOZEN_C002);
+}
+}
+if (NOZEN_0177 > 0x12c) { NOZEN_0177 = 0x12c; }
+if (NOZEN_0177 < 0) { NOZEN_0177 = 0;   }
+set_pvar(NOZEN_019, NOZEN_0177);
+}
+
+if (NOZEN_0248 == 0xa) {
+NOZEN_0249 = NOZEN_0178; NOZEN_0250 = 0;
+
+if (NOZEN_0253) {
+print(NOZEN_F001(NOZEN_F004(NOZEN_S034[NOZEN_0178]), OLED_FONT_MEDIUM_WIDTH),
+0x1e, OLED_FONT_MEDIUM, OLED_WHITE, NOZEN_S034[NOZEN_0178]);
+} else {
+print(NOZEN_F001(NOZEN_F004(NOZEN_S033[NOZEN_0178]), OLED_FONT_MEDIUM_WIDTH),
+0x1e, OLED_FONT_MEDIUM, OLED_WHITE, NOZEN_S033[NOZEN_0178]);
+}
+
+if (get_val(PS4_L2) && event_press(PS4_UP)) { NOZEN_0178++; if (NOZEN_0178 > 3) NOZEN_0178 = 0; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) { NOZEN_0178--; if (NOZEN_0178 < 0) NOZEN_0178 = 3; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+
+set_pvar(NOZEN_016, NOZEN_0178);
+}
+
+if (NOZEN_0248 == 0xb) {
+NOZEN_0249 = 2; NOZEN_0250 = 0;
+NOZEN_F002(NOZEN_0121, NOZEN_F003(NOZEN_0121));
+print(0x46, 0x1e, OLED_FONT_MEDIUM, OLED_WHITE, NOZEN_S025[0]);
+NOZEN_F019(NOZEN_0121, 0xa, 0x64, 0x2d);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP) || NOZEN_F015()) { NOZEN_0121++; NOZEN_F020(); }
+if (event_press(PS4_DOWN) || NOZEN_F016()) { NOZEN_0121--; NOZEN_F020(); }
+if (event_press(PS4_UP) || event_press(PS4_DOWN) || NOZEN_F015() || NOZEN_F016()) {
+combo_run(NOZEN_C005); combo_run(NOZEN_C002);
+}
+}
+if (NOZEN_0121 > 0x64) { NOZEN_0121 = 0x64; }
+if (NOZEN_0121 < 0xa) { NOZEN_0121 = 0xa; }
+set_pvar(NOZEN_003, NOZEN_0121);
+}
+
+if (NOZEN_0248 == 0xc) {
+NOZEN_0249 = NOZEN_0200;
+NOZEN_0250 = 0;
+
+NOZEN_F010(NOZEN_0200);
+
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+NOZEN_0200 = (NOZEN_0200 + 3) % 4;
+NOZEN_F024();
+combo_run(NOZEN_C005);
+combo_run(NOZEN_C001);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+NOZEN_0200 = (NOZEN_0200 + 1) % 4;
+NOZEN_F024();
+combo_run(NOZEN_C005);
+combo_run(NOZEN_C001);
+}
+}
+
+if (NOZEN_0248 == 0xd) {
+NOZEN_0249 = NOZEN_0201;
+NOZEN_0250 = 0;
+
+NOZEN_F011(NOZEN_0201);
+
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+NOZEN_0201 = (NOZEN_0201 + 3) % 4;
+NOZEN_F024();
+combo_run(NOZEN_C005);
+combo_run(NOZEN_C001);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+NOZEN_0201 = (NOZEN_0201 + 1) % 4;
+NOZEN_F024();
+combo_run(NOZEN_C005);
+combo_run(NOZEN_C001);
+}
+}
+
+if (NOZEN_0248 == 0xe) {
+NOZEN_0249 = NOZEN_0202;
+NOZEN_0250 = 0;
+
+NOZEN_F012(NOZEN_0202);
+
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+NOZEN_0202 = (NOZEN_0202 + 3) % 4;
+NOZEN_F024();
+combo_run(NOZEN_C005);
+combo_run(NOZEN_C001);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+NOZEN_0202 = (NOZEN_0202 + 1) % 4;
+NOZEN_F024();
+combo_run(NOZEN_C005);
+combo_run(NOZEN_C001);
+}
+}
+
+if (NOZEN_0248 == 0xf) {
+NOZEN_0249 = NOZEN_0203;
+NOZEN_0250 = 0;
+
+NOZEN_F012(NOZEN_0203);
+
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+NOZEN_0203 = (NOZEN_0203 + 3) % 4;
+NOZEN_F024();
+combo_run(NOZEN_C005);
+combo_run(NOZEN_C001);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+NOZEN_0203 = (NOZEN_0203 + 1) % 4;
+NOZEN_F024();
+combo_run(NOZEN_C005);
+combo_run(NOZEN_C001);
+}
+}
+
+if (NOZEN_0248 == 0x10) {
+NOZEN_0249 = NOZEN_0122; NOZEN_0250 = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) { NOZEN_0122 = 1; NOZEN_0252 = 1; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) { NOZEN_0122 = 0; NOZEN_0252 = 0; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+set_pvar(NOZEN_005, NOZEN_0122);
+}
+
+if (NOZEN_0248 == 0x11) {
+NOZEN_0249 = NOZEN_0123; NOZEN_0250 = 0;
+print(
+NOZEN_F001(NOZEN_F004(NOZEN_S024[NOZEN_0123]), OLED_FONT_MEDIUM_WIDTH),
+0x1e, OLED_FONT_MEDIUM, OLED_WHITE,
+NOZEN_S024[NOZEN_0123]
+);
+if (get_val(PS4_L2) && event_press(PS4_UP)) { NOZEN_0123 = 1; NOZEN_0252 = 1; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) { NOZEN_0123 = 0; NOZEN_0252 = 0; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+set_pvar(NOZEN_006, NOZEN_0123);
+}
+
+if (NOZEN_0248 == 0x12) {
+NOZEN_0249 = NOZEN_0128; NOZEN_0250 = 0;
+
+if (NOZEN_0253) {
+print(NOZEN_F001(NOZEN_F004(NOZEN_S032[NOZEN_0128]), OLED_FONT_MEDIUM_WIDTH),
+0x1e, OLED_FONT_MEDIUM, OLED_WHITE, NOZEN_S032[NOZEN_0128]);
+} else {
+print(NOZEN_F001(NOZEN_F004(NOZEN_S031[NOZEN_0128]), OLED_FONT_MEDIUM_WIDTH),
+0x1e, OLED_FONT_MEDIUM, OLED_WHITE, NOZEN_S031[NOZEN_0128]);
+}
+
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+NOZEN_0128++;
+if (NOZEN_0128 > 3) NOZEN_0128 = 0;
+combo_run(NOZEN_C005); combo_run(NOZEN_C001);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+NOZEN_0128--;
+if (NOZEN_0128 < 0) NOZEN_0128 = 3;
+combo_run(NOZEN_C005); combo_run(NOZEN_C001);
+}
+set_pvar(NOZEN_007, NOZEN_0128);
+}
+
+if (NOZEN_0248 == 0x13) {
+NOZEN_0249 = NOZEN_0129; NOZEN_0250 = 0;
+
+print(NOZEN_F001(NOZEN_F004(NOZEN_S026[NOZEN_0129]), OLED_FONT_MEDIUM_WIDTH),
+0x1e, OLED_FONT_MEDIUM, OLED_WHITE, NOZEN_S026[NOZEN_0129]);
+
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+NOZEN_0129++;
+if (NOZEN_0129 > 2) NOZEN_0129 = 0;
+combo_run(NOZEN_C005); combo_run(NOZEN_C001);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+NOZEN_0129--;
+if (NOZEN_0129 < 0) NOZEN_0129 = 2;
+combo_run(NOZEN_C005); combo_run(NOZEN_C001);
+}
+set_pvar(NOZEN_008, NOZEN_0129);
+}
+
+if (NOZEN_0248 == 0x14) {
+NOZEN_0249 = NOZEN_0131; NOZEN_0250 = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) { NOZEN_0131 = 1; NOZEN_0252 = 1; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) { NOZEN_0131 = 0; NOZEN_0252 = 0; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+set_pvar(NOZEN_009, NOZEN_0131);
+}
+
+if (NOZEN_0248 == 0x15) {
+NOZEN_0249 = NOZEN_0132; NOZEN_0250 = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) { NOZEN_0132 = 1; NOZEN_0252 = 1; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) { NOZEN_0132 = 0; NOZEN_0252 = 0; combo_run(NOZEN_C005); combo_run(NOZEN_C001); }
+set_pvar(NOZEN_010, NOZEN_0132);
+}
+
+if (NOZEN_0248 == 0x16) {
+NOZEN_0249 = NOZEN_0206;
+NOZEN_0250 = 0;
+
+print(
+NOZEN_F001(NOZEN_F004(NOZEN_S024[NOZEN_0206]), OLED_FONT_MEDIUM_WIDTH),
+0x1e, OLED_FONT_MEDIUM, OLED_WHITE,
+NOZEN_S024[NOZEN_0206]
+);
+
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+NOZEN_0206 = 1;
+NOZEN_0252 = 1;
+combo_run(NOZEN_C005);
+combo_run(NOZEN_C001);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+NOZEN_0206 = 0;
+NOZEN_0252 = 0;
+combo_run(NOZEN_C005);
+combo_run(NOZEN_C001);
+}
+
+set_pvar(NOZEN_037, NOZEN_0206);
+}
+
+if (NOZEN_0248 == 0x17) {
+NOZEN_0249 = NOZEN_0194;
+NOZEN_0250 = 0;
+
+NOZEN_0195 = NOZEN_0194 - 1;
+if (NOZEN_0195 < 0) NOZEN_0195 = 0;
+if (NOZEN_0195 > (NOZEN_024 - 1)) NOZEN_0195 = NOZEN_024 - 1;
+
+print(
+NOZEN_F001(NOZEN_F004(NOZEN_S003[NOZEN_0195]), OLED_FONT_MEDIUM_WIDTH),
+0x1e, OLED_FONT_MEDIUM, OLED_WHITE,
+NOZEN_S003[NOZEN_0195]
+);
+
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+NOZEN_0194++;
+if (NOZEN_0194 > NOZEN_024) NOZEN_0194 = NOZEN_023;
+combo_run(NOZEN_C005);
+combo_run(NOZEN_C001);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+NOZEN_0194--;
+if (NOZEN_0194 < NOZEN_023) NOZEN_0194 = NOZEN_024;
+combo_run(NOZEN_C005);
+combo_run(NOZEN_C001);
+}
+
+set_pvar(NOZEN_022, NOZEN_0194);
+}
+}
+
+if (!NOZEN_0247) {
+NOZEN_0145 = (0x6e - NOZEN_0121) / 2;
+NOZEN_0146 = (0x6e - NOZEN_0121) / 4;
+
+combo_run(NOZEN_C006);
+
+NOZEN_0117 = -NOZEN_0145;
+NOZEN_0118 =  NOZEN_0145;
+NOZEN_0119 = -NOZEN_0146;
+NOZEN_0120 =  NOZEN_0146;
+set_rgb(0,0xff,0);
+if (NOZEN_0236) {
+NOZEN_F008();
+}
+if (NOZEN_0199) {
+
+if (get_val(PS4_UP)) {
+set_val(PS4_UP, 0);
+if (NOZEN_0200 == 1) {
+combo_run(NOZEN_C011);
+} else if (NOZEN_0200 == 2) {
+combo_run(NOZEN_C013);
+} else if (NOZEN_0200 == 3) {
+combo_run(NOZEN_C015);
+}
+} else {
+combo_stop(NOZEN_C011);
+combo_stop(NOZEN_C013);
+combo_stop(NOZEN_C015);
+}
+
+if (get_val(PS4_DOWN)) {
+set_val(PS4_DOWN, 0);
+if (NOZEN_0201 == 1) {
+combo_run(NOZEN_C012);
+} else if (NOZEN_0201 == 2) {
+combo_run(NOZEN_C014);
+} else if (NOZEN_0201 == 3) {
+combo_run(NOZEN_C016);
+}
+} else {
+combo_stop(NOZEN_C012);
+combo_stop(NOZEN_C014);
+combo_stop(NOZEN_C016);
+}
+
+if (get_val(PS4_LEFT)) {
+set_val(PS4_LEFT, 0);
+if (NOZEN_0202 == 1) {
+combo_run(NOZEN_C017);
+} else if (NOZEN_0202 == 2) {
+combo_run(NOZEN_C019);
+} else if (NOZEN_0202 == 3) {
+combo_run(NOZEN_C021);
+}
+} else {
+combo_stop(NOZEN_C017);
+combo_stop(NOZEN_C019);
+combo_stop(NOZEN_C021);
+}
+
+if (get_val(PS4_RIGHT)) {
+set_val(PS4_RIGHT, 0);
+if (NOZEN_0203 == 1) {
+combo_run(NOZEN_C018);
+} else if (NOZEN_0203 == 2) {
+combo_run(NOZEN_C020);
+} else if (NOZEN_0203 == 3) {
+combo_run(NOZEN_C022);
+}
+} else {
+combo_stop(NOZEN_C018);
+combo_stop(NOZEN_C020);
+combo_stop(NOZEN_C022);
+}
+}
+NOZEN_0182 -= get_rtime();
+if (NOZEN_0182 < 0) NOZEN_0182 = 0;
+if (get_val(PS4_R2) > 0x1e) NOZEN_0182 = 0xc8;
+
+NOZEN_0183 = (NOZEN_0131 && get_val(PS4_L1) && (get_val(PS4_R2) > 0x1e || NOZEN_0182 > 0));
+
+if (NOZEN_0128 == 1) {
+if (!NOZEN_0183 && get_val(PS4_L1)) {
+set_val(PS4_SQUARE, 0x64);
+}
+} else if (NOZEN_0128 == 2) {
+if (get_val(PS4_R3)) {
+set_val(PS4_SQUARE, 0x64);
+}
+} else if (NOZEN_0128 == 3) {
+if (get_val(PS4_L3)) {
+set_val(PS4_SQUARE, 0x64);
+}
+}
+
+NOZEN_0171 -= get_rtime();
+if (NOZEN_0171 < 0) NOZEN_0171 = 0;
+if (get_val(PS4_L2) > 5) NOZEN_0171 = 0xc8;
+
+if (!NOZEN_0130) {
+NOZEN_0235 = (abs(get_val(PS4_LX)) >= 0x14 || abs(get_val(PS4_LY)) >= 0x14);
+
+if (NOZEN_0129 == 1 && get_val(PS4_R2) > 0x1e && NOZEN_0235) {
+if (event_press(PS4_SQUARE)
+&& !(NOZEN_0128 == 1 && get_val(PS4_L1))
+&& !(NOZEN_0128 == 2 && get_val(PS4_R3))) {
+NOZEN_0130 = 1;
+combo_run(NOZEN_C023);
+}
+}
+
+if (NOZEN_0129 == 2 && (get_val(PS4_L2) > 5 || NOZEN_0171 > 0) && NOZEN_0235) {
+if (event_press(PS4_SQUARE)
+&& !(NOZEN_0128 == 1 && get_val(PS4_L1))
+&& !(NOZEN_0128 == 2 && get_val(PS4_R3))) {
+NOZEN_0130 = 1;
+combo_run(NOZEN_C023);
+}
+}
+}
+
+if (NOZEN_0130 && get_val(PS4_SQUARE)) {
+set_val(PS4_SQUARE, 0);
+set_val(PS4_LX, 0);
+set_val(PS4_LY, 0);
+set_val(PS4_R2, 0);
+if (NOZEN_0129 == 2) set_val(PS4_L2, 0);
+if (!combo_running(NOZEN_C023)) {
+set_val(PS4_RY, 0x64 + NOZEN_F007(NOZEN_0119, NOZEN_0120));
+set_val(PS4_RX, 0 + NOZEN_F007(NOZEN_0119, NOZEN_0120));
+}
+}
+if (event_press(PS4_SQUARE)
+&& !(NOZEN_0128 == 1 && get_val(PS4_L1))
+&& !(NOZEN_0128 == 2 && get_val(PS4_R3))) {
+
+if (NOZEN_0122 == 1) {
+NOZEN_0259 = (get_val(PS4_R2) > 0x1e);
+} else {
+NOZEN_0259 = 0;
+}
+}
+if (event_press(PS4_SQUARE)) {
+NOZEN_0204 = (NOZEN_0188 && get_val(PS4_L2) > 5);
+}
+if (NOZEN_F009()
+&& !NOZEN_0130
+&& !(NOZEN_0128 == 1 && get_val(PS4_L1))
+&& !(NOZEN_0128 == 2 && get_val(PS4_R3))
+&& get_val(PS4_SQUARE)) {
+
+set_val(PS4_SQUARE, 0);
+
+if (NOZEN_0122 == 0) {
+if (get_val(PS4_R2) > 0x1e) {
+set_val(PS4_R2, 0x64);
+set_val(PS4_RY, NOZEN_0114 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+set_val(PS4_RX, 0 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+} else {
+set_val(PS4_RY, NOZEN_0114 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+set_val(PS4_RX, NOZEN_F007(NOZEN_0117, NOZEN_0118));
+}
+} else {
+if (NOZEN_0122 == 1) { NOZEN_0259 = (get_val(PS4_R2) > 0x1e); }
+if (NOZEN_0259) {
+set_val(PS4_RY, NOZEN_0115 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+} else {
+set_val(PS4_RY, NOZEN_0114 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+}
+set_val(PS4_RX, NOZEN_F007(NOZEN_0117, NOZEN_0118));
+}
+}
+if (NOZEN_0175) {
+NOZEN_0181 = 0;
+
+if (NOZEN_0178 == 0 && event_press(PS4_SQUARE)) {
+NOZEN_0180 = 3;
+NOZEN_0181 = 1;
+}
+else if (NOZEN_0178 == 1 && event_press(PS4_L1) && !NOZEN_0183) {
+NOZEN_0180 = 1;
+NOZEN_0181 = 1;
+}
+else if (NOZEN_0178 == 2 && event_press(PS4_R3)) {
+NOZEN_0180 = 2;
+NOZEN_0181 = 1;
+}
+else if (NOZEN_0178 == 3 && event_press(PS4_L3)) {
+NOZEN_0180 = 4;
+NOZEN_0181 = 1;
+}
+
+if (NOZEN_0181) {
+NOZEN_0179 = 1;
+if (NOZEN_0122 == 1 && get_val(PS4_R2) > 0x1e) {
+combo_run(NOZEN_C027);
+} else {
+combo_run(NOZEN_C026);
+}
+}
+}
+if (NOZEN_F009()
+&& !NOZEN_0130
+&& !combo_running(NOZEN_C024)
+&& !(NOZEN_0128 == 1 && get_val(PS4_L1))
+&& !(NOZEN_0128 == 2 && get_val(PS4_R3))
+&& event_release(PS4_SQUARE)) {
+
+NOZEN_0205 = NOZEN_0204;
+
+if (NOZEN_0122 == 0 && get_val(PS4_R2) > 0x1e) {
+if (NOZEN_0205) combo_run(NOZEN_C009);
+else combo_run(NOZEN_C007);
+} else {
+if (NOZEN_0259) {
+if (NOZEN_0173) { NOZEN_0174 = NOZEN_0172; }
+else { NOZEN_0174 = NOZEN_0113; }
+
+if (NOZEN_0205) combo_run(NOZEN_C010);
+else combo_run(NOZEN_C008);
+} else {
+if (NOZEN_0205) combo_run(NOZEN_C009);
+else combo_run(NOZEN_C007);
+}
+}
+NOZEN_0259 = 0;
+NOZEN_0204 = 0;
+}
+if (NOZEN_0123) {
+if (!(get_val(PS4_L2) > 0x14 && (get_val(PS4_R1) > 0x14 || get_val(PS4_LEFT) || get_val(PS4_RIGHT) || get_val(PS4_UP) || get_val(PS4_DOWN) || get_val(PS4_OPTIONS)))) {
+if (abs(get_val(PS4_RY)) > 0x1e || abs(get_val(PS4_RX)) > 0x1e) {
+if (!NOZEN_0125) {
+NOZEN_0125 = 1;
+NOZEN_0126 = 0;
+if (get_val(PS4_RY) < 0) { NOZEN_0127 = 1; } else { NOZEN_0127 = 0; }
+}
+NOZEN_0126 += get_rtime();
+} else {
+if (NOZEN_0125) {
+if (NOZEN_0126 > NOZEN_0124) {
+if (NOZEN_0122 == 1) {
+NOZEN_0170 = (get_val(PS4_R2) > 0x1e);
+} else {
+NOZEN_0170 = NOZEN_0127;
+}
+if (NOZEN_0170) {
+if (NOZEN_0173) { NOZEN_0174 = NOZEN_0172; }
+else { NOZEN_0174 = NOZEN_0113; }
+
+if (NOZEN_0188) combo_run(NOZEN_C010);
+else combo_run(NOZEN_C008);
+} else {
+if (NOZEN_0188) combo_run(NOZEN_C009);
+else combo_run(NOZEN_C007);
+}
+}
+NOZEN_0125 = 0;
+NOZEN_0126 = 0;
+}
+}
+}
+}
+if (NOZEN_0131) {
+if ((get_val(PS4_R2) > 0x1e || NOZEN_0182 > 0) && get_val(PS4_L1)) {
+set_val(PS4_RY, 0x64);
+set_val(PS4_R2, 0x64);
+} else if (event_release(PS4_L1) || event_release(PS4_R2)) {
+set_val(PS4_RY, 0);
+set_val(PS4_R2, 0);
+}
+}
+if (NOZEN_0132) {
+if (get_val(PS4_L2) > 0x14 && get_val(PS4_R1) > 0x14) {
+set_val(PS4_R1, 0);
+if (abs(get_val(PS4_LX)) > 0x14 || abs(get_val(PS4_LY)) > 0x14) {
+if (!combo_running(NOZEN_C025)) {
+combo_run(NOZEN_C025);
+}
+NOZEN_0133 = 1;
+}
+} else {
+if (NOZEN_0133) {
+combo_stop(NOZEN_C025);
+NOZEN_0133 = 0;
+}
+set_val(PS4_RX, get_val(PS4_RX));
+set_val(PS4_RY, get_val(PS4_RY));
+}
+} else {
+set_val(PS4_RX, get_val(PS4_RX));
+set_val(PS4_RY, get_val(PS4_RY));
+}
+}
+}
+}
+}
+
+function NOZEN_F007(min, max) {
+return random(min, max);
+}
+
+function NOZEN_F008() {
+NOZEN_F022();
+cls_oled(OLED_BLACK);
+NOZEN_F023();
+
+if (NOZEN_0253) {
+print(NOZEN_0166, NOZEN_0168, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S005[0]);
+} else {
+print(NOZEN_0166, NOZEN_0168, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S004[0]);
+}
+print(NOZEN_0167, NOZEN_0169, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S006[0]);
+}
+
+function NOZEN_F009() {
+if (get_val(PS4_R1)) return 0;
+return NOZEN_0111;
+}
+
+function NOZEN_F010(selection) {
+if (selection >= 0 && selection < 4) {
+print(
+NOZEN_F001(NOZEN_F004(NOZEN_S035[selection]), OLED_FONT_MEDIUM_WIDTH),
+0x1e, OLED_FONT_MEDIUM, OLED_WHITE,
+NOZEN_S035[selection]
+);
+}
+}
+
+function NOZEN_F011(selection) {
+if (selection >= 0 && selection < 4) {
+print(
+NOZEN_F001(NOZEN_F004(NOZEN_S036[selection]), OLED_FONT_MEDIUM_WIDTH),
+0x1e, OLED_FONT_MEDIUM, OLED_WHITE,
+NOZEN_S036[selection]
+);
+}
+}
+
+function NOZEN_F012(selection) {
+if (selection >= 0 && selection < 4) {
+print(
+NOZEN_F001(NOZEN_F004(NOZEN_S037[selection]), OLED_FONT_MEDIUM_WIDTH),
+0x1e, OLED_FONT_MEDIUM, OLED_WHITE,
+NOZEN_S037[selection]
+);
+}
+}
+
+function NOZEN_F024() {
+if (NOZEN_0200  > 0 ||
+NOZEN_0201 > 0 ||
+NOZEN_0202 > 0 ||
+NOZEN_0203 > 0) {
+NOZEN_0199 = 1;
+} else {
+NOZEN_0199 = 0;
+}
+}
+
+function NOZEN_F013(dt) {
+if (get_val(PS4_L2) && get_val(PS4_UP)) {
+if (!NOZEN_0101) { NOZEN_0101 = 1; NOZEN_0103 = 0; NOZEN_0105 = 0; }
+NOZEN_0103 += dt;
+NOZEN_0105 += dt;
+} else {
+NOZEN_0101 = 0; NOZEN_0103 = 0; NOZEN_0105 = 0;
+}
+if (get_val(PS4_L2) && get_val(PS4_DOWN)) {
+if (!NOZEN_0102) { NOZEN_0102 = 1; NOZEN_0104 = 0; NOZEN_0106 = 0; }
+NOZEN_0104 += dt;
+NOZEN_0106 += dt;
+} else {
+NOZEN_0102 = 0; NOZEN_0104 = 0; NOZEN_0106 = 0;
+}
+}
+
+function NOZEN_F014() {
+NOZEN_0191 = 0x78;
+NOZEN_0192 = 0x1a4;
+
+NOZEN_0190 =
+NOZEN_0191 +
+((NOZEN_0192 - NOZEN_0191) * (NOZEN_0189 - 1)) / 0x1d;
+}
+
+function NOZEN_F015() {
+if (!NOZEN_0101) return 0;
+if (NOZEN_0105 < NOZEN_032) return 0;
+
+if (NOZEN_0105 >= NOZEN_034) { NOZEN_0107 = NOZEN_035; }
+else { NOZEN_0107 = NOZEN_033; }
+
+if (NOZEN_0103 >= NOZEN_0107) {
+NOZEN_0103 -= NOZEN_0107;
+return 1;
+}
+return 0;
+}
+
+function NOZEN_F016() {
+if (!NOZEN_0102) return 0;
+if (NOZEN_0106 < NOZEN_032) return 0;
+
+if (NOZEN_0106 >= NOZEN_034) { NOZEN_0108 = NOZEN_035; }
+else { NOZEN_0108 = NOZEN_033; }
+
+if (NOZEN_0104 >= NOZEN_0108) {
+NOZEN_0104 -= NOZEN_0108;
+return 1;
+}
+return 0;
+}
+
+function NOZEN_F017() {
+if (NOZEN_0253) {
+NOZEN_0166 = NOZEN_F001(NOZEN_F004(NOZEN_S005[0]), OLED_FONT_SMALL_WIDTH);
+} else {
+NOZEN_0166 = NOZEN_F001(NOZEN_F004(NOZEN_S004[0]), OLED_FONT_SMALL_WIDTH);
+}
+NOZEN_0167 = NOZEN_F001(NOZEN_F004(NOZEN_S006[0]), OLED_FONT_SMALL_WIDTH);
+
+NOZEN_0168 = (OLED_HEIGHT / 2) - 8;
+NOZEN_0169 = NOZEN_0168 + 0xc;
+}
+
+function NOZEN_F018(val, in_min, in_max, out_min, out_max) {
+return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+function NOZEN_F019(value, min_val, max_val, y_pos) {
+NOZEN_0255 = 0x64;
+NOZEN_0256 = (OLED_WIDTH - NOZEN_0255) / 2;
+NOZEN_0257 = NOZEN_0256 + NOZEN_0255 / 2;
+NOZEN_0258 = NOZEN_F018(value, min_val, max_val, 0, NOZEN_0255);
+line_oled(NOZEN_0256, y_pos, NOZEN_0256 + NOZEN_0255, y_pos, 1, OLED_WHITE);
+line_oled(NOZEN_0257, y_pos - 3, NOZEN_0257, y_pos + 3, 1, OLED_WHITE);
+line_oled(NOZEN_0256, y_pos - 2, NOZEN_0256, y_pos + 2, 1, OLED_WHITE);
+line_oled(NOZEN_0256 + NOZEN_0255, y_pos - 2, NOZEN_0256 + NOZEN_0255, y_pos + 2, 1, OLED_WHITE);
+rect_oled(NOZEN_0256, y_pos - 2, NOZEN_0258, 4, 1, OLED_WHITE);
+}
+
+function NOZEN_F020() {
+NOZEN_0145 = (0x6e - NOZEN_0121) / 2;
+NOZEN_0146 = (0x6e - NOZEN_0121) / 4;
+
+NOZEN_0117 = -NOZEN_0145;
+NOZEN_0118 =  NOZEN_0145;
+NOZEN_0119 = -NOZEN_0146;
+NOZEN_0120 =  NOZEN_0146;
+}
+
+function NOZEN_F021() {
+for (NOZEN_0160 = 0; NOZEN_0160 < NOZEN_036; NOZEN_0160++) {
+NOZEN_0147[NOZEN_0160] = random(0, OLED_WIDTH - 1);
+NOZEN_0148[NOZEN_0160] = random(0, OLED_HEIGHT - 1);
+NOZEN_0149[NOZEN_0160] = 1 + random(0, 2);
+}
+
+NOZEN_0153 = NOZEN_F001(NOZEN_F004(NOZEN_S007[0]), OLED_FONT_MEDIUM_WIDTH);
+NOZEN_0154 = (OLED_HEIGHT / 2) - 8;
+NOZEN_0155 = 0;
+
+NOZEN_0161 = (NOZEN_F004(NOZEN_S007[0]) - 1) * OLED_FONT_MEDIUM_WIDTH;
+
+NOZEN_0226 = (NOZEN_F004(NOZEN_S001[0]) - 1) * OLED_FONT_SMALL_WIDTH;
+NOZEN_0227 = (NOZEN_F004(NOZEN_S001[1]) - 1) * OLED_FONT_SMALL_WIDTH;
+
+NOZEN_0224 = NOZEN_F001(NOZEN_F004(NOZEN_S001[0]), OLED_FONT_SMALL_WIDTH);
+NOZEN_0225 = NOZEN_F001(NOZEN_F004(NOZEN_S001[1]), OLED_FONT_SMALL_WIDTH);
+
+NOZEN_0222 = (OLED_HEIGHT / 2) - 8;
+NOZEN_0223 = NOZEN_0222 + 0xc;
+
+NOZEN_0220 = -NOZEN_0226;
+NOZEN_0221 = -NOZEN_0227;
+
+NOZEN_0228 = 0;
+NOZEN_0229 = 0;
+NOZEN_0231 = 2;
+}
+
+function NOZEN_F022() {
+for (NOZEN_0160 = 0; NOZEN_0160 < NOZEN_036; NOZEN_0160++) {
+NOZEN_0147[NOZEN_0160] += NOZEN_0149[NOZEN_0160];
+if (NOZEN_0147[NOZEN_0160] >= OLED_WIDTH) {
+NOZEN_0147[NOZEN_0160] = 0;
+NOZEN_0148[NOZEN_0160] = random(0, OLED_HEIGHT - 1);
+NOZEN_0149[NOZEN_0160] = 1 + random(0, 2);
+}
+}
+}
+function NOZEN_F023() {
+for (NOZEN_0160 = 0; NOZEN_0160 < NOZEN_036; NOZEN_0160++) {
+rect_oled(NOZEN_0147[NOZEN_0160], NOZEN_0148[NOZEN_0160], 1, 1, 1, OLED_WHITE);
+}
+}
+
+combo NOZEN_C007 {
+set_val(PS4_RY, -50 + NOZEN_F007(NOZEN_0119, NOZEN_0120));
+set_val(PS4_RX,  0x14 + NOZEN_F007(NOZEN_0119, NOZEN_0120));
+wait(NOZEN_0113);
+set_val(PS4_RY, -100 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+set_val(PS4_RX,  0x19 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+wait(0x12c);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+
+combo NOZEN_C008 {
+set_val(PS4_RY,  0x32 + NOZEN_F007(NOZEN_0119, NOZEN_0120));
+set_val(PS4_RX, -20 + NOZEN_F007(NOZEN_0119, NOZEN_0120));
+wait(NOZEN_0174);
+set_val(PS4_RY, 0x64 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+set_val(PS4_RX, -25 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+wait(0x12c);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+combo NOZEN_C009 {
+set_val(PS4_RY, -100 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+set_val(PS4_RX,  0x19 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+wait(NOZEN_0190);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+
+combo NOZEN_C010 {
+set_val(PS4_RY, 0x64 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+set_val(PS4_RX, -25 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+wait(NOZEN_0190);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+combo NOZEN_C011 {
+set_val(PS4_RX, -70); set_val(PS4_RY, 0x64); wait(0x6e);
+set_val(PS4_RX, 0);   set_val(PS4_RY, 0);   wait(0x5f);
+set_val(PS4_RX, 0x46);  set_val(PS4_RY, 0x64); wait(0x73);
+set_val(PS4_RX, 0);   set_val(PS4_RY, 0);   wait(0x64);
+wait(0x96);
+}
+
+combo NOZEN_C012 {
+set_val(PS4_RX, 0x46);  set_val(PS4_RY, 0x64); wait(0x6e);
+set_val(PS4_RX, 0);   set_val(PS4_RY, 0);   wait(0x5f);
+set_val(PS4_RX, -70); set_val(PS4_RY, 0x64); wait(0x73);
+set_val(PS4_RX, 0);   set_val(PS4_RY, 0);   wait(0x64);
+wait(0x96);
+}
+
+combo NOZEN_C013 {
+set_val(PS4_R2, 0x64); set_val(PS4_RX, -70); set_val(PS4_RY, 0x64); wait(0x78);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);   set_val(PS4_RY, 0);   wait(0x78);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);   set_val(PS4_RY, 0);   wait(0x14);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0x46);  set_val(PS4_RY, 0x64); wait(0x7d);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);   set_val(PS4_RY, 0);   wait(0x82);
+set_val(PS4_R2, 0);   wait(0xb4);
+}
+
+combo NOZEN_C014 {
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0x46);  set_val(PS4_RY, 0x64); wait(0x78);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);   set_val(PS4_RY, 0);   wait(0x78);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);   set_val(PS4_RY, 0);   wait(0x14);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, -70); set_val(PS4_RY, 0x64); wait(0x7d);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);   set_val(PS4_RY, 0);   wait(0x82);
+set_val(PS4_R2, 0);   wait(0xb4);
+}
+
+combo NOZEN_C015 {
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);    set_val(PS4_RY, 0x64);  wait(0x6e);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);    set_val(PS4_RY, 0);    wait(0x55);
+set_val(PS4_R2, 0x64); set_val(PS4_LX, 0);    set_val(PS4_LY, -100); wait(0x55);
+set_val(PS4_R2, 0x64); set_val(PS4_LX, 0);    set_val(PS4_LY, 0);    wait(0x41);
+set_val(PS4_R2, 0x64); set_val(PS4_LX, -100); set_val(PS4_LY, 0);    wait(0x82);
+set_val(PS4_R2, 0);   wait(0x96);
+}
+
+combo NOZEN_C016 {
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);    set_val(PS4_RY, 0x64);  wait(0x6e);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);    set_val(PS4_RY, 0);    wait(0x55);
+set_val(PS4_R2, 0x64); set_val(PS4_LX, 0);    set_val(PS4_LY, -100); wait(0x55);
+set_val(PS4_R2, 0x64); set_val(PS4_LX, 0);    set_val(PS4_LY, 0);    wait(0x41);
+set_val(PS4_R2, 0x64); set_val(PS4_LX, 0x64);  set_val(PS4_LY, 0);    wait(0x82);
+set_val(PS4_R2, 0);   wait(0x96);
+}
+
+combo NOZEN_C017 {
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);  set_val(PS4_RY, -100); wait(0x6e);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);  set_val(PS4_RY, 0);    wait(0x5a);
+set_val(PS4_R2, 0);   wait(0x96);
+}
+
+combo NOZEN_C018 {
+set_val(PS4_RX, 0);   set_val(PS4_RY, -100); wait(0x5f);
+set_val(PS4_RX, 0);   set_val(PS4_RY, 0);    wait(0x55);
+set_val(PS4_RX, 0);   set_val(PS4_RY, -100); wait(0x5f);
+set_val(PS4_RX, 0);   set_val(PS4_RY, 0);    wait(0xaa);
+}
+
+combo NOZEN_C019 {
+set_val(PS4_R2, 0x64); set_val(PS4_RX, -90); set_val(PS4_RY, 0); wait(0x5f);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);   set_val(PS4_RY, 0); wait(0x55);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0x5a);  set_val(PS4_RY, 0); wait(0x5f);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);   set_val(PS4_RY, 0); wait(0x55);
+set_val(PS4_R2, 0);   wait(0xaa);
+}
+
+combo NOZEN_C020 {
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0x5a);  set_val(PS4_RY, 0); wait(0x5f);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);   set_val(PS4_RY, 0); wait(0x55);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, -90); set_val(PS4_RY, 0); wait(0x5f);
+set_val(PS4_R2, 0x64); set_val(PS4_RX, 0);   set_val(PS4_RY, 0); wait(0x55);
+set_val(PS4_R2, 0);   wait(0xaa);
+}
+
+combo NOZEN_C021 {
+set_val(PS4_RX, 0);   set_val(PS4_RY, -100); wait(0x28);
+set_val(PS4_RY, 0);   wait(0x32);
+set_val(PS4_R2, 0x64); wait(0x46);
+set_val(PS4_LX, -100); set_val(PS4_LY, 0);  wait(0x190);
+wait(0x2bc);
+}
+
+combo NOZEN_C022 {
+set_val(PS4_RX, 0);   set_val(PS4_RY, -100); wait(0x28);
+set_val(PS4_RY, 0);   wait(0x32);
+set_val(PS4_R2, 0x64); wait(0x46);
+set_val(PS4_LX, 0x64); set_val(PS4_LY, 0);   wait(0x190);
+wait(0x2bc);
+}
+
+combo NOZEN_C023 {
+set_val(PS4_SQUARE, 0);
+set_val(PS4_LX, 0);
+set_val(PS4_LY, 0);
+set_val(PS4_R2, 0);
+set_val(PS4_RX, 0x64);
+wait(0x32);
+set_val(PS4_SQUARE, 0);
+set_val(PS4_LX, 0);
+set_val(PS4_LY, 0);
+set_val(PS4_R2, 0);
+set_val(PS4_RX, 0);
+wait(0x64);
+}
+
+combo NOZEN_C024 {
+set_val(PS4_SQUARE, 0);
+set_val(PS4_LX, 0);
+set_val(PS4_LY, 0);
+set_val(PS4_R2, 0);
+set_val(PS4_RY, 0x64 + NOZEN_F007(NOZEN_0119, NOZEN_0120));
+set_val(PS4_RX, 0 + NOZEN_F007(NOZEN_0119, NOZEN_0120));
+wait(NOZEN_0113);
+set_val(PS4_SQUARE, 0);
+set_val(PS4_LX, 0);
+set_val(PS4_LY, 0);
+set_val(PS4_R2, 0);
+set_val(PS4_RY, -100 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+set_val(PS4_RX, 0x19 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+wait(0xc8);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+
+combo NOZEN_C025 {
+set_val(PS4_RX, get_val(PS4_LX));
+set_val(PS4_RY, get_val(PS4_LY));
+}
+
+combo NOZEN_C026 {
+set_val(PS4_RY, NOZEN_0114 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+set_val(PS4_RX, NOZEN_F007(NOZEN_0117, NOZEN_0118));
+wait(NOZEN_0176);
+set_val(PS4_RY, -50 + NOZEN_F007(NOZEN_0119, NOZEN_0120));
+set_val(PS4_RX, 0x14 + NOZEN_F007(NOZEN_0119, NOZEN_0120));
+wait(NOZEN_0177);
+set_val(PS4_RY, -100 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+set_val(PS4_RX, 0x19 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+wait(0x12c);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+
+combo NOZEN_C027 {
+set_val(PS4_RY, NOZEN_0115 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+set_val(PS4_RX, NOZEN_F007(NOZEN_0117, NOZEN_0118));
+wait(NOZEN_0176);
+set_val(PS4_RY, 0x32 + NOZEN_F007(NOZEN_0119, NOZEN_0120));
+set_val(PS4_RX, -20 + NOZEN_F007(NOZEN_0119, NOZEN_0120));
+wait(NOZEN_0177);
+set_val(PS4_RY, 0x64 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+set_val(PS4_RX, -25 + NOZEN_F007(NOZEN_0117, NOZEN_0118));
+wait(0x12c);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+combo NOZEN_C001 {
+if (!NOZEN_0252)
+{
+set_rgb(0xff, 0, 0);
+}
+else
+{
+set_rgb(0, 0xff, 0);
+}
+wait(0x3e8); set_rgb(0, 0, 0xff);
+}
+
+combo NOZEN_C002 {
+set_rgb(0, 0, 0);
+wait(0x96);
+set_rgb(0, 0, 0xff);
+}
+
+combo NOZEN_C003 {
+set_rumble(RUMBLE_A, 0x64);
+wait(0xc8);
+set_rumble(RUMBLE_A, 0);
+}
+
+combo NOZEN_C004 {
+set_rumble(RUMBLE_A, 0x32);
+wait(0xc8);
+set_rumble(RUMBLE_A, 0);
+}
+
+combo NOZEN_C005 {
+set_rumble(RUMBLE_A, 0x32);
+wait(0x32);
+set_rumble(RUMBLE_A, 0);
+}
+
+combo NOZEN_C006 {
+if (NOZEN_0206 && NOZEN_0208 && !NOZEN_0183) {
+
+if (abs(get_val(PS4_LX)) > 0x14 || abs(get_val(PS4_LY)) > 0x14) {
+set_val(PS4_LX, (get_val(PS4_LX) * NOZEN_0207) / 0x64);
+set_val(PS4_LY, (get_val(PS4_LY) * NOZEN_0207) / 0x64);
+}
+
+if (abs(get_val(PS4_LX)) < 0x14 && abs(get_val(PS4_LY)) < 0x14) {
+set_val(PS4_LX, 0);
+set_val(PS4_LY, 0);
+}
+}
+}
+
+function NOZEN_F001(f_chars, f_font) {
+return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+
+int NOZEN_0260, NOZEN_0261, NOZEN_0262;
+function NOZEN_F002(f_val, f_digits) {
+NOZEN_0260 = 1;
+NOZEN_0261 = 0x2710;
+if (f_val < 0) { putc_oled(NOZEN_0260, 0x2d); NOZEN_0260 += 1; f_val = abs(f_val); }
+for (NOZEN_0262 = 5; NOZEN_0262 >= 1; NOZEN_0262--) {
+if (f_digits >= NOZEN_0262) {
+putc_oled(NOZEN_0260, (f_val / NOZEN_0261) + 0x30);
+f_val %= NOZEN_0261;
+NOZEN_0260++;
+if (NOZEN_0262 == 4) { putc_oled(NOZEN_0260, 0x2c); NOZEN_0260++; }
+}
+NOZEN_0261 /= 0xa;
+}
+puts_oled(NOZEN_F001(NOZEN_0260 + 1, OLED_FONT_MEDIUM_WIDTH), 0x1e, OLED_FONT_MEDIUM, NOZEN_0260 - 1, OLED_WHITE);
+}
+
+int NOZEN_0263;
+function NOZEN_F003(num) { NOZEN_0263 = 0; do { num /= 0xa; NOZEN_0263++; } while (num); return NOZEN_0263; }
+
+int NOZEN_0264;
+function NOZEN_F004(offset) { NOZEN_0264 = 0; while (duint8(offset++)) { NOZEN_0264++; } return NOZEN_0264 + 1; }
+
+function NOZEN_F005(btn) {
+if      (NOZEN_0214 == 0) NOZEN_0219 = NOZEN_041;
+else if (NOZEN_0214 == 1) NOZEN_0219 = NOZEN_042;
+else if (NOZEN_0214 == 2) NOZEN_0219 = NOZEN_043;
+else if (NOZEN_0214 == 3) NOZEN_0219 = NOZEN_044;
+else                    NOZEN_0219 = NOZEN_045;
+
+if (btn == NOZEN_0219) {
+NOZEN_0214++;
+if (NOZEN_0214 >= 5) {
+NOZEN_0214 = 0;
+NOZEN_0217 = 1;
+NOZEN_0218 = 0;
+}
+} else {
+NOZEN_0214 = 0;
+NOZEN_0215 = 1;
+NOZEN_0216 = 0;
+}
+}
+
+function NOZEN_F006() {
+cls_oled(OLED_BLACK);
+if (NOZEN_0217) {
+print(NOZEN_F001(NOZEN_F004(NOZEN_S012[0]),      OLED_FONT_SMALL_WIDTH), 0xe, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S012[0]);
+print(NOZEN_F001(NOZEN_F004(NOZEN_S013[0]), OLED_FONT_SMALL_WIDTH), 0x1c, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S013[0]);
+} else if (NOZEN_0215) {
+print(NOZEN_F001(NOZEN_F004(NOZEN_S010[0]), OLED_FONT_SMALL_WIDTH), 0xe, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S010[0]);
+print(NOZEN_F001(NOZEN_F004(NOZEN_S011[0]), OLED_FONT_SMALL_WIDTH), 0x1c, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S011[0]);
+} else {
+print(NOZEN_F001(NOZEN_F004(NOZEN_S008[0]), OLED_FONT_SMALL_WIDTH),  2, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S008[0]);
+if      (NOZEN_0214 == 0) { print(NOZEN_F001(NOZEN_F004(NOZEN_S014[0]), OLED_FONT_SMALL_WIDTH), 0x12, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S014[0]); }
+else if (NOZEN_0214 == 1) { print(NOZEN_F001(NOZEN_F004(NOZEN_S015[0]), OLED_FONT_SMALL_WIDTH), 0x12, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S015[0]); }
+else if (NOZEN_0214 == 2) { print(NOZEN_F001(NOZEN_F004(NOZEN_S016[0]), OLED_FONT_SMALL_WIDTH), 0x12, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S016[0]); }
+else if (NOZEN_0214 == 3) { print(NOZEN_F001(NOZEN_F004(NOZEN_S017[0]), OLED_FONT_SMALL_WIDTH), 0x12, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S017[0]); }
+else if (NOZEN_0214 == 4) { print(NOZEN_F001(NOZEN_F004(NOZEN_S018[0]), OLED_FONT_SMALL_WIDTH), 0x12, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S018[0]); }
+print(NOZEN_F001(NOZEN_F004(NOZEN_S009[0]), OLED_FONT_SMALL_WIDTH), 0x26, OLED_FONT_SMALL, OLED_WHITE, NOZEN_S009[0]);
+}
+}

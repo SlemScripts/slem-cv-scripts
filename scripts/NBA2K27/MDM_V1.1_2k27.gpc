@@ -1,0 +1,1896 @@
+/*
+  Script: MDM_V1.1_2K27
+  Author: MUD Scripts
+  Release: V1.1
+*/
+/*
+  Features:
+  - Button Tempo
+  - Button Logic
+  - Auto Green
+  - Stability Enhancer
+  - Stand Logic
+  - Fade Logic
+  - No-Dip Logic
+  - Remap Square
+  - L2 Quick Stop
+  - Spot Take Macro
+  - Instant Triggers
+  - Infinite Stamina
+  - Meter Dunk
+  - Normal Passing Fix
+  - Save Inputs
+  - Zen Color
+*/
+int l2_qs_active = 0;
+int spotTakeMacro = 0;
+int instantTriggers = 0;
+int flick_delay = 150;
+int delay_duration = 50;
+int STICK_DOWN_VALUE = 100;
+int random_variation_min = -4;
+int random_variation_max = 4;
+int random_hold_variation_min = -2;
+int random_hold_variation_max = 2;
+int stabilization_variation = 34;
+int flick_up_shooting_active = 1;
+int insta_shot_active = 1;
+int stand_shot_duration = 700;
+int fade_shot_duration = 700;
+int no_dip_shot_duration = 500;
+int remap_square_active = 0;
+int flicked = 0;
+int rs_down_active = 0;
+int square_button = 0;
+int shooting_button_pressed = 0;
+int square_shooting_in_progress = 0;
+int insta_shot_button_held = 0;  // Track if Insta button is held
+int insta_button_pressed = 0;    // Track Insta button state
+int auto_green_mode = 0;         // 0 = Stand, 1 = Fade, 2 = No-Dip
+
+int meter_dunk_active = 0;
+int meter_dunk_combo_running = 0;
+int meter_dunk_override_active = 0;
+int meter_dunk_start_time = 0;
+int meter_dunk_duration = 1000;
+int meter_dunk_button = 0;  
+int current_time = 0;
+int infinite_stamina = 0;
+int ground_control = 70;
+int ground_stick_active = 1;
+int snow_enabled = 1;
+int num_snowflakes = 30;
+int snow_x[30];
+int snow_y[30];
+int snow_speed[30];
+int snow_i;
+int saver_on = 0;
+int sx = 2, sy = 16;
+int svx = 2, svy = 2;
+int msg_w, line1_w, line2_w, line3_w;
+int saver_timer = 0;
+int zen_color = 0;  // New: Zen Color selection (0-19)
+int active_profile = 0;
+int profile_target = 0;
+int face_blink_frame = 0;
+int ball_spin_frame = 0;
+int ball_spin_timer = 0;
+int ball_seam_offset = 0;
+int ball_redraw = 1;
+int ball_intro_drawn = 0;
+const string welcome_line1[] = { "MDM" };
+const string welcome_line2[] = { "MDM" };
+const string welcome_line3[] = { "MDM" };
+const string saver_line1[] = { "MDM V4" };
+const string saver_line2[] = { "HOLD L2+OPTIONS" };
+const string saver_line3[] = { "MDM" };
+const string idle_prompt[] = { "LT + OPTIONS" };
+const string idle_action[] = { "OPEN MENU" };
+const string directions_line1[] = { "HOLD LT + DPAD" };
+const string directions_line2[] = { "LEFT/RIGHT NAV" };
+const string directions_line3[] = { "UP/DOWN ADJUST" };
+const string ui_brand[] = { "MDM V4" };
+const string loading_version[] = { "V4" };
+const string ui_tag[] = { "" };
+const string ui_hint1[] = { "L2+UP/DOWN" };
+const string ui_hint2[] = { "CHANGE" };
+const string ui_nav[] = { "L2 < >" };
+const string ui_edit[] = { "UP/DN" };
+
+// Menu state
+int startup = 1, num_pages = 16, menu_enabled = 0, page = 1, menu_selection, toggle_type, page_chg_state;
+int flash_toggle, isXbox;
+
+// Menu labels
+const string menu_header[] = { 
+    "Directions", "Button Tempo", "Button Logic", "Profile",
+    "STABIL ENHANCER", "Auto Green", "Stand Logic", "Fade Logic",
+    "NO-DIP LOGIC", "Remap Square", "Infinite Stamina", "Quick Stop",
+    "Spot Take Macro", "Instant Triggers", "Meter Dunk", "Zen Color"
+};
+const string pageChg[] = {"---------L2+RIGHT->", "<-L2+LEFT--L2+RIGHT->", "<-L2+LEFT---------"};
+const string item_toggle[] = {"L2 + UP/DOWN", "to change"};
+const string onOff[] = {"OFF", "ON", "", "L3", "R3", "SQ"};
+const string dunk_buttons[] = {"L1", "CIRCLE"};
+const string quick_stop_modes[] = {"OFF", "L2 QS"};
+const string spot_take_modes[] = {"OFF", "HOLD X"};
+const string profile_names[] = {"BUILD 1", "BUILD 2", "BUILD 3"};
+const string color_names[] = {"Red", "Green", "Blue", "Cyan", "Magenta", "Yellow", "White", "Black", 
+                             "Orange", "Purple", "Pink", "Lime", "Teal", "Indigo", "Sky Blue", "Hot Pink",
+                             "Gold", "Violet", "Turquoise", "Coral"};
+
+int is_loading_screen = 1;
+define loading_timer = 2000;
+int loading_time_elapsed = 0;
+
+int graph_width, x_start, mid_x, bar_pos, pip_x, i_local, meter_fill;
+// Version check variables
+int saved_version = 0;
+int current_version = 8;
+int first_time_flag = 0;
+
+init {
+    // Load selected build profile
+    active_profile = get_pvar(SPVAR_58, 0, 2, 0);
+    load_profile_settings();
+    // Fixed values
+    meter_dunk_active = 1;
+    ground_control = 70;
+    ground_stick_active = 1;
+    saver_on = 0;
+    saver_timer = 0;
+    
+    // Initialize snow positions
+    for (snow_i = 0; snow_i < num_snowflakes; snow_i++) {
+        snow_x[snow_i] = random(0, 127);
+        snow_y[snow_i] = random(-20, 63);
+        snow_speed[snow_i] = random(1, 3);
+    }
+}
+
+
+
+main {
+    ball_spin_timer += get_rtime();
+    if (ball_spin_timer >= 100) {
+        ball_spin_timer = 0;
+        ball_spin_frame++;
+        if (ball_spin_frame > 7) ball_spin_frame = 0;
+        ball_redraw = 1;
+    }
+
+    if (get_console() == PIO_XB1) isXbox = 1;
+    else isXbox = 0;
+
+    if (startup && is_loading_screen) {
+        draw_loading_screen();
+
+        loading_time_elapsed += get_rtime();
+        if (loading_time_elapsed >= loading_timer) {
+            cls_oled(OLED_BLACK);
+            is_loading_screen = 0;
+            startup = 0;
+            saver_on = 1;
+            saver_timer = 80;
+        }
+    } else {
+        combo_run(movement_control);
+
+        if (event_press(PS4_CIRCLE) && menu_enabled) {
+            menu_enabled = 0;
+            combo_run(vibration_off);
+            set_rgb(128,0,128);
+            saver_on = 1;
+        } else if (!menu_enabled && get_val(PS4_L2) && event_press(PS4_OPTIONS)) {
+            menu_enabled = 1;
+            page = 1;
+            combo_run(vibration_on);
+            set_rgb(128,0,128);
+            saver_on = 0;
+        }
+
+        if (menu_enabled) {
+            cls_oled(OLED_BLACK);
+            print(center_x(get_string_length(menu_header[page - 1]), OLED_FONT_SMALL_WIDTH), 18, OLED_FONT_SMALL, OLED_WHITE, menu_header[page - 1]);
+
+            if (page == 1) {
+                print(center_x(get_string_length(directions_line1[0]), OLED_FONT_SMALL_WIDTH), 30, OLED_FONT_SMALL, OLED_WHITE, directions_line1[0]);
+                print(center_x(get_string_length(directions_line2[0]), OLED_FONT_SMALL_WIDTH), 41, OLED_FONT_SMALL, OLED_WHITE, directions_line2[0]);
+                print(center_x(get_string_length(directions_line3[0]), OLED_FONT_SMALL_WIDTH), 52, OLED_FONT_SMALL, OLED_WHITE, directions_line3[0]);
+            } else if (page == 4) {
+                print(center_x(get_string_length(profile_names[active_profile]), OLED_FONT_MEDIUM_WIDTH), 34, OLED_FONT_MEDIUM, OLED_WHITE, profile_names[active_profile]);
+            } else if (page == 10) {
+                print(center_x(get_string_length(onOff[remap_square_active + 3]), OLED_FONT_MEDIUM_WIDTH), 34, OLED_FONT_MEDIUM, OLED_WHITE, onOff[remap_square_active + 3]);
+            } else if (page == 12) {
+                print(center_x(get_string_length(quick_stop_modes[l2_qs_active]), OLED_FONT_MEDIUM_WIDTH), 34, OLED_FONT_MEDIUM, OLED_WHITE, quick_stop_modes[l2_qs_active]);
+            } else if (page == 13) {
+                print(center_x(get_string_length(spot_take_modes[spotTakeMacro]), OLED_FONT_MEDIUM_WIDTH), 34, OLED_FONT_MEDIUM, OLED_WHITE, spot_take_modes[spotTakeMacro]);
+            } else if (page == 15) {
+                print(center_x(get_string_length(dunk_buttons[meter_dunk_button]), OLED_FONT_MEDIUM_WIDTH), 34, OLED_FONT_MEDIUM, OLED_WHITE, dunk_buttons[meter_dunk_button]);
+            } else if (page == 16) {
+                print(center_x(get_string_length(color_names[zen_color]), OLED_FONT_MEDIUM_WIDTH), 34, OLED_FONT_MEDIUM, OLED_WHITE, color_names[zen_color]);
+            } else if (page != 3 && page != 5 && page != 7 && page != 8 && page != 9) {
+                print(center_x(get_string_length(onOff[menu_selection]), OLED_FONT_MEDIUM_WIDTH), 34, OLED_FONT_MEDIUM, OLED_WHITE, onOff[menu_selection]);
+            }
+
+            if (page == 1) {
+                page_chg_state = 0;
+            } else if (page == num_pages) {
+                page_chg_state = 2;
+            } else {
+                page_chg_state = 1;
+            }
+
+            if (page > num_pages) page = num_pages;
+            if (page < 1) page = 1;
+            
+            if (get_val(PS4_L2)) {
+                set_val(PS4_UP,0); set_val(PS4_DOWN,0);
+                set_val(PS4_LEFT,0); set_val(PS4_RIGHT,0);
+            }
+            if (get_val(PS4_L2) && event_press(PS4_LEFT)) { page--; combo_run(vibration_valchg); }
+            if (get_val(PS4_L2) && event_press(PS4_RIGHT)) { page++; combo_run(vibration_valchg); }
+
+            // Page 2: Button Tempo
+            if (page == 2) {
+                menu_selection = flick_up_shooting_active;
+                toggle_type = 0;
+                if (get_val(PS4_L2) && event_press(PS4_UP)) {
+                    flick_up_shooting_active = 1;
+                    save_current_profile();
+                    flash_toggle = 1;
+                    combo_run(vibration_valchg);
+                    combo_run(flashtog);
+                }
+                if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+                    flick_up_shooting_active = 0;
+                    save_current_profile();
+                    flash_toggle = 0;
+                    combo_run(vibration_valchg);
+                    combo_run(flashtog);
+                }
+            }
+
+            // Page 3: Button Logic (original Tempo Speed)
+            if (page == 3) {
+                menu_selection = 2;
+                toggle_type = 0;
+                number_to_string(delay_duration, find_digits(delay_duration), 34);
+                if (get_val(PS4_L2)) {
+                    if (get_val(PS4_R1)) {
+                        if (event_press(PS4_UP)) delay_duration += 10;
+                        if (event_press(PS4_DOWN)) delay_duration -= 10;
+                    } else {
+                        if (event_press(PS4_UP)) delay_duration++;
+                        if (event_press(PS4_DOWN)) delay_duration--;
+                    }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+                        save_current_profile();
+                        combo_run(vibration_valchg);
+                        combo_run(flashedit);
+                    }
+                }
+                if (delay_duration > 300) delay_duration = 300;
+                if (delay_duration < 0) delay_duration = 0;
+            }
+
+            // Page 5: Stability Enhancer
+            if (page == 5) {
+                menu_selection = 2;
+                toggle_type = 0;
+                number_to_string(stabilization_variation, find_digits(stabilization_variation), 34);
+                if (get_val(PS4_L2)) {
+                    if (get_val(PS4_R1)) {
+                        if (event_press(PS4_UP)) stabilization_variation += 10;
+                        if (event_press(PS4_DOWN)) stabilization_variation -= 10;
+                    } else {
+                        if (event_press(PS4_UP)) stabilization_variation++;
+                        if (event_press(PS4_DOWN)) stabilization_variation--;
+                    }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+                        save_current_profile();
+                        combo_run(vibration_valchg);
+                        combo_run(flashedit);
+                    }
+                }
+                if (stabilization_variation > 100) stabilization_variation = 100;
+                if (stabilization_variation < 10) stabilization_variation = 10;
+            }
+
+            // Page 6: Auto Green
+            if (page == 6) {
+                menu_selection = insta_shot_active;
+                toggle_type = 0;
+                if (get_val(PS4_L2) && event_press(PS4_UP)) {
+                    insta_shot_active = 1;
+                    save_current_profile();
+                    flash_toggle = 1;
+                    combo_run(vibration_valchg);
+                    combo_run(flashtog);
+                }
+                if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+                    insta_shot_active = 0;
+                    save_current_profile();
+                    flash_toggle = 0;
+                    combo_run(vibration_valchg);
+                    combo_run(flashtog);
+                }
+            }
+
+            // Page 7: Stand Logic
+            if (page == 7) {
+                menu_selection = 2;
+                toggle_type = 0;
+                number_to_string(stand_shot_duration, find_digits(stand_shot_duration), 34);
+                if (get_val(PS4_L2)) {
+                    if (get_val(PS4_R1)) {
+                        if (event_press(PS4_UP)) stand_shot_duration += 10;
+                        if (event_press(PS4_DOWN)) stand_shot_duration -= 10;
+                    } else {
+                        if (event_press(PS4_UP)) stand_shot_duration += 1;
+                        if (event_press(PS4_DOWN)) stand_shot_duration -= 1;
+                    }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+                        save_current_profile();
+                        combo_run(vibration_valchg);
+                        combo_run(flashedit);
+                    }
+                }
+                if (stand_shot_duration > 1000) stand_shot_duration = 1000;
+                if (stand_shot_duration < 100) stand_shot_duration = 100;
+            }
+
+            // Page 8: Fade Logic
+            if (page == 8) {
+                menu_selection = 2;
+                toggle_type = 0;
+                number_to_string(fade_shot_duration, find_digits(fade_shot_duration), 34);
+                if (get_val(PS4_L2)) {
+                    if (get_val(PS4_R1)) {
+                        if (event_press(PS4_UP)) fade_shot_duration += 10;
+                        if (event_press(PS4_DOWN)) fade_shot_duration -= 10;
+                    } else {
+                        if (event_press(PS4_UP)) fade_shot_duration += 1;
+                        if (event_press(PS4_DOWN)) fade_shot_duration -= 1;
+                    }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+                        save_current_profile();
+                        combo_run(vibration_valchg);
+                        combo_run(flashedit);
+                    }
+                }
+                if (fade_shot_duration > 1500) fade_shot_duration = 1500;
+                if (fade_shot_duration < 100) fade_shot_duration = 100;
+            }
+
+            // Page 9: No-Dip Logic
+            if (page == 9) {
+                menu_selection = 2;
+                toggle_type = 0;
+                number_to_string(no_dip_shot_duration, find_digits(no_dip_shot_duration), 34);
+                if (get_val(PS4_L2)) {
+                    if (get_val(PS4_R1)) {
+                        if (event_press(PS4_UP)) no_dip_shot_duration += 10;
+                        if (event_press(PS4_DOWN)) no_dip_shot_duration -= 10;
+                    } else {
+                        if (event_press(PS4_UP)) no_dip_shot_duration += 1;
+                        if (event_press(PS4_DOWN)) no_dip_shot_duration -= 1;
+                    }
+                    if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+                        save_current_profile();
+                        combo_run(vibration_valchg);
+                        combo_run(flashedit);
+                    }
+                }
+                if (no_dip_shot_duration > 1000) no_dip_shot_duration = 1000;
+                if (no_dip_shot_duration < 100) no_dip_shot_duration = 100;
+            }
+
+            // Page 10: Remap Square
+            if (page == 10) {
+                menu_selection = remap_square_active + 3;
+                toggle_type = 0;
+                if (get_val(PS4_L2) && event_press(PS4_UP)) {
+                    remap_square_active++;
+                    if (remap_square_active > 2) remap_square_active = 0;
+                    save_current_profile();
+                    flash_toggle = 1;
+                    combo_run(vibration_valchg);
+                    combo_run(flashtog);
+                }
+                if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+                    remap_square_active--;
+                    if (remap_square_active < 0) remap_square_active = 2;
+                    save_current_profile();
+                    flash_toggle = 0;
+                    combo_run(vibration_valchg);
+                    combo_run(flashtog);
+                }
+            }
+
+            // Page 11: Infinite Stamina
+            if (page == 11) {
+                menu_selection = infinite_stamina;
+                toggle_type = 0;
+                if (get_val(PS4_L2) && event_press(PS4_UP)) {
+                    infinite_stamina = 1;
+                    save_current_profile();
+                    flash_toggle = 1;
+                    combo_run(vibration_valchg);
+                    combo_run(flashtog);
+                }
+                if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+                    infinite_stamina = 0;
+                    save_current_profile();
+                    flash_toggle = 0;
+                    combo_run(vibration_valchg);
+                    combo_run(flashtog);
+                }
+            }
+            
+            // Page 15: Meter Dunk Button (L1/Circle)
+            if (page == 15) {
+                toggle_type = 0;
+                if (get_val(PS4_L2) && event_press(PS4_UP)) {
+                    meter_dunk_button = 1;  // Circle
+                    save_current_profile();
+                    combo_run(vibration_valchg);
+                }
+                if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+                    meter_dunk_button = 0;  // L1
+                    save_current_profile();
+                    combo_run(vibration_valchg);
+                }
+            }
+
+            // Page 16: Zen Color
+            if (page == 16) {
+                menu_selection = zen_color;
+                toggle_type = 0;
+                if (get_val(PS4_L2) && event_press(PS4_UP)) {
+                    zen_color++;
+                    if (zen_color > 19) zen_color = 0;
+                    save_current_profile();
+                    apply_zen_color();
+                    combo_run(vibration_valchg);
+                }
+                if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+                    zen_color--;
+                    if (zen_color < 0) zen_color = 19;
+                    save_current_profile();
+                    apply_zen_color();
+                    combo_run(vibration_valchg);
+                }
+            }
+
+            // Page 12: L2 Quick Stop
+            if (page == 12) {
+                menu_selection = l2_qs_active;
+                toggle_type = 0;
+                if (get_val(PS4_L2) && event_press(PS4_UP)) { l2_qs_active = 1; save_current_profile(); flash_toggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                if (get_val(PS4_L2) && event_press(PS4_DOWN)) { l2_qs_active = 0; save_current_profile(); flash_toggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+            }
+
+            // Page 13: Spot Take Macro
+            if (page == 13) {
+                menu_selection = spotTakeMacro;
+                toggle_type = 0;
+                if (get_val(PS4_L2) && event_press(PS4_UP)) { spotTakeMacro = 1; save_current_profile(); flash_toggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                if (get_val(PS4_L2) && event_press(PS4_DOWN)) { spotTakeMacro = 0; save_current_profile(); flash_toggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+            }
+
+            // Page 14: Instant Triggers
+            if (page == 14) {
+                menu_selection = instantTriggers;
+                toggle_type = 0;
+                if (get_val(PS4_L2) && event_press(PS4_UP)) { instantTriggers = 1; save_current_profile(); flash_toggle = 1; combo_run(vibration_valchg); combo_run(flashtog); }
+                if (get_val(PS4_L2) && event_press(PS4_DOWN)) { instantTriggers = 0; save_current_profile(); flash_toggle = 0; combo_run(vibration_valchg); combo_run(flashtog); }
+            }
+
+            // Page 4: Profile
+            if (page == 4) {
+                menu_selection = active_profile;
+                toggle_type = 0;
+                if (get_val(PS4_L2) && event_press(PS4_UP)) {
+                    profile_target = active_profile + 1;
+                    if (profile_target > 2) profile_target = 0;
+                    switch_profile(profile_target);
+                    combo_run(vibration_valchg);
+                    combo_run(flashtog);
+                }
+                if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+                    profile_target = active_profile - 1;
+                    if (profile_target < 0) profile_target = 2;
+                    switch_profile(profile_target);
+                    combo_run(vibration_valchg);
+                    combo_run(flashtog);
+                }
+            }
+
+        } // END MENU
+
+        // GAMEPLAY LOGIC (NO MENU)
+        if (!menu_enabled) {
+            // Handle color cycling or static color
+            apply_zen_color();
+
+            if (saver_on) {
+                saver_timer += get_rtime();
+                if (saver_timer >= 80) {
+                    saver_step();
+                    saver_timer = 0;
+                }
+            }
+
+            // Update current time
+            current_time += get_rtime();
+
+            // Meter Dunk (Hold selected button + R2 only, not with L2)
+            if (meter_dunk_active && get_val(PS4_R2) && !get_val(PS4_L2)) {
+                // Check selected trigger button (0 = L1, 1 = Circle)
+                if ((meter_dunk_button == 0 && get_val(PS4_L1)) || (meter_dunk_button == 1 && get_val(PS4_CIRCLE))) {
+                    if (!meter_dunk_combo_running) {
+                        combo_run(meter_dunk_combo);
+                        meter_dunk_combo_running = 1;
+                        meter_dunk_override_active = 1;
+                        meter_dunk_start_time = current_time;
+                    }
+                } else {
+                    if (meter_dunk_combo_running) {
+                        if ((current_time - meter_dunk_start_time) >= meter_dunk_duration) {
+                            combo_stop(meter_dunk_combo);
+                            meter_dunk_combo_running = 0;
+                            meter_dunk_override_active = 0;
+                        }
+                    }
+                }
+            } else {
+                if (meter_dunk_combo_running) {
+                    combo_stop(meter_dunk_combo);
+                    meter_dunk_combo_running = 0;
+                    meter_dunk_override_active = 0;
+                }
+            }
+
+            // L3/R3/SQ Remap Logic
+            if (remap_square_active == 0) {
+                if (get_val(PS4_L3)) set_val(PS4_SQUARE, 100);
+            } else if (remap_square_active == 1) {
+                if (get_val(PS4_R3)) set_val(PS4_SQUARE, 100);
+            }
+            // If remap_square_active == 2 (SQ), Square stays as Square (no remap)
+
+            // Button Tempo applies only to the physical X/Square button.
+            shooting_button_pressed = 0;
+            if (!(remap_square_active == 0 && get_val(PS4_L3)) && !(remap_square_active == 1 && get_val(PS4_R3))) {
+                shooting_button_pressed = get_val(PS4_SQUARE);
+            }
+
+            apply_instant_triggers();
+            handle_spot_take_macro();
+
+            // L2 Quick Stop
+            if (l2_qs_active && get_val(PS4_L2) > 0) {
+                if (get_val(PS4_SQUARE)) {
+                    set_val(PS4_SQUARE, 0);
+                    if (!square_button) { square_button = 1; flicked = 0; rs_down_active = 0; }
+                    if (!flicked) {
+                        if (get_val(PS4_LX) < -50 || get_val(PS4_LY) < -50) combo_run(rs_right_flick);
+                        else if (get_val(PS4_LX) > 50 || get_val(PS4_LY) > 50) combo_run(rs_left_flick);
+                        flicked = 1;
+                        combo_run(wait_flick);
+                        set_val(PS4_LX, 0); set_val(PS4_LY, 0); set_val(PS4_R2, 0);
+                    } else if (rs_down_active == 1 || (!flicked && rs_down_active == 0)) {
+                        set_val(PS4_SQUARE, 100);
+                    }
+                    set_val(PS4_LX, 0); set_val(PS4_LY, 0); set_val(PS4_R2, 0);
+                } else {
+                    if (square_button) { square_button = 0; rs_down_active = 0; }
+                    set_val(PS4_SQUARE, 0);
+                }
+            }
+
+            // Original Button Tempo behavior: hold the right stick down while
+            // X/Square is held, then apply the timed upward flick on release.
+            if (flick_up_shooting_active) {
+                if (shooting_button_pressed) {
+                    // Preserve R1/RB + X/Square passing.
+                    if (!get_val(PS4_R1)) {
+                        set_val(PS4_SQUARE, 0);
+                        square_shooting_in_progress = 1;
+                        set_val(PS4_RY, STICK_DOWN_VALUE + random(random_variation_min, random_variation_max));
+                        set_val(PS4_RX, random(random_variation_min, random_variation_max));
+                    }
+                }
+
+                if (!shooting_button_pressed && square_shooting_in_progress) {
+                    combo_run(button_tempo_release);
+                    square_shooting_in_progress = 0;
+                }
+            }
+
+            // Auto Green: Stand normally, Fade with RT/R2, or No-Dip with LT/L2.
+            if (insta_shot_active) {
+                // Check which button based on remap setting
+                insta_button_pressed = 0;
+                if (remap_square_active == 0 && get_val(PS4_R3)) {
+                    insta_button_pressed = 1;
+                } else if (remap_square_active == 1 && get_val(PS4_L3)) {
+                    insta_button_pressed = 1;
+                }
+                
+                if (insta_button_pressed) {
+                    if (!insta_shot_button_held) {
+                        insta_shot_button_held = 1;
+                        auto_green_mode = 0;
+                    }
+                    // L2/LT has priority. Once a modifier is detected, keep it
+                    // latched until the Auto Green stick button is released.
+                    if (get_val(PS4_L2) > 20) {
+                        auto_green_mode = 2;
+                    } else if (get_val(PS4_R2) > 20 && auto_green_mode == 0) {
+                        auto_green_mode = 1;
+                    }
+                } else {
+                    if (insta_shot_button_held) {
+                        if (auto_green_mode == 2) {
+                            combo_run(no_dip_shot_square);
+                        } else if (auto_green_mode == 1) {
+                            combo_run(fade_shot_square);
+                        } else {
+                            combo_run(stand_shot_square);
+                        }
+                        insta_shot_button_held = 0;
+                        auto_green_mode = 0;
+                    }
+                }
+            }
+            
+        }
+    }
+}
+
+// INFINITE STAMINA COMBO - FIXED TO ALLOW FADE AND PASSING
+
+
+
+
+combo movement_control {
+    // Only apply movement control if:
+    // 1. Infinite stamina is enabled
+    // 2. Ground stick is active
+    // 3. NOT doing meter dunk
+    // 4. NOT actively shooting with Square
+    // 5. NOT holding Square (for passing)
+    if (infinite_stamina && ground_stick_active && !meter_dunk_override_active && 
+        !square_shooting_in_progress && !get_val(PS4_SQUARE) &&
+        !combo_running(button_tempo_release) &&
+        !combo_running(stand_shot_square) && !combo_running(fade_shot_square) &&
+        !combo_running(no_dip_shot_square)) {
+        if(abs(get_val(PS4_LX)) > 20 || abs(get_val(PS4_LY)) > 20) {
+            set_val(PS4_LX, (get_val(PS4_LX) * ground_control) / 100);
+            set_val(PS4_LY, (get_val(PS4_LY) * ground_control) / 100);
+        }
+        
+        if(abs(get_val(PS4_LX)) < 20 && abs(get_val(PS4_LY)) < 20) {
+            set_val(PS4_LX, 0);
+            set_val(PS4_LY, 0);
+        }
+    }
+}
+
+combo meter_dunk_combo {
+    set_val(PS4_RY, 100);
+    set_val(PS4_R2, 100);
+    wait(1000);
+    set_val(PS4_RY, 0);
+    set_val(PS4_R2, 0);
+}
+
+// SHOOTING COMBOS
+combo button_tempo_release {
+    set_val(PS4_RY, -50 + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, 20 + random(random_hold_variation_min, random_hold_variation_max));
+    wait(delay_duration);
+    set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+    wait(300);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+combo stand_shot_square {
+    set_val(PS4_SQUARE, 100);
+    wait(stand_shot_duration);
+    set_val(PS4_SQUARE, 0);
+}
+
+combo fade_shot_square {
+    set_val(PS4_SQUARE, 100);
+    set_val(PS4_R2, 100);
+    wait(fade_shot_duration);
+    set_val(PS4_SQUARE, 0);
+    set_val(PS4_R2, 0);
+}
+
+combo no_dip_shot_square {
+    set_val(PS4_SQUARE, 100);
+    wait(no_dip_shot_duration);
+    set_val(PS4_SQUARE, 0);
+}
+
+combo spot_take_combo {
+    set_val(PS4_CROSS, 100);
+    wait(10);
+    set_val(PS4_CROSS, 0);
+    wait(10);
+    set_val(PS4_CROSS, 100);
+    wait(10);
+    set_val(PS4_CROSS, 0);
+    wait(10);
+    set_val(PS4_CROSS, 100);
+    wait(10);
+    set_val(PS4_CROSS, 0);
+}
+
+combo rs_left_flick {
+    set_val(PS4_SQUARE, 0);
+    set_val(PS4_R2, 0);
+    set_val(PS4_RX, 100);
+    wait(100);
+    set_val(PS4_RX, 0);
+    set_val(PS4_LX, 0);
+    set_val(PS4_LY, 0);
+}
+
+combo rs_right_flick {
+    set_val(PS4_SQUARE, 0);
+    set_val(PS4_R2, 0);
+    set_val(PS4_RX, -100);
+    wait(100);
+    set_val(PS4_RX, 0);
+    set_val(PS4_LX, 0);
+    set_val(PS4_LY, 0);
+}
+
+combo wait_flick {
+    wait(flick_delay);
+    set_val(PS4_SQUARE, 100);
+    rs_down_active = 1;
+}
+
+function apply_instant_triggers() {
+    if (instantTriggers) {
+        if (get_val(PS4_L2) > 0) set_val(PS4_L2, 100);
+        if (get_val(PS4_R2) > 0) set_val(PS4_R2, 100);
+    }
+}
+
+function handle_spot_take_macro() {
+    if (spotTakeMacro && get_val(PS4_CROSS)) combo_run(spot_take_combo);
+}
+
+function load_profile_settings() {
+    if (active_profile == 0) {
+        flick_up_shooting_active = get_pvar(SPVAR_1, 0, 1, 1);
+        delay_duration = get_pvar(SPVAR_2, 0, 300, 50);
+        stabilization_variation = get_pvar(SPVAR_3, 10, 100, 50);
+        insta_shot_active = get_pvar(SPVAR_6, 0, 1, 1);
+        stand_shot_duration = get_pvar(SPVAR_7, 100, 1000, 700);
+        fade_shot_duration = get_pvar(SPVAR_8, 100, 1500, 700);
+        no_dip_shot_duration = get_pvar(SPVAR_4, 100, 1000, 500);
+        remap_square_active = get_pvar(SPVAR_9, 0, 2, 2);
+        infinite_stamina = get_pvar(SPVAR_10, 0, 1, 0);
+        meter_dunk_button = get_pvar(SPVAR_11, 0, 1, 0);
+        zen_color = get_pvar(SPVAR_13, 0, 19, 9);
+        l2_qs_active = get_pvar(SPVAR_60, 0, 1, 0);
+        spotTakeMacro = get_pvar(SPVAR_62, 0, 1, 0);
+        instantTriggers = get_pvar(SPVAR_63, 0, 1, 0);
+    } else if (active_profile == 1) {
+        flick_up_shooting_active = get_pvar(SPVAR_20, 0, 1, 1);
+        delay_duration = get_pvar(SPVAR_21, 0, 300, 50);
+        stabilization_variation = get_pvar(SPVAR_22, 10, 100, 50);
+        insta_shot_active = get_pvar(SPVAR_25, 0, 1, 1);
+        stand_shot_duration = get_pvar(SPVAR_26, 100, 1000, 700);
+        fade_shot_duration = get_pvar(SPVAR_27, 100, 1500, 700);
+        no_dip_shot_duration = get_pvar(SPVAR_23, 100, 1000, 500);
+        remap_square_active = get_pvar(SPVAR_28, 0, 2, 2);
+        infinite_stamina = get_pvar(SPVAR_29, 0, 1, 0);
+        meter_dunk_button = get_pvar(SPVAR_30, 0, 1, 0);
+        zen_color = get_pvar(SPVAR_32, 0, 19, 9);
+        l2_qs_active = get_pvar(SPVAR_60, 0, 1, 0);
+        spotTakeMacro = get_pvar(SPVAR_62, 0, 1, 0);
+        instantTriggers = get_pvar(SPVAR_63, 0, 1, 0);
+    } else {
+        flick_up_shooting_active = get_pvar(SPVAR_39, 0, 1, 1);
+        delay_duration = get_pvar(SPVAR_40, 0, 300, 50);
+        stabilization_variation = get_pvar(SPVAR_41, 10, 100, 50);
+        insta_shot_active = get_pvar(SPVAR_44, 0, 1, 1);
+        stand_shot_duration = get_pvar(SPVAR_45, 100, 1000, 700);
+        fade_shot_duration = get_pvar(SPVAR_46, 100, 1500, 700);
+        no_dip_shot_duration = get_pvar(SPVAR_42, 100, 1000, 500);
+        remap_square_active = get_pvar(SPVAR_47, 0, 2, 2);
+        infinite_stamina = get_pvar(SPVAR_48, 0, 1, 0);
+        meter_dunk_button = get_pvar(SPVAR_49, 0, 1, 0);
+        zen_color = get_pvar(SPVAR_51, 0, 19, 9);
+        l2_qs_active = get_pvar(SPVAR_60, 0, 1, 0);
+        spotTakeMacro = get_pvar(SPVAR_62, 0, 1, 0);
+        instantTriggers = get_pvar(SPVAR_63, 0, 1, 0);
+    }
+}
+
+function save_current_profile() {
+    if (active_profile == 0) {
+        set_pvar(SPVAR_1, flick_up_shooting_active);
+        set_pvar(SPVAR_2, delay_duration);
+        set_pvar(SPVAR_3, stabilization_variation);
+        set_pvar(SPVAR_6, insta_shot_active);
+        set_pvar(SPVAR_7, stand_shot_duration);
+        set_pvar(SPVAR_8, fade_shot_duration);
+        set_pvar(SPVAR_4, no_dip_shot_duration);
+        set_pvar(SPVAR_9, remap_square_active);
+        set_pvar(SPVAR_10, infinite_stamina);
+        set_pvar(SPVAR_11, meter_dunk_button);
+        set_pvar(SPVAR_13, zen_color);
+        set_pvar(SPVAR_60, l2_qs_active);
+        set_pvar(SPVAR_62, spotTakeMacro);
+        set_pvar(SPVAR_63, instantTriggers);
+    } else if (active_profile == 1) {
+        set_pvar(SPVAR_20, flick_up_shooting_active);
+        set_pvar(SPVAR_21, delay_duration);
+        set_pvar(SPVAR_22, stabilization_variation);
+        set_pvar(SPVAR_25, insta_shot_active);
+        set_pvar(SPVAR_26, stand_shot_duration);
+        set_pvar(SPVAR_27, fade_shot_duration);
+        set_pvar(SPVAR_23, no_dip_shot_duration);
+        set_pvar(SPVAR_28, remap_square_active);
+        set_pvar(SPVAR_29, infinite_stamina);
+        set_pvar(SPVAR_30, meter_dunk_button);
+        set_pvar(SPVAR_32, zen_color);
+        set_pvar(SPVAR_60, l2_qs_active);
+        set_pvar(SPVAR_62, spotTakeMacro);
+        set_pvar(SPVAR_63, instantTriggers);
+    } else {
+        set_pvar(SPVAR_39, flick_up_shooting_active);
+        set_pvar(SPVAR_40, delay_duration);
+        set_pvar(SPVAR_41, stabilization_variation);
+        set_pvar(SPVAR_44, insta_shot_active);
+        set_pvar(SPVAR_45, stand_shot_duration);
+        set_pvar(SPVAR_46, fade_shot_duration);
+        set_pvar(SPVAR_42, no_dip_shot_duration);
+        set_pvar(SPVAR_47, remap_square_active);
+        set_pvar(SPVAR_48, infinite_stamina);
+        set_pvar(SPVAR_49, meter_dunk_button);
+        set_pvar(SPVAR_51, zen_color);
+        set_pvar(SPVAR_60, l2_qs_active);
+        set_pvar(SPVAR_62, spotTakeMacro);
+        set_pvar(SPVAR_63, instantTriggers);
+    }
+}
+
+function switch_profile(new_profile) {
+    save_current_profile();
+    active_profile = new_profile;
+    set_pvar(SPVAR_58, active_profile);
+    load_profile_settings();
+    apply_zen_color();
+}
+
+// UI EFFECTS
+combo flashtog {
+    if (!flash_toggle) {
+        set_rgb(128, 0, 128);
+    } else {
+        set_rgb(180, 60, 255);
+    }
+    wait(1000);
+    set_rgb(128, 0, 128);
+}
+
+combo flashedit {
+    set_rgb(64, 0, 64);
+    wait(150);
+    set_rgb(128, 0, 128);
+}
+
+combo vibration_on {
+    set_rumble(RUMBLE_A, 100);
+    set_rumble(RUMBLE_B, 100);
+    wait(200);
+    set_rumble(RUMBLE_A, 0);
+    set_rumble(RUMBLE_B, 0);
+}
+
+combo vibration_off {
+    set_rumble(RUMBLE_A, 50);
+    set_rumble(RUMBLE_B, 50);
+    wait(200);
+    set_rumble(RUMBLE_A, 0);
+    set_rumble(RUMBLE_B, 0);
+}
+
+combo vibration_valchg {
+    set_rumble(RUMBLE_A, 50);
+    set_rumble(RUMBLE_B, 50);
+    wait(50);
+    set_rumble(RUMBLE_A, 0);
+    set_rumble(RUMBLE_B, 0);
+}
+
+// PROFILE MANAGEMENT FUNCTIONS
+function draw_scary_face(x, y) {
+    rect_oled(x + 75, y + 1, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 78, y + 1, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 83, y + 1, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 76, y + 2, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 78, y + 2, 10, 1, 1, OLED_WHITE);
+    rect_oled(x + 93, y + 2, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 77, y + 3, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 82, y + 3, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 86, y + 3, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 91, y + 3, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 98, y + 3, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 101, y + 3, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 105, y + 3, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 108, y + 3, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 114, y + 3, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 33, y + 4, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 76, y + 4, 7, 1, 1, OLED_WHITE);
+    rect_oled(x + 87, y + 4, 18, 1, 1, OLED_WHITE);
+    rect_oled(x + 113, y + 4, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 1, y + 5, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 33, y + 5, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 77, y + 5, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 81, y + 5, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 85, y + 5, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 89, y + 5, 11, 1, 1, OLED_WHITE);
+    rect_oled(x + 101, y + 5, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 103, y + 5, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 111, y + 5, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 2, y + 6, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 80, y + 6, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 89, y + 6, 23, 1, 1, OLED_WHITE);
+    rect_oled(x + 80, y + 7, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 89, y + 7, 17, 1, 1, OLED_WHITE);
+    rect_oled(x + 108, y + 7, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 79, y + 8, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 90, y + 8, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 93, y + 8, 15, 1, 1, OLED_WHITE);
+    rect_oled(x + 109, y + 8, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 114, y + 8, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 25, y + 9, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 73, y + 9, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 89, y + 9, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 94, y + 9, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 98, y + 9, 9, 1, 1, OLED_WHITE);
+    rect_oled(x + 108, y + 9, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 115, y + 9, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 118, y + 9, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 24, y + 10, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 90, y + 10, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 93, y + 10, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 96, y + 10, 13, 1, 1, OLED_WHITE);
+    rect_oled(x + 110, y + 10, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 115, y + 10, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 15, y + 11, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 21, y + 11, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 90, y + 11, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 93, y + 11, 17, 1, 1, OLED_WHITE);
+    rect_oled(x + 114, y + 11, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 21, y + 12, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 82, y + 12, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 89, y + 12, 10, 1, 1, OLED_WHITE);
+    rect_oled(x + 101, y + 12, 9, 1, 1, OLED_WHITE);
+    rect_oled(x + 20, y + 13, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 82, y + 13, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 87, y + 13, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 91, y + 13, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 95, y + 13, 14, 1, 1, OLED_WHITE);
+    rect_oled(x + 126, y + 13, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 18, y + 14, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 82, y + 14, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 85, y + 14, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 88, y + 14, 21, 1, 1, OLED_WHITE);
+    rect_oled(x + 125, y + 14, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 18, y + 15, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 67, y + 15, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 79, y + 15, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 81, y + 15, 27, 1, 1, OLED_WHITE);
+    rect_oled(x + 17, y + 16, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 67, y + 16, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 75, y + 16, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 79, y + 16, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 84, y + 16, 24, 1, 1, OLED_WHITE);
+    rect_oled(x + 109, y + 16, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 112, y + 16, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 17, y + 17, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 67, y + 17, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 75, y + 17, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 79, y + 17, 27, 1, 1, OLED_WHITE);
+    rect_oled(x + 108, y + 17, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 16, y + 18, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 66, y + 18, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 68, y + 18, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 70, y + 18, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 76, y + 18, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 79, y + 18, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 86, y + 18, 25, 1, 1, OLED_WHITE);
+    rect_oled(x + 14, y + 19, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 16, y + 19, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 66, y + 19, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 69, y + 19, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 71, y + 19, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 77, y + 19, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 88, y + 19, 17, 1, 1, OLED_WHITE);
+    rect_oled(x + 106, y + 19, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 108, y + 19, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 15, y + 20, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 67, y + 20, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 72, y + 20, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 90, y + 20, 21, 1, 1, OLED_WHITE);
+    rect_oled(x + 15, y + 21, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 67, y + 21, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 74, y + 21, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 82, y + 21, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 90, y + 21, 14, 1, 1, OLED_WHITE);
+    rect_oled(x + 107, y + 21, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 15, y + 22, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 26, y + 22, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 67, y + 22, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 74, y + 22, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 82, y + 22, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 91, y + 22, 12, 1, 1, OLED_WHITE);
+    rect_oled(x + 107, y + 22, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 15, y + 23, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 27, y + 23, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 39, y + 23, 9, 1, 1, OLED_WHITE);
+    rect_oled(x + 67, y + 23, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 73, y + 23, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 82, y + 23, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 91, y + 23, 11, 1, 1, OLED_WHITE);
+    rect_oled(x + 103, y + 23, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 106, y + 23, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 109, y + 23, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 15, y + 24, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 20, y + 24, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 23, y + 24, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 28, y + 24, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 32, y + 24, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 39, y + 24, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 45, y + 24, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 67, y + 24, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 69, y + 24, 7, 1, 1, OLED_WHITE);
+    rect_oled(x + 91, y + 24, 12, 1, 1, OLED_WHITE);
+    rect_oled(x + 104, y + 24, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 106, y + 24, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 109, y + 24, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 15, y + 25, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 20, y + 25, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 23, y + 25, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 29, y + 25, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 31, y + 25, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 38, y + 25, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 40, y + 25, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 44, y + 25, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 49, y + 25, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 52, y + 25, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 69, y + 25, 8, 1, 1, OLED_WHITE);
+    rect_oled(x + 90, y + 25, 15, 1, 1, OLED_WHITE);
+    rect_oled(x + 106, y + 25, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 109, y + 25, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 113, y + 25, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 15, y + 26, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 21, y + 26, 9, 1, 1, OLED_WHITE);
+    rect_oled(x + 40, y + 26, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 45, y + 26, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 51, y + 26, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 62, y + 26, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 67, y + 26, 10, 1, 1, OLED_WHITE);
+    rect_oled(x + 90, y + 26, 15, 1, 1, OLED_WHITE);
+    rect_oled(x + 107, y + 26, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 109, y + 26, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 14, y + 27, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 21, y + 27, 8, 1, 1, OLED_WHITE);
+    rect_oled(x + 41, y + 27, 8, 1, 1, OLED_WHITE);
+    rect_oled(x + 51, y + 27, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 55, y + 27, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 63, y + 27, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 67, y + 27, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 69, y + 27, 10, 1, 1, OLED_WHITE);
+    rect_oled(x + 90, y + 27, 15, 1, 1, OLED_WHITE);
+    rect_oled(x + 109, y + 27, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 14, y + 28, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 22, y + 28, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 33, y + 28, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 42, y + 28, 15, 1, 1, OLED_WHITE);
+    rect_oled(x + 67, y + 28, 14, 1, 1, OLED_WHITE);
+    rect_oled(x + 90, y + 28, 12, 1, 1, OLED_WHITE);
+    rect_oled(x + 107, y + 28, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 13, y + 29, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 16, y + 29, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 21, y + 29, 7, 1, 1, OLED_WHITE);
+    rect_oled(x + 33, y + 29, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 42, y + 29, 15, 1, 1, OLED_WHITE);
+    rect_oled(x + 67, y + 29, 15, 1, 1, OLED_WHITE);
+    rect_oled(x + 86, y + 29, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 88, y + 29, 15, 1, 1, OLED_WHITE);
+    rect_oled(x + 107, y + 29, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 14, y + 30, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 16, y + 30, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 20, y + 30, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 22, y + 30, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 33, y + 30, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 46, y + 30, 12, 1, 1, OLED_WHITE);
+    rect_oled(x + 68, y + 30, 35, 1, 1, OLED_WHITE);
+    rect_oled(x + 104, y + 30, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 107, y + 30, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 110, y + 30, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 114, y + 30, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 14, y + 31, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 22, y + 31, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 25, y + 31, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 46, y + 31, 12, 1, 1, OLED_WHITE);
+    rect_oled(x + 69, y + 31, 37, 1, 1, OLED_WHITE);
+    rect_oled(x + 107, y + 31, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 110, y + 31, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 113, y + 31, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 16, y + 32, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 21, y + 32, 8, 1, 1, OLED_WHITE);
+    rect_oled(x + 45, y + 32, 14, 1, 1, OLED_WHITE);
+    rect_oled(x + 70, y + 32, 27, 1, 1, OLED_WHITE);
+    rect_oled(x + 101, y + 32, 8, 1, 1, OLED_WHITE);
+    rect_oled(x + 110, y + 32, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 18, y + 33, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 20, y + 33, 10, 1, 1, OLED_WHITE);
+    rect_oled(x + 43, y + 33, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 46, y + 33, 14, 1, 1, OLED_WHITE);
+    rect_oled(x + 70, y + 33, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 73, y + 33, 24, 1, 1, OLED_WHITE);
+    rect_oled(x + 102, y + 33, 7, 1, 1, OLED_WHITE);
+    rect_oled(x + 110, y + 33, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 18, y + 34, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 24, y + 34, 8, 1, 1, OLED_WHITE);
+    rect_oled(x + 38, y + 34, 20, 1, 1, OLED_WHITE);
+    rect_oled(x + 60, y + 34, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 69, y + 34, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 73, y + 34, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 76, y + 34, 9, 1, 1, OLED_WHITE);
+    rect_oled(x + 87, y + 34, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 90, y + 34, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 93, y + 34, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 100, y + 34, 8, 1, 1, OLED_WHITE);
+    rect_oled(x + 109, y + 34, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 19, y + 35, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 26, y + 35, 32, 1, 1, OLED_WHITE);
+    rect_oled(x + 68, y + 35, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 72, y + 35, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 77, y + 35, 12, 1, 1, OLED_WHITE);
+    rect_oled(x + 90, y + 35, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 97, y + 35, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 99, y + 35, 12, 1, 1, OLED_WHITE);
+    rect_oled(x + 118, y + 35, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 20, y + 36, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 23, y + 36, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 26, y + 36, 29, 1, 1, OLED_WHITE);
+    rect_oled(x + 56, y + 36, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 74, y + 36, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 77, y + 36, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 79, y + 36, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 82, y + 36, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 85, y + 36, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 98, y + 36, 9, 1, 1, OLED_WHITE);
+    rect_oled(x + 108, y + 36, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 21, y + 37, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 24, y + 37, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 26, y + 37, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 29, y + 37, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 31, y + 37, 23, 1, 1, OLED_WHITE);
+    rect_oled(x + 56, y + 37, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 75, y + 37, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 77, y + 37, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 80, y + 37, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 82, y + 37, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 89, y + 37, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 96, y + 37, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 98, y + 37, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 102, y + 37, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 108, y + 37, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 22, y + 38, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 26, y + 38, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 30, y + 38, 21, 1, 1, OLED_WHITE);
+    rect_oled(x + 52, y + 38, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 55, y + 38, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 69, y + 38, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 80, y + 38, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 83, y + 38, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 91, y + 38, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 96, y + 38, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 102, y + 38, 8, 1, 1, OLED_WHITE);
+    rect_oled(x + 23, y + 39, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 26, y + 39, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 31, y + 39, 20, 1, 1, OLED_WHITE);
+    rect_oled(x + 59, y + 39, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 69, y + 39, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 81, y + 39, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 92, y + 39, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 100, y + 39, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 108, y + 39, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 24, y + 40, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 31, y + 40, 14, 1, 1, OLED_WHITE);
+    rect_oled(x + 47, y + 40, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 59, y + 40, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 70, y + 40, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 81, y + 40, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 88, y + 40, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 92, y + 40, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 98, y + 40, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 101, y + 40, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 107, y + 40, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 25, y + 41, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 31, y + 41, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 34, y + 41, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 38, y + 41, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 42, y + 41, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 50, y + 41, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 60, y + 41, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 70, y + 41, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 81, y + 41, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 89, y + 41, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 91, y + 41, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 98, y + 41, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 101, y + 41, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 106, y + 41, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 26, y + 42, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 43, y + 42, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 46, y + 42, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 51, y + 42, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 60, y + 42, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 70, y + 42, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 81, y + 42, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 88, y + 42, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 94, y + 42, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 98, y + 42, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 105, y + 42, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 25, y + 43, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 27, y + 43, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 43, y + 43, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 51, y + 43, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 60, y + 43, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 70, y + 43, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 72, y + 43, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 82, y + 43, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 85, y + 43, 7, 1, 1, OLED_WHITE);
+    rect_oled(x + 94, y + 43, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 98, y + 43, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 105, y + 43, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 109, y + 43, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 25, y + 44, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 27, y + 44, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 30, y + 44, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 35, y + 44, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 44, y + 44, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 51, y + 44, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 55, y + 44, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 60, y + 44, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 71, y + 44, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 73, y + 44, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 77, y + 44, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 82, y + 44, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 89, y + 44, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 94, y + 44, 9, 1, 1, OLED_WHITE);
+    rect_oled(x + 104, y + 44, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 108, y + 44, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 26, y + 45, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 32, y + 45, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 36, y + 45, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 39, y + 45, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 43, y + 45, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 52, y + 45, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 55, y + 45, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 61, y + 45, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 65, y + 45, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 71, y + 45, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 77, y + 45, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 82, y + 45, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 84, y + 45, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 89, y + 45, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 95, y + 45, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 101, y + 45, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 103, y + 45, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 27, y + 46, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 32, y + 46, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 37, y + 46, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 43, y + 46, 8, 1, 1, OLED_WHITE);
+    rect_oled(x + 52, y + 46, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 61, y + 46, 7, 1, 1, OLED_WHITE);
+    rect_oled(x + 71, y + 46, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 77, y + 46, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 79, y + 46, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 86, y + 46, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 92, y + 46, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 94, y + 46, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 101, y + 46, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 104, y + 46, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 32, y + 47, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 34, y + 47, 11, 1, 1, OLED_WHITE);
+    rect_oled(x + 46, y + 47, 19, 1, 1, OLED_WHITE);
+    rect_oled(x + 66, y + 47, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 72, y + 47, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 81, y + 47, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 87, y + 47, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 92, y + 47, 7, 1, 1, OLED_WHITE);
+    rect_oled(x + 100, y + 47, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 35, y + 48, 11, 1, 1, OLED_WHITE);
+    rect_oled(x + 47, y + 48, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 51, y + 48, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 56, y + 48, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 62, y + 48, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 69, y + 48, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 74, y + 48, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 82, y + 48, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 88, y + 48, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 92, y + 48, 14, 1, 1, OLED_WHITE);
+    rect_oled(x + 36, y + 49, 14, 1, 1, OLED_WHITE);
+    rect_oled(x + 53, y + 49, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 57, y + 49, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 64, y + 49, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 70, y + 49, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 76, y + 49, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 82, y + 49, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 88, y + 49, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 92, y + 49, 13, 1, 1, OLED_WHITE);
+    rect_oled(x + 37, y + 50, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 41, y + 50, 15, 1, 1, OLED_WHITE);
+    rect_oled(x + 64, y + 50, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 77, y + 50, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 83, y + 50, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 85, y + 50, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 88, y + 50, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 95, y + 50, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 103, y + 50, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 37, y + 51, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 42, y + 51, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 48, y + 51, 13, 1, 1, OLED_WHITE);
+    rect_oled(x + 65, y + 51, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 72, y + 51, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 77, y + 51, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 83, y + 51, 10, 1, 1, OLED_WHITE);
+    rect_oled(x + 94, y + 51, 7, 1, 1, OLED_WHITE);
+    rect_oled(x + 103, y + 51, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 38, y + 52, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 42, y + 52, 7, 1, 1, OLED_WHITE);
+    rect_oled(x + 50, y + 52, 15, 1, 1, OLED_WHITE);
+    rect_oled(x + 66, y + 52, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 72, y + 52, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 77, y + 52, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 83, y + 52, 13, 1, 1, OLED_WHITE);
+    rect_oled(x + 97, y + 52, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 38, y + 53, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 46, y + 53, 7, 1, 1, OLED_WHITE);
+    rect_oled(x + 54, y + 53, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 59, y + 53, 11, 1, 1, OLED_WHITE);
+    rect_oled(x + 72, y + 53, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 78, y + 53, 15, 1, 1, OLED_WHITE);
+    rect_oled(x + 94, y + 53, 7, 1, 1, OLED_WHITE);
+    rect_oled(x + 48, y + 54, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 54, y + 54, 17, 1, 1, OLED_WHITE);
+    rect_oled(x + 72, y + 54, 20, 1, 1, OLED_WHITE);
+    rect_oled(x + 93, y + 54, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 99, y + 54, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 42, y + 55, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 50, y + 55, 41, 1, 1, OLED_WHITE);
+    rect_oled(x + 92, y + 55, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 100, y + 55, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 42, y + 56, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 49, y + 56, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 53, y + 56, 18, 1, 1, OLED_WHITE);
+    rect_oled(x + 72, y + 56, 14, 1, 1, OLED_WHITE);
+    rect_oled(x + 88, y + 56, 8, 1, 1, OLED_WHITE);
+    rect_oled(x + 98, y + 56, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 49, y + 57, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 59, y + 57, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 62, y + 57, 6, 1, 1, OLED_WHITE);
+    rect_oled(x + 69, y + 57, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 73, y + 57, 9, 1, 1, OLED_WHITE);
+    rect_oled(x + 84, y + 57, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 88, y + 57, 7, 1, 1, OLED_WHITE);
+    rect_oled(x + 97, y + 57, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 50, y + 58, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 60, y + 58, 9, 1, 1, OLED_WHITE);
+    rect_oled(x + 70, y + 58, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 73, y + 58, 5, 1, 1, OLED_WHITE);
+    rect_oled(x + 80, y + 58, 15, 1, 1, OLED_WHITE);
+    rect_oled(x + 96, y + 58, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 43, y + 59, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 51, y + 59, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 61, y + 59, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 64, y + 59, 8, 1, 1, OLED_WHITE);
+    rect_oled(x + 77, y + 59, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 85, y + 59, 7, 1, 1, OLED_WHITE);
+    rect_oled(x + 93, y + 59, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 43, y + 60, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 51, y + 60, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 66, y + 60, 24, 1, 1, OLED_WHITE);
+    rect_oled(x + 93, y + 60, 2, 1, 1, OLED_WHITE);
+    rect_oled(x + 51, y + 61, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 66, y + 61, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 70, y + 61, 19, 1, 1, OLED_WHITE);
+    rect_oled(x + 93, y + 61, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 52, y + 62, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 69, y + 62, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 74, y + 62, 15, 1, 1, OLED_WHITE);
+    rect_oled(x + 93, y + 62, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 52, y + 63, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 71, y + 63, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 76, y + 63, 12, 1, 1, OLED_WHITE);
+    rect_oled(x + 90, y + 63, 1, 1, 1, OLED_WHITE);
+    draw_face_animation(x, y);
+}
+
+function draw_face_animation(x, y) {
+    face_blink_frame = loading_time_elapsed % 900;
+
+    // Warped scratches and heavier ink so the face is not identical to the old one.
+    line_oled(x + 21, y + 7, x + 8, y + 2, 1, OLED_WHITE);
+    line_oled(x + 25, y + 11, x + 6, y + 15, 1, OLED_WHITE);
+    line_oled(x + 102, y + 8, x + 119, y + 3, 1, OLED_WHITE);
+    line_oled(x + 101, y + 50, x + 108, y + 63, 1, OLED_WHITE);
+    line_oled(x + 59, y + 51, x + 58, y + 63, 1, OLED_WHITE);
+    line_oled(x + 82, y + 50, x + 86, y + 63, 1, OLED_WHITE);
+
+    // Darken/reshape the grin into a rougher slash.
+    rect_oled(x + 33, y + 38, 64, 3, 1, OLED_BLACK);
+    line_oled(x + 31, y + 38, x + 99, y + 41, 1, OLED_WHITE);
+    line_oled(x + 34, y + 48, x + 94, y + 46, 1, OLED_WHITE);
+    rect_oled(x + 42, y + 41, 2, 9, 1, OLED_WHITE);
+    rect_oled(x + 52, y + 40, 2, 10, 1, OLED_WHITE);
+    rect_oled(x + 63, y + 40, 2, 10, 1, OLED_WHITE);
+    rect_oled(x + 74, y + 40, 2, 10, 1, OLED_WHITE);
+    rect_oled(x + 85, y + 41, 2, 8, 1, OLED_WHITE);
+
+    // Tiny blink/flicker overlay during the loading screen.
+    if (face_blink_frame > 720 && face_blink_frame < 795) {
+        rect_oled(x + 38, y + 17, 21, 8, 1, OLED_BLACK);
+        rect_oled(x + 72, y + 16, 23, 9, 1, OLED_BLACK);
+        line_oled(x + 37, y + 21, x + 59, y + 21, 1, OLED_WHITE);
+        line_oled(x + 72, y + 21, x + 96, y + 21, 1, OLED_WHITE);
+    } else if (face_blink_frame > 430 && face_blink_frame < 470) {
+        rect_oled(x + 47, y + 20, 2, 2, 1, OLED_BLACK);
+        rect_oled(x + 82, y + 20, 2, 2, 1, OLED_BLACK);
+        rect_oled(x + 46, y + 19, 1, 1, 1, OLED_WHITE);
+        rect_oled(x + 83, y + 19, 1, 1, 1, OLED_WHITE);
+    } else if (face_blink_frame > 180 && face_blink_frame < 230) {
+        // Horizontal glitch tear.
+        rect_oled(x + 18, y + 18, 24, 3, 1, OLED_BLACK);
+        rect_oled(x + 42, y + 18, 28, 3, 1, OLED_WHITE);
+        rect_oled(x + 68, y + 27, 35, 3, 1, OLED_BLACK);
+        rect_oled(x + 75, y + 27, 30, 3, 1, OLED_WHITE);
+        line_oled(x + 12, y + 35, x + 118, y + 35, 1, OLED_WHITE);
+    } else if (face_blink_frame > 610 && face_blink_frame < 660) {
+        // Eye jitter frame.
+        rect_oled(x + 35, y + 15, 12, 4, 1, OLED_BLACK);
+        rect_oled(x + 48, y + 15, 10, 4, 1, OLED_WHITE);
+        rect_oled(x + 72, y + 16, 14, 4, 1, OLED_BLACK);
+        rect_oled(x + 85, y + 16, 10, 4, 1, OLED_WHITE);
+        line_oled(x + 28, y + 29, x + 102, y + 31, 1, OLED_WHITE);
+    } else if (face_blink_frame > 810 && face_blink_frame < 860) {
+        // Heavy split-frame glitch.
+        rect_oled(x + 9, y + 10, 35, 4, 1, OLED_WHITE);
+        rect_oled(x + 46, y + 10, 25, 4, 1, OLED_BLACK);
+        rect_oled(x + 75, y + 11, 39, 4, 1, OLED_WHITE);
+        rect_oled(x + 23, y + 32, 28, 3, 1, OLED_BLACK);
+        rect_oled(x + 53, y + 32, 43, 3, 1, OLED_WHITE);
+        rect_oled(x + 17, y + 55, 78, 2, 1, OLED_WHITE);
+        rect_oled(x + 41, y + 57, 61, 2, 1, OLED_BLACK);
+    }
+}
+
+function draw_v4_logo() {
+    print(4, 54, OLED_FONT_SMALL, OLED_WHITE, loading_version[0]);
+}
+
+function draw_tiny_brand(x, y) {
+    rect_oled(x, y, 1, 5, 1, OLED_WHITE);
+    rect_oled(x + 4, y, 1, 5, 1, OLED_WHITE);
+    rect_oled(x + 1, y + 1, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 2, y + 2, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 3, y + 1, 1, 1, 1, OLED_WHITE);
+
+    rect_oled(x + 7, y, 1, 5, 1, OLED_WHITE);
+    rect_oled(x + 8, y, 3, 1, 1, OLED_WHITE);
+    rect_oled(x + 11, y + 1, 1, 3, 1, OLED_WHITE);
+    rect_oled(x + 8, y + 4, 3, 1, 1, OLED_WHITE);
+
+    rect_oled(x + 14, y, 1, 5, 1, OLED_WHITE);
+    rect_oled(x + 18, y, 1, 5, 1, OLED_WHITE);
+    rect_oled(x + 15, y + 1, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 16, y + 2, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 17, y + 1, 1, 1, 1, OLED_WHITE);
+
+    rect_oled(x + 22, y, 1, 3, 1, OLED_WHITE);
+    rect_oled(x + 26, y, 1, 3, 1, OLED_WHITE);
+    rect_oled(x + 23, y + 3, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 25, y + 3, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 24, y + 4, 1, 1, 1, OLED_WHITE);
+
+    rect_oled(x + 30, y, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 33, y + 1, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 30, y + 2, 4, 1, 1, OLED_WHITE);
+    rect_oled(x + 33, y + 3, 1, 1, 1, OLED_WHITE);
+    rect_oled(x + 30, y + 4, 4, 1, 1, OLED_WHITE);
+}
+
+function draw_spinning_basketball(x, y) {
+    // Filled circular silhouette with smoother pixel-rounded edges.
+    rect_oled(x,      y - 15, 1,  1, 1, OLED_WHITE);
+    rect_oled(x - 5,  y - 14, 11, 1, 1, OLED_WHITE);
+    rect_oled(x - 7,  y - 13, 15, 1, 1, OLED_WHITE);
+    rect_oled(x - 9,  y - 12, 19, 1, 1, OLED_WHITE);
+    rect_oled(x - 10, y - 11, 21, 1, 1, OLED_WHITE);
+    rect_oled(x - 11, y - 10, 23, 1, 1, OLED_WHITE);
+    rect_oled(x - 12, y - 9,  25, 2, 1, OLED_WHITE);
+    rect_oled(x - 13, y - 7,  27, 2, 1, OLED_WHITE);
+    rect_oled(x - 14, y - 5,  29, 2, 1, OLED_WHITE);
+    rect_oled(x - 15, y - 3,  31, 7, 1, OLED_WHITE);
+    rect_oled(x - 14, y + 4,  29, 2, 1, OLED_WHITE);
+    rect_oled(x - 13, y + 6,  27, 2, 1, OLED_WHITE);
+    rect_oled(x - 12, y + 8,  25, 2, 1, OLED_WHITE);
+    rect_oled(x - 11, y + 10, 23, 1, 1, OLED_WHITE);
+    rect_oled(x - 10, y + 11, 21, 1, 1, OLED_WHITE);
+    rect_oled(x - 9,  y + 12, 19, 1, 1, OLED_WHITE);
+    rect_oled(x - 7,  y + 13, 15, 1, 1, OLED_WHITE);
+    rect_oled(x - 5,  y + 14, 11, 1, 1, OLED_WHITE);
+    rect_oled(x,      y + 15, 1,  1, 1, OLED_WHITE);
+
+    // Classic basketball panel seams cut into the bright ball.
+    line_oled(x - 15, y,     x - 8, y - 3, 1, OLED_BLACK);
+    line_oled(x - 8,  y - 3, x,     y - 4, 1, OLED_BLACK);
+    line_oled(x,      y - 4, x + 8, y - 3, 1, OLED_BLACK);
+    line_oled(x + 8,  y - 3, x + 15,y,     1, OLED_BLACK);
+    line_oled(x - 11, y - 11, x - 6, y - 6, 1, OLED_BLACK);
+    line_oled(x - 6,  y - 6,  x,     y,     1, OLED_BLACK);
+    line_oled(x,      y,      x + 6, y + 6, 1, OLED_BLACK);
+    line_oled(x + 6,  y + 6,  x + 11,y + 11,1, OLED_BLACK);
+
+    // Moving curved seam creates a smoother left-to-right spin.
+    if (ball_spin_frame == 0) {
+        line_oled(x, y - 15, x - 8,  y - 8, 1, OLED_BLACK);
+        line_oled(x - 8, y - 8, x - 12, y, 1, OLED_BLACK);
+        line_oled(x - 12, y, x - 8, y + 8, 1, OLED_BLACK);
+        line_oled(x - 8, y + 8, x, y + 15, 1, OLED_BLACK);
+    } else if (ball_spin_frame == 1) {
+        line_oled(x, y - 15, x - 5, y - 8, 1, OLED_BLACK);
+        line_oled(x - 5, y - 8, x - 7, y, 1, OLED_BLACK);
+        line_oled(x - 7, y, x - 5, y + 8, 1, OLED_BLACK);
+        line_oled(x - 5, y + 8, x, y + 15, 1, OLED_BLACK);
+    } else if (ball_spin_frame == 2 || ball_spin_frame == 5) {
+        line_oled(x, y - 15, x, y + 15, 1, OLED_BLACK);
+    } else if (ball_spin_frame == 3) {
+        line_oled(x, y - 15, x + 5, y - 8, 1, OLED_BLACK);
+        line_oled(x + 5, y - 8, x + 7, y, 1, OLED_BLACK);
+        line_oled(x + 7, y, x + 5, y + 8, 1, OLED_BLACK);
+        line_oled(x + 5, y + 8, x, y + 15, 1, OLED_BLACK);
+    } else {
+        line_oled(x, y - 15, x + 8,  y - 8, 1, OLED_BLACK);
+        line_oled(x + 8, y - 8, x + 12, y, 1, OLED_BLACK);
+        line_oled(x + 12, y, x + 8, y + 8, 1, OLED_BLACK);
+        line_oled(x + 8, y + 8, x, y + 15, 1, OLED_BLACK);
+    }
+
+    // Pebbled texture and a darker lower-right edge add depth.
+    rect_oled(x - 8, y - 9, 1, 1, 1, OLED_BLACK);
+    rect_oled(x + 2, y - 10, 1, 1, 1, OLED_BLACK);
+    rect_oled(x + 8, y - 6, 1, 1, 1, OLED_BLACK);
+    rect_oled(x - 10, y + 5, 1, 1, 1, OLED_BLACK);
+    rect_oled(x - 3, y + 9, 1, 1, 1, OLED_BLACK);
+    rect_oled(x + 5, y + 8, 1, 1, 1, OLED_BLACK);
+    rect_oled(x + 11, y + 4, 2, 1, 1, OLED_BLACK);
+    rect_oled(x + 10, y + 7, 2, 1, 1, OLED_BLACK);
+    rect_oled(x + 8,  y + 10, 2, 1, 1, OLED_BLACK);
+}
+
+function draw_realistic_basketball(x, y) {
+    // High-detail 41x41 basketball silhouette.
+    rect_oled(x,      y - 20, 1,  1, 1, OLED_WHITE);
+    rect_oled(x - 6,  y - 19, 13, 1, 1, OLED_WHITE);
+    rect_oled(x - 8,  y - 18, 17, 1, 1, OLED_WHITE);
+    rect_oled(x - 10, y - 17, 21, 1, 1, OLED_WHITE);
+    rect_oled(x - 12, y - 16, 25, 1, 1, OLED_WHITE);
+    rect_oled(x - 13, y - 15, 27, 1, 1, OLED_WHITE);
+    rect_oled(x - 14, y - 14, 29, 1, 1, OLED_WHITE);
+    rect_oled(x - 15, y - 13, 31, 1, 1, OLED_WHITE);
+    rect_oled(x - 16, y - 12, 33, 2, 1, OLED_WHITE);
+    rect_oled(x - 17, y - 10, 35, 2, 1, OLED_WHITE);
+    rect_oled(x - 18, y - 8,  37, 2, 1, OLED_WHITE);
+    rect_oled(x - 19, y - 6,  39, 5, 1, OLED_WHITE);
+    rect_oled(x - 20, y - 1,  41, 3, 1, OLED_WHITE);
+    rect_oled(x - 19, y + 2,  39, 5, 1, OLED_WHITE);
+    rect_oled(x - 18, y + 7,  37, 2, 1, OLED_WHITE);
+    rect_oled(x - 17, y + 9,  35, 2, 1, OLED_WHITE);
+    rect_oled(x - 16, y + 11, 33, 2, 1, OLED_WHITE);
+    rect_oled(x - 15, y + 13, 31, 1, 1, OLED_WHITE);
+    rect_oled(x - 14, y + 14, 29, 1, 1, OLED_WHITE);
+    rect_oled(x - 13, y + 15, 27, 1, 1, OLED_WHITE);
+    rect_oled(x - 12, y + 16, 25, 1, 1, OLED_WHITE);
+    rect_oled(x - 10, y + 17, 21, 1, 1, OLED_WHITE);
+    rect_oled(x - 8,  y + 18, 17, 1, 1, OLED_WHITE);
+    rect_oled(x - 6,  y + 19, 13, 1, 1, OLED_WHITE);
+    rect_oled(x,      y + 20, 1,  1, 1, OLED_WHITE);
+
+    // Double-width curved equator seam.
+    line_oled(x - 20, y,     x - 12, y - 3, 1, OLED_BLACK);
+    line_oled(x - 12, y - 3, x - 4,  y - 5, 1, OLED_BLACK);
+    line_oled(x - 4,  y - 5, x + 4,  y - 5, 1, OLED_BLACK);
+    line_oled(x + 4,  y - 5, x + 12, y - 3, 1, OLED_BLACK);
+    line_oled(x + 12, y - 3, x + 20, y,     1, OLED_BLACK);
+    line_oled(x - 19, y + 1, x - 12, y - 2, 1, OLED_BLACK);
+    line_oled(x - 12, y - 2, x - 4,  y - 4, 1, OLED_BLACK);
+    line_oled(x - 4,  y - 4, x + 4,  y - 4, 1, OLED_BLACK);
+    line_oled(x + 4,  y - 4, x + 12, y - 2, 1, OLED_BLACK);
+    line_oled(x + 12, y - 2, x + 19, y + 1, 1, OLED_BLACK);
+
+    // Diagonal panel seam gives the ball its classic eight-panel construction.
+    line_oled(x - 15, y - 13, x - 8, y - 7, 1, OLED_BLACK);
+    line_oled(x - 8,  y - 7,  x,     y,     1, OLED_BLACK);
+    line_oled(x,      y,      x + 8, y + 7, 1, OLED_BLACK);
+    line_oled(x + 8,  y + 7,  x + 15,y + 13,1, OLED_BLACK);
+    line_oled(x - 14, y - 13, x - 7, y - 7, 1, OLED_BLACK);
+    line_oled(x - 7,  y - 7,  x + 1, y,     1, OLED_BLACK);
+    line_oled(x + 1,  y,      x + 9, y + 7, 1, OLED_BLACK);
+    line_oled(x + 9,  y + 7,  x + 16,y + 12,1, OLED_BLACK);
+
+    // Eight seam positions make the rotation smoother.
+    if (ball_spin_frame == 0) ball_seam_offset = -16;
+    else if (ball_spin_frame == 1) ball_seam_offset = -12;
+    else if (ball_spin_frame == 2) ball_seam_offset = -7;
+    else if (ball_spin_frame == 3) ball_seam_offset = -3;
+    else if (ball_spin_frame == 4) ball_seam_offset = 3;
+    else if (ball_spin_frame == 5) ball_seam_offset = 7;
+    else if (ball_spin_frame == 6) ball_seam_offset = 12;
+    else ball_seam_offset = 16;
+
+    line_oled(x, y - 20, x + (ball_seam_offset / 2), y - 11, 1, OLED_BLACK);
+    line_oled(x + (ball_seam_offset / 2), y - 11, x + ball_seam_offset, y, 1, OLED_BLACK);
+    line_oled(x + ball_seam_offset, y, x + (ball_seam_offset / 2), y + 11, 1, OLED_BLACK);
+    line_oled(x + (ball_seam_offset / 2), y + 11, x, y + 20, 1, OLED_BLACK);
+    line_oled(x + 1, y - 19, x + (ball_seam_offset / 2) + 1, y - 10, 1, OLED_BLACK);
+    line_oled(x + (ball_seam_offset / 2) + 1, y - 10, x + ball_seam_offset + 1, y, 1, OLED_BLACK);
+    line_oled(x + ball_seam_offset + 1, y, x + (ball_seam_offset / 2) + 1, y + 10, 1, OLED_BLACK);
+    line_oled(x + (ball_seam_offset / 2) + 1, y + 10, x + 1, y + 19, 1, OLED_BLACK);
+
+    // Pebbled leather texture, sparse in the highlight and dense in the shadow.
+    rect_oled(x - 11, y - 12, 1, 1, 1, OLED_BLACK);
+    rect_oled(x - 4,  y - 14, 1, 1, 1, OLED_BLACK);
+    rect_oled(x + 4,  y - 13, 1, 1, 1, OLED_BLACK);
+    rect_oled(x + 11, y - 10, 1, 1, 1, OLED_BLACK);
+    rect_oled(x - 15, y - 5,  1, 1, 1, OLED_BLACK);
+    rect_oled(x - 7,  y - 7,  1, 1, 1, OLED_BLACK);
+    rect_oled(x + 2,  y - 8,  1, 1, 1, OLED_BLACK);
+    rect_oled(x + 9,  y - 5,  1, 1, 1, OLED_BLACK);
+    rect_oled(x + 15, y - 3,  1, 1, 1, OLED_BLACK);
+    rect_oled(x - 16, y + 3,  1, 1, 1, OLED_BLACK);
+    rect_oled(x - 9,  y + 1,  1, 1, 1, OLED_BLACK);
+    rect_oled(x - 3,  y + 5,  1, 1, 1, OLED_BLACK);
+    rect_oled(x + 5,  y + 2,  1, 1, 1, OLED_BLACK);
+    rect_oled(x + 11, y + 5,  1, 1, 1, OLED_BLACK);
+    rect_oled(x - 12, y + 9,  1, 1, 1, OLED_BLACK);
+    rect_oled(x - 5,  y + 12, 1, 1, 1, OLED_BLACK);
+    rect_oled(x + 2,  y + 11, 1, 1, 1, OLED_BLACK);
+    rect_oled(x + 8,  y + 10, 1, 1, 1, OLED_BLACK);
+
+    // Dithered lower-right shadow creates roundness and depth.
+    rect_oled(x + 16, y - 7,  1, 1, 1, OLED_BLACK);
+    rect_oled(x + 17, y - 3,  2, 1, 1, OLED_BLACK);
+    rect_oled(x + 16, y + 1,  1, 1, 1, OLED_BLACK);
+    rect_oled(x + 18, y + 3,  1, 1, 1, OLED_BLACK);
+    rect_oled(x + 15, y + 6,  2, 1, 1, OLED_BLACK);
+    rect_oled(x + 13, y + 9,  2, 1, 1, OLED_BLACK);
+    rect_oled(x + 10, y + 12, 2, 1, 1, OLED_BLACK);
+    rect_oled(x + 7,  y + 15, 2, 1, 1, OLED_BLACK);
+}
+
+function draw_clean_basketball(x, y) {
+    // Perfect circular body; clean two-tone art reads clearly on the Zen OLED.
+    circle_oled(x, y, 19, 1, OLED_WHITE);
+
+    // Classic curved equator seam.
+    line_oled(x - 19, y,     x - 10, y - 4, 1, OLED_BLACK);
+    line_oled(x - 10, y - 4, x,      y - 6, 1, OLED_BLACK);
+    line_oled(x,      y - 6, x + 10, y - 4, 1, OLED_BLACK);
+    line_oled(x + 10, y - 4, x + 19, y,     1, OLED_BLACK);
+
+    // Diagonal seam creates the recognizable eight-panel basketball pattern.
+    line_oled(x - 14, y - 13, x - 7, y - 7, 1, OLED_BLACK);
+    line_oled(x - 7,  y - 7,  x,     y,     1, OLED_BLACK);
+    line_oled(x,      y,      x + 7, y + 7, 1, OLED_BLACK);
+    line_oled(x + 7,  y + 7,  x + 14,y + 13,1, OLED_BLACK);
+
+    // Smooth moving vertical seam supplies the spin without visual clutter.
+    if (ball_spin_frame == 0) ball_seam_offset = -15;
+    else if (ball_spin_frame == 1) ball_seam_offset = -11;
+    else if (ball_spin_frame == 2) ball_seam_offset = -7;
+    else if (ball_spin_frame == 3) ball_seam_offset = -3;
+    else if (ball_spin_frame == 4) ball_seam_offset = 3;
+    else if (ball_spin_frame == 5) ball_seam_offset = 7;
+    else if (ball_spin_frame == 6) ball_seam_offset = 11;
+    else ball_seam_offset = 15;
+
+    line_oled(x, y - 19, x + (ball_seam_offset / 2), y - 10, 1, OLED_BLACK);
+    line_oled(x + (ball_seam_offset / 2), y - 10, x + ball_seam_offset, y, 1, OLED_BLACK);
+    line_oled(x + ball_seam_offset, y, x + (ball_seam_offset / 2), y + 10, 1, OLED_BLACK);
+    line_oled(x + (ball_seam_offset / 2), y + 10, x, y + 19, 1, OLED_BLACK);
+
+}
+
+function draw_loading_screen() {
+    if (!ball_intro_drawn) {
+        cls_oled(OLED_BLACK);
+        print(center_x(get_string_length(welcome_line1[0]), OLED_FONT_MEDIUM_WIDTH), 45, OLED_FONT_MEDIUM, OLED_WHITE, welcome_line1[0]);
+        ball_intro_drawn = 1;
+    }
+
+    if (ball_redraw) {
+        // The filled circle replaces the previous seam frame without clearing the screen.
+        draw_spinning_basketball(64, 18);
+        ball_redraw = 0;
+    }
+}
+
+function draw_menu_frame() {
+}
+
+function draw_footer_hint() {
+}
+
+function draw_loading_meter(progress, limit) {
+    meter_fill = map(progress, 0, limit, 0, 88);
+    if (meter_fill < 0) meter_fill = 0;
+    if (meter_fill > 88) meter_fill = 88;
+    rect_oled(18, 52, 88, 5, OLED_BLACK, OLED_WHITE);
+    rect_oled(18, 52, meter_fill, 5, 1, OLED_WHITE);
+}
+
+function saver_step() {
+    cls_oled(OLED_BLACK);
+
+    // Two-line moving prompt with no logo, border, or divider lines.
+    line1_w = (get_string_length(idle_prompt[0]) - 1) * OLED_FONT_SMALL_WIDTH;
+    line2_w = (get_string_length(idle_action[0]) - 1) * OLED_FONT_SMALL_WIDTH;
+    if (line1_w > line2_w) msg_w = line1_w;
+    else msg_w = line2_w;
+
+    print(sx + ((msg_w - line1_w) / 2), sy, OLED_FONT_SMALL, OLED_WHITE, idle_prompt[0]);
+    print(sx + ((msg_w - line2_w) / 2), sy + 12, OLED_FONT_SMALL, OLED_WHITE, idle_action[0]);
+
+    sx += svx;
+    sy += svy;
+
+    if (sx <= 1 || sx >= (OLED_WIDTH - msg_w - 1)) svx = -svx;
+    if (sy <= 1 || sy >= (OLED_HEIGHT - 23)) svy = -svy;
+}
+
+function draw_snow() {
+    if (!snow_enabled) return;
+    
+    // Update and draw each snowflake
+    for (snow_i = 0; snow_i < num_snowflakes; snow_i++) {
+        // Move snowflake down
+        snow_y[snow_i] += snow_speed[snow_i];
+        
+        // Reset snowflake to top if it goes off screen
+        if (snow_y[snow_i] > 63) {
+            snow_y[snow_i] = -5;
+            snow_x[snow_i] = random(0, 127);
+            snow_speed[snow_i] = random(1, 3);
+        }
+        
+        // Draw snowflake as small square (1x1 or 2x2 pixels)
+        if (snow_speed[snow_i] > 1) {
+            // Larger snowflakes (2x2)
+            rect_oled(snow_x[snow_i], snow_y[snow_i], 2, 2, 1, OLED_WHITE);
+        } else {
+            // Smaller snowflakes (1x1)
+            rect_oled(snow_x[snow_i], snow_y[snow_i], 1, 1, 1, OLED_WHITE);
+        }
+    }
+}
+
+function map(val, in_min, in_max, out_min, out_max) {
+    return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+function draw_x_graph(value, min_val, max_val, y_pos) {
+}
+
+function center_x(f_chars, f_font) {
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+
+int bufferIndex, digitIndex, charIndex;
+function number_to_string(f_val, f_digits, f_y) {
+    bufferIndex = 1;
+    digitIndex = 10000;
+    if (f_val < 0) {
+        putc_oled(bufferIndex, 45);
+        bufferIndex += 1;
+        f_val = abs(f_val);
+    }
+    for (charIndex = 5; charIndex >= 1; charIndex--) {
+        if (f_digits >= charIndex) {
+            putc_oled(bufferIndex, (f_val / digitIndex) + 48);
+            f_val %= digitIndex;
+            bufferIndex++;
+            if (charIndex == 4) {
+                putc_oled(bufferIndex, 44);
+                bufferIndex++;
+            }
+        }
+        digitIndex /= 10;
+    }
+    puts_oled(center_x(bufferIndex - 1, OLED_FONT_MEDIUM_WIDTH), f_y, OLED_FONT_MEDIUM, bufferIndex - 1, OLED_WHITE);
+}
+
+int logVal;
+function find_digits(num) {
+    logVal = 0;
+    do {
+        num /= 10;
+        logVal++;
+    } while (num);
+    return logVal;
+}
+
+int stringLength;
+function get_string_length(offset) {
+    stringLength = 0;
+    while (duint8(offset++)) {
+        stringLength++;
+    }
+    return stringLength + 1;
+}
+
+function apply_zen_color() {
+    // Apply RGB LED color based on zen_color selection
+    // 0-7: Original colors, 8-19: New colors
+    if (zen_color == 0) {
+        set_rgb(255, 0, 0);  // Red
+    } else if (zen_color == 1) {
+        set_rgb(0, 255, 0);  // Green
+    } else if (zen_color == 2) {
+        set_rgb(0, 0, 255);  // Blue
+    } else if (zen_color == 3) {
+        set_rgb(0, 255, 255);  // Cyan
+    } else if (zen_color == 4) {
+        set_rgb(255, 0, 255);  // Magenta
+    } else if (zen_color == 5) {
+        set_rgb(255, 255, 0);  // Yellow
+    } else if (zen_color == 6) {
+        set_rgb(255, 255, 255);  // White
+    } else if (zen_color == 7) {
+        set_rgb(0, 0, 0);  // Black (off)
+    } else if (zen_color == 8) {
+        set_rgb(255, 165, 0);  // Orange
+    } else if (zen_color == 9) {
+        set_rgb(128, 0, 128);  // Purple
+    } else if (zen_color == 10) {
+        set_rgb(255, 105, 180);  // Pink
+    } else if (zen_color == 11) {
+        set_rgb(50, 205, 50);  // Lime
+    } else if (zen_color == 12) {
+        set_rgb(0, 128, 128);  // Teal
+    } else if (zen_color == 13) {
+        set_rgb(75, 0, 130);  // Indigo
+    } else if (zen_color == 14) {
+        set_rgb(135, 206, 235);  // Sky Blue
+    } else if (zen_color == 15) {
+        set_rgb(255, 20, 147);  // Hot Pink
+    } else if (zen_color == 16) {
+        set_rgb(255, 215, 0);  // Gold
+    } else if (zen_color == 17) {
+        set_rgb(238, 130, 238);  // Violet
+    } else if (zen_color == 18) {
+        set_rgb(64, 224, 208);  // Turquoise
+    } else if (zen_color == 19) {
+        set_rgb(255, 127, 80);  // Coral
+    }
+}

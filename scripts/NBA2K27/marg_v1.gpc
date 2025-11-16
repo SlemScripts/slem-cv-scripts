@@ -1,0 +1,1065 @@
+// █████╗ ██████╗  ██████╗ ██╗  ██╗██╗
+// ██╔══██╗██╔══██╗██╔═══██╗██║ ██╔╝██║
+// ███████║██████╔╝██║   ██║█████╔╝ ██║
+// ██╔══██║██╔══██╗██║   ██║██╔═██╗ ██║
+// ██║  ██║██████╔╝╚██████╔╝██║  ██╗██║
+// ╚═╝  ╚═╝╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝
+// discord.gg/cyzens
+// discord.gg/cyzens
+//                  __ _ __  __       __
+//  | ] (_) | ]   / /  [ |
+//  .--.| |  __  .--. .---. .--. _ .--. .--.| |  .--./) .--./) / /  .--. _ .--. | |  ,--.
+/// /'\ ' | [ | ( (\] / /'\] / .'\ \ [ /'\] / /'\' | / /'\; / /'\; / //  .'\ \ [ /'\]| | '\ :
+//| \__/ | | |  '.'.  | \__.  | \__. | | | | \__/ |  _ \ \._// \ \._/// / | \__. | | | | | //
+// |   ,// '.__.;__][___][\__) )'.___.' '.__.' [___] '.__.;__](_).',__  .',__/  _/  '.__.' [___] [___]'-;__/
+//                             ( ( __))( ( __))
+
+//========================================================
+// discord.gg/cyzens
+// discord.gg/cyzens
+// posted by : Gk  (@beebagk)
+// user id   : 1107473213103034418
+// posted    : 2026-08-27 22:47:24 EDT
+// channel   : #📁・community-scripts
+// trace     : 8ewmhmi2jiuq.82d2ad45ee
+//========================================================
+const uint8 iarr_0000[] = {
+    84, 105, 107, 84, 111, 107, 32, 64, 109, 97, 114, 103, 105, 101, 108, 113,
+// discord.gg/cyzens
+// discord.gg/cyzens
+    0, 77, 97, 114, 103, 105, 101, 108, 113, 32, 86, 53, 0, 35, 49, 32,
+    90, 101, 110, 32, 83, 99, 114, 105, 112, 116, 0, 65, 117, 116, 111, 32,
+// build 8ewmhmi2jiuq.82d2ad45ee
+    71, 114, 101, 101, 110, 0, 84, 101, 109, 112, 111, 32, 83, 112, 101, 101,
+    100, 32, 40, 109, 115, 41, 0, 83, 116, 97, 98, 105, 108, 105, 116, 121,
+    32, 69, 110, 104, 97, 110, 99, 101, 114, 0, 84, 117, 114, 98, 111, 32,
+    83, 104, 111, 116, 115, 0, 82, 83, 32, 83, 104, 111, 111, 116, 105, 110,
+    103, 0, 73, 110, 115, 116, 97, 32, 83, 104, 111, 116, 0, 73, 110, 115,
+    116, 97, 32, 83, 112, 101, 101, 100, 32, 40, 109, 115, 41, 0, 73, 110,
+// discord.gg/cyzens
+// discord.gg/cyzens
+    115, 116, 97, 32, 84, 101, 109, 112, 111, 32, 40, 109, 115, 41, 0, 82,
+    101, 109, 97, 112, 32, 83, 113, 117, 97, 114, 101, 0
+};
+const uint8 iarr_00AC[] = {
+    43, 54, 71, 90, 102, 114, 125, 142, 159
+};
+const string kstr_14BE[] = {
+    "L2 + RIGHT", "L2 LEFT / RIGHT", "L2 + LEFT"
+// discord.gg/cyzens
+// discord.gg/cyzens
+};
+const string kstr_14E1[] = {
+    "L2 + UP/DOWN", "to change"
+};
+const string sgap_00F1[] = {
+    "OFF", "ON", "", "L3", "R3"
+};
+const uint8 iarr_00FF[] = {
+    241, 245, 248, 249, 252, 109, 115, 0
+// discord.gg/cyzens
+// discord.gg/cyzens
+};
+const string kstr_151A[] = {
+    "Hop Jumper", "Turbo Fade"
+};
+
+int var_0021, var_0022, var_0023, var_0024, var_0025, var_0026, var_0027, var_0028;
+int var_0029, var_002A, var_002B, var_002C, var_002D, var_002E, var_002F, var_0030;
+int var_0031, var_0032, var_0033, var_0034, var_0035, var_0036, var_0037, var_0038;
+// discord.gg/cyzens
+// discord.gg/cyzens
+int var_0039, var_003A, var_003B, var_003C, var_003D, var_003E, var_003F, var_0040;
+int var_0041, var_0042, var_0043, var_0044, var_0045, var_0046, var_0047, var_0048;
+int var_0049, var_004A, var_004B, var_004C, var_004D, var_004E, var_004F, var_0050;
+int var_0051, var_0052, var_0053, var_0054, var_0055, var_0056, var_0057, var_0058;
+int var_0059, var_005A, var_005B, var_005C, var_005D, var_005E, var_005F, var_0060;
+int var_0061, var_0062, var_0063, var_0064, var_0065, var_0066, var_0067, var_0068;
+int var_0069;
+
+init {
+// discord.gg/cyzens
+// discord.gg/cyzens
+    var_0021 = 1;
+    var_0023 = 50;
+    var_0024 = 50;
+    var_0025 = 100000;
+    var_0026 = -100000;
+    var_0027 = 25;
+    var_0028 = -4;
+    var_0029 = 4;
+    var_002A = -2;
+// discord.gg/cyzens
+// discord.gg/cyzens
+    var_002B = 2;
+    var_002C = 300000;
+    var_002D = 1;
+    var_002F = 300;
+    var_0030 = 1;
+    var_0031 = 650;
+    var_0038 = 2;
+    var_0039 = 16;
+// discord.gg/cyzens
+// discord.gg/cyzens
+    var_003A = 2;
+    var_003B = 2;
+    var_0040 = 1;
+    var_0041 = 9;
+    var_0043 = 1;
+    var_0049 = 1;
+    var_0055 = 20;
+    var_0056 = 24;
+    var_0057 = 2;
+// discord.gg/cyzens
+// discord.gg/cyzens
+    var_0058 = 1;
+    var_0059 = 6;
+    var_005A = 16;
+    var_005B = 2;
+    var_005C = 1;
+    var_0061 = 70;
+    var_0062 = 1;
+    var_0021 = 1;
+// discord.gg/cyzens
+// discord.gg/cyzens
+    var_0023 = 50;
+    var_0024 = 50;
+    var_002D = 1;
+    var_002E = 0;
+    var_002F = 300;
+    var_0030 = 1;
+    var_0031 = 590;
+    var_0035 = 0;
+    var_002C = 300000;
+// discord.gg/cyzens
+// discord.gg/cyzens
+    var_0037 = 0;
+    var_003F = 0;
+    var_0053 = 0;
+    var_0054 = 0;
+    var_0055 = 20;
+    var_0056 = 24;
+    var_0057 = 2;
+    var_0058 = 1;
+// discord.gg/cyzens
+// discord.gg/cyzens
+    var_0059 = 6;
+    var_005A = 16;
+    var_005B = 2;
+    var_005C = 1;
+    var_005D = 0;
+    var_005E = 0;
+    var_005F = 0;
+    cls_oled(0);
+}
+// discord.gg/cyzens
+// discord.gg/cyzens
+
+main {
+    if ((get_console() == 5)) {
+        var_0048 = 1;
+    }
+    else {
+        var_0048 = 0;
+    }
+    func_106B();
+// discord.gg/cyzens
+// discord.gg/cyzens
+    func_1256();
+    if (var_0049) {
+        var_004A = (var_004A + get_rtime());
+        func_1210();
+        if ((var_004A >= 5000)) {
+            cls_oled(0);
+            var_0049 = 0;
+            var_0040 = 0;
+// discord.gg/cyzens
+// discord.gg/cyzens
+            var_0037 = 1;
+            var_003F = 80;
+        }
+    }
+    combo_run(COMBO_3);
+    if ((get_val(20) || combo_running(COMBO_6))) {
+        var_0063 = 1;
+    }
+    else {
+// discord.gg/cyzens
+// discord.gg/cyzens
+        if (((((!combo_running(COMBO_1)) && (!combo_running(COMBO_2))) && (!combo_running(COMBO_4))) && (!combo_running(COMBO_6)))) {
+            var_0063 = 0;
+        }
+    }
+    if ((event_press(18) && var_0042)) {
+        var_0042 = 0;
+        combo_run(COMBO_10);
+        func_1256();
+// discord.gg/cyzens
+// discord.gg/cyzens
+        var_0037 = 1;
+    }
+    else {
+        if ((((!var_0042) && get_val(7)) && event_press(2))) {
+            var_0042 = 1;
+            var_0043 = 1;
+            combo_run(COMBO_9);
+            func_1256();
+            var_0037 = 0;
+// discord.gg/cyzens
+// discord.gg/cyzens
+        }
+    }
+    if (var_0042) {
+        cls_oled(0);
+        func_1132();
+        print(func_13B7(func_147D(func_14A0((var_0043 - 1))), 7), 4, 0, 1, kstr_14BE[var_0046]);
+        print(func_13B7(func_147D(func_14A0((var_0043 - 1))), 7), 20, 0, 1, func_14A0((var_0043 - 1)));
+        if ((var_0043 == 4)) {
+// discord.gg/cyzens
+// discord.gg/cyzens
+            print(func_13B7(func_147D(kstr_151A[var_002D]), 11), 30, 1, 1, kstr_151A[var_002D]);
+        }
+        else {
+            if ((var_0043 == 9)) {
+                print(func_13B7(func_147D(func_14FC((var_0035 + 3))), 11), 30, 1, 1, func_14FC((var_0035 + 3)));
+            }
+            else {
+                if (((((var_0043 != 2) && (var_0043 != 3)) && (var_0043 != 7)) && (var_0043 != 8))) {
+                    print(func_13B7(func_147D(func_14FC(var_0044)), 11), 30, 1, 1, func_14FC(var_0044));
+// discord.gg/cyzens
+// discord.gg/cyzens
+                }
+            }
+        }
+        print(func_13B7(func_147D(kstr_14E1[var_0045]), 7), 50, 0, 1, kstr_14E1[var_0045]);
+        if ((var_0043 == 1)) {
+            var_0046 = 0;
+        }
+        else {
+            if ((var_0043 == var_0041)) {
+// discord.gg/cyzens
+// discord.gg/cyzens
+                var_0046 = 2;
+            }
+            else {
+                var_0046 = 1;
+            }
+        }
+        if ((var_0043 > var_0041)) {
+            var_0043 = var_0041;
+// discord.gg/cyzens
+// discord.gg/cyzens
+        }
+        if ((var_0043 < 1)) {
+            var_0043 = 1;
+        }
+        if (get_val(7)) {
+            set_val(13, 0);
+            set_val(14, 0);
+            set_val(15, 0);
+            set_val(16, 0);
+// discord.gg/cyzens
+// discord.gg/cyzens
+        }
+        if ((get_val(7) && event_press(15))) {
+            var_0043 = (var_0043 - 1);
+            combo_run(COMBO_11);
+        }
+        if ((get_val(7) && event_press(16))) {
+            var_0043 = (var_0043 + 1);
+            combo_run(COMBO_11);
+// discord.gg/cyzens
+// discord.gg/cyzens
+        }
+        if ((var_0043 == 1)) {
+            var_0044 = var_0021;
+            var_0045 = 0;
+            if ((get_val(7) && event_press(13))) {
+                var_0021 = 1;
+                var_0047 = 1;
+                combo_run(COMBO_11);
+                combo_run(COMBO_7);
+// discord.gg/cyzens
+// discord.gg/cyzens
+            }
+            if ((get_val(7) && event_press(14))) {
+                var_0021 = 0;
+                var_0047 = 0;
+                combo_run(COMBO_11);
+                combo_run(COMBO_7);
+            }
+        }
+// discord.gg/cyzens
+// discord.gg/cyzens
+        if ((var_0043 == 2)) {
+            var_0044 = 2;
+            var_0045 = 0;
+            func_13C6(var_0023, func_1460(var_0023));
+            print(70, 30, 1, 1, 260);
+            func_130B(var_0023, 0, 300, 45);
+            if (get_val(7)) {
+                if (event_press(13)) {
+                    var_0023 = (var_0023 + 1);
+// discord.gg/cyzens
+// discord.gg/cyzens
+                }
+                if (event_press(14)) {
+                    var_0023 = (var_0023 - 1);
+                }
+                if ((event_press(13) || event_press(14))) {
+                    combo_run(COMBO_11);
+                    combo_run(COMBO_8);
+                }
+            }
+// discord.gg/cyzens
+// discord.gg/cyzens
+            if ((var_0023 > 300)) {
+                var_0023 = 300;
+            }
+            if ((var_0023 < 0)) {
+                var_0023 = 0;
+            }
+        }
+        if ((var_0043 == 3)) {
+// discord.gg/cyzens
+// discord.gg/cyzens
+            var_0044 = 2;
+            var_0045 = 0;
+            func_13C6(var_002C, func_1460(var_002C));
+            print(70, 30, 1, 1, 260);
+            func_130B(var_002C, 10, 300000, 45);
+            if (get_val(7)) {
+                if (event_press(13)) {
+                    var_002C = (var_002C + 1);
+                }
+// discord.gg/cyzens
+// discord.gg/cyzens
+                if (event_press(14)) {
+                    var_002C = (var_002C - 1);
+                }
+                if ((event_press(13) || event_press(14))) {
+                    combo_run(COMBO_11);
+                    combo_run(COMBO_8);
+                }
+            }
+// discord.gg/cyzens
+// discord.gg/cyzens
+            if ((var_002C > 300000)) {
+                var_002C = 300000;
+            }
+            if ((var_002C < 10)) {
+                var_002C = 10;
+            }
+        }
+        if ((var_0043 == 4)) {
+            var_0044 = var_002D;
+// discord.gg/cyzens
+// discord.gg/cyzens
+            var_0045 = 0;
+            if ((get_val(7) && event_press(13))) {
+                var_002D = 1;
+                var_0047 = 1;
+                combo_run(COMBO_11);
+                combo_run(COMBO_7);
+            }
+            if ((get_val(7) && event_press(14))) {
+// discord.gg/cyzens
+// discord.gg/cyzens
+                var_002D = 0;
+                var_0047 = 0;
+                combo_run(COMBO_11);
+                combo_run(COMBO_7);
+            }
+        }
+        if ((var_0043 == 5)) {
+            var_0044 = var_002E;
+            var_0045 = 0;
+// discord.gg/cyzens
+// discord.gg/cyzens
+            if ((get_val(7) && event_press(13))) {
+                var_002E = 1;
+                var_0047 = 1;
+                combo_run(COMBO_11);
+                combo_run(COMBO_7);
+            }
+            if ((get_val(7) && event_press(14))) {
+                var_002E = 0;
+                var_0047 = 0;
+// discord.gg/cyzens
+// discord.gg/cyzens
+                combo_run(COMBO_11);
+                combo_run(COMBO_7);
+            }
+        }
+        if ((var_0043 == 6)) {
+            var_0044 = var_0030;
+            var_0045 = 0;
+            if ((get_val(7) && event_press(13))) {
+// discord.gg/cyzens
+// discord.gg/cyzens
+                var_0030 = 1;
+                var_0047 = 1;
+                combo_run(COMBO_11);
+                combo_run(COMBO_7);
+            }
+            if ((get_val(7) && event_press(14))) {
+                var_0030 = 0;
+                var_0047 = 0;
+                combo_run(COMBO_11);
+// discord.gg/cyzens
+// discord.gg/cyzens
+                combo_run(COMBO_7);
+            }
+        }
+        if ((var_0043 == 7)) {
+            var_0044 = 2;
+            var_0045 = 0;
+            func_13C6(var_0031, func_1460(var_0031));
+            print(70, 30, 1, 1, 260);
+// discord.gg/cyzens
+// discord.gg/cyzens
+            func_130B(var_0031, 100, 1000, 45);
+            if (get_val(7)) {
+                if (get_val(3)) {
+                    if (event_press(13)) {
+                        var_0031 = (var_0031 + 10);
+                    }
+                    if (event_press(14)) {
+                        var_0031 = (var_0031 - 10);
+                    }
+// discord.gg/cyzens
+// discord.gg/cyzens
+                }
+                else {
+                    if (event_press(13)) {
+                        var_0031 = (var_0031 + 1);
+                    }
+                    if (event_press(14)) {
+                        var_0031 = (var_0031 - 1);
+                    }
+// discord.gg/cyzens
+// discord.gg/cyzens
+                }
+                if ((event_press(13) || event_press(14))) {
+                    combo_run(COMBO_11);
+                    combo_run(COMBO_8);
+                }
+            }
+            if ((var_0031 > 1000)) {
+                var_0031 = 1000;
+            }
+// discord.gg/cyzens
+// discord.gg/cyzens
+            if ((var_0031 < 100)) {
+                var_0031 = 100;
+            }
+        }
+        if ((var_0043 == 8)) {
+            var_0044 = 2;
+            var_0045 = 0;
+            func_13C6(var_0024, func_1460(var_0024));
+            print(70, 30, 1, 1, 260);
+// discord.gg/cyzens
+// discord.gg/cyzens
+            func_130B(var_0024, 0, 300, 45);
+            if (get_val(7)) {
+                if (event_press(13)) {
+                    var_0024 = (var_0024 + 1);
+                }
+                if (event_press(14)) {
+                    var_0024 = (var_0024 - 1);
+                }
+// discord.gg/cyzens
+// discord.gg/cyzens
+                if ((event_press(13) || event_press(14))) {
+                    combo_run(COMBO_11);
+                    combo_run(COMBO_8);
+                }
+            }
+            if ((var_0024 > 300)) {
+                var_0024 = 300;
+            }
+            if ((var_0024 < 0)) {
+// discord.gg/cyzens
+// discord.gg/cyzens
+                var_0024 = 0;
+            }
+        }
+        if ((var_0043 == 9)) {
+            var_0044 = var_0035;
+            var_0045 = 0;
+            if ((get_val(7) && event_press(13))) {
+                var_0035 = 1;
+// discord.gg/cyzens
+// discord.gg/cyzens
+                var_0047 = 1;
+                combo_run(COMBO_11);
+                combo_run(COMBO_7);
+            }
+            if ((get_val(7) && event_press(14))) {
+                var_0035 = 0;
+                var_0047 = 0;
+                combo_run(COMBO_11);
+                combo_run(COMBO_7);
+// discord.gg/cyzens
+// discord.gg/cyzens
+            }
+        }
+    }
+    if ((!var_0042)) {
+        func_1256();
+        if (var_0037) {
+            var_003F = (var_003F + get_rtime());
+            if ((var_003F >= 80)) {
+// discord.gg/cyzens
+// discord.gg/cyzens
+                func_105F();
+                var_003F = 0;
+            }
+        }
+        if ((var_0035 == 0)) {
+            if (get_val(8)) {
+                set_val(20, 100);
+            }
+        }
+// discord.gg/cyzens
+// discord.gg/cyzens
+        else {
+            if (get_val(5)) {
+                set_val(20, 100);
+            }
+        }
+        if (((event_press(20) && (!((var_0035 == 0) && get_val(8)))) && (!((var_0035 == 1) && get_val(5))))) {
+            if ((var_002D && get_val(4))) {
+                var_0064 = 1;
+            }
+// discord.gg/cyzens
+// discord.gg/cyzens
+            else {
+                var_0064 = 0;
+            }
+        }
+        if (var_0021) {
+            if ((((!((var_0035 == 0) && get_val(8))) && (!((var_0035 == 1) && get_val(5)))) && get_val(20))) {
+// build 8ewmhmi2jiuq.82d2ad45ee
+                set_val(20, 0);
+// discord.gg/cyzens
+// discord.gg/cyzens
+                if (var_0064) {
+                    set_val(10, (var_0026 + random(var_0028, var_0029)));
+                }
+                else {
+                    set_val(10, (var_0025 + random(var_0028, var_0029)));
+                }
+                set_val(9, random(var_0028, var_0029));
+            }
+            if ((((!((var_0035 == 0) && get_val(8))) && (!((var_0035 == 1) && get_val(5)))) && event_release(20))) {
+// discord.gg/cyzens
+// discord.gg/cyzens
+                if (var_0064) {
+                    combo_run(COMBO_2);
+                }
+                else {
+                    combo_run(COMBO_1);
+                }
+                var_0064 = 0;
+            }
+// discord.gg/cyzens
+// discord.gg/cyzens
+        }
+        if (event_press(14)) {
+            combo_run(COMBO_5);
+        }
+        if (var_0030) {
+            if ((((var_0035 == 0) && event_press(5)) || ((var_0035 == 1) && event_press(8)))) {
+                if ((var_002D && get_val(4))) {
+                    combo_run(COMBO_6);
+                }
+// discord.gg/cyzens
+// discord.gg/cyzens
+                else {
+                    combo_run(COMBO_4);
+                }
+            }
+        }
+        if (var_0030) {
+            if ((((var_0035 == 0) && event_press(5)) || ((var_0035 == 1) && event_press(8)))) {
+                if ((var_002D && get_val(4))) {
+// discord.gg/cyzens
+// discord.gg/cyzens
+                    combo_run(COMBO_6);
+                }
+                else {
+                    combo_run(COMBO_4);
+                }
+            }
+        }
+        if (var_002E) {
+            if ((!((get_val(7) > 20) && ((((((get_val(3) > 20) || get_val(15)) || get_val(16)) || get_val(13)) || get_val(14)) || get_val(2))))) {
+// discord.gg/cyzens
+// discord.gg/cyzens
+                if (((abs(get_val(10)) > 30) || (abs(get_val(9)) > 30))) {
+                    if ((!var_0032)) {
+                        var_0032 = 1;
+                        var_0033 = 0;
+                        if ((get_val(10) < 0)) {
+                            var_0034 = 1;
+                        }
+                        else {
+// discord.gg/cyzens
+// discord.gg/cyzens
+                            var_0034 = 0;
+                        }
+                    }
+                    var_0033 = (var_0033 + get_rtime());
+                }
+                else {
+                    if (var_0032) {
+                        if ((var_0033 > var_002F)) {
+                            if ((!var_0034)) {
+// discord.gg/cyzens
+// discord.gg/cyzens
+                                combo_run(COMBO_1);
+                            }
+                            else {
+                                combo_run(COMBO_2);
+                            }
+                        }
+                        var_0032 = 0;
+                        var_0033 = 0;
+                    }
+// discord.gg/cyzens
+// discord.gg/cyzens
+                }
+            }
+        }
+    }
+}
+
+combo COMBO_1 {
+    set_val(10, (-50 + random(var_002A, var_002B)));
+// discord.gg/cyzens
+// discord.gg/cyzens
+    set_val(9, (20 + random(var_002A, var_002B)));
+    wait(var_0023);
+    set_val(10, (-100 + random(var_0028, var_0029)));
+    set_val(9, (25 + random(var_0028, var_0029)));
+    wait(300);
+    if ((combo_current_step(COMBO_1) == 3)) {
+        set_val(10, 0);
+        set_val(9, 0);
+    }
+// discord.gg/cyzens
+// discord.gg/cyzens
+}
+
+combo COMBO_2 {
+    set_val(10, (50 + random(var_002A, var_002B)));
+    set_val(9, (-20 + random(var_002A, var_002B)));
+    wait(var_0023);
+    set_val(10, (100 + random(var_0028, var_0029)));
+    set_val(9, (-25 + random(var_0028, var_0029)));
+// discord.gg/cyzens
+// discord.gg/cyzens
+    wait(300);
+    if ((combo_current_step(COMBO_2) == 3)) {
+        set_val(10, 0);
+        set_val(9, 0);
+    }
+}
+
+combo COMBO_3 {
+    if ((combo_current_step(COMBO_3) == 1)) {
+// discord.gg/cyzens
+// discord.gg/cyzens
+        if ((((((((var_0060 && var_0062) && (!var_0063)) && (!get_val(20))) && (!get_val(5))) && (!combo_running(COMBO_4))) && (!combo_running(COMBO_1))) && (!combo_running(COMBO_2)))) {
+            if (((abs(get_val(11)) > 20) || (abs(get_val(12)) > 20))) {
+                set_val(11, ((get_val(11) * var_0061) / 100));
+                set_val(12, ((get_val(12) * var_0061) / 100));
+            }
+            else {
+                set_val(11, 0);
+                set_val(12, 0);
+// discord.gg/cyzens
+// discord.gg/cyzens
+            }
+        }
+    }
+}
+
+combo COMBO_4 {
+    set_val(10, var_0025);
+    set_val(9, 0);
+    wait(var_0031);
+// discord.gg/cyzens
+// discord.gg/cyzens
+    set_val(10, (-55 + random(-1, 1)));
+    set_val(9, 18);
+    wait(var_0024);
+    set_val(10, -100);
+    set_val(9, 25);
+    wait(260);
+    if ((combo_current_step(COMBO_4) == 4)) {
+        set_val(10, 0);
+        set_val(9, 0);
+// discord.gg/cyzens
+// discord.gg/cyzens
+    }
+}
+
+combo COMBO_5 {
+    set_val(10, var_0026);
+    set_val(9, 0);
+    wait(2000);
+    set_val(10, 55);
+// discord.gg/cyzens
+// discord.gg/cyzens
+    set_val(9, -18);
+    wait(var_0024);
+    set_val(10, 100);
+    set_val(9, -25);
+    wait(260);
+    if ((combo_current_step(COMBO_5) == 4)) {
+        set_val(10, 0);
+        set_val(9, 0);
+    }
+// discord.gg/cyzens
+// discord.gg/cyzens
+}
+
+combo COMBO_6 {
+    var_0036 = 1;
+    set_val(10, var_0026);
+    set_val(9, 0);
+    wait(871);
+    set_val(10, 55);
+// discord.gg/cyzens
+// discord.gg/cyzens
+    set_val(9, -18);
+    wait(var_0024);
+    set_val(10, 100);
+    set_val(9, -25);
+    wait(500);
+    if ((combo_current_step(COMBO_6) == 4)) {
+        set_val(10, 0);
+        set_val(9, 0);
+        var_0036 = 0;
+// discord.gg/cyzens
+// discord.gg/cyzens
+    }
+}
+
+combo COMBO_7 {
+    if ((!var_0047)) {
+        set_rgb(255, 0, 0);
+    }
+    else {
+// discord.gg/cyzens
+// discord.gg/cyzens
+        set_rgb(0, 255, 0);
+    }
+    wait(1000);
+    if ((combo_current_step(COMBO_7) == 2)) {
+        set_rgb(0, 0, 255);
+    }
+}
+
+combo COMBO_8 {
+// discord.gg/cyzens
+// discord.gg/cyzens
+    set_rgb(0, 0, 0);
+    wait(150);
+    if ((combo_current_step(COMBO_8) == 2)) {
+        set_rgb(0, 0, 255);
+    }
+}
+
+combo COMBO_9 {
+    set_rumble(0, 100);
+// discord.gg/cyzens
+// discord.gg/cyzens
+    wait(200);
+    if ((combo_current_step(COMBO_9) == 2)) {
+        set_rumble(0, 0);
+    }
+}
+
+combo COMBO_10 {
+    set_rumble(0, 50);
+// discord.gg/cyzens
+// discord.gg/cyzens
+    wait(200);
+    if ((combo_current_step(COMBO_10) == 2)) {
+        set_rumble(0, 0);
+    }
+}
+
+combo COMBO_11 {
+    set_rumble(0, 50);
+    wait(50);
+// discord.gg/cyzens
+// discord.gg/cyzens
+    if ((combo_current_step(COMBO_11) == 2)) {
+        set_rumble(0, 0);
+    }
+}
+
+function func_105F() {
+    func_10EE();
+    func_122C();
+// discord.gg/cyzens
+// discord.gg/cyzens
+    return;
+}
+
+function func_106B() {
+    var_0054 = (var_0054 + get_rtime());
+    if ((var_0054 >= 120)) {
+        var_0053 = (var_0053 + 1);
+        if ((var_0053 > 11)) {
+            var_0053 = 0;
+// discord.gg/cyzens
+// discord.gg/cyzens
+        }
+        var_0054 = 0;
+    }
+    return;
+}
+
+function func_1094() {
+    var_005D = (var_005D + get_rtime());
+// discord.gg/cyzens
+// discord.gg/cyzens
+    if ((var_005D >= 80)) {
+        var_0055 = (var_0055 + var_0057);
+        var_0056 = (var_0056 + var_0058);
+        if (((var_0055 <= 0) || (var_0055 >= 62))) {
+            var_0057 = inv(var_0057);
+        }
+        if (((var_0056 <= 0) || (var_0056 >= 54))) {
+            var_0058 = inv(var_0058);
+        }
+// discord.gg/cyzens
+// discord.gg/cyzens
+        var_005D = 0;
+    }
+    return;
+}
+
+function func_10EE() {
+    var_0059 = (var_0059 + var_005B);
+    var_005A = (var_005A + var_005C);
+    if (((var_0059 <= 0) || (var_0059 >= 38))) {
+// discord.gg/cyzens
+// discord.gg/cyzens
+        var_005B = inv(var_005B);
+    }
+    if (((var_005A <= 0) || (var_005A >= 44))) {
+        var_005C = inv(var_005C);
+    }
+    return;
+}
+
+// discord.gg/cyzens
+// discord.gg/cyzens
+function func_1132() {
+    func_11EF(4, 5, 0);
+    func_11EF(18, 12, 1);
+    func_11EF(35, 7, 2);
+    func_11EF(53, 18, 3);
+    func_11EF(73, 8, 4);
+    func_11EF(91, 14, 5);
+    func_11EF(115, 6, 6);
+    func_11EF(9, 31, 7);
+// discord.gg/cyzens
+// discord.gg/cyzens
+    func_11EF(27, 44, 8);
+    func_11EF(45, 30, 9);
+    func_11EF(66, 52, 10);
+    func_11EF(86, 37, 11);
+    func_11EF(107, 50, 0);
+    func_11EF(123, 28, 1);
+    func_11EF(13, 57, 2);
+    func_11EF(58, 3, 3);
+// discord.gg/cyzens
+// discord.gg/cyzens
+    func_11EF(99, 61, 4);
+    return;
+}
+
+function func_11EF(arg_0, arg_1, arg_2) {
+    if ((((var_0053 + arg_2) % 3) != 0)) {
+        rect_oled(arg_0, arg_1, 1, 1, 1, 1);
+    }
+    return;
+// discord.gg/cyzens
+// discord.gg/cyzens
+}
+
+function func_1210() {
+    func_1094();
+    cls_oled(0);
+    func_1132();
+    print(var_0055, var_0056, 0, 1, 29);
+    return;
+// discord.gg/cyzens
+// discord.gg/cyzens
+}
+
+function func_122C() {
+    cls_oled(0);
+    func_1132();
+    print(var_0059, var_005A, 0, 1, 0);
+    print((var_0059 + 12), (var_005A + 10), 0, 1, 17);
+    return;
+}
+// discord.gg/cyzens
+// discord.gg/cyzens
+
+function func_1256() {
+    var_005E = (var_005E + get_rtime());
+    if ((var_005E >= 250)) {
+        var_005F = (var_005F + 1);
+        if ((var_005F > 5)) {
+            var_005F = 0;
+        }
+        var_005E = 0;
+// discord.gg/cyzens
+// discord.gg/cyzens
+    }
+    if ((var_005F == 0)) {
+        set_rgb(255, 0, 0);
+    }
+    else {
+        if ((var_005F == 1)) {
+            set_rgb(255, 80, 0);
+        }
+// discord.gg/cyzens
+// discord.gg/cyzens
+        else {
+            if ((var_005F == 2)) {
+                set_rgb(255, 255, 0);
+            }
+            else {
+                if ((var_005F == 3)) {
+                    set_rgb(0, 255, 0);
+                }
+                else {
+// discord.gg/cyzens
+// discord.gg/cyzens
+                    if ((var_005F == 4)) {
+                        set_rgb(0, 0, 255);
+                    }
+                    else {
+                        set_rgb(160, 0, 255);
+                    }
+                }
+            }
+// discord.gg/cyzens
+// discord.gg/cyzens
+        }
+    }
+    return;
+}
+
+function func_12EE(arg_0, arg_1, arg_2, arg_3, arg_4) {
+    return ((((arg_0 - arg_1) * (arg_4 - arg_3)) / (arg_2 - arg_1)) + arg_3);
+}
+
+// discord.gg/cyzens
+// discord.gg/cyzens
+function func_130B(arg_0, arg_1, arg_2, arg_3) {
+    var_004B = 100;
+    var_004C = ((128 - var_004B) / 2);
+    var_004D = (var_004C + (var_004B / 2));
+    var_004E = func_12EE(arg_0, arg_1, arg_2, 0, var_004B);
+    line_oled(var_004C, arg_3, (var_004C + var_004B), arg_3, 1, 1);
+    line_oled(var_004D, (arg_3 - 3), var_004D, (arg_3 + 3), 1, 1);
+    line_oled(var_004C, (arg_3 - 2), var_004C, (arg_3 + 2), 1, 1);
+// discord.gg/cyzens
+// discord.gg/cyzens
+    line_oled((var_004C + var_004B), (arg_3 - 2), (var_004C + var_004B), (arg_3 + 2), 1, 1);
+    rect_oled(var_004C, (arg_3 - 2), var_004E, 4, 1, 1);
+    return;
+}
+
+function func_13B7(arg_0, arg_1) {
+    return (64 - ((arg_0 * arg_1) / 2));
+}
+
+// discord.gg/cyzens
+// discord.gg/cyzens
+function func_13C6(arg_0, arg_1) {
+    var_0065 = 1;
+    var_0066 = 10000;
+    if ((arg_0 < 0)) {
+        putc_oled(var_0065, 45);
+        var_0065 = (var_0065 + 1);
+        arg_0 = abs(arg_0);
+    }
+    var_0067 = 5;
+// discord.gg/cyzens
+// discord.gg/cyzens
+    while ((var_0067 >= 1)) {
+        if ((arg_1 >= var_0067)) {
+            putc_oled(var_0065, ((arg_0 / var_0066) + 48));
+            arg_0 = (arg_0 % var_0066);
+            var_0065 = (var_0065 + 1);
+            if ((var_0067 == 4)) {
+                putc_oled(var_0065, 44);
+                var_0065 = (var_0065 + 1);
+// discord.gg/cyzens
+// discord.gg/cyzens
+            }
+        }
+        var_0066 = (var_0066 / 10);
+        var_0067 = (var_0067 - 1);
+    }
+    puts_oled(func_13B7((var_0065 + 1), 11), 30, 1, (var_0065 - 1), 1);
+    return;
+}
+
+// discord.gg/cyzens
+// discord.gg/cyzens
+function func_1460(arg_0) {
+    var_0068 = 0;
+    do {
+        arg_0 = (arg_0 / 10);
+        var_0068 = (var_0068 + 1);
+    } while (!((!arg_0)));
+    return var_0068;
+}
+// discord.gg/cyzens
+// discord.gg/cyzens
+
+function func_147D(arg_0) {
+    var_0069 = 0;
+    while (1) {
+        arg_0 = (arg_0 + 1);
+        if (!(iarr_0000[arg_0])) { break; }
+        var_0069 = (var_0069 + 1);
+    }
+    return (var_0069 + 1);
+// discord.gg/cyzens
+// discord.gg/cyzens
+}
+
+function func_14A0(arg_0) {
+    if (((arg_0 < 0) || (arg_0 >= 9))) {
+        return -1;
+    }
+    return iarr_00AC[arg_0];
+}
+// discord.gg/cyzens
+// discord.gg/cyzens
+
+function func_14FC(arg_0) {
+    if (((arg_0 < 0) || (arg_0 >= 5))) {
+        return -1;
+    }
+    return iarr_00FF[arg_0];
+}
+// build 8ewmhmi2jiuq.82d2ad45ee
+
+// discord.gg/cyzens
+// discord.gg/cyzens

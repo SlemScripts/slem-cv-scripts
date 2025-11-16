@@ -1,0 +1,1124 @@
+//discord.gg/orla
+//discord.gg/orla /$$$$$$ /$$$$$$$ /$$ /$$$$$$  discord.gg/orla
+//discord.gg/orla /$$__ $$| $$__ $$| $$ /$$__ $$ discord.gg/orla
+//discord.gg/orla | $$ \ $$| $$ \ $$| $$ | $$ \ $$ discord.gg/orla
+//discord.gg/orla | $$ | $$| $$$$$$$/| $$ | $$$$$$$$ discord.gg/orla
+//discord.gg/orla | $$ | $$| $$__ $$| $$ | $$__ $$ discord.gg/orla
+//discord.gg/orla | $$ | $$| $$ \ $$| $$ | $$ | $$ discord.gg/orla
+//discord.gg/orla | $$$$$$/| $$ | $$| $$$$$$$$| $$ | $$ discord.gg/orla
+//discord.gg/orla  \______/ |__/ |__/|________/|__/ |__/ discord.gg/orla
+//                  __ _ __  __       __
+//  | ] (_) | ]   / /  [ |
+//  .--.| |  __  .--. .---. .--. _ .--. .--.| |  .--./) .--./) / /  .--. _ .--. | |  ,--.
+/// /'\ ' | [ | ( (\] / /'\] / .'\ \ [ /'\] / /'\' | / /'\; / /'\; / //  .'\ \ [ /'\]| | '\ :
+//| \__/ | | |  '.'.  | \__.  | \__. | | | | \__/ |  _ \ \._// \ \._/// / | \__. | | | | | //
+// |   ,// '.__.;__][___][\__) )'.___.' '.__.' [___] '.__.;__](_).',__  .',__/  _/  '.__.' [___] [___]'-;__/
+//                             ( ( __))( ( __))
+
+//========================================================
+// posted by : MXRGY  (@mxrgy.)
+// user id   : 1412907004451623056
+// posted    : 2026-09-08 03:13:49 EDT
+// channel   : #NBA27
+// trace     : aqg1qd6op0uo.71768eb35b
+// prior trace: 9dbnt81um42f.f0e2fe4e0e, aw0wovco0ebx.6f0446d102
+// discord.gg/orla
+//========================================================
+int _f1 = 1;
+int _d1 = 51;
+int _di = 63;
+int _sv = 100;
+// build aqg1qd6op0uo.71768eb35b
+int _su = -100;
+int _rn = -7;
+int _rx = 7;
+int _hrn = -2;
+int _hrx = 2;
+int _rh = -2;
+int _rhx = 2;
+int _st = 21;
+int _dtc = 18029;
+int _rf = 2;
+int _ia = 1;
+int _sm = 630;
+int _tm = 773;
+int _nm = 275;
+int _id = 650;
+int _rm = 3;
+int _rs = 0;
+int _rhd = 300;
+int _np = 21;
+// discord.gg/orla
+int _cb = 1;
+int _bs = 0;
+int _aq = 1;
+int _is = 1;
+int _gcn = 70;
+int _gcx = 100;
+int _gcc = 100;
+int _gco = 87624;
+int _gsa = 1;
+int _mt = 0;
+int _rdl = 800;
+int _rdr = 1000;
+int _md = 1;
+int _sp = 0;
+int _nd = 1;
+int _it = 1;
+int _rv = 0;
+int _rvm = 350;
+int _de = 0;
+int _du = 0;
+int _dd = 0;
+// discord.gg/orla
+int _dl = 0;
+int _dr = 0;
+int _me, _ix, _sb, _rd, _ih, _ht, _ru, _pg, _r5, _ms, _tt;
+int _ct = 0;
+int _ss = 0;
+int _rss = 0;
+int _shs = 0;
+int _sqh = 0;
+int _vt = 0;
+int _va = 0;
+int _hd = 0;
+int _mdo = 0;
+int _mhd = 0;
+int _mhdl = 100;
+int _mhr = 25;
+int _mhu = 0;
+int _mhdn = 0;
+int _osd = 96346;
+const string onOff[] = {"OFF", "ON", ""};
+// discord.gg/orla
+const string _bl[] = {"Build"};
+const string _ml[] = {"ms"};
+const string _rmm[] = {"L3", "R3", "L1", "R1"};
+const string _rmx[] = {"L3", "R3", "LB", "RB"};
+const string dribble_names[] = {"Off", "BTB Spam", "Curry", "DBook", "B Break", "Escape", "Momentum"};
+const string _mdp[] = {"OFF", "L1", "Circle"};
+const string _mdx[] = {"OFF", "LB", "B"};
+const string _ism[] = {"Off", "Instant", "Gradual"};
+const string _spl[] = {"OFF", "ON"};
+const string _splx[] = {"OFF", "ON"};
+const string menu_header[] = {"Select Build", "AI Button Tempo", "Tempo", "Auto-Green", "Auto-Green Timing", "Auto-Green Tempo", "Turbo Fades", "Auto-Green Turbo", "Auto-Green No-Dip", "SQ / X Remap", "RS Shooting", "AI Defense", "Quick-Stop", "Infinite Stamina", "Dribble Up", "Dribble Down", "Dribble Left", "Dribble Right", "Haptic Shots", "Haptic MS", "Meter Dunk", "Spot-Take"};
+const string menu_headerX[] = {"Select Build", "AI Button Tempo", "Tempo", "Auto-Green", "Auto-Green Timing", "Auto-Green Tempo", "Turbo Fades", "Auto-Green Turbo", "Auto-Green No-Dip", "X / A Remap", "RS Shooting", "AI Defense", "Quick-Stop", "Infinite Stamina", "Dribble Up", "Dribble Down", "Dribble Left", "Dribble Right", "Haptic Shots", "Haptic MS", "Meter Dunk", "Spot-Take"};
+int _da = 1;
+int _wm = 0;
+int _sa = 1;
+const string HOOPS_BRAND = "yew.gg/yew2k";
+const string _HL[] = {"6'5"};
+int _bt = 43;
+int _flt = 0;
+int _fls = 0;
+int _fli = 4000;
+int _dti, _dtx, _tdt, _cdt;
+int _nbi, _ndi, _nci;
+int _stc = 6;
+int _stx[6];
+int _sty[6];
+int _stvx[6];
+// discord.gg/orla
+int _stvy[6];
+int _stt[6];
+int _sta[6];
+int _sti;
+int _hx, _px, _py, _bob;
+int _rbh = 0;
+int _rbt = 0;
+int _rbr, _rbg, _rbb;
+int _rbrg, _rbre, _rbp, _rbq, _rbtv;
+int _fl = 0;
+int _fld = 0;
+int _stt2 = 0;
+int _fdd = 150;
+
+function _dpd(c, t) {
+// discord.gg/orla
+    _tdt = t;
+    _cdt = c;
+    _dtx = (128 - (_tdt * 7 - 3)) / 2;
+    for (_dti = 0; _dti < _tdt; _dti++) {
+        if (_dti == _cdt) {
+            rect_oled(_dtx + (_dti * 7), 56, 4, 4, 1, OLED_WHITE);
+        } else {
+            rect_oled(_dtx + (_dti * 7), 56, 4, 4, 1, OLED_WHITE);
+            rect_oled(_dtx + (_dti * 7) + 1, 57, 2, 2, 1, OLED_BLACK);
+        }
+    }
+}
+
+function _dtp(x, y, o) {
+    rect_oled(x, y, 24, 12, 1, OLED_WHITE);
+    rect_oled(x + 1, y + 1, 22, 10, 1, OLED_BLACK);
+// discord.gg/orla
+    if (o) {
+        rect_oled(x + 13, y + 2, 8, 8, 1, OLED_WHITE);
+    } else {
+        rect_oled(x + 3, y + 2, 8, 8, 1, OLED_WHITE);
+        rect_oled(x + 4, y + 3, 6, 6, 1, OLED_BLACK);
+    }
+}
+
+function _dch(x, y) {
+    line_oled(x, y, x + 4, y + 4, 1, OLED_WHITE);
+    line_oled(x + 4, y + 4, x, y + 8, 1, OLED_WHITE);
+}
+
+function _gvpi(ap) {
+    if (ap <= 1) return ap;
+    if (ap >= 3 && ap <= 8) return ap - 1;
+    if (ap >= 9 && ap <= 18) return ap - 1;
+    if (ap == 20) return 18;
+    if (ap == 21) return 19;
+    return 0;
+}
+
+function _ntsa(fv, fd, px, py) {
+    _nbi = 1;
+    _ndi = 10000;
+    if (fv < 0) {
+        putc_oled(_nbi, 45);
+        _nbi += 1;
+        fv = abs(fv);
+    }
+// discord.gg/orla
+    for (_nci = 5; _nci >= 1; _nci--) {
+        if (fd >= _nci) {
+            putc_oled(_nbi, (fv / _ndi) + 48);
+            fv %= _ndi;
+            _nbi++;
+        }
+        _ndi /= 10;
+    }
+    puts_oled(px, py, OLED_FONT_MEDIUM, _nbi - 1, OLED_WHITE);
+}
+
+combo _mc {
+    if (_is && _gsa && !_mdo && !_ss && !_rss && !get_val(PS4_SQUARE) && !combo_running(_fus) && !combo_running(_fur) && !combo_running(_iss) && !combo_running(_isr)) {
+        if (abs(get_val(PS4_LX)) > 20 || abs(get_val(PS4_LY)) > 20) {
+            _mt = _mt + get_rtime();
+            if (_is == 1) {
+                _gcc = _gcn;
+            } else if (_is == 2) {
+                if (_mt <= _rdl + (_gco / _gco) - 1) {
+                    _gcc = _gcx;
+                } else if (_mt <= _rdl + _rdr) {
+                    _gcc = _gcx - ((_gcx - _gcn) * (_mt - _rdl) / _rdr);
+                } else {
+                    _gcc = _gcn;
+                }
+            }
+            set_val(PS4_LX, (get_val(PS4_LX) * _gcc) / 100);
+            set_val(PS4_LY, (get_val(PS4_LY) * _gcc) / 100);
+        } else {
+// discord.gg/orla
+            _mt = 0;
+            _gcc = _gcx;
+        }
+        if (abs(get_val(PS4_LX)) < 20 && abs(get_val(PS4_LY)) < 20) {
+            set_val(PS4_LX, 0);
+            set_val(PS4_LY, 0);
+        }
+    }
+}
+
+function _aoc() {
+    _rbt += get_rtime();
+    if (_rbt >= 25 + (_dtc / _dtc) - 1) {
+        _rbt = 0;
+        _rbh += 1;
+        if (_rbh >= 300) _rbh = 0;
+    }
+// discord.gg/orla
+    _rbrg = _rbh / 100;
+    _rbre = _rbh % 100;
+    if (_rbrg == 0) {
+        _rbr = 255 - (117 * _rbre / 100);
+        _rbg = 140 - (97 * _rbre / 100);
+        _rbb = (226 * _rbre / 100);
+    } else if (_rbrg == 1) {
+        _rbr = 138 - (138 * _rbre / 100);
+        _rbg = 43 + (85 * _rbre / 100);
+        _rbb = 226 + (29 * _rbre / 100);
+    } else {
+        _rbr = (255 * _rbre / 100);
+        _rbg = 128 + (12 * _rbre / 100);
+        _rbb = 255 - (255 * _rbre / 100);
+    }
+// discord.gg/orla
+    set_rgb(_rbr, _rbg, _rbb);
+}
+
+function _ude() {
+    if (_du > 0 || _dd > 0 || _dl > 0 || _dr > 0) {
+        _de = 1;
+    } else {
+        _de = 0;
+    }
+}
+
+function _ulm(o) {
+    if (o) {
+        _aoc();
+    } else {
+        set_rgb(0, 0, 0);
+    }
+// discord.gg/orla
+}
+
+function _ctd() {
+    _d1 = random(_bt - 1, _bt + 1) + (_dtc / _dtc) - 1;
+}
+
+function _gdi() {
+    return _di + random(_hrn, _hrx);
+}
+
+combo _ruc {
+    set_val(PS4_RY, 0 + random(_hrn, _hrx));
+    set_val(PS4_RX, 20 + random(_hrn, _hrx));
+    wait(_d1);
+    set_val(PS4_RY, -100 + random(_rn, _rx));
+    set_val(PS4_RX, 25 + random(_rn, _rx));
+    wait(200);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+combo _rdc {
+    set_val(PS4_RY, 0 + random(_hrn, _hrx));
+    set_val(PS4_RX, -20 + random(_hrn, _hrx));
+    wait(_d1);
+    set_val(PS4_RY, 100 + random(_rn, _rx));
+    set_val(PS4_RX, -25 + random(_rn, _rx));
+// discord.gg/orla
+    wait(200);
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+function _dht(bx, by) {
+    _bob = 0;
+    _hx = bx;
+    rect_oled(_hx, by + 6, 4, 8, 1, OLED_WHITE);
+    rect_oled(_hx + 8, by + 6, 4, 8, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 12, 6, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 4, by + 14, 4, 8, 1, OLED_WHITE);
+    _hx = bx + 16;
+    rect_oled(_hx, by + 8, 4, 10, 1, OLED_WHITE);
+    rect_oled(_hx + 8, by + 8, 4, 6, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 6, 6, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 11, 8, 3, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 16, 6, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 8, by + 17, 4, 3, 1, OLED_WHITE);
+    _hx = bx + 32;
+    rect_oled(_hx, by + 6, 4, 12, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 14, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 6, by + 10, 4, 8, 1, OLED_WHITE);
+    rect_oled(_hx + 9, by + 14, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 12, by + 6, 4, 12, 1, OLED_WHITE);
+    _hx = bx + 52;
+    rect_oled(_hx, by + 4, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 2, 6, 4, 1, OLED_WHITE);
+// discord.gg/orla
+    rect_oled(_hx + 8, by + 4, 4, 5, 1, OLED_WHITE);
+    rect_oled(_hx + 5, by + 8, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 2, by + 11, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx, by + 14, 12, 4, 1, OLED_WHITE);
+    _hx = bx + 68;
+    rect_oled(_hx, by, 4, 20, 1, OLED_WHITE);
+    rect_oled(_hx + 4, by + 9, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 7, by + 5, 4, 5, 1, OLED_WHITE);
+    rect_oled(_hx + 10, by + 2, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 7, by + 12, 4, 5, 1, OLED_WHITE);
+    rect_oled(_hx + 10, by + 16, 4, 4, 1, OLED_WHITE);
+    _hx = bx + 84;
+    rect_oled(_hx + 3, by + 6, 4, 12, 1, OLED_WHITE);
+    rect_oled(_hx, by + 10, 10, 4, 1, OLED_WHITE);
+}
+
+function _dyt(bx, by) {
+    _hx = bx;
+    rect_oled(_hx, by + 6, 4, 8, 1, OLED_WHITE);
+    rect_oled(_hx + 8, by + 6, 4, 8, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 12, 6, 4, 1, OLED_WHITE);
+// discord.gg/orla
+    rect_oled(_hx + 4, by + 14, 4, 8, 1, OLED_WHITE);
+    _hx = bx + 16;
+    rect_oled(_hx, by + 8, 4, 10, 1, OLED_WHITE);
+    rect_oled(_hx + 8, by + 8, 4, 6, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 6, 6, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 11, 8, 3, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 16, 6, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 8, by + 17, 4, 3, 1, OLED_WHITE);
+    _hx = bx + 32;
+    rect_oled(_hx, by + 6, 4, 12, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 14, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 6, by + 10, 4, 8, 1, OLED_WHITE);
+    rect_oled(_hx + 9, by + 14, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 12, by + 6, 4, 12, 1, OLED_WHITE);
+    _hx = bx + 52;
+    rect_oled(_hx, by + 16, 4, 4, 1, OLED_WHITE);
+    _hx = bx + 60;
+    rect_oled(_hx, by + 8, 4, 8, 1, OLED_WHITE);
+    rect_oled(_hx + 8, by + 6, 4, 16, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 6, 6, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 14, 6, 4, 1, OLED_WHITE);
+    rect_oled(_hx, by + 20, 4, 3, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 20, 6, 4, 1, OLED_WHITE);
+    _hx = bx + 76;
+    rect_oled(_hx, by + 8, 4, 8, 1, OLED_WHITE);
+    rect_oled(_hx + 8, by + 6, 4, 16, 1, OLED_WHITE);
+// discord.gg/orla
+    rect_oled(_hx + 3, by + 6, 6, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 14, 6, 4, 1, OLED_WHITE);
+    rect_oled(_hx, by + 20, 4, 3, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 20, 6, 4, 1, OLED_WHITE);
+}
+
+function _dnt(bx, by) {
+    _hx = bx;
+    rect_oled(_hx, by + 6, 4, 14, 1, OLED_WHITE);
+    rect_oled(_hx + 4, by + 6, 3, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 6, by + 4, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 10, by + 6, 4, 14, 1, OLED_WHITE);
+    _hx = bx + 18;
+    rect_oled(_hx, by, 4, 20, 1, OLED_WHITE);
+    rect_oled(_hx + 4, by + 6, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 7, by + 6, 4, 6, 1, OLED_WHITE);
+    rect_oled(_hx + 4, by + 11, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 7, by + 12, 4, 6, 1, OLED_WHITE);
+    rect_oled(_hx + 4, by + 16, 4, 4, 1, OLED_WHITE);
+    _hx = bx + 34;
+    rect_oled(_hx, by + 8, 4, 10, 1, OLED_WHITE);
+    rect_oled(_hx + 8, by + 6, 4, 14, 1, OLED_WHITE);
+// discord.gg/orla
+    rect_oled(_hx + 3, by + 4, 6, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 11, 6, 3, 1, OLED_WHITE);
+    _hx = bx + 54;
+    rect_oled(_hx, by + 4, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 3, by + 2, 6, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 8, by + 4, 4, 5, 1, OLED_WHITE);
+    rect_oled(_hx + 5, by + 8, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 2, by + 11, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx, by + 14, 12, 4, 1, OLED_WHITE);
+    _hx = bx + 70;
+    rect_oled(_hx, by, 4, 20, 1, OLED_WHITE);
+    rect_oled(_hx + 4, by + 9, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 7, by + 5, 4, 5, 1, OLED_WHITE);
+    rect_oled(_hx + 10, by + 2, 4, 4, 1, OLED_WHITE);
+    rect_oled(_hx + 7, by + 12, 4, 5, 1, OLED_WHITE);
+// discord.gg/orla
+    rect_oled(_hx + 10, by + 16, 4, 4, 1, OLED_WHITE);
+}
+
+function _uss() {
+    _stt2++;
+    if (_stt2 % 2 == 0) {
+        for (_sti = 0; _sti < _stc + (_osd / _osd) - 1; _sti++) {
+            if (_sta[_sti]) {
+                _stx[_sti] += _stvx[_sti];
+                _sty[_sti] += _stvy[_sti];
+                if (_stt[_sti] > 8) {
+                    _stvy[_sti] += 1;
+                }
+                _stt[_sti]++;
+                if (_stx[_sti] > 135 || _sty[_sti] > 60 || _stt[_sti] > 50) {
+                    _sta[_sti] = 0;
+                }
+            } else {
+                if (random(0, 100) < 2) {
+                    _sta[_sti] = 1;
+                    _stx[_sti] = random(-5, 30);
+                    _sty[_sti] = random(-8, 5);
+                    _stvx[_sti] = random(2, 3);
+                    _stvy[_sti] = 1;
+                    _stt[_sti] = 0;
+// discord.gg/orla
+                }
+            }
+        }
+    }
+}
+
+function _dss() {
+    for (_sti = 0; _sti < _stc; _sti++) {
+        if (_sta[_sti] && _sty[_sti] >= 0 && _sty[_sti] < 56) {
+            pixel_oled(_stx[_sti], _sty[_sti], 1);
+            pixel_oled(_stx[_sti] + 1, _sty[_sti], 1);
+            pixel_oled(_stx[_sti] + 1, _sty[_sti] + 1, 1);
+            if (_stt[_sti] > 3) {
+                pixel_oled(_stx[_sti] - _stvx[_sti], _sty[_sti] - 1, 1);
+                pixel_oled(_stx[_sti] - _stvx[_sti] + 1, _sty[_sti] - 1, 1);
+            }
+            if (_stt[_sti] > 8) {
+                pixel_oled(_stx[_sti] - _stvx[_sti] * 2, _sty[_sti] - 2, 1);
+            }
+            if (_stt[_sti] > 15) {
+// discord.gg/orla
+                pixel_oled(_stx[_sti] - _stvx[_sti] * 3, _sty[_sti] - 3, 1);
+            }
+        }
+    }
+}
+
+function _dis() {
+    cls_oled(0);
+    _uss();
+    _dss();
+    _flt = _flt + get_rtime() + (_osd / _osd) - 1;
+    if (_flt >= _fli) {
+        _flt = 0;
+        _fls = _fls + 1;
+        if (_fls > 2) {
+            _fls = 0;
+        }
+    }
+    if (_fls == 0) {
+        _dht(17, 8);
+    } else if (_fls == 1) {
+        _dyt(21, 8);
+    } else {
+        _dnt(23, 8);
+    }
+    print(_cx(_gsl(_HL[0]), OLED_FONT_MEDIUM_WIDTH), 38, OLED_FONT_MEDIUM, OLED_WHITE, _HL[0]);
+// discord.gg/orla
+}
+
+function _ait() {
+    if (_it) {
+        if (get_val(PS4_L2) > 0) {
+            set_val(PS4_L2, 100);
+        }
+        if (get_val(PS4_R2) > 0) {
+            set_val(PS4_R2, 100);
+        }
+    }
+}
+
+function _trv() {
+    if (_rv && get_val(PS4_SQUARE)) {
+        if (!_sqh) {
+            _sqh = 1;
+            _shs = _ct;
+            _va = 0;
+            _vt = 0;
+        } else {
+            _hd = _ct - _shs;
+            if (_hd >= _rvm && !_vt) {
+                set_rumble(RUMBLE_A, 100);
+// discord.gg/orla
+                _va = 1;
+                _vt = 1;
+            }
+        }
+    } else if (!get_val(PS4_SQUARE)) {
+        if (_va) {
+            set_rumble(RUMBLE_A, 0);
+            _va = 0;
+        }
+        _sqh = 0;
+        _vt = 0;
+    }
+}
+
+function _hmd() {
+    if (_md > 0) {
+        if (_md == 1) {
+            if (get_val(PS4_L1)) {
+                set_val(PS4_RY, 100);
+                set_val(PS4_R2, 100);
+                _mdo = 1;
+            } else if (event_release(PS4_L1)) {
+                set_val(PS4_RY, 0);
+                set_val(PS4_R2, 0);
+                _mdo = 0;
+            }
+        } else if (_md == 2) {
+            if (get_val(PS4_CIRCLE)) {
+                set_val(PS4_RY, 100);
+                set_val(PS4_R2, 100);
+// discord.gg/orla
+                _mdo = 1;
+            } else if (event_release(PS4_CIRCLE)) {
+                set_val(PS4_RY, 0);
+                set_val(PS4_R2, 0);
+                _mdo = 0;
+            }
+        }
+    } else if (_mdo) {
+        set_val(PS4_RY, 0);
+        set_val(PS4_R2, 0);
+        _mdo = 0;
+    }
+}
+
+function _hst() {
+    if (_sp && get_val(PS4_CROSS) && !_me) {
+        combo_run(_stc);
+    }
+}
+
+// discord.gg/orla
+function _cx(fc, ff) {
+    return (OLED_WIDTH / 2) - ((fc * ff) / 2);
+}
+
+int _lv;
+function _fd(n) {
+    _lv = 0;
+    do {
+        n /= 10;
+        _lv++;
+    } while (n);
+    return _lv;
+// build aqg1qd6op0uo.71768eb35b
+}
+
+int _sl;
+function _gsl(o) {
+// discord.gg/orla
+    _sl = 0;
+    while (duint8(o++)) {
+        _sl++;
+    }
+    return _sl + 1;
+}
+
+function _gbs() {
+    _bs = ((_cb - 1) * 19) + 7;
+    return _bs;
+}
+
+function _sgs() {
+    set_pvar(SPVAR_2, _rm);
+    set_pvar(SPVAR_3, _rs);
+    set_pvar(SPVAR_4, _md);
+    set_pvar(SPVAR_5, _sp);
+// discord.gg/orla
+}
+
+function _lgs() {
+    _rm = get_pvar(SPVAR_2, 0, 3, 0);
+    _rs = get_pvar(SPVAR_3, 0, 1, 0);
+    _md = get_pvar(SPVAR_4, 0, 2, 0);
+    _sp = get_pvar(SPVAR_5, 0, 1, 0);
+}
+
+function _sbs() {
+    _gbs();
+    set_pvar(_bs + 0, _f1);
+    set_pvar(_bs + 1, _d1);
+    set_pvar(_bs + 2, _aq);
+    set_pvar(_bs + 3, _bt);
+    set_pvar(_bs + 4, _da);
+    set_pvar(_bs + 5, _rf);
+    set_pvar(_bs + 6, _ia);
+    set_pvar(_bs + 7, _sm);
+    set_pvar(_bs + 8, _nd);
+    set_pvar(_bs + 9, _rv);
+    set_pvar(_bs + 10, _rvm);
+    set_pvar(_bs + 11, _is);
+    set_pvar(_bs + 12, _du);
+// discord.gg/orla
+    set_pvar(_bs + 13, _dd);
+    set_pvar(_bs + 14, _dl);
+    set_pvar(_bs + 15, _dr);
+    set_pvar(_bs + 16, _st);
+    set_pvar(_bs + 17, _tm);
+    set_pvar(_bs + 18, _di);
+    _ude();
+}
+
+function _lbs() {
+    _gbs();
+    _f1 = get_pvar(_bs + 0, 0, 1, 1);
+    _d1 = get_pvar(_bs + 1, 0, 300, 62);
+    _ctd();
+    _aq = get_pvar(_bs + 2, 0, 1, 0);
+    _bt = get_pvar(_bs + 3, 1, 100, _bt);
+    _da = get_pvar(_bs + 4, 0, 1, 1);
+    _rf = get_pvar(_bs + 5, 0, 2, 1);
+    _ia = get_pvar(_bs + 6, 0, 1, 1);
+    _sm = get_pvar(_bs + 7, 100, 1000, 650);
+    _nd = get_pvar(_bs + 8, 0, 1, 1);
+    _rv = get_pvar(_bs + 9, 0, 1, 0);
+    _rvm = get_pvar(_bs + 10, 200, 1000, 600);
+    _is = get_pvar(_bs + 11, 0, 2, 2);
+    _du = get_pvar(_bs + 12, 0, 3, 0);
+// discord.gg/orla
+    _dd = get_pvar(_bs + 13, 0, 3, 0);
+    _dl = get_pvar(_bs + 14, 0, 3, 0);
+    _dr = get_pvar(_bs + 15, 0, 3, 0);
+    _st = get_pvar(_bs + 16, 10, 100, 16);
+    _tm = get_pvar(_bs + 17, 100, 1500, 820);
+    _di = get_pvar(_bs + 18, 0, 300, 80);
+    _ude();
+}
+
+function _svm() {
+    _sbs();
+    set_pvar(SPVAR_1, _cb);
+}
+
+init {
+    InitializeGeneratorSettings();
+    _cb = get_pvar(SPVAR_1, 1, 3, 1);
+    _lgs();
+    _lbs();
+    _ctd();
+    for (_sti = 0; _sti < _stc + (_dtc / _dtc) - 1; _sti++) {
+// discord.gg/orla
+        _sta[_sti] = 0;
+        _stx[_sti] = 0;
+        _sty[_sti] = 0;
+        _stvx[_sti] = 0;
+        _stvy[_sti] = 0;
+        _stt[_sti] = 0;
+    }
+    _aoc();
+    vm_tctrl(-2);
+    _dis();
+}
+
+define MOD_MENU_TOGGLE_HOLD = XB1_LT;
+define MOD_MENU_TOGGLE_PRESS = XB1_MENU;
+define MOD_NEXT = XB1_RIGHT;
+define MOD_PREVIOUS = XB1_LEFT;
+define MOD_INCREASE = XB1_UP;
+define MOD_DECREASE = XB1_DOWN;
+define MOD_SELECT = XB1_A;
+
+// discord.gg/orla
+
+define GEN_HASH = 28020;
+int gen_base;
+function InitializeGeneratorSettings() {
+    if (get_pvar(SPVAR_2, 0, 2, 99) == 99) {
+    set_pvar(SPVAR_4, 0);
+    set_pvar(SPVAR_3, 3);
+    set_pvar(SPVAR_5, 1);
+    set_pvar(SPVAR_6, 0);
+    }
+    gen_base = 7;
+    if (get_pvar(gen_base + 8, 0, 32767, 0) != GEN_HASH) {
+        set_pvar(gen_base + 0, 1);
+        set_pvar(gen_base + 1, 51);
+        set_pvar(gen_base + 6, 1);
+        set_pvar(gen_base + 7, 630);
+        set_pvar(gen_base + 5, 2);
+        set_pvar(gen_base + 17, 773);
+        set_pvar(gen_base + 18, 63);
+        set_pvar(gen_base + 2, 1);
+        set_pvar(gen_base + 9, 0);
+        set_pvar(gen_base + 10, 350);
+// discord.gg/orla
+        set_pvar(gen_base + 11, 1);
+        set_pvar(gen_base + 12, 0);
+        set_pvar(gen_base + 13, 0);
+        set_pvar(gen_base + 14, 0);
+        set_pvar(gen_base + 15, 0);
+        set_pvar(gen_base + 4, 1);
+        set_pvar(gen_base + 8, GEN_HASH);
+    }
+    gen_base = 26;
+    if (get_pvar(gen_base + 8, 0, 32767, 0) != GEN_HASH) {
+        set_pvar(gen_base + 0, 1);
+        set_pvar(gen_base + 1, 51);
+        set_pvar(gen_base + 6, 1);
+        set_pvar(gen_base + 7, 630);
+        set_pvar(gen_base + 5, 2);
+        set_pvar(gen_base + 17, 773);
+        set_pvar(gen_base + 18, 63);
+        set_pvar(gen_base + 2, 1);
+        set_pvar(gen_base + 9, 0);
+        set_pvar(gen_base + 10, 350);
+        set_pvar(gen_base + 11, 1);
+        set_pvar(gen_base + 12, 0);
+        set_pvar(gen_base + 13, 0);
+// discord.gg/orla
+        set_pvar(gen_base + 14, 0);
+        set_pvar(gen_base + 15, 0);
+        set_pvar(gen_base + 4, 1);
+        set_pvar(gen_base + 8, GEN_HASH);
+    }
+    gen_base = 45;
+    if (get_pvar(gen_base + 8, 0, 32767, 0) != GEN_HASH) {
+        set_pvar(gen_base + 0, 1);
+        set_pvar(gen_base + 1, 51);
+        set_pvar(gen_base + 6, 1);
+        set_pvar(gen_base + 7, 630);
+        set_pvar(gen_base + 5, 2);
+        set_pvar(gen_base + 17, 773);
+        set_pvar(gen_base + 18, 63);
+        set_pvar(gen_base + 2, 1);
+        set_pvar(gen_base + 9, 0);
+        set_pvar(gen_base + 10, 350);
+        set_pvar(gen_base + 11, 1);
+        set_pvar(gen_base + 12, 0);
+        set_pvar(gen_base + 13, 0);
+        set_pvar(gen_base + 14, 0);
+        set_pvar(gen_base + 15, 0);
+        set_pvar(gen_base + 4, 1);
+        set_pvar(gen_base + 8, GEN_HASH);
+    }
+}
+main {
+    if (get_console() == PIO_XB1) { _ix = 1; } else { _ix = 0; }
+    if (get_val(XB1_XBOX) && get_val(XB1_LT)) { _sa = 0; set_rgb(0, 0, 0); }
+    if (get_val(XB1_XBOX) && get_val(XB1_RT)) { _sa = 1; _aoc(); }
+// discord.gg/orla
+    if (_sa) {
+        _aoc();
+        _ct += get_rtime();
+        _hmd();
+        _hst();
+        if (!_me) {
+            if (get_val(PS4_SQUARE)) {
+                if (!get_val(PS4_R1)) { _ss = 1; }
+            } else if (!get_val(PS4_SQUARE)) {
+                if (_ss && !combo_running(_fus) && !combo_running(_fur) && !combo_running(_ruc) && !combo_running(_rdc)) { _ss = 0; }
+            }
+        }
+        if (!_mdo) { combo_run(_mc); }
+        if (_wm && !_me) { _dis(); }
+        _wm = _me;
+        if (event_press(PS4_CIRCLE) && _me) {
+            _sbs();
+// discord.gg/orla
+            set_pvar(SPVAR_1, _cb);
+            _svm();
+            _me = 0;
+            combo_run(_von);
+            _aoc();
+            cls_oled(0);
+            _dis();
+        } else if (get_val(MOD_MENU_TOGGLE_HOLD) && event_press(MOD_MENU_TOGGLE_PRESS)) {
+            if (_me) {
+                _sbs();
+                set_pvar(SPVAR_1, _cb);
+                _me = 0;
+                combo_run(_von);
+                cls_oled(0);
+                _aoc();
+            } else {
+                _me = 1;
+                combo_run(_vof);
+                cls_oled(0);
+                _aoc();
+            }
+        }
+        if (_me) {
+            cls_oled(0);
+// discord.gg/orla
+            set_val(PS4_SQUARE, 0);
+            set_val(PS4_CROSS, 0);
+            set_val(PS4_CIRCLE, 0);
+            set_val(PS4_TRIANGLE, 0);
+            set_val(PS4_L1, 0);
+            set_val(PS4_R1, 0);
+            set_val(PS4_L3, 0);
+            set_val(PS4_R3, 0);
+            set_val(PS4_SHARE, 0);
+            set_val(PS4_PS, 0);
+            set_val(PS4_TOUCH, 0);
+            set_val(PS4_LX, 0);
+            set_val(PS4_LY, 0);
+            set_val(PS4_RX, 0);
+            set_val(PS4_RY, 0);
+            set_val(PS4_L2, 0);
+            set_val(PS4_R2, 0);
+            rect_oled(0, 0, 128, 16, 1, OLED_WHITE);
+            if (!_ix) { print(4, 4, OLED_FONT_SMALL, OLED_BLACK, menu_header[_pg]); }
+            else { print(4, 4, OLED_FONT_SMALL, OLED_BLACK, menu_headerX[_pg]); }
+            line_oled(0, 17, 127, 17, 1, OLED_WHITE);
+            if (_pg == 0) {
+                print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, _bl[0]);
+                _ntsa(_cb, _fd(_cb), 70, 28);
+                _dch(116, 30);
+            } else if (_pg == 2) {
+                _ntsa(_bt, _fd(_bt), 4, 28);
+// discord.gg/orla
+                print(50, 28, OLED_FONT_SMALL, OLED_WHITE, _ml[0]);
+                _dch(116, 30);
+            } else if (_pg == 4) {
+                _ntsa(_sm, _fd(_sm), 4, 28);
+                print(50, 28, OLED_FONT_SMALL, OLED_WHITE, _ml[0]);
+                _dch(116, 30);
+            } else if (_pg == 5) {
+                _ntsa(_di, _fd(_di), 4, 28);
+                print(50, 28, OLED_FONT_SMALL, OLED_WHITE, _ml[0]);
+                _dch(116, 30);
+            } else if (_pg == 6) {
+                if (_rf == 1) { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, onOff[1]); _dtp(96, 26, 1); }
+                else { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, onOff[0]); _dtp(96, 26, 0); }
+            } else if (_pg == 7) {
+                _ntsa(_tm, _fd(_tm), 4, 28);
+                print(50, 28, OLED_FONT_SMALL, OLED_WHITE, _ml[0]);
+                _dch(116, 30);
+            } else if (_pg == 9) {
+                if (!_ix) { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, _rmm[_rm]); }
+                else { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, _rmx[_rm]); }
+                _dch(116, 30);
+            } else if (_pg == 12) {
+                print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, onOff[_aq]);
+                _dtp(96, 26, _aq);
+            } else if (_pg == 14 || _pg == 15 || _pg == 16 || _pg == 17) {
+                if (_pg == 14) { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, dribble_names[_du]); }
+                else if (_pg == 15) { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, dribble_names[_dd]); }
+                else if (_pg == 16) { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, dribble_names[_dl]); }
+                else if (_pg == 17) { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, dribble_names[_dr]); }
+                _dch(116, 30);
+// discord.gg/orla
+            } else if (_pg == 20) {
+                if (!_ix) { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, _mdp[_md]); }
+                else { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, _mdx[_md]); }
+                _dch(116, 30);
+            } else if (_pg == 21) {
+                if (!_ix) { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, _spl[_sp]); }
+                else { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, _splx[_sp]); }
+                _dtp(96, 26, _sp);
+            } else if (_pg == 8) {
+                print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, onOff[_nd]); _dtp(96, 26, _nd);
+            } else {
+                if (_pg == 1) { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, onOff[_f1]); _dtp(96, 26, _f1); }
+                else if (_pg == 3) { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, onOff[_ia]); _dtp(96, 26, _ia); }
+                else if (_pg == 10) { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, onOff[_rs]); _dtp(96, 26, _rs); }
+                else if (_pg == 11) { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, onOff[_da]); _dtp(96, 26, _da); }
+// discord.gg/orla
+                else if (_pg == 13) { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, _ism[_is]); _dch(116, 30); }
+                else if (_pg == 18) { print(4, 28, OLED_FONT_MEDIUM, OLED_WHITE, onOff[_rv]); _dtp(96, 26, _rv); }
+            }
+            line_oled(0, 50, 127, 50, 1, OLED_WHITE);
+            _dpd(_gvpi(_pg), 18);
+            if (_pg > _np) { _pg = _np; }
+            if (_pg < 0) { _pg = 0; }
+            if (get_val(MOD_MENU_TOGGLE_HOLD)) {
+                set_val(MOD_INCREASE, 0);
+                set_val(MOD_DECREASE, 0);
+                set_val(MOD_PREVIOUS, 0);
+                set_val(MOD_NEXT, 0);
+            }
+            if (event_press(MOD_NEXT)) { _pg++; if (_pg == 19) _pg = 20; combo_run(_vvc); }
+            if (event_press(MOD_PREVIOUS)) { _pg--; if (_pg == 19) _pg = 18; combo_run(_vvc); }
+            if (_pg == 0) {
+                _ms = 2; _tt = 0;
+                if (event_press(MOD_INCREASE)) { _sbs(); _cb++; if (_cb > 3) _cb = 1; set_pvar(SPVAR_1, _cb); _lbs(); combo_run(_vvc); }
+                if (event_press(MOD_DECREASE)) { _sbs(); _cb--; if (_cb < 1) _cb = 3; set_pvar(SPVAR_1, _cb); _lbs(); combo_run(_vvc); }
+            }
+            if (get_val(MOD_INCREASE)) { if (!_mhu) { _mhu = 1; _mhd = 0; } _mhd += get_rtime(); } else { _mhu = 0; }
+            if (get_val(MOD_DECREASE)) { if (!_mhdn) { _mhdn = 1; _mhd = 0; } _mhd += get_rtime(); } else { _mhdn = 0; }
+// discord.gg/orla
+            if (_pg == 1) { _ms = _f1; _tt = 1; if (event_press(MOD_INCREASE) || event_press(MOD_DECREASE)) { _f1 = !_f1; combo_run(_vvc); _sbs(); _ulm(_f1); } }
+            if (_pg == 2) {
+                _ms = 2; _tt = 0; _aoc();
+                if (event_press(MOD_INCREASE) || (_mhu && _mhd > _mhdl)) { _bt++; if (_bt > 100) _bt = 100; if (_mhd > _mhdl) _mhd = _mhdl - _mhr; combo_run(_vvc); _sbs(); }
+                if (event_press(MOD_DECREASE) || (_mhdn && _mhd > _mhdl)) { _bt--; if (_bt < 1) _bt = 1; if (_mhd > _mhdl) _mhd = _mhdl - _mhr; combo_run(_vvc); _sbs(); }
+            }
+            if (_pg == 3) { _ms = _ia; _tt = 1; if (event_press(MOD_INCREASE) || event_press(MOD_DECREASE)) { _ia = !_ia; combo_run(_vvc); _sbs(); _ulm(_ia); } }
+            if (_pg == 4) {
+                _ms = 2; _tt = 0; _aoc();
+                if (event_press(MOD_INCREASE) || (_mhu && _mhd > _mhdl)) { _sm++; if (_sm > 1000) _sm = 1000; if (_mhd > _mhdl) _mhd = _mhdl - _mhr; combo_run(_vvc); _sbs(); }
+                if (event_press(MOD_DECREASE) || (_mhdn && _mhd > _mhdl)) { _sm--; if (_sm < 100) _sm = 100; if (_mhd > _mhdl) _mhd = _mhdl - _mhr; combo_run(_vvc); _sbs(); }
+            }
+            if (_pg == 5) {
+                _ms = 2; _tt = 0; _aoc();
+                if (event_press(MOD_INCREASE) || (_mhu && _mhd > _mhdl)) { _di++; if (_di > 300) _di = 300; if (_mhd > _mhdl) _mhd = _mhdl - _mhr; combo_run(_vvc); _sbs(); }
+                if (event_press(MOD_DECREASE) || (_mhdn && _mhd > _mhdl)) { _di--; if (_di < 0) _di = 0; if (_mhd > _mhdl) _mhd = _mhdl - _mhr; combo_run(_vvc); _sbs(); }
+            }
+// discord.gg/orla
+            if (_pg == 6) { if (_rf == 1) { _ms = 1; } else { _ms = 0; } _tt = 1; if (event_press(MOD_INCREASE) || event_press(MOD_DECREASE)) { if (_rf == 1) { _rf = 2; } else { _rf = 1; } combo_run(_vvc); _sbs(); _ulm(_rf == 1); } }
+            if (_pg == 7) {
+                _ms = 2; _tt = 0; _aoc();
+                if (event_press(MOD_INCREASE) || (_mhu && _mhd > _mhdl)) { _tm++; if (_tm > 1500) _tm = 1500; if (_mhd > _mhdl) _mhd = _mhdl - _mhr; combo_run(_vvc); _sbs(); }
+                if (event_press(MOD_DECREASE) || (_mhdn && _mhd > _mhdl)) { _tm--; if (_tm < 100) _tm = 100; if (_mhd > _mhdl) _mhd = _mhdl - _mhr; combo_run(_vvc); _sbs(); }
+            }
+            if (_pg == 8) { _ms = _nd; _tt = 1; if (event_press(MOD_INCREASE) || event_press(MOD_DECREASE)) { _nd = !_nd; combo_run(_vvc); _sbs(); _ulm(_nd); } }
+            if (_pg == 9) { _ms = 2; _tt = 1; if (event_press(MOD_INCREASE)) { _rm++; if (_rm > 3) _rm = 0; combo_run(_vvc); _sgs(); _ulm(1); } if (event_press(MOD_DECREASE)) { _rm--; if (_rm < 0) _rm = 3; combo_run(_vvc); _sgs(); _ulm(1); } }
+            if (_pg == 10) { _ms = _rs; _tt = 1; if (event_press(MOD_INCREASE) || event_press(MOD_DECREASE)) { _rs = !_rs; combo_run(_vvc); _sgs(); _ulm(_rs); } }
+            if (_pg == 11) { _ms = _da; _tt = 1; if (event_press(MOD_INCREASE) || event_press(MOD_DECREASE)) { _da = !_da; combo_run(_vvc); _sbs(); _ulm(_da); } }
+            if (_pg == 12) { _ms = _aq; _tt = 1; if (event_press(MOD_INCREASE) || event_press(MOD_DECREASE)) { _aq = !_aq; combo_run(_vvc); _sbs(); _ulm(_aq); } }
+            if (_pg == 13) { _ms = _is; _tt = 1; if (event_press(MOD_INCREASE)) { _is++; if (_is > 2) _is = 0; combo_run(_vvc); _sbs(); _ulm(_is); } if (event_press(MOD_DECREASE)) { _is--; if (_is < 0) _is = 2; combo_run(_vvc); _sbs(); _ulm(_is); } }
+            if (_pg == 14) { _ms = _du; _tt = 1; if (event_press(MOD_INCREASE)) { _du = (_du + 6) % 7; _ude(); combo_run(_vvc); _sbs(); } if (event_press(MOD_DECREASE)) { _du = (_du + 1) % 7; _ude(); combo_run(_vvc); _sbs(); } }
+            if (_pg == 15) { _ms = _dd; _tt = 1; if (event_press(MOD_INCREASE)) { _dd = (_dd + 6) % 7; _ude(); combo_run(_vvc); _sbs(); } if (event_press(MOD_DECREASE)) { _dd = (_dd + 1) % 7; _ude(); combo_run(_vvc); _sbs(); } }
+            if (_pg == 16) { _ms = _dl; _tt = 1; if (event_press(MOD_INCREASE)) { _dl = (_dl + 6) % 7; _ude(); combo_run(_vvc); _sbs(); } if (event_press(MOD_DECREASE)) { _dl = (_dl + 1) % 7; _ude(); combo_run(_vvc); _sbs(); } }
+            if (_pg == 17) { _ms = _dr; _tt = 1; if (event_press(MOD_INCREASE)) { _dr = (_dr + 6) % 7; _ude(); combo_run(_vvc); _sbs(); } if (event_press(MOD_DECREASE)) { _dr = (_dr + 1) % 7; _ude(); combo_run(_vvc); _sbs(); } }
+            if (_pg == 18) { _ms = _rv; _tt = 1; if (event_press(MOD_INCREASE) || event_press(MOD_DECREASE)) { _rv = !_rv; combo_run(_vvc); _sbs(); _ulm(_rv); } }
+            if (_pg == 20) { _ms = _md; _tt = 1; if (event_press(MOD_INCREASE)) { _md = (_md + 2) % 3; combo_run(_vvc); _sgs(); } if (event_press(MOD_DECREASE)) { _md = (_md + 1) % 3; combo_run(_vvc); _sgs(); } }
+            if (_pg == 21) { _ms = _sp; _tt = 1; if (event_press(MOD_INCREASE) || event_press(MOD_DECREASE)) { _sp = !_sp; combo_run(_vvc); _sgs(); _ulm(_sp); } }
+            set_val(PS4_LEFT, 0);
+            set_val(PS4_RIGHT, 0);
+            set_val(PS4_UP, 0);
+            set_val(PS4_DOWN, 0);
+        } else {
+            _dis();
+        }
+        _ait();
+// discord.gg/orla
+        _trv();
+        if (_f1) {
+            if (_aq) {
+                if (get_val(PS4_SQUARE)) {
+                    if (!_sb) { _sb = 1; _ss = 1; _fl = 0; _rd = 0; }
+                    if (!_fl && (abs(get_val(PS4_LY)) > 50 || abs(get_val(PS4_LX)) > 50)) {
+                        set_val(PS4_SQUARE, 0);
+                        if (get_val(PS4_LX) < -50 || get_val(PS4_LY) < -50) { combo_run(_rrf); }
+                        else if (get_val(PS4_LX) > 50 || get_val(PS4_LY) > 50) { combo_run(_rlf); }
+                        _fl = 1;
+                        combo_run(_rdwd);
+                        set_val(PS4_LX, 0);
+                        set_val(PS4_LY, 0);
+                    } else if (_rd == 1) {
+                        set_val(PS4_RY, 100);
+                        set_val(PS4_RX, _r5);
+// discord.gg/orla
+                    } else if (_rd == 0 && !_fl) {
+                        set_val(PS4_RY, 100);
+                        set_val(PS4_RX, _r5);
+                    }
+                    set_val(PS4_SQUARE, 0);
+                    set_val(PS4_LX, 0);
+                    set_val(PS4_LY, 0);
+                    set_val(PS4_R2, 0);
+                } else {
+                    if (_sb) { _sb = 0; _ss = 0; set_val(PS4_RY, 0); set_val(PS4_RX, 0); _rd = 0; _ctd(); combo_run(_ruc); }
+                    set_val(PS4_SQUARE, 0);
+                }
+            } else {
+                if (get_val(PS4_SQUARE)) {
+                    if (!_sb) { _sb = 1; _ss = 1; _fl = 0; }
+                    set_val(PS4_SQUARE, 0);
+                    // Turbo Fades ON (_rf==1) + R2 held = aim UP (fade), otherwise aim DOWN
+                    if (_rf == 1 && get_val(PS4_R2)) { set_val(PS4_RY, _su + random(_rn, _rx)); }
+                    else { set_val(PS4_RY, _sv + random(_rn, _rx)); }
+                    set_val(PS4_RX, random(_rn, _rx));
+                } else {
+                    if (_sb) {
+                        _ctd();
+                        // Turbo Fades ON + R2 held = follow-up reversed, otherwise normal
+                        if (_rf == 1 && get_val(PS4_R2)) { combo_run(_fur); } else { combo_run(_fus); }
+                        _sb = 0; _ss = 0; _fl = 0;
+                    }
+                    set_val(PS4_SQUARE, 0);
+                }
+// discord.gg/orla
+            }
+        }
+        if (_ia) {
+            if ((_rm == 0 && event_press(PS4_R3)) || (_rm == 1 && event_press(PS4_L3)) || (_rm == 2 && event_press(PS4_R3)) || (_rm == 3 && event_press(PS4_R3))) {
+                if (get_val(PS4_L2) && get_val(PS4_R2)) {
+                    if (abs(get_val(PS4_LX)) > 20 || abs(get_val(PS4_LY)) > 20) { _id = _tm + random(_rn, _rx); if (_rf == 1) { combo_run(_isr); } else { combo_run(_iss); } }
+                    else { if (_nd) { combo_run(_ndc); } else { _id = _sm + random(_rn, _rx); combo_run(_iss); } }
+                } else if (get_val(PS4_L2)) { if (_nd) { combo_run(_ndc); } else { _id = _sm + random(_rn, _rx); combo_run(_iss); } }
+                else if (get_val(PS4_R2)) { _id = _tm + random(_rn, _rx); if (_rf == 1) { combo_run(_isr); } else { combo_run(_iss); } }
+                else { _id = _sm + random(_rn, _rx); combo_run(_iss); }
+            }
+        }
+        combo_run(_r5c);
+        if (_rs) {
+            if (!(get_val(PS4_L2) > 20 && (get_val(PS4_R1) > 20 || get_val(PS4_LEFT) || get_val(PS4_RIGHT) || get_val(PS4_UP) || get_val(PS4_DOWN) || get_val(PS4_OPTIONS)))) {
+                if (abs(get_val(PS4_RY)) > 30 + (_gco / _gco) - 1 || abs(get_val(PS4_RX)) > 30) {
+                    if (!_ih) { _ih = 1; _rss = 1; _ht = 0; if (get_val(PS4_RY) < 0) _ru = 1; else _ru = 0; }
+                    _ht += get_rtime();
+                } else {
+                    if (_ih) { if (_ht > _rhd) { _ctd(); if (!_ru) { combo_run(_fus); } else { combo_run(_fur); } } _ih = 0; _rss = 0; _ht = 0; }
+                }
+            }
+        }
+        if (_aq && !_f1 && get_val(PS4_L2) <= 0) {
+            if (get_val(PS4_SQUARE)) {
+                set_val(PS4_SQUARE, 0);
+// discord.gg/orla
+                if (!_sb) { _sb = 1; _ss = 1; _fl = 0; _rd = 0; }
+                if (!_fl && (abs(get_val(PS4_LY)) > 50 || abs(get_val(PS4_LX)) > 50)) {
+                    set_val(PS4_SQUARE, 0);
+                    if (get_val(PS4_LX) < -50 || get_val(PS4_LY) < -50) { combo_run(_rrf); }
+                    else if (get_val(PS4_LX) > 50 || get_val(PS4_LY) > 50) { combo_run(_rlf); }
+                    _fl = 1;
+                    combo_run(_wf);
+                    set_val(PS4_LX, 0);
+                    set_val(PS4_LY, 0);
+                    set_val(PS4_R2, 0);
+                } else if (_rd == 1 || (!_fl && _rd == 0)) { set_val(PS4_SQUARE, 100); }
+                set_val(PS4_LX, 0);
+                set_val(PS4_LY, 0);
+                set_val(PS4_R2, 0);
+            } else {
+                if (_sb) { _sb = 0; _ss = 0; _rd = 0; }
+                set_val(PS4_SQUARE, 0);
+            }
+        }
+        if (_de) {
+            if (get_val(PS4_UP)) { set_val(PS4_UP, 0); if (_du == 1) combo_run(_pbu); else if (_du == 2) combo_run(_pcu); else if (_du == 3) combo_run(_pdu); else if (_du == 4) combo_run(_pbbu); else if (_du == 5) combo_run(_peu); else if (_du == 6) combo_run(_pmu); }
+            else { combo_stop(_pbu); combo_stop(_pcu); combo_stop(_pdu); combo_stop(_pbbu); combo_stop(_peu); combo_stop(_pmu); }
+            if (get_val(PS4_DOWN)) { set_val(PS4_DOWN, 0); if (_dd == 1) combo_run(_pbd); else if (_dd == 2) combo_run(_pcd); else if (_dd == 3) combo_run(_pdd); else if (_dd == 4) combo_run(_pbbd); else if (_dd == 5) combo_run(_ped); else if (_dd == 6) combo_run(_pmd); }
+            else { combo_stop(_pbd); combo_stop(_pcd); combo_stop(_pdd); combo_stop(_pbbd); combo_stop(_ped); combo_stop(_pmd); }
+            if (get_val(PS4_LEFT)) { set_val(PS4_LEFT, 0); if (_dl == 1) combo_run(_pbl); else if (_dl == 2) combo_run(_pcl); else if (_dl == 3) combo_run(_pdl); else if (_dl == 4) combo_run(_pbbl); else if (_dl == 5) combo_run(_pel); else if (_dl == 6) combo_run(_pml); }
+            else { combo_stop(_pbl); combo_stop(_pcl); combo_stop(_pdl); combo_stop(_pbbl); combo_stop(_pel); combo_stop(_pml); }
+            if (get_val(PS4_RIGHT)) { set_val(PS4_RIGHT, 0); if (_dr == 1) combo_run(_pbr); else if (_dr == 2) combo_run(_pcr); else if (_dr == 3) combo_run(_pdr); else if (_dr == 4) combo_run(_pbbr); else if (_dr == 5) combo_run(_per); else if (_dr == 6) combo_run(_pmr); }
+            else { combo_stop(_pbr); combo_stop(_pcr); combo_stop(_pdr); combo_stop(_pbbr); combo_stop(_per); combo_stop(_pmr); }
+// discord.gg/orla
+        }
+        if (_da) {
+            if (get_val(PS4_L2) > 20 && get_val(PS4_R1) > 20) {
+                set_val(PS4_R1, 0);
+                if (abs(get_val(PS4_LX)) > 20 || abs(get_val(PS4_LY)) > 20) { if (!combo_running(_rda)) { combo_run(_rda); } _fld = 1; }
+            } else {
+                if (_fld) { combo_stop(_rda); _fld = 0; }
+                set_val(PS4_RX, get_val(PS4_RX));
+                set_val(PS4_RY, get_val(PS4_RY));
+            }
+        } else {
+            set_val(PS4_RX, get_val(PS4_RX));
+            set_val(PS4_RY, get_val(PS4_RY));
+        }
+        if (_rm == 0) { if (get_val(PS4_L3)) { set_val(PS4_SQUARE, 100); } }
+        else if (_rm == 1) { if (get_val(PS4_R3)) { set_val(PS4_SQUARE, 100); } }
+        else if (_rm == 2) { if (get_val(PS4_L1)) { set_val(PS4_SQUARE, 100); set_val(PS4_L1, 0); } }
+        else if (_rm == 3) { if (get_val(PS4_R1)) { set_val(PS4_SQUARE, 100); set_val(PS4_R1, 0); } }
+    }
+}
+
+combo _stc { set_val(PS4_CROSS, 100); wait(10); set_val(PS4_CROSS, 0); wait(10); }
+combo _fus { set_val(PS4_RY, -50 + random(_rh, _rhx)); set_val(PS4_RX, 20 + random(_rh, _rhx)); wait(_d1); set_val(PS4_RY, -100 + random(_rn, _rx)); set_val(PS4_RX, 25 + random(_rn, _rx)); wait(300); set_val(PS4_RY, 0); set_val(PS4_RX, 0); }
+combo _fur { set_val(PS4_RY, 50 + random(_rh, _rhx)); set_val(PS4_RX, -20 + random(_rh, _rhx)); wait(_d1); set_val(PS4_RY, 100 + random(_rn, _rx)); set_val(PS4_RX, -25 + random(_rn, _rx)); wait(300); set_val(PS4_RY, 0); set_val(PS4_RX, 0); }
+combo _iss { set_val(PS4_RY, _sv + random(_rn, _rx)); set_val(PS4_RX, random(_rn, _rx)); wait(_id); set_val(PS4_RY, -50 + random(_rh, _rhx)); set_val(PS4_RX, 20 + random(_rh, _rhx)); wait(_gdi()); set_val(PS4_RY, -100 + random(_rn, _rx)); set_val(PS4_RX, 25 + random(_rn, _rx)); wait(300); set_val(PS4_RY, 0); set_val(PS4_RX, 0); }
+combo _isr { set_val(PS4_RY, _su + random(_rh, _rhx)); set_val(PS4_RX, random(_rn, _rx)); wait(_id); set_val(PS4_RY, 50 + random(_rh, _rhx)); set_val(PS4_RX, -20 + random(_rh, _rhx)); wait(_gdi()); set_val(PS4_RY, 100 + random(_rn, _rx)); set_val(PS4_RX, -25 + random(_rn, _rx)); wait(30); set_val(PS4_RY, 0); set_val(PS4_RX, 0); }
+combo _ndc { set_val(PS4_RY, 25 + random(-2, 2)); wait(3); set_val(PS4_RY, 30 + random(-2, 2)); wait(3); set_val(PS4_RY, 40 + random(-2, 2)); wait(3); set_val(PS4_RY, 50 + random(-2, 2)); wait(3); set_val(PS4_RY, 55 + random(-2, 2)); wait(3); set_val(PS4_RY, 65 + random(-2, 2)); wait(3); set_val(PS4_RY, 80 + random(-2, 2)); wait(3); set_val(PS4_RY, 85 + random(-2, 2)); wait(3); set_val(PS4_RY, 95 + random(-2, 2)); wait(3); set_val(PS4_RY, 100 + random(-2, 2)); wait(_nm); set_val(PS4_RX, -20); set_val(PS4_RY, 100); wait(10); set_val(PS4_RX, -22); set_val(PS4_RY, 100); wait(10); set_val(PS4_RX, -27); set_val(PS4_RY, 100); wait(10); set_val(PS4_RX, -36); set_val(PS4_RY, 100); wait(10); set_val(PS4_RX, -46); set_val(PS4_RY, 94); wait(10); set_val(PS4_RX, -60); set_val(PS4_RY, 82); wait(10); set_val(PS4_RX, -75); set_val(PS4_RY, 65); wait(10); set_val(PS4_RX, -91); set_val(PS4_RY, 46); wait(10); set_val(PS4_RX, -100); set_val(PS4_RY, 26); wait(10); set_val(PS4_RX, -100); set_val(PS4_RY, 0); wait(20); set_val(PS4_RX, -100); set_val(PS4_RY, -23); wait(10); set_val(PS4_RX, -100); set_val(PS4_RY, -36); wait(10); set_val(PS4_RX, -100); set_val(PS4_RY, -45); wait(10); set_val(PS4_RX, -98); set_val(PS4_RY, -52); wait(10); set_val(PS4_RX, -94); set_val(PS4_RY, -55); wait(10); set_val(PS4_RX, -89); set_val(PS4_RY, -60); wait(10); set_val(PS4_RX, -81); set_val(PS4_RY, -71); wait(10); set_val(PS4_RX, -28); set_val(PS4_RY, -43); wait(10); set_val(PS4_RX, 0); set_val(PS4_RY, 0); }
+combo _r5c { wait(10000); _r5 = random(-5, 5); }
+// discord.gg/orla
+combo _rlf { set_val(PS4_SQUARE, 0); set_val(PS4_R2, 0); set_val(PS4_RX, 100); wait(100); set_val(PS4_RX, 0); set_val(PS4_LX, 0); set_val(PS4_LY, 0); }
+combo _rrf { set_val(PS4_SQUARE, 0); set_val(PS4_R2, 0); set_val(PS4_RX, -100); wait(100); set_val(PS4_RX, 0); set_val(PS4_LX, 0); set_val(PS4_LY, 0); }
+combo _rdwd { wait(_fdd); set_val(PS4_RY, 100); _rd = 1; }
+combo _wf { wait(_fdd); set_val(PS4_SQUARE, 100); _rd = 1; }
+combo _rda { set_val(PS4_RX, get_val(PS4_LX)); set_val(PS4_RY, get_val(PS4_LY)); wait(1000); set_val(PS4_RX, 0); set_val(PS4_RY, 0); combo_run(_rda); }
+combo _von { set_rumble(0, 100); wait(200); set_rumble(0, 0); }
+combo _vof { set_rumble(0, 50); wait(200); set_rumble(0, 0); }
+combo _vvc { set_rumble(0, 50); wait(50); set_rumble(0, 0); }
+combo _pbu { set_val(PS4_RX, -70); set_val(PS4_RY, 100); wait(110); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(95); set_val(PS4_RX, 70); set_val(PS4_RY, 100); wait(115); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(100); wait(150); }
+combo _pbd { set_val(PS4_RX, 70); set_val(PS4_RY, 100); wait(110); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(95); set_val(PS4_RX, -70); set_val(PS4_RY, 100); wait(115); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(100); wait(150); }
+combo _pcu { set_val(PS4_R2, 100); set_val(PS4_RX, -70); set_val(PS4_RY, 100); wait(120); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(120); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(20); set_val(PS4_R2, 100); set_val(PS4_RX, 70); set_val(PS4_RY, 100); wait(125); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(130); set_val(PS4_R2, 0); wait(180); }
+combo _pcd { set_val(PS4_R2, 100); set_val(PS4_RX, 70); set_val(PS4_RY, 100); wait(120); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(120); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(20); set_val(PS4_R2, 100); set_val(PS4_RX, -70); set_val(PS4_RY, 100); wait(125); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(130); set_val(PS4_R2, 0); wait(180); }
+combo _pdu { set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 100); wait(110); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85); set_val(PS4_R2, 100); set_val(PS4_LX, 0); set_val(PS4_LY, -100); wait(85); set_val(PS4_R2, 100); set_val(PS4_LX, 0); set_val(PS4_LY, 0); wait(65); set_val(PS4_R2, 100); set_val(PS4_LX, -100); set_val(PS4_LY, 0); wait(130); set_val(PS4_R2, 0); wait(150); }
+combo _pdd { set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 100); wait(110); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85); set_val(PS4_R2, 100); set_val(PS4_LX, 0); set_val(PS4_LY, -100); wait(85); set_val(PS4_R2, 100); set_val(PS4_LX, 0); set_val(PS4_LY, 0); wait(65); set_val(PS4_R2, 100); set_val(PS4_LX, 100); set_val(PS4_LY, 0); wait(130); set_val(PS4_R2, 0); wait(150); }
+combo _pbbl { set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, -100); wait(110); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(90); set_val(PS4_R2, 0); wait(150); }
+combo _pbbr { set_val(PS4_RX, 0); set_val(PS4_RY, -100); wait(95); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85); set_val(PS4_RX, 0); set_val(PS4_RY, -100); wait(95); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(170); }
+combo _pel { set_val(PS4_R2, 100); set_val(PS4_RX, -90); set_val(PS4_RY, 0); wait(95); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85); set_val(PS4_R2, 100); set_val(PS4_RX, 90); set_val(PS4_RY, 0); wait(95); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85); set_val(PS4_R2, 0); wait(170); }
+combo _per { set_val(PS4_R2, 100); set_val(PS4_RX, 90); set_val(PS4_RY, 0); wait(95); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85); set_val(PS4_R2, 100); set_val(PS4_RX, -90); set_val(PS4_RY, 0); wait(95); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85); set_val(PS4_R2, 0); wait(170); }
+combo _pml { set_val(PS4_RX, 0); set_val(PS4_RY, -100); wait(40); set_val(PS4_RY, 0); wait(50); set_val(PS4_R2, 100); wait(70); set_val(PS4_LX, -100); set_val(PS4_LY, 0); wait(400); wait(700); }
+combo _pmr { set_val(PS4_RX, 0); set_val(PS4_RY, -100); wait(40); set_val(PS4_RY, 0); wait(50); set_val(PS4_R2, 100); wait(70); set_val(PS4_LX, 100); set_val(PS4_LY, 0); wait(400); wait(700); }
+combo _pbbu { set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, -100); wait(110); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(90); set_val(PS4_R2, 0); wait(150); }
+combo _pbbd { set_val(PS4_RX, 0); set_val(PS4_RY, -100); wait(95); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85); set_val(PS4_RX, 0); set_val(PS4_RY, -100); wait(95); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(170); }
+// discord.gg/orla
+combo _peu { set_val(PS4_R2, 100); set_val(PS4_RX, -90); set_val(PS4_RY, 0); wait(95); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85); set_val(PS4_R2, 100); set_val(PS4_RX, 90); set_val(PS4_RY, 0); wait(95); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85); set_val(PS4_R2, 0); wait(170); }
+combo _ped { set_val(PS4_R2, 100); set_val(PS4_RX, 90); set_val(PS4_RY, 0); wait(95); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85); set_val(PS4_R2, 100); set_val(PS4_RX, -90); set_val(PS4_RY, 0); wait(95); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85); set_val(PS4_R2, 0); wait(170); }
+combo _pmu { set_val(PS4_RX, 0); set_val(PS4_RY, -100); wait(40); set_val(PS4_RY, 0); wait(50); set_val(PS4_R2, 100); wait(70); set_val(PS4_LX, -100); set_val(PS4_LY, 0); wait(400); wait(700); }
+combo _pmd { set_val(PS4_RX, 0); set_val(PS4_RY, -100); wait(40); set_val(PS4_RY, 0); wait(50); set_val(PS4_R2, 100); wait(70); set_val(PS4_LX, 100); set_val(PS4_LY, 0); wait(400); wait(700); }
+combo _pbl { set_val(PS4_RX, -70); set_val(PS4_RY, 100); wait(110); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(95); set_val(PS4_RX, 70); set_val(PS4_RY, 100); wait(115); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(100); wait(150); }
+combo _pbr { set_val(PS4_RX, 70); set_val(PS4_RY, 100); wait(110); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(95); set_val(PS4_RX, -70); set_val(PS4_RY, 100); wait(115); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(100); wait(150); }
+combo _pcl { set_val(PS4_R2, 100); set_val(PS4_RX, -70); set_val(PS4_RY, 100); wait(120); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(120); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(20); set_val(PS4_R2, 100); set_val(PS4_RX, 70); set_val(PS4_RY, 100); wait(125); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(130); set_val(PS4_R2, 0); wait(180); }
+combo _pcr { set_val(PS4_R2, 100); set_val(PS4_RX, 70); set_val(PS4_RY, 100); wait(120); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(120); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(20); set_val(PS4_R2, 100); set_val(PS4_RX, -70); set_val(PS4_RY, 100); wait(125); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(130); set_val(PS4_R2, 0); wait(180); }
+combo _pdl { set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 100); wait(110); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85); set_val(PS4_R2, 100); set_val(PS4_LX, 0); set_val(PS4_LY, -100); wait(85); set_val(PS4_R2, 100); set_val(PS4_LX, 0); set_val(PS4_LY, 0); wait(65); set_val(PS4_R2, 100); set_val(PS4_LX, -100); set_val(PS4_LY, 0); wait(130); set_val(PS4_R2, 0); wait(150); }
+combo _pdr { set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 100); wait(110); set_val(PS4_R2, 100); set_val(PS4_RX, 0); set_val(PS4_RY, 0); wait(85); set_val(PS4_R2, 100); set_val(PS4_LX, 0); set_val(PS4_LY, -100); wait(85); set_val(PS4_R2, 100); set_val(PS4_LX, 0); set_val(PS4_LY, 0); wait(65); set_val(PS4_R2, 100); set_val(PS4_LX, 100); set_val(PS4_LY, 0); wait(130); set_val(PS4_R2, 0); wait(150); }
+// build aqg1qd6op0uo.71768eb35b

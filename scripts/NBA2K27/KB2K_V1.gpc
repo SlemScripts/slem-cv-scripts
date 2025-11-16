@@ -1,0 +1,1926 @@
+define SHOT_STAND = 1;
+define SHOT_MOVE  = 2;
+define SHOT_NODIP = 3;
+define SHOT_FADE  = 4;
+define SHOT_GOTO  = 5;
+define SHOT_LIGHT  = 6;
+
+define MENU_CLOSED = 0;
+define MENU_MAIN = 1;
+define MENU_SHOOT = 2;
+define MENU_SHOT_EDIT = 3;
+define MENU_DRIB = 4;
+define MENU_DRIB_EDIT = 5;
+define MENU_PROFILE = 6;
+define MENU_REMAP = 7;
+
+define BANK_NORT = 0;
+define BANK_RT = 1;
+define RT_LOOP_PAUSE_MS = 100;
+define LIGHT_AUTO_DELAY_MS = 45;
+define MOVE_AUTO_DELAY_MS = 80;
+define POST_MOVE_LIGHT_MS = 450;
+define SMALL_MOVE_THRESHOLD = 18;
+define DRIBBLE_CANCEL_THRESHOLD = 35;
+define CONFIG_MAGIC = 27330;
+define LS_RECENT_MS = 500;
+define LS_STRONG_MS = 750;
+define RS_RECENT_MS = 550;
+define RS_STRONG_MS = 750;
+define RS_UP_MS = 700;
+define RT_RECENT_MS = 800;
+define COMBO_RECENT_MS = 950;
+define RT_MOVE_HOLD_MS = 350;
+define RT_FADE_HOLD_MS = 900;
+int rhythm_x_enabled = 1;
+int auto_green_r3_enabled = 0;
+
+int manual_shot_active = 0;
+int manual_release_active = 0;
+int active_shot_type = 0;
+int manual_hold_ms = 0;
+int manual_rumble_enabled = 1;
+int manual_rumble_fired = 0;
+int manual_cue_hold = 0;
+int manual_rumble_lead_ms = 25;
+int manual_rumble_length_ms = 90;
+int manual_rumble_strength = 100;
+int last_hold_ms = 0;
+int last_tempo_ms = 0;
+int last_shot_type = 0;
+int shot_feedback_enabled = 0;
+int recent_set_hold = 530;
+int recent_light_hold = 545;
+int recent_move_hold = 555;
+int recent_fade_hold = 585;
+int rs_target_hold = 0;
+int rs_target_tempo = 0;
+int stand_hold = 530;
+int stand_tempo = 52;
+int light_hold = 545;
+int light_tempo = 53;
+int move_hold = 555;
+int move_tempo = 54;
+int nodip_hold = 570;
+int nodip_tempo = 54;
+int fade_hold = 585;
+int fade_tempo = 56;
+int goto_hold = 700;
+int goto_tempo = 52;
+int goto_extra = 0;
+
+int post_move_light_ms = 0;
+
+int ls_recent_ms = 0;
+int ls_strong_recent_ms = 0;
+int rs_recent_ms = 0;
+int rs_strong_recent_ms = 0;
+int rs_up_recent_ms = 0;
+int rt_recent_ms = 0;
+int rt_hold_ms = 0;
+int combo_recent_ms = 0;
+
+int fatigue_load = 0;
+int fatigue_tick_ms = 0;
+int effective_tempo_ms = 0;
+int auto_shot_pending = 0;
+int auto_shot_pending_type = 0;
+int auto_shot_delay_ms = 0;
+int auto_shot_delay_target = 0;
+
+int dribbles_enabled = 1;
+int nort_up = 0;
+int nort_down = 6;
+int nort_left = 1;
+int nort_right = 3;
+
+int rt_up = 0;
+int rt_down = 5;
+int rt_left = 3;
+int rt_right = 4;
+int dribble_ref_lx = 0;
+int dribble_ref_ly = 0;
+int ball_hand = 0;
+int last_side = 1;
+int move_side = 1;
+int rt_loop_armed = 0;
+int rt_loop_dir = 0;
+int rt_loop_sel = 0;
+int rt_loop_wait = 0;
+int raw_up = 0;
+int raw_down = 0;
+int raw_left = 0;
+int raw_right = 0;
+
+int x_remap_l3 = 0;
+
+int active_profile = 0;
+int profile_select = 0;
+
+int menu_state = MENU_CLOSED;
+int menu_index = 0;
+int shot_menu_type = SHOT_STAND;
+int shot_field = 0;
+int drib_menu_bank = BANK_NORT;
+int drib_menu_dir = 0;
+int step = 1;
+
+int intro_active = 1;
+int intro_elapsed = 0;
+int intro_frame_ms = 0;
+int intro_x = 8;
+int intro_y = 8;
+int intro_dx = 5;
+int intro_dy = 3;
+
+const string T_TITLE[] = { "KB2K V1" };
+const string T_INTRO_KB2K[] = { "KB2K" };
+const string T_VERSION[] = { "V1" };
+const string T_SHOOT[] = { "SHOOTING" };
+const string T_DRIB[] = { "DRIBBLES" };
+const string T_REMAP[] = { "L3 > X" };
+const string T_PROFILES[] = { "PROFILES" };
+const string T_ACTIVE[] = { "ACTIVE" };
+const string T_LOAD[] = { "A=LOAD" };
+const string P_REC[] = { "REC" };
+const string P_THEATER[] = { "THEATER" };
+const string P_CUSTOM[] = { "CUSTOM" };
+const string T_ON[] = { "ON" };
+const string T_OFF[] = { "OFF" };
+const string T_XRHYTHM[] = { "X RHYTHM" };
+const string T_RSAUTO[] = { "R3 AUTO" };
+const string T_STAND[] = { "STANDING" };
+const string T_LIGHT[] = { "LIGHT" };
+const string T_MOVE[] = { "MOVING" };
+const string T_NODIP[] = { "NO DIP" };
+const string T_FADE[] = { "FADE" };
+const string T_GOTO[] = { "GO-TO" };
+const string T_HOLD[] = { "RS HOLD" };
+const string T_TEMPO[] = { "TEMPO" };
+const string T_EXTRA[] = { "EXTRA" };
+const string T_EDIT[] = { "A=EDIT" };
+const string T_BACK[] = { "B=BACK" };
+const string T_BANK[] = { "BANK" };
+const string T_NORT[] = { "NO RT" };
+const string T_RT[] = { "RT ONLY" };
+const string T_UP[] = { "UP" };
+const string T_DOWN[] = { "DOWN" };
+const string T_LEFT[] = { "LEFT" };
+const string T_RIGHT[] = { "RIGHT" };
+const string T_LAST[] = { "LAST" };
+const string T_LASTHOLD[] = { "LAST HOLD" };
+const string T_FEEDBACK[] = { "SHOT HOLD LOG" };
+const string T_SHOTFEED[] = { "SHOT FEED" };
+const string T_RELRUMBLE[] = { "RELEASE VIBE" };
+const string T_VIBELEAD[] = { "VIBE LEAD" };
+const string T_VIBELEN[] = { "VIBE LEN" };
+const string T_VIBESTR[] = { "VIBE STR" };
+const string T_SETTXT[] = { "SET" };
+const string T_LIGHTTXT[] = { "LIGHT" };
+const string T_MOVETXT[] = { "MOV" };
+const string T_NODIPTXT[] = { "NODIP" };
+const string T_FADETXT[] = { "FADE" };
+const string T_GOTOTXT[] = { "GOTO" };
+const string T_SSHORT[] = { "S" };
+const string T_LSHORT[] = { "L" };
+const string T_MSHORT[] = { "M" };
+const string T_FSHORT[] = { "F" };
+const string T_MS[] = { "MS" };
+
+const string N0[] = { "BREAKDOWN" };
+const string N1[] = { "CROSS" };
+const string N2[] = { "BETWEEN" };
+const string N3[] = { "BTB" };
+const string N4[] = { "HESI" };
+const string N5[] = { "IN-OUT" };
+const string N6[] = { "STEPBACK" };
+const string N7[] = { "SPIN" };
+
+const string R0[] = { "SHAKE LOOP" };
+const string R1[] = { "TRIPLE ATT" };
+const string R2[] = { "LOW STAM" };
+const string R3[] = { "CROSS>BTB" };
+const string R4[] = { "BTB>HESI" };
+const string R5[] = { "STEP CHAIN" };
+const string R6[] = { "4 MOVE" };
+const string R7[] = { "BURST EXIT" };
+
+function abs_diff(a,b) {
+    if (a > b) return a - b;
+    return b - a;
+}
+
+function limit_val(v,lo,hi) {
+    if (v < lo) return lo;
+    if (v > hi) return hi;
+    return v;
+}
+
+function current_ball_hand() {
+    if (ball_hand != 0) return ball_hand;
+    if (get_val(PS4_LX) < -35) return -1;
+    if (get_val(PS4_LX) > 35) return 1;
+    return last_side;
+}
+
+function opposite_hand() {
+    if (current_ball_hand() < 0) return 1;
+    return -1;
+}
+
+function classify_history_shot() {
+    if (get_val(PS4_R2) > 80 &&
+        rt_hold_ms >= RT_FADE_HOLD_MS &&
+        (ls_strong_recent_ms > 0 || rs_up_recent_ms > 0 || combo_recent_ms > 0)) {
+        return SHOT_FADE;
+    }
+
+    if (combo_recent_ms > 0) return SHOT_MOVE;
+
+    if (rt_hold_ms >= RT_MOVE_HOLD_MS &&
+        (ls_recent_ms > 0 || rs_recent_ms > 0)) {
+        return SHOT_MOVE;
+    }
+
+    if (rt_recent_ms > 0 &&
+        (ls_strong_recent_ms > 0 || rs_strong_recent_ms > 0)) {
+        return SHOT_MOVE;
+    }
+
+    if (ls_strong_recent_ms > 0 && rs_recent_ms > 0) return SHOT_MOVE;
+    if (rs_strong_recent_ms > 0 && ls_recent_ms > 0) return SHOT_MOVE;
+
+    if (ls_recent_ms > 0 || rs_recent_ms > 0 || rt_recent_ms > 0 || post_move_light_ms > 0) {
+        return SHOT_LIGHT;
+    }
+
+    return SHOT_STAND;
+}
+
+function classify_x_shot() {
+    if (get_val(PS4_L1) > 30) return SHOT_GOTO;
+    if (get_val(PS4_L2) > 20) return SHOT_NODIP;
+    if (get_val(PS4_R2) > 80) return SHOT_FADE;
+
+    return classify_history_shot();
+}
+
+function classify_r3_auto_shot() {
+    return classify_history_shot();
+}
+
+function fatigue_hold_offset() {
+    if (fatigue_load >= 70) return 7;
+    if (fatigue_load >= 35) return 3;
+    return 0;
+}
+
+function fatigue_tempo_offset() {
+    if (fatigue_load >= 70) return 2;
+    if (fatigue_load >= 35) return 1;
+    return 0;
+}
+
+function effective_profile_hold(st) {
+    return limit_val(profile_hold(st) + fatigue_hold_offset(),100,1500);
+}
+
+function effective_profile_tempo(st) {
+    return limit_val(profile_tempo(st) + fatigue_tempo_offset(),10,120);
+}
+
+function profile_hold(st) {
+    if (st == SHOT_STAND) return stand_hold;
+    if (st == SHOT_LIGHT) return light_hold;
+    if (st == SHOT_MOVE) return move_hold;
+    if (st == SHOT_NODIP) return nodip_hold;
+    if (st == SHOT_FADE) return fade_hold;
+    return goto_hold;
+}
+
+function profile_tempo(st) {
+    if (st == SHOT_STAND) return stand_tempo;
+    if (st == SHOT_LIGHT) return light_tempo;
+    if (st == SHOT_MOVE) return move_tempo;
+    if (st == SHOT_NODIP) return nodip_tempo;
+    if (st == SHOT_FADE) return fade_tempo;
+    return goto_tempo;
+}
+
+function release_combo_active() {
+    return combo_running(REL_NORMAL) ||
+           combo_running(REL_FADE) ||
+           combo_running(REL_GOTO);
+}
+
+function run_release(st) {
+    effective_tempo_ms = effective_profile_tempo(st);
+    last_tempo_ms = effective_tempo_ms;
+
+    if (st == SHOT_FADE) combo_run(REL_FADE);
+    else if (st == SHOT_GOTO) combo_run(REL_GOTO);
+    else combo_run(REL_NORMAL);
+}
+
+function stop_release() {
+    combo_stop(REL_NORMAL);
+    combo_stop(REL_FADE);
+    combo_stop(REL_GOTO);
+    manual_release_active = 0;
+}
+
+function rhythm_x_engine() {
+    if (!rhythm_x_enabled) return;
+
+    if (!manual_shot_active && !manual_release_active && !release_combo_active() && event_press(PS4_SQUARE)) {
+        active_shot_type = classify_x_shot();
+        manual_hold_ms = 0;
+        manual_rumble_fired = 0;
+        manual_cue_hold = profile_hold(active_shot_type) - manual_rumble_lead_ms;
+        manual_cue_hold = limit_val(manual_cue_hold,100,1500);
+        manual_shot_active = 1;
+    }
+
+    if (manual_shot_active) {
+        manual_hold_ms += get_rtime();
+        set_val(PS4_SQUARE,0);
+
+        if (active_shot_type == SHOT_FADE) set_val(PS4_RY,-100);
+        else set_val(PS4_RY,100);
+
+        if (manual_rumble_enabled && !manual_rumble_fired && manual_hold_ms >= manual_cue_hold) {
+            manual_rumble_fired = 1;
+            combo_run(RELEASE_RUMBLE);
+        }
+
+        if (event_release(PS4_SQUARE)) {
+            record_shot_hold(active_shot_type,manual_hold_ms);
+            manual_shot_active = 0;
+            manual_release_active = 1;
+            run_release(active_shot_type);
+            home_draw();
+        }
+    }
+
+    if (manual_release_active || release_combo_active()) set_val(PS4_SQUARE,0);
+
+    if (manual_release_active && !release_combo_active()) {
+        manual_release_active = 0;
+        active_shot_type = 0;
+    }
+}
+
+function queue_r3_auto(st) {
+    auto_shot_pending_type = st;
+    auto_shot_delay_ms = 0;
+
+    if (st == SHOT_MOVE) auto_shot_delay_target = MOVE_AUTO_DELAY_MS;
+    else if (st == SHOT_LIGHT) auto_shot_delay_target = LIGHT_AUTO_DELAY_MS;
+    else auto_shot_delay_target = 0;
+
+    if (auto_shot_delay_target <= 0) {
+        auto_shot_pending = 0;
+        fire_r3_auto(st);
+    } else {
+        auto_shot_pending = 1;
+    }
+}
+
+function auto_shot_delay_engine() {
+    if (!auto_shot_pending) return;
+
+    auto_shot_delay_ms += get_rtime();
+
+    if (auto_shot_delay_ms >= auto_shot_delay_target) {
+        auto_shot_pending = 0;
+        fire_r3_auto(auto_shot_pending_type);
+    }
+}
+
+function fire_r3_auto(st) {
+    rs_target_hold = effective_profile_hold(st);
+    rs_target_tempo = effective_profile_tempo(st);
+
+    record_shot_hold(st,rs_target_hold);
+    last_tempo_ms = rs_target_tempo;
+    home_draw();
+
+    if (st == SHOT_FADE) combo_run(AUTO_FADE);
+    else combo_run(AUTO_NORMAL);
+}
+
+function rs_auto_engine() {
+    if (!auto_green_r3_enabled) {
+        auto_shot_pending = 0;
+        return;
+    }
+
+    if (auto_shot_pending) return;
+
+    if (manual_shot_active || manual_release_active || release_combo_active() || dribble_combo_active() || rs_auto_combo_active()) {
+        return;
+    }
+
+    if (event_press(PS4_R3)) {
+        set_val(PS4_R3,0);
+        queue_r3_auto(classify_r3_auto_shot());
+    }
+
+    if (get_val(PS4_R3)) set_val(PS4_R3,0);
+}
+
+function rs_auto_combo_active() {
+    return combo_running(AUTO_NORMAL) ||
+           combo_running(AUTO_FADE);
+}
+
+function shot_state_update() {
+    if (abs(get_val(PS4_LX)) > 45 || abs(get_val(PS4_LY)) > 45) {
+        ls_recent_ms = LS_RECENT_MS;
+        ls_strong_recent_ms = LS_STRONG_MS;
+    } else if (abs(get_val(PS4_LX)) > SMALL_MOVE_THRESHOLD || abs(get_val(PS4_LY)) > SMALL_MOVE_THRESHOLD) {
+        ls_recent_ms = LS_RECENT_MS;
+    }
+
+    if (!manual_shot_active && !manual_release_active && !release_combo_active() && !rs_auto_combo_active()) {
+        if (abs(get_val(PS4_RX)) > 55 || abs(get_val(PS4_RY)) > 55) {
+            rs_recent_ms = RS_RECENT_MS;
+            rs_strong_recent_ms = RS_STRONG_MS;
+        } else if (abs(get_val(PS4_RX)) > 22 || abs(get_val(PS4_RY)) > 22) {
+            rs_recent_ms = RS_RECENT_MS;
+        }
+
+        if (get_val(PS4_RY) < -55) {
+            rs_up_recent_ms = RS_UP_MS;
+        }
+    }
+
+    if (get_val(PS4_R2) > 35) {
+        rt_recent_ms = RT_RECENT_MS;
+        rt_hold_ms += get_rtime();
+        if (rt_hold_ms > 3000) rt_hold_ms = 3000;
+    } else {
+        rt_hold_ms = 0;
+    }
+}
+
+function workload_update() {
+    if (ls_recent_ms > 0) {
+        ls_recent_ms -= get_rtime();
+        if (ls_recent_ms < 0) ls_recent_ms = 0;
+    }
+
+    if (ls_strong_recent_ms > 0) {
+        ls_strong_recent_ms -= get_rtime();
+        if (ls_strong_recent_ms < 0) ls_strong_recent_ms = 0;
+    }
+
+    if (rs_recent_ms > 0) {
+        rs_recent_ms -= get_rtime();
+        if (rs_recent_ms < 0) rs_recent_ms = 0;
+    }
+
+    if (rs_strong_recent_ms > 0) {
+        rs_strong_recent_ms -= get_rtime();
+        if (rs_strong_recent_ms < 0) rs_strong_recent_ms = 0;
+    }
+
+    if (rs_up_recent_ms > 0) {
+        rs_up_recent_ms -= get_rtime();
+        if (rs_up_recent_ms < 0) rs_up_recent_ms = 0;
+    }
+
+    if (rt_recent_ms > 0) {
+        rt_recent_ms -= get_rtime();
+        if (rt_recent_ms < 0) rt_recent_ms = 0;
+    }
+
+    if (combo_recent_ms > 0) {
+        combo_recent_ms -= get_rtime();
+        if (combo_recent_ms <= 0) {
+            combo_recent_ms = 0;
+            post_move_light_ms = POST_MOVE_LIGHT_MS;
+        }
+    } else if (post_move_light_ms > 0) {
+        post_move_light_ms -= get_rtime();
+        if (post_move_light_ms < 0) post_move_light_ms = 0;
+    }
+
+    fatigue_tick_ms += get_rtime();
+
+    if (fatigue_tick_ms >= 100) {
+        fatigue_tick_ms = 0;
+
+        if (get_val(PS4_R2) > 35 || dribble_combo_active()) {
+            fatigue_load += 2;
+        } else if (abs(get_val(PS4_LX)) < SMALL_MOVE_THRESHOLD && abs(get_val(PS4_LY)) < SMALL_MOVE_THRESHOLD) {
+            fatigue_load -= 3;
+        } else {
+            fatigue_load -= 1;
+        }
+
+        fatigue_load = limit_val(fatigue_load,0,100);
+    }
+}
+
+function dribble_combo_active() {
+    return (
+        combo_running(N_BREAK) ||
+        combo_running(N_CROSS_L) || combo_running(N_CROSS_R) ||
+        combo_running(N_BTL_L) || combo_running(N_BTL_R) ||
+        combo_running(N_BTB_L) || combo_running(N_BTB_R) ||
+        combo_running(N_HESI_L) || combo_running(N_HESI_R) ||
+        combo_running(N_INOUT_L) || combo_running(N_INOUT_R) ||
+        combo_running(N_STEP) ||
+        combo_running(N_SPIN_L) || combo_running(N_SPIN_R) ||
+        combo_running(R_BREAK) ||
+        combo_running(R_ATK_L) || combo_running(R_ATK_R) ||
+        combo_running(R_HESI_L) || combo_running(R_HESI_R) ||
+        combo_running(R_CROSS_L) || combo_running(R_CROSS_R) ||
+        combo_running(R_BTB_L) || combo_running(R_BTB_R) ||
+        combo_running(R_STEP_L) || combo_running(R_STEP_R) ||
+        combo_running(R_MOVEBREAK_L) || combo_running(R_MOVEBREAK_R) ||
+        combo_running(R_BURST_L) || combo_running(R_BURST_R)
+    );
+}
+
+function stop_dribble_combos() {
+    combo_stop(N_BREAK);
+    combo_stop(N_CROSS_L); combo_stop(N_CROSS_R);
+    combo_stop(N_BTL_L); combo_stop(N_BTL_R);
+    combo_stop(N_BTB_L); combo_stop(N_BTB_R);
+    combo_stop(N_HESI_L); combo_stop(N_HESI_R);
+    combo_stop(N_INOUT_L); combo_stop(N_INOUT_R);
+    combo_stop(N_STEP);
+    combo_stop(N_SPIN_L); combo_stop(N_SPIN_R);
+    combo_stop(R_BREAK);
+    combo_stop(R_ATK_L); combo_stop(R_ATK_R);
+    combo_stop(R_HESI_L); combo_stop(R_HESI_R);
+    combo_stop(R_CROSS_L); combo_stop(R_CROSS_R);
+    combo_stop(R_BTB_L); combo_stop(R_BTB_R);
+    combo_stop(R_STEP_L); combo_stop(R_STEP_R);
+    combo_stop(R_MOVEBREAK_L); combo_stop(R_MOVEBREAK_R);
+    combo_stop(R_BURST_L); combo_stop(R_BURST_R);
+}
+
+function dribble_cancel_check() {
+    if (!dribble_combo_active()) return;
+
+    if (abs_diff(get_val(PS4_LX),dribble_ref_lx) > DRIBBLE_CANCEL_THRESHOLD ||
+        abs_diff(get_val(PS4_LY),dribble_ref_ly) > DRIBBLE_CANCEL_THRESHOLD) {
+        rt_loop_armed = 0;
+        rt_loop_wait = 0;
+        stop_dribble_combos();
+    }
+}
+
+function rt_loop_held() {
+    if (rt_loop_dir == 0 && raw_up > 50) return 1;
+    if (rt_loop_dir == 1 && raw_down > 50) return 1;
+    if (rt_loop_dir == 2 && raw_left > 50) return 1;
+    if (rt_loop_dir == 3 && raw_right > 50) return 1;
+    return 0;
+}
+
+function arm_rt_loop(dir,sel) {
+    rt_loop_dir = dir;
+    rt_loop_sel = sel;
+    rt_loop_wait = 0;
+    rt_loop_armed = 1;
+}
+
+function dribble_start(bank,sel) {
+    dribble_ref_lx = get_val(PS4_LX);
+    dribble_ref_ly = get_val(PS4_LY);
+
+    if (bank == BANK_RT) {
+        combo_recent_ms = COMBO_RECENT_MS;
+        post_move_light_ms = 0;
+        rt_recent_ms = RT_RECENT_MS;
+    } else {
+        rs_recent_ms = RS_RECENT_MS;
+    }
+
+    if (get_val(PS4_LX) < -30) last_side = -1;
+    if (get_val(PS4_LX) > 30) last_side = 1;
+
+    move_side = opposite_hand();
+
+    if (bank == BANK_NORT) {
+        if (sel == 0) combo_run(N_BREAK);
+
+        if (sel == 1) {
+            if (move_side < 0) combo_run(N_CROSS_L);
+            else combo_run(N_CROSS_R);
+            ball_hand = move_side;
+        }
+
+        if (sel == 2) {
+            if (move_side < 0) combo_run(N_BTL_L);
+            else combo_run(N_BTL_R);
+            ball_hand = move_side;
+        }
+
+        if (sel == 3) {
+            if (move_side < 0) combo_run(N_BTB_L);
+            else combo_run(N_BTB_R);
+            ball_hand = move_side;
+        }
+
+        if (sel == 4) {
+            if (current_ball_hand() < 0) combo_run(N_HESI_L);
+            else combo_run(N_HESI_R);
+        }
+
+        if (sel == 5) {
+            if (current_ball_hand() < 0) combo_run(N_INOUT_L);
+            else combo_run(N_INOUT_R);
+        }
+
+        if (sel == 6) combo_run(N_STEP);
+
+        if (sel == 7) {
+            if (current_ball_hand() < 0) combo_run(N_SPIN_L);
+            else combo_run(N_SPIN_R);
+            ball_hand = opposite_hand();
+        }
+    } else {
+
+        if (sel == 0) combo_run(R_BREAK);
+
+        if (sel == 1) {
+            if (move_side < 0) combo_run(R_ATK_L);
+            else combo_run(R_ATK_R);
+        }
+
+        if (sel == 2) {
+            if (current_ball_hand() < 0) combo_run(R_HESI_L);
+            else combo_run(R_HESI_R);
+        }
+
+        if (sel == 3) {
+            if (move_side < 0) combo_run(R_CROSS_L);
+            else combo_run(R_CROSS_R);
+        }
+
+        if (sel == 4) {
+            if (move_side < 0) combo_run(R_BTB_L);
+            else combo_run(R_BTB_R);
+        }
+
+        if (sel == 5) {
+            if (move_side < 0) combo_run(R_STEP_L);
+            else combo_run(R_STEP_R);
+        }
+
+        if (sel == 6) {
+            if (current_ball_hand() < 0) combo_run(R_MOVEBREAK_L);
+            else combo_run(R_MOVEBREAK_R);
+        }
+
+        if (sel == 7) {
+            if (move_side < 0) combo_run(R_BURST_L);
+            else combo_run(R_BURST_R);
+        }
+    }
+}
+
+function dribble_engine() {
+
+    raw_up = get_val(PS4_UP);
+    raw_down = get_val(PS4_DOWN);
+    raw_left = get_val(PS4_LEFT);
+    raw_right = get_val(PS4_RIGHT);
+
+    set_val(PS4_UP,0);
+    set_val(PS4_DOWN,0);
+    set_val(PS4_LEFT,0);
+    set_val(PS4_RIGHT,0);
+
+    if (dribble_combo_active()) {
+
+        if (get_val(PS4_R2) < 80 || !rt_loop_held()) rt_loop_armed = 0;
+        dribble_cancel_check();
+        return;
+    }
+
+    if (abs(get_val(PS4_RX)) > 30 || abs(get_val(PS4_RY)) > 30) {
+        rt_loop_armed = 0;
+        return;
+    }
+
+    if (rt_loop_armed) {
+        if (get_val(PS4_R2) >= 80 && rt_loop_held()) {
+            rt_loop_wait += get_rtime();
+            if (rt_loop_wait >= RT_LOOP_PAUSE_MS) {
+                rt_loop_wait = 0;
+                dribble_start(BANK_RT,rt_loop_sel);
+            }
+            return;
+        }
+        rt_loop_armed = 0;
+        rt_loop_wait = 0;
+    }
+
+    if (get_val(PS4_R2) >= 80) {
+        if (event_press(PS4_UP)) {
+            arm_rt_loop(0,rt_up);
+            dribble_start(BANK_RT,rt_up);
+        } else if (event_press(PS4_DOWN)) {
+            arm_rt_loop(1,rt_down);
+            dribble_start(BANK_RT,rt_down);
+        } else if (event_press(PS4_LEFT)) {
+            arm_rt_loop(2,rt_left);
+            dribble_start(BANK_RT,rt_left);
+        } else if (event_press(PS4_RIGHT)) {
+            arm_rt_loop(3,rt_right);
+            dribble_start(BANK_RT,rt_right);
+        }
+    } else {
+        if (event_press(PS4_UP)) dribble_start(BANK_NORT,nort_up);
+        else if (event_press(PS4_DOWN)) dribble_start(BANK_NORT,nort_down);
+        else if (event_press(PS4_LEFT)) dribble_start(BANK_NORT,nort_left);
+        else if (event_press(PS4_RIGHT)) dribble_start(BANK_NORT,nort_right);
+    }
+}
+
+function shot_menu_from_index(idx) {
+    if (idx == 7) return SHOT_STAND;
+    if (idx == 8) return SHOT_LIGHT;
+    if (idx == 9) return SHOT_MOVE;
+    if (idx == 10) return SHOT_NODIP;
+    if (idx == 11) return SHOT_FADE;
+    return SHOT_GOTO;
+}
+
+function shot_index_from_type(st) {
+    if (st == SHOT_STAND) return 7;
+    if (st == SHOT_LIGHT) return 8;
+    if (st == SHOT_MOVE) return 9;
+    if (st == SHOT_NODIP) return 10;
+    if (st == SHOT_FADE) return 11;
+    return 12;
+}
+
+function draw_profile_name(p,x,y) {
+    if (p == 0) print(x,y,OLED_FONT_SMALL,OLED_WHITE,P_REC[0]);
+    if (p == 1) print(x,y,OLED_FONT_SMALL,OLED_WHITE,P_THEATER[0]);
+    if (p == 2) print(x,y,OLED_FONT_SMALL,OLED_WHITE,P_CUSTOM[0]);
+}
+
+function save_active_profile() {
+    if (active_profile == 0) {
+        set_pvar(SPVAR_43,stand_hold);
+        set_pvar(SPVAR_44,stand_tempo);
+        set_pvar(SPVAR_45,light_hold);
+        set_pvar(SPVAR_46,light_tempo);
+        set_pvar(SPVAR_47,move_hold);
+        set_pvar(SPVAR_48,move_tempo);
+        set_pvar(SPVAR_49,fade_hold);
+        set_pvar(SPVAR_50,fade_tempo);
+    }
+
+    if (active_profile == 1) {
+        set_pvar(SPVAR_51,stand_hold);
+        set_pvar(SPVAR_52,stand_tempo);
+        set_pvar(SPVAR_53,light_hold);
+        set_pvar(SPVAR_54,light_tempo);
+        set_pvar(SPVAR_55,move_hold);
+        set_pvar(SPVAR_56,move_tempo);
+        set_pvar(SPVAR_57,fade_hold);
+        set_pvar(SPVAR_58,fade_tempo);
+    }
+
+    if (active_profile == 2) {
+        set_pvar(SPVAR_59,stand_hold);
+        set_pvar(SPVAR_60,stand_tempo);
+        set_pvar(SPVAR_61,light_hold);
+        set_pvar(SPVAR_62,light_tempo);
+        set_pvar(SPVAR_63,move_hold);
+        set_pvar(SPVAR_64,move_tempo);
+        set_pvar(SPVAR_4,fade_hold);
+        set_pvar(SPVAR_5,fade_tempo);
+    }
+}
+
+function load_profile(p) {
+    if (p == 0) {
+        stand_hold = get_pvar(SPVAR_43,100,1500,530);
+        stand_tempo = get_pvar(SPVAR_44,10,120,52);
+        light_hold = get_pvar(SPVAR_45,100,1500,545);
+        light_tempo = get_pvar(SPVAR_46,10,120,53);
+        move_hold = get_pvar(SPVAR_47,100,1500,555);
+        move_tempo = get_pvar(SPVAR_48,10,120,54);
+        fade_hold = get_pvar(SPVAR_49,100,1500,585);
+        fade_tempo = get_pvar(SPVAR_50,10,120,56);
+    }
+
+    if (p == 1) {
+        stand_hold = get_pvar(SPVAR_51,100,1500,530);
+        stand_tempo = get_pvar(SPVAR_52,10,120,52);
+        light_hold = get_pvar(SPVAR_53,100,1500,545);
+        light_tempo = get_pvar(SPVAR_54,10,120,53);
+        move_hold = get_pvar(SPVAR_55,100,1500,555);
+        move_tempo = get_pvar(SPVAR_56,10,120,54);
+        fade_hold = get_pvar(SPVAR_57,100,1500,585);
+        fade_tempo = get_pvar(SPVAR_58,10,120,56);
+    }
+
+    if (p == 2) {
+        stand_hold = get_pvar(SPVAR_59,100,1500,530);
+        stand_tempo = get_pvar(SPVAR_60,10,120,52);
+        light_hold = get_pvar(SPVAR_61,100,1500,545);
+        light_tempo = get_pvar(SPVAR_62,10,120,53);
+        move_hold = get_pvar(SPVAR_63,100,1500,555);
+        move_tempo = get_pvar(SPVAR_64,10,120,54);
+        fade_hold = get_pvar(SPVAR_4,100,1500,585);
+        fade_tempo = get_pvar(SPVAR_5,10,120,56);
+    }
+
+    recent_set_hold = stand_hold;
+    recent_light_hold = light_hold;
+    recent_move_hold = move_hold;
+    recent_fade_hold = fade_hold;
+}
+
+function activate_profile(p) {
+    if (p < 0) p = 2;
+    if (p > 2) p = 0;
+
+    save_active_profile();
+    active_profile = p;
+    profile_select = p;
+    load_profile(active_profile);
+    set_pvar(SPVAR_17,active_profile);
+}
+
+function initialize_profiles() {
+    set_pvar(SPVAR_43,stand_hold);
+    set_pvar(SPVAR_44,stand_tempo);
+    set_pvar(SPVAR_45,light_hold);
+    set_pvar(SPVAR_46,light_tempo);
+    set_pvar(SPVAR_47,move_hold);
+    set_pvar(SPVAR_48,move_tempo);
+    set_pvar(SPVAR_49,fade_hold);
+    set_pvar(SPVAR_50,fade_tempo);
+
+    set_pvar(SPVAR_51,stand_hold);
+    set_pvar(SPVAR_52,stand_tempo);
+    set_pvar(SPVAR_53,light_hold);
+    set_pvar(SPVAR_54,light_tempo);
+    set_pvar(SPVAR_55,move_hold);
+    set_pvar(SPVAR_56,move_tempo);
+    set_pvar(SPVAR_57,fade_hold);
+    set_pvar(SPVAR_58,fade_tempo);
+
+    set_pvar(SPVAR_59,stand_hold);
+    set_pvar(SPVAR_60,stand_tempo);
+    set_pvar(SPVAR_61,light_hold);
+    set_pvar(SPVAR_62,light_tempo);
+    set_pvar(SPVAR_63,move_hold);
+    set_pvar(SPVAR_64,move_tempo);
+    set_pvar(SPVAR_4,fade_hold);
+    set_pvar(SPVAR_5,fade_tempo);
+
+    active_profile = 0;
+    profile_select = 0;
+    set_pvar(SPVAR_17,active_profile);
+}
+
+function selected_shot_value() {
+    if (shot_menu_type == SHOT_STAND) {
+        if (shot_field == 0) return stand_hold;
+        return stand_tempo;
+    }
+    if (shot_menu_type == SHOT_LIGHT) {
+        if (shot_field == 0) return light_hold;
+        return light_tempo;
+    }
+    if (shot_menu_type == SHOT_MOVE) {
+        if (shot_field == 0) return move_hold;
+        return move_tempo;
+    }
+    if (shot_menu_type == SHOT_NODIP) {
+        if (shot_field == 0) return nodip_hold;
+        return nodip_tempo;
+    }
+    if (shot_menu_type == SHOT_FADE) {
+        if (shot_field == 0) return fade_hold;
+        return fade_tempo;
+    }
+    if (shot_field == 0) return goto_hold;
+    if (shot_field == 1) return goto_tempo;
+    return goto_extra;
+}
+
+function adjust_shot(amount) {
+    if (shot_menu_type == SHOT_STAND) {
+        if (shot_field == 0) stand_hold += amount;
+        if (shot_field == 1) stand_tempo += amount;
+    }
+    if (shot_menu_type == SHOT_LIGHT) {
+        if (shot_field == 0) light_hold += amount;
+        if (shot_field == 1) light_tempo += amount;
+    }
+    if (shot_menu_type == SHOT_MOVE) {
+        if (shot_field == 0) move_hold += amount;
+        if (shot_field == 1) move_tempo += amount;
+    }
+    if (shot_menu_type == SHOT_NODIP) {
+        if (shot_field == 0) nodip_hold += amount;
+        if (shot_field == 1) nodip_tempo += amount;
+    }
+    if (shot_menu_type == SHOT_FADE) {
+        if (shot_field == 0) fade_hold += amount;
+        if (shot_field == 1) fade_tempo += amount;
+    }
+    if (shot_menu_type == SHOT_GOTO) {
+        if (shot_field == 0) goto_hold += amount;
+        if (shot_field == 1) goto_tempo += amount;
+        if (shot_field == 2) goto_extra += amount;
+    }
+
+    stand_hold = limit_val(stand_hold,100,1500);
+    light_hold = limit_val(light_hold,100,1500);
+    move_hold = limit_val(move_hold,100,1500);
+    nodip_hold = limit_val(nodip_hold,100,1500);
+    fade_hold = limit_val(fade_hold,100,1500);
+    goto_hold = limit_val(goto_hold,100,2000);
+
+    stand_tempo = limit_val(stand_tempo,10,120);
+    light_tempo = limit_val(light_tempo,10,120);
+    move_tempo = limit_val(move_tempo,10,120);
+    nodip_tempo = limit_val(nodip_tempo,10,120);
+    fade_tempo = limit_val(fade_tempo,10,120);
+    goto_tempo = limit_val(goto_tempo,10,120);
+    goto_extra = limit_val(goto_extra,0,1200);
+}
+
+function selected_dribble() {
+    if (drib_menu_bank == BANK_NORT) {
+        if (drib_menu_dir == 0) return nort_up;
+        if (drib_menu_dir == 1) return nort_down;
+        if (drib_menu_dir == 2) return nort_left;
+        return nort_right;
+    }
+
+    if (drib_menu_dir == 0) return rt_up;
+    if (drib_menu_dir == 1) return rt_down;
+    if (drib_menu_dir == 2) return rt_left;
+    return rt_right;
+}
+
+function adjust_dribble(amount) {
+    if (drib_menu_bank == BANK_NORT) {
+        if (drib_menu_dir == 0) nort_up += amount;
+        if (drib_menu_dir == 1) nort_down += amount;
+        if (drib_menu_dir == 2) nort_left += amount;
+        if (drib_menu_dir == 3) nort_right += amount;
+
+        if (nort_up > 7) nort_up = 0; if (nort_up < 0) nort_up = 7;
+        if (nort_down > 7) nort_down = 0; if (nort_down < 0) nort_down = 7;
+        if (nort_left > 7) nort_left = 0; if (nort_left < 0) nort_left = 7;
+        if (nort_right > 7) nort_right = 0; if (nort_right < 0) nort_right = 7;
+    } else {
+        if (drib_menu_dir == 0) rt_up += amount;
+        if (drib_menu_dir == 1) rt_down += amount;
+        if (drib_menu_dir == 2) rt_left += amount;
+        if (drib_menu_dir == 3) rt_right += amount;
+
+        if (rt_up > 7) rt_up = 0; if (rt_up < 0) rt_up = 7;
+        if (rt_down > 7) rt_down = 0; if (rt_down < 0) rt_down = 7;
+        if (rt_left > 7) rt_left = 0; if (rt_left < 0) rt_left = 7;
+        if (rt_right > 7) rt_right = 0; if (rt_right < 0) rt_right = 7;
+    }
+}
+
+function draw_num(v,x,y) {
+    if (v < 0) v = -v;
+    if (v > 9999) v = 9999;
+
+    if (v >= 1000) {
+        putc_oled(1,(v/1000)+48);
+        putc_oled(2,((v/100)%10)+48);
+        putc_oled(3,((v/10)%10)+48);
+        putc_oled(4,(v%10)+48);
+        puts_oled(x,y,OLED_FONT_MEDIUM,4,OLED_WHITE);
+    } else if (v >= 100) {
+        putc_oled(1,(v/100)+48);
+        putc_oled(2,((v/10)%10)+48);
+        putc_oled(3,(v%10)+48);
+        puts_oled(x+6,y,OLED_FONT_MEDIUM,3,OLED_WHITE);
+    } else if (v >= 10) {
+        putc_oled(1,(v/10)+48);
+        putc_oled(2,(v%10)+48);
+        puts_oled(x+12,y,OLED_FONT_MEDIUM,2,OLED_WHITE);
+    } else {
+        putc_oled(1,v+48);
+        puts_oled(x+18,y,OLED_FONT_MEDIUM,1,OLED_WHITE);
+    }
+}
+
+function draw_shot_name(st,y) {
+    if (st == SHOT_STAND) print(37,y,OLED_FONT_SMALL,OLED_WHITE,T_STAND[0]);
+    if (st == SHOT_LIGHT) print(50,y,OLED_FONT_SMALL,OLED_WHITE,T_LIGHT[0]);
+    if (st == SHOT_MOVE) print(42,y,OLED_FONT_SMALL,OLED_WHITE,T_MOVE[0]);
+    if (st == SHOT_NODIP) print(44,y,OLED_FONT_SMALL,OLED_WHITE,T_NODIP[0]);
+    if (st == SHOT_FADE) print(50,y,OLED_FONT_SMALL,OLED_WHITE,T_FADE[0]);
+    if (st == SHOT_GOTO) print(46,y,OLED_FONT_SMALL,OLED_WHITE,T_GOTO[0]);
+}
+
+function draw_nort_name(sel,y) {
+    if (sel == 0) print(35,y,OLED_FONT_SMALL,OLED_WHITE,N0[0]);
+    if (sel == 1) print(45,y,OLED_FONT_SMALL,OLED_WHITE,N1[0]);
+    if (sel == 2) print(40,y,OLED_FONT_SMALL,OLED_WHITE,N2[0]);
+    if (sel == 3) print(50,y,OLED_FONT_SMALL,OLED_WHITE,N3[0]);
+    if (sel == 4) print(48,y,OLED_FONT_SMALL,OLED_WHITE,N4[0]);
+    if (sel == 5) print(45,y,OLED_FONT_SMALL,OLED_WHITE,N5[0]);
+    if (sel == 6) print(41,y,OLED_FONT_SMALL,OLED_WHITE,N6[0]);
+    if (sel == 7) print(49,y,OLED_FONT_SMALL,OLED_WHITE,N7[0]);
+}
+
+function draw_rt_name(sel,y) {
+    if (sel == 0) print(35,y,OLED_FONT_SMALL,OLED_WHITE,R0[0]);
+    if (sel == 1) print(36,y,OLED_FONT_SMALL,OLED_WHITE,R1[0]);
+    if (sel == 2) print(40,y,OLED_FONT_SMALL,OLED_WHITE,R2[0]);
+    if (sel == 3) print(37,y,OLED_FONT_SMALL,OLED_WHITE,R3[0]);
+    if (sel == 4) print(43,y,OLED_FONT_SMALL,OLED_WHITE,R4[0]);
+    if (sel == 5) print(40,y,OLED_FONT_SMALL,OLED_WHITE,R5[0]);
+    if (sel == 6) print(34,y,OLED_FONT_SMALL,OLED_WHITE,R6[0]);
+    if (sel == 7) print(34,y,OLED_FONT_SMALL,OLED_WHITE,R7[0]);
+}
+
+function record_shot_hold(st,h) {
+    last_shot_type = st;
+    last_hold_ms = h;
+
+    if (st == SHOT_STAND) recent_set_hold = h;
+    if (st == SHOT_LIGHT) recent_light_hold = h;
+    if (st == SHOT_MOVE) recent_move_hold = h;
+    if (st == SHOT_FADE) recent_fade_hold = h;
+}
+
+function draw_last_shot_type(x,y) {
+    if (last_shot_type == SHOT_STAND) print(x,y,OLED_FONT_SMALL,OLED_WHITE,T_SETTXT[0]);
+    else if (last_shot_type == SHOT_LIGHT) print(x,y,OLED_FONT_SMALL,OLED_WHITE,T_LIGHTTXT[0]);
+    else if (last_shot_type == SHOT_MOVE) print(x,y,OLED_FONT_SMALL,OLED_WHITE,T_MOVETXT[0]);
+    else if (last_shot_type == SHOT_NODIP) print(x,y,OLED_FONT_SMALL,OLED_WHITE,T_NODIPTXT[0]);
+    else if (last_shot_type == SHOT_FADE) print(x,y,OLED_FONT_SMALL,OLED_WHITE,T_FADETXT[0]);
+    else if (last_shot_type == SHOT_GOTO) print(x,y,OLED_FONT_SMALL,OLED_WHITE,T_GOTOTXT[0]);
+    else print(x,y,OLED_FONT_SMALL,OLED_WHITE,T_LAST[0]);
+}
+
+function draw_last_shot_short(x,y) {
+    if (last_shot_type == SHOT_STAND) print(x,y,OLED_FONT_SMALL,OLED_WHITE,T_SSHORT[0]);
+    else if (last_shot_type == SHOT_LIGHT) print(x,y,OLED_FONT_SMALL,OLED_WHITE,T_LSHORT[0]);
+    else if (last_shot_type == SHOT_MOVE) print(x,y,OLED_FONT_SMALL,OLED_WHITE,T_MSHORT[0]);
+    else if (last_shot_type == SHOT_FADE) print(x,y,OLED_FONT_SMALL,OLED_WHITE,T_FSHORT[0]);
+    else draw_last_shot_type(x,y);
+}
+
+function intro_draw() {
+    cls_oled(OLED_BLACK);
+
+    if (intro_elapsed < 1350) {
+        print(intro_x,intro_y,OLED_FONT_MEDIUM,OLED_WHITE,T_INTRO_KB2K[0]);
+        print(intro_x+20,intro_y+18,OLED_FONT_SMALL,OLED_WHITE,T_VERSION[0]);
+        return;
+    }
+
+    if (intro_elapsed < 1650) {
+        print(40,18,OLED_FONT_MEDIUM,OLED_WHITE,T_INTRO_KB2K[0]);
+        print(57,42,OLED_FONT_SMALL,OLED_WHITE,T_VERSION[0]);
+        return;
+    }
+
+    print(40,18,OLED_FONT_MEDIUM,OLED_WHITE,T_INTRO_KB2K[0]);
+    print(57,42,OLED_FONT_SMALL,OLED_WHITE,T_VERSION[0]);
+}
+
+function intro_engine() {
+    intro_elapsed += get_rtime();
+    intro_frame_ms += get_rtime();
+
+    if (intro_elapsed < 1350 && intro_frame_ms >= 70) {
+        intro_frame_ms = 0;
+
+        intro_x += intro_dx;
+        intro_y += intro_dy;
+
+        if (intro_x >= 84) {
+            intro_x = 84;
+            intro_dx = -5;
+        }
+        if (intro_x <= 2) {
+            intro_x = 2;
+            intro_dx = 5;
+        }
+
+        if (intro_y >= 38) {
+            intro_y = 38;
+            intro_dy = -3;
+        }
+        if (intro_y <= 2) {
+            intro_y = 2;
+            intro_dy = 3;
+        }
+
+        intro_draw();
+    }
+
+    if (intro_elapsed >= 1900) {
+        intro_active = 0;
+        home_draw();
+    }
+}
+
+function home_draw() {
+    cls_oled(OLED_BLACK);
+
+    if (shot_feedback_enabled) {
+
+        print(29,1,OLED_FONT_SMALL,OLED_WHITE,T_FEEDBACK[0]);
+
+        print(4,17,OLED_FONT_SMALL,OLED_WHITE,T_SSHORT[0]);
+        draw_num(recent_set_hold,13,11);
+
+        print(67,17,OLED_FONT_SMALL,OLED_WHITE,T_LSHORT[0]);
+        draw_num(recent_light_hold,76,11);
+
+        print(4,38,OLED_FONT_SMALL,OLED_WHITE,T_MSHORT[0]);
+        draw_num(recent_move_hold,13,32);
+
+        print(67,38,OLED_FONT_SMALL,OLED_WHITE,T_FSHORT[0]);
+        draw_num(recent_fade_hold,76,32);
+
+        print(28,56,OLED_FONT_SMALL,OLED_WHITE,T_LAST[0]);
+        draw_last_shot_short(70,56);
+        return;
+    }
+
+    print(22,1,OLED_FONT_SMALL,OLED_WHITE,T_TITLE[0]);
+    draw_profile_name(active_profile,88,1);
+
+    print(5,15,OLED_FONT_SMALL,OLED_WHITE,T_XRHYTHM[0]);
+    if (rhythm_x_enabled) print(82,15,OLED_FONT_SMALL,OLED_WHITE,T_ON[0]);
+    else print(82,15,OLED_FONT_SMALL,OLED_WHITE,T_OFF[0]);
+
+    print(5,27,OLED_FONT_SMALL,OLED_WHITE,T_RSAUTO[0]);
+    if (auto_green_r3_enabled) print(82,27,OLED_FONT_SMALL,OLED_WHITE,T_ON[0]);
+    else print(82,27,OLED_FONT_SMALL,OLED_WHITE,T_OFF[0]);
+
+    print(5,39,OLED_FONT_SMALL,OLED_WHITE,T_LASTHOLD[0]);
+    draw_last_shot_type(72,39);
+
+    draw_num(last_hold_ms,6,47);
+    print(51,52,OLED_FONT_SMALL,OLED_WHITE,T_MS[0]);
+
+    print(76,52,OLED_FONT_SMALL,OLED_WHITE,T_TEMPO[0]);
+    draw_num(last_tempo_ms,103,47);
+}
+
+function menu_draw() {
+    cls_oled(OLED_BLACK);
+    print(22,1,OLED_FONT_SMALL,OLED_WHITE,T_TITLE[0]);
+
+    if (menu_state == MENU_MAIN) {
+        if (menu_index == 0) print(4,12,OLED_FONT_SMALL,OLED_WHITE,T_SHOOT[0]);
+        if (menu_index == 1) print(4,27,OLED_FONT_SMALL,OLED_WHITE,T_PROFILES[0]);
+        if (menu_index == 2) print(4,42,OLED_FONT_SMALL,OLED_WHITE,T_DRIB[0]);
+        if (menu_index == 3) print(4,57,OLED_FONT_SMALL,OLED_WHITE,T_REMAP[0]);
+        return;
+    }
+
+    if (menu_state == MENU_SHOOT) {
+        if (menu_index == 0) {
+            print(5,16,OLED_FONT_SMALL,OLED_WHITE,T_XRHYTHM[0]);
+            if (rhythm_x_enabled) print(90,16,OLED_FONT_SMALL,OLED_WHITE,T_ON[0]);
+            else print(90,16,OLED_FONT_SMALL,OLED_WHITE,T_OFF[0]);
+        } else if (menu_index == 1) {
+            print(5,16,OLED_FONT_SMALL,OLED_WHITE,T_RSAUTO[0]);
+            if (auto_green_r3_enabled) print(90,16,OLED_FONT_SMALL,OLED_WHITE,T_ON[0]);
+            else print(90,16,OLED_FONT_SMALL,OLED_WHITE,T_OFF[0]);
+        } else if (menu_index == 2) {
+            print(5,16,OLED_FONT_SMALL,OLED_WHITE,T_SHOTFEED[0]);
+            if (shot_feedback_enabled) print(90,16,OLED_FONT_SMALL,OLED_WHITE,T_ON[0]);
+            else print(90,16,OLED_FONT_SMALL,OLED_WHITE,T_OFF[0]);
+        } else if (menu_index == 3) {
+            print(5,16,OLED_FONT_SMALL,OLED_WHITE,T_RELRUMBLE[0]);
+            if (manual_rumble_enabled) print(90,16,OLED_FONT_SMALL,OLED_WHITE,T_ON[0]);
+            else print(90,16,OLED_FONT_SMALL,OLED_WHITE,T_OFF[0]);
+        } else if (menu_index == 4) {
+            print(5,16,OLED_FONT_SMALL,OLED_WHITE,T_VIBELEAD[0]);
+            draw_num(manual_rumble_lead_ms,70,12);
+            print(102,18,OLED_FONT_SMALL,OLED_WHITE,T_MS[0]);
+        } else if (menu_index == 5) {
+            print(5,16,OLED_FONT_SMALL,OLED_WHITE,T_VIBELEN[0]);
+            draw_num(manual_rumble_length_ms,70,12);
+            print(102,18,OLED_FONT_SMALL,OLED_WHITE,T_MS[0]);
+        } else if (menu_index == 6) {
+            print(5,16,OLED_FONT_SMALL,OLED_WHITE,T_VIBESTR[0]);
+            draw_num(manual_rumble_strength,74,12);
+        } else {
+            draw_shot_name(shot_menu_from_index(menu_index),16);
+            print(42,44,OLED_FONT_SMALL,OLED_WHITE,T_EDIT[0]);
+        }
+        print(42,56,OLED_FONT_SMALL,OLED_WHITE,T_BACK[0]);
+        return;
+    }
+
+    if (menu_state == MENU_SHOT_EDIT) {
+        draw_shot_name(shot_menu_type,8);
+        if (shot_field == 0) print(42,24,OLED_FONT_SMALL,OLED_WHITE,T_HOLD[0]);
+        if (shot_field == 1) print(44,24,OLED_FONT_SMALL,OLED_WHITE,T_TEMPO[0]);
+        if (shot_menu_type == SHOT_GOTO && shot_field == 2) print(45,24,OLED_FONT_SMALL,OLED_WHITE,T_EXTRA[0]);
+        draw_num(selected_shot_value(),44,34);
+        print(88,39,OLED_FONT_SMALL,OLED_WHITE,T_MS[0]);
+        print(42,56,OLED_FONT_SMALL,OLED_WHITE,T_BACK[0]);
+        return;
+    }
+
+    if (menu_state == MENU_DRIB) {
+        if (menu_index == 0) {
+            print(5,15,OLED_FONT_SMALL,OLED_WHITE,T_DRIB[0]);
+            if (dribbles_enabled) print(90,15,OLED_FONT_SMALL,OLED_WHITE,T_ON[0]);
+            else print(90,15,OLED_FONT_SMALL,OLED_WHITE,T_OFF[0]);
+        } else if (menu_index == 1) {
+            print(5,15,OLED_FONT_SMALL,OLED_WHITE,T_BANK[0]);
+            if (drib_menu_bank == BANK_NORT) print(65,15,OLED_FONT_SMALL,OLED_WHITE,T_NORT[0]);
+            else print(65,15,OLED_FONT_SMALL,OLED_WHITE,T_RT[0]);
+        } else {
+            if (menu_index == 2) print(5,15,OLED_FONT_SMALL,OLED_WHITE,T_UP[0]);
+            if (menu_index == 3) print(5,15,OLED_FONT_SMALL,OLED_WHITE,T_DOWN[0]);
+            if (menu_index == 4) print(5,15,OLED_FONT_SMALL,OLED_WHITE,T_LEFT[0]);
+            if (menu_index == 5) print(5,15,OLED_FONT_SMALL,OLED_WHITE,T_RIGHT[0]);
+
+            drib_menu_dir = menu_index - 2;
+            if (drib_menu_bank == BANK_NORT) draw_nort_name(selected_dribble(),33);
+            else draw_rt_name(selected_dribble(),33);
+            print(42,50,OLED_FONT_SMALL,OLED_WHITE,T_EDIT[0]);
+        }
+        print(42,58,OLED_FONT_SMALL,OLED_WHITE,T_BACK[0]);
+        return;
+    }
+
+    if (menu_state == MENU_DRIB_EDIT) {
+        if (drib_menu_bank == BANK_NORT) print(39,8,OLED_FONT_SMALL,OLED_WHITE,T_NORT[0]);
+        else print(39,8,OLED_FONT_SMALL,OLED_WHITE,T_RT[0]);
+
+        if (drib_menu_dir == 0) print(51,20,OLED_FONT_SMALL,OLED_WHITE,T_UP[0]);
+        if (drib_menu_dir == 1) print(46,20,OLED_FONT_SMALL,OLED_WHITE,T_DOWN[0]);
+        if (drib_menu_dir == 2) print(46,20,OLED_FONT_SMALL,OLED_WHITE,T_LEFT[0]);
+        if (drib_menu_dir == 3) print(43,20,OLED_FONT_SMALL,OLED_WHITE,T_RIGHT[0]);
+
+        if (drib_menu_bank == BANK_NORT) draw_nort_name(selected_dribble(),36);
+        else draw_rt_name(selected_dribble(),36);
+        print(42,56,OLED_FONT_SMALL,OLED_WHITE,T_BACK[0]);
+        return;
+    }
+
+    if (menu_state == MENU_PROFILE) {
+        print(5,15,OLED_FONT_SMALL,OLED_WHITE,T_ACTIVE[0]);
+        draw_profile_name(active_profile,67,15);
+
+        print(5,32,OLED_FONT_SMALL,OLED_WHITE,T_PROFILES[0]);
+        draw_profile_name(profile_select,67,32);
+
+        print(42,50,OLED_FONT_SMALL,OLED_WHITE,T_LOAD[0]);
+        print(42,60,OLED_FONT_SMALL,OLED_WHITE,T_BACK[0]);
+        return;
+    }
+
+    if (menu_state == MENU_REMAP) {
+        print(8,22,OLED_FONT_SMALL,OLED_WHITE,T_REMAP[0]);
+        if (x_remap_l3) print(87,22,OLED_FONT_SMALL,OLED_WHITE,T_ON[0]);
+        else print(87,22,OLED_FONT_SMALL,OLED_WHITE,T_OFF[0]);
+        print(42,56,OLED_FONT_SMALL,OLED_WHITE,T_BACK[0]);
+    }
+}
+
+function menu_update() {
+    if (get_val(PS4_R1) > 50) step = 10;
+    else step = 1;
+
+    if (event_press(PS4_CIRCLE)) {
+        if (menu_state == MENU_MAIN) {
+            save_settings();
+            menu_state = MENU_CLOSED;
+            home_draw();
+        } else if (menu_state == MENU_SHOT_EDIT) {
+            menu_state = MENU_SHOOT;
+            menu_index = shot_index_from_type(shot_menu_type);
+            shot_field = 0;
+        } else if (menu_state == MENU_DRIB_EDIT) {
+            menu_state = MENU_DRIB;
+            menu_index = drib_menu_dir + 2;
+        } else {
+            menu_state = MENU_MAIN;
+            menu_index = 0;
+        }
+        return;
+    }
+
+    if (menu_state == MENU_MAIN) {
+        if (event_press(PS4_UP)) { menu_index--; if (menu_index < 0) menu_index = 3; }
+        if (event_press(PS4_DOWN)) { menu_index++; if (menu_index > 3) menu_index = 0; }
+
+        if (event_press(PS4_CROSS)) {
+            if (menu_index == 0) { menu_state = MENU_SHOOT; menu_index = 0; }
+            if (menu_index == 1) {
+                menu_state = MENU_PROFILE;
+                menu_index = 0;
+                profile_select = active_profile;
+            }
+            if (menu_index == 2) { menu_state = MENU_DRIB; menu_index = 0; }
+            if (menu_index == 3) { menu_state = MENU_REMAP; menu_index = 0; }
+        }
+        return;
+    }
+
+    if (menu_state == MENU_SHOOT) {
+        if (event_press(PS4_UP)) { menu_index--; if (menu_index < 0) menu_index = 12; }
+        if (event_press(PS4_DOWN)) { menu_index++; if (menu_index > 12) menu_index = 0; }
+
+        if (event_press(PS4_CROSS)) {
+            if (menu_index == 0) rhythm_x_enabled = !rhythm_x_enabled;
+            if (menu_index == 1) auto_green_r3_enabled = !auto_green_r3_enabled;
+            if (menu_index == 2) shot_feedback_enabled = !shot_feedback_enabled;
+            if (menu_index == 3) manual_rumble_enabled = !manual_rumble_enabled;
+
+            if (menu_index >= 7) {
+                shot_menu_type = shot_menu_from_index(menu_index);
+                shot_field = 0;
+                menu_state = MENU_SHOT_EDIT;
+            }
+        }
+
+        if (event_press(PS4_LEFT)) {
+            if (menu_index == 4) manual_rumble_lead_ms = limit_val(manual_rumble_lead_ms - step, 0, 100);
+            if (menu_index == 5) manual_rumble_length_ms = limit_val(manual_rumble_length_ms - step, 20, 200);
+            if (menu_index == 6) manual_rumble_strength = limit_val(manual_rumble_strength - step, 10, 100);
+        }
+        if (event_press(PS4_RIGHT)) {
+            if (menu_index == 4) manual_rumble_lead_ms = limit_val(manual_rumble_lead_ms + step, 0, 100);
+            if (menu_index == 5) manual_rumble_length_ms = limit_val(manual_rumble_length_ms + step, 20, 200);
+            if (menu_index == 6) manual_rumble_strength = limit_val(manual_rumble_strength + step, 10, 100);
+        }
+
+        return;
+    }
+
+    if (menu_state == MENU_SHOT_EDIT) {
+        if (event_press(PS4_UP)) {
+            shot_field--;
+            if (shot_field < 0) {
+                if (shot_menu_type == SHOT_GOTO) shot_field = 2;
+                else shot_field = 1;
+            }
+        }
+        if (event_press(PS4_DOWN)) {
+            shot_field++;
+            if (shot_menu_type == SHOT_GOTO) {
+                if (shot_field > 2) shot_field = 0;
+            } else {
+                if (shot_field > 1) shot_field = 0;
+            }
+        }
+        if (event_press(PS4_LEFT)) adjust_shot(-step);
+        if (event_press(PS4_RIGHT)) adjust_shot(step);
+        return;
+    }
+
+    if (menu_state == MENU_DRIB) {
+        if (event_press(PS4_UP)) { menu_index--; if (menu_index < 0) menu_index = 5; }
+        if (event_press(PS4_DOWN)) { menu_index++; if (menu_index > 5) menu_index = 0; }
+
+        if (event_press(PS4_CROSS)) {
+            if (menu_index == 0) dribbles_enabled = !dribbles_enabled;
+            if (menu_index == 1) drib_menu_bank = !drib_menu_bank;
+            if (menu_index >= 2) {
+                drib_menu_dir = menu_index - 2;
+                menu_state = MENU_DRIB_EDIT;
+            }
+        }
+        return;
+    }
+
+    if (menu_state == MENU_DRIB_EDIT) {
+        if (event_press(PS4_LEFT)) adjust_dribble(-1);
+        if (event_press(PS4_RIGHT)) adjust_dribble(1);
+        return;
+    }
+
+    if (menu_state == MENU_PROFILE) {
+        if (event_press(PS4_LEFT)) {
+            profile_select--;
+            if (profile_select < 0) profile_select = 2;
+        }
+        if (event_press(PS4_RIGHT)) {
+            profile_select++;
+            if (profile_select > 2) profile_select = 0;
+        }
+        if (event_press(PS4_CROSS)) {
+            activate_profile(profile_select);
+            menu_draw();
+        }
+        return;
+    }
+
+    if (menu_state == MENU_REMAP) {
+        if (event_press(PS4_CROSS)) x_remap_l3 = !x_remap_l3;
+    }
+}
+
+function menu_block() {
+    set_val(PS4_L2,0); set_val(PS4_R2,0);
+    set_val(PS4_L1,0); set_val(PS4_R1,0);
+    set_val(PS4_OPTIONS,0);
+    set_val(PS4_UP,0); set_val(PS4_DOWN,0);
+    set_val(PS4_LEFT,0); set_val(PS4_RIGHT,0);
+    set_val(PS4_CROSS,0); set_val(PS4_CIRCLE,0);
+    set_val(PS4_SQUARE,0); set_val(PS4_TRIANGLE,0);
+    set_val(PS4_LX,0); set_val(PS4_LY,0);
+    set_val(PS4_RX,0); set_val(PS4_RY,0);
+    set_val(PS4_L3,0); set_val(PS4_R3,0);
+}
+
+function reset_defaults() {
+    rhythm_x_enabled = 1;
+    auto_green_r3_enabled = 0;
+    shot_feedback_enabled = 0;
+    manual_rumble_enabled = 1;
+    manual_rumble_lead_ms = 25;
+    manual_rumble_length_ms = 90;
+    manual_rumble_strength = 100;
+
+    stand_hold = 530;
+    stand_tempo = 52;
+    light_hold = 545;
+    light_tempo = 53;
+    move_hold = 555;
+    move_tempo = 54;
+    nodip_hold = 570;
+    nodip_tempo = 54;
+    fade_hold = 585;
+    fade_tempo = 56;
+    goto_hold = 700;
+    goto_tempo = 52;
+    goto_extra = 0;
+
+    dribbles_enabled = 1;
+    nort_up = 0;
+    nort_down = 6;
+    nort_left = 1;
+    nort_right = 3;
+
+    rt_up = 0;
+    rt_down = 5;
+    rt_left = 3;
+    rt_right = 4;
+
+    x_remap_l3 = 1;
+    recent_set_hold = stand_hold;
+    recent_light_hold = light_hold;
+    recent_move_hold = move_hold;
+    recent_fade_hold = fade_hold;
+}
+
+function load_settings() {
+    if (get_pvar(SPVAR_31,0,32767,0) != CONFIG_MAGIC) {
+        reset_defaults();
+        initialize_profiles();
+        save_settings();
+        return;
+    }
+
+    rhythm_x_enabled = get_pvar(SPVAR_2,0,1,1);
+    auto_green_r3_enabled = get_pvar(SPVAR_3,0,1,0);
+    nodip_hold = get_pvar(SPVAR_9,100,1500,570);
+    nodip_tempo = get_pvar(SPVAR_10,10,120,54);
+    goto_hold = get_pvar(SPVAR_13,100,2000,700);
+    goto_tempo = get_pvar(SPVAR_14,10,120,52);
+    goto_extra = get_pvar(SPVAR_15,0,1200,0);
+
+    dribbles_enabled = get_pvar(SPVAR_21,0,1,1);
+    nort_up = get_pvar(SPVAR_22,0,7,0);
+    nort_down = get_pvar(SPVAR_23,0,7,6);
+    nort_left = get_pvar(SPVAR_24,0,7,1);
+    nort_right = get_pvar(SPVAR_25,0,7,3);
+
+    rt_up = get_pvar(SPVAR_26,0,7,0);
+    rt_down = get_pvar(SPVAR_27,0,7,5);
+    rt_left = get_pvar(SPVAR_28,0,7,3);
+    rt_right = get_pvar(SPVAR_29,0,7,4);
+
+    x_remap_l3 = get_pvar(SPVAR_30,0,1,1);
+    shot_feedback_enabled = get_pvar(SPVAR_34,0,1,0);
+    manual_rumble_enabled = get_pvar(SPVAR_35,0,1,1);
+    manual_rumble_lead_ms = get_pvar(SPVAR_40,0,100,25);
+    manual_rumble_length_ms = get_pvar(SPVAR_41,20,200,90);
+    manual_rumble_strength = get_pvar(SPVAR_42,10,100,100);
+
+    active_profile = get_pvar(SPVAR_17,0,2,0);
+    profile_select = active_profile;
+    load_profile(active_profile);
+}
+
+function save_settings() {
+    save_active_profile();
+    set_pvar(SPVAR_17,active_profile);
+    set_pvar(SPVAR_2,rhythm_x_enabled);
+    set_pvar(SPVAR_3,auto_green_r3_enabled);
+    set_pvar(SPVAR_9,nodip_hold);
+    set_pvar(SPVAR_10,nodip_tempo);
+    set_pvar(SPVAR_13,goto_hold);
+    set_pvar(SPVAR_14,goto_tempo);
+    set_pvar(SPVAR_15,goto_extra);
+
+    set_pvar(SPVAR_21,dribbles_enabled);
+    set_pvar(SPVAR_22,nort_up);
+    set_pvar(SPVAR_23,nort_down);
+    set_pvar(SPVAR_24,nort_left);
+    set_pvar(SPVAR_25,nort_right);
+
+    set_pvar(SPVAR_26,rt_up);
+    set_pvar(SPVAR_27,rt_down);
+    set_pvar(SPVAR_28,rt_left);
+    set_pvar(SPVAR_29,rt_right);
+
+    set_pvar(SPVAR_30,x_remap_l3);
+    set_pvar(SPVAR_31,CONFIG_MAGIC);
+    set_pvar(SPVAR_34,shot_feedback_enabled);
+    set_pvar(SPVAR_35,manual_rumble_enabled);
+    set_pvar(SPVAR_40,manual_rumble_lead_ms);
+    set_pvar(SPVAR_41,manual_rumble_length_ms);
+    set_pvar(SPVAR_42,manual_rumble_strength);
+}
+
+init {
+    load_settings();
+    intro_active = 1;
+    intro_elapsed = 0;
+    intro_frame_ms = 0;
+    intro_x = 8;
+    intro_y = 8;
+    intro_dx = 5;
+    intro_dy = 3;
+    intro_draw();
+}
+
+main {
+    if (intro_active) {
+        if (get_val(PS4_L2) > 50 && event_press(PS4_OPTIONS)) {
+            intro_active = 0;
+            menu_state = MENU_MAIN;
+            menu_index = 0;
+            menu_draw();
+        } else {
+            intro_engine();
+        }
+    } else if (get_val(PS4_L2) > 50 && event_press(PS4_OPTIONS)) {
+        if (menu_state == MENU_CLOSED) {
+            stop_release();
+            stop_dribble_combos();
+            manual_shot_active = 0;
+            menu_state = MENU_MAIN;
+            menu_index = 0;
+        } else {
+            save_settings();
+            menu_state = MENU_CLOSED;
+            home_draw();
+        }
+    }
+
+    if (!intro_active) {
+        if (menu_state != MENU_CLOSED) {
+            menu_update();
+            menu_block();
+            menu_draw();
+        } else {
+            shot_state_update();
+        workload_update();
+
+        if (x_remap_l3 && get_val(PS4_L3)) {
+            set_val(PS4_L3,0);
+            set_val(PS4_SQUARE,100);
+        }
+        rhythm_x_engine();
+        auto_shot_delay_engine();
+        rs_auto_engine();
+
+        if (dribbles_enabled && !auto_shot_pending && !manual_shot_active && !manual_release_active && !release_combo_active() && !rs_auto_combo_active()) {
+            dribble_engine();
+        }
+        }
+    }
+}
+
+combo RELEASE_RUMBLE {
+    set_rumble(RUMBLE_A,manual_rumble_strength);
+    set_rumble(RUMBLE_B,manual_rumble_strength);
+    wait(manual_rumble_length_ms);
+    set_rumble(RUMBLE_A,0);
+    set_rumble(RUMBLE_B,0);
+}
+
+combo REL_NORMAL {
+    set_val(PS4_SQUARE,0);
+    set_val(PS4_RY,-50);
+    set_val(PS4_RX,20);
+    wait(effective_tempo_ms);
+    set_val(PS4_RY,-100);
+    set_val(PS4_RX,25);
+    wait(300);
+    set_val(PS4_RY,0);
+    set_val(PS4_RX,0);
+}
+
+combo REL_FADE {
+    set_val(PS4_SQUARE,0);
+    set_val(PS4_RY,50);
+    set_val(PS4_RX,-20);
+    wait(effective_tempo_ms);
+    set_val(PS4_RY,100);
+    set_val(PS4_RX,-25);
+    wait(300);
+    set_val(PS4_RY,0);
+    set_val(PS4_RX,0);
+}
+
+combo REL_GOTO {
+    set_val(PS4_SQUARE,0);
+    set_val(PS4_RY,100);
+    set_val(PS4_RX,0);
+    wait(goto_extra);
+    set_val(PS4_RY,-50);
+    set_val(PS4_RX,20);
+    wait(effective_tempo_ms);
+    set_val(PS4_RY,-100);
+    set_val(PS4_RX,25);
+    wait(300);
+    set_val(PS4_RY,0);
+    set_val(PS4_RX,0);
+}
+
+combo AUTO_NORMAL {
+    set_val(PS4_R3,0);
+    set_val(PS4_RY,100);
+    set_val(PS4_RX,0);
+    wait(rs_target_hold);
+    set_val(PS4_RY,-50);
+    set_val(PS4_RX,20);
+    wait(rs_target_tempo);
+    set_val(PS4_RY,-100);
+    set_val(PS4_RX,25);
+    wait(300);
+    set_val(PS4_RY,0);
+    set_val(PS4_RX,0);
+}
+
+combo AUTO_FADE {
+    set_val(PS4_R3,0);
+    set_val(PS4_RY,-100);
+    set_val(PS4_RX,0);
+    wait(rs_target_hold);
+    set_val(PS4_RY,50);
+    set_val(PS4_RX,-20);
+    wait(rs_target_tempo);
+    set_val(PS4_RY,100);
+    set_val(PS4_RX,-25);
+    wait(300);
+    set_val(PS4_RY,0);
+    set_val(PS4_RX,0);
+}
+
+combo N_BREAK {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,0); set_val(PS4_RY,-100); wait(42);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(35);
+}
+
+combo N_CROSS_L {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,-72); set_val(PS4_RY,-72); wait(42);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(38);
+}
+combo N_CROSS_R {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,72); set_val(PS4_RY,-72); wait(42);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(38);
+}
+
+combo N_BTL_L {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(38);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(36);
+}
+combo N_BTL_R {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(38);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(36);
+}
+
+combo N_BTB_L {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,-72); set_val(PS4_RY,72); wait(45);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(42);
+}
+combo N_BTB_R {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,72); set_val(PS4_RY,72); wait(45);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(42);
+}
+
+combo N_HESI_L {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(40);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(38);
+}
+combo N_HESI_R {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(40);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(38);
+}
+
+combo N_INOUT_L {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,-72); set_val(PS4_RY,-72); wait(44);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(40);
+}
+combo N_INOUT_R {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,72); set_val(PS4_RY,-72); wait(44);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(40);
+}
+
+combo N_STEP {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,0); set_val(PS4_RY,100); wait(45);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(42);
+}
+
+combo N_SPIN_L {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(22);
+    set_val(PS4_RX,-70); set_val(PS4_RY,70); wait(22);
+    set_val(PS4_RX,0); set_val(PS4_RY,100); wait(22);
+    set_val(PS4_RX,70); set_val(PS4_RY,70); wait(22);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(22);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(45);
+}
+combo N_SPIN_R {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(22);
+    set_val(PS4_RX,70); set_val(PS4_RY,70); wait(22);
+    set_val(PS4_RX,0); set_val(PS4_RY,100); wait(22);
+    set_val(PS4_RX,-70); set_val(PS4_RY,70); wait(22);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(22);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(45);
+}
+
+combo R_BREAK {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(54);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(72);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(54);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(95);
+}
+
+combo R_ATK_L {
+    set_val(PS4_R2,100);
+    set_val(PS4_RX,-72); set_val(PS4_RY,-72); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(70);
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(54);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(68);
+    set_val(PS4_R2,100);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(54);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(62);
+}
+combo R_ATK_R {
+    set_val(PS4_R2,100);
+    set_val(PS4_RX,72); set_val(PS4_RY,-72); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(70);
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(54);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(68);
+    set_val(PS4_R2,100);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(54);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(62);
+}
+
+combo R_HESI_L {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(82);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(82);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(110);
+}
+combo R_HESI_R {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(82);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(82);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(110);
+}
+
+combo R_CROSS_L {
+    set_val(PS4_R2,100);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(52);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(66);
+    set_val(PS4_RX,72); set_val(PS4_RY,72); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(60);
+}
+combo R_CROSS_R {
+    set_val(PS4_R2,100);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(52);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(66);
+    set_val(PS4_RX,-72); set_val(PS4_RY,72); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(60);
+}
+
+combo R_BTB_L {
+    set_val(PS4_R2,100);
+    set_val(PS4_RX,-72); set_val(PS4_RY,72); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(70);
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(64);
+}
+combo R_BTB_R {
+    set_val(PS4_R2,100);
+    set_val(PS4_RX,72); set_val(PS4_RY,72); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(70);
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(64);
+}
+
+combo R_STEP_L {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,0); set_val(PS4_RY,100); wait(58);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(92);
+    set_val(PS4_R2,100);
+    set_val(PS4_RX,-72); set_val(PS4_RY,-72); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(70);
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(54);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(70);
+}
+combo R_STEP_R {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,0); set_val(PS4_RY,100); wait(58);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(92);
+    set_val(PS4_R2,100);
+    set_val(PS4_RX,72); set_val(PS4_RY,-72); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(70);
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(54);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(70);
+}
+
+combo R_MOVEBREAK_L {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,0); set_val(PS4_RY,-100); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(82);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(54);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(68);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(54);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(68);
+    set_val(PS4_RX,-72); set_val(PS4_RY,72); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(78);
+}
+combo R_MOVEBREAK_R {
+    set_val(PS4_R2,0);
+    set_val(PS4_RX,0); set_val(PS4_RY,-100); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(82);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(54);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(68);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(54);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(68);
+    set_val(PS4_RX,72); set_val(PS4_RY,72); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(78);
+}
+
+combo R_BURST_L {
+    set_val(PS4_R2,0); wait(70);
+    set_val(PS4_RX,-100); set_val(PS4_RY,0); wait(52);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(68);
+    set_val(PS4_RX,72); set_val(PS4_RY,72); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(70);
+    set_val(PS4_R2,100); wait(70);
+    set_val(PS4_R2,0); wait(45);
+}
+combo R_BURST_R {
+    set_val(PS4_R2,0); wait(70);
+    set_val(PS4_RX,100); set_val(PS4_RY,0); wait(52);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(68);
+    set_val(PS4_RX,-72); set_val(PS4_RY,72); wait(56);
+    set_val(PS4_RX,0); set_val(PS4_RY,0); wait(70);
+    set_val(PS4_R2,100); wait(70);
+    set_val(PS4_R2,0); wait(45);
+}

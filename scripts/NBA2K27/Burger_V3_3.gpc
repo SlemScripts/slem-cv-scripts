@@ -1,0 +1,1087 @@
+/* ********************* GPC FILE ********************* */
+// Script: Burger V3
+// Menu system: Burger V3 Black screen style (categories + slide transitions + hold-to-scroll)
+int flick_sequences_enabled = 0;
+int delay_duration = 50;
+int Delay_duration_Insta = 50;
+int STICK_DOWN_VALUE = 100000;
+int STICK_UP_VALUE = -100000;
+int RX_UP_VALUE = 25;
+int random_variation_min = -4;
+int random_variation_max = 4;
+int random_hold_variation_min = -2;
+int random_hold_variation_max = 2;
+int stabilization_variation = 150000;
+int reverse_flick_mode = 1;
+int rs_shooting_active = 0;
+int rs_hold_duration = 300;
+int Insta_shot_active = 1;
+int Insta_shot_duration = 650;
+// --- Go-to Shots tab (ported from Burger V1) ---
+int Goto_shot_active = 1;
+int Goto_shot_duration = 8000;   // quarter-ms resolution, like Burger V1's Insta_shot_duration_L
+int Goto_shot_delay = 820;       // 0.05ms resolution, like Burger V1's Delay_duration_Insta_L
+int whole, frac, frac_tens, frac_ones;
+int q_whole, q_frac;
+// --- Scroll-hold-repeat (Burger V1 style, used by Goto Timing/Tempo pages) ---
+int scroll_hold_timer = 0;
+int scroll_repeat_timer = 0;
+int scroll_held = 0;
+int scroll_fired = 0;
+define SCROLL_INITIAL_DELAY = 500;
+define SCROLL_REPEAT_RATE = 80;
+int isHolding = 0;
+int holdTimer = 0;
+int rs_is_up = 0;
+int remap_square_active = 0; // Toggle for L3/R3 remap (0 = L3, 1 = R3)
+int stamina_blocked = 0;
+// --- Idle screensaver state ---
+int saver_on = 0;
+int sx = 2, sy = 16;
+int svx = 2, svy = 2;
+int msg_w, line1_w, line2_w;
+int saver_timer = 0;
+const string saver_line1[] = { "Burger V3 Auto Green" };
+const string saver_line2[] = { "" };
+const string tt_title[] = { "Burger V3 Auto Green" };
+
+// --- Star splash screen (shown before loading screen) ---
+int splash_active = 1;
+int splash_drawn = 0;
+int splash_timer = 0;
+define SplashDuration = 1600;
+int star_i;
+int star_x[14];
+int star_y[14];
+const string splash_text[] = { "BURGER V3" };
+
+// ===== Menu state =====
+int startup = 1, numpgs = 12, menu_enabled = 0, page = 1, menuSelection, toggleType, pageChg_s;
+int flashtoggle, isXbox;
+
+// ===== Category tab navigation (Burger-style) =====
+int cur_cat = 0, in_cat = 0, cat_page = 0, cat_max_page = 0;
+int circle_exit_held = 0;
+int trans_active = 0, trans_dir = 1, trans_x = 0;
+int trans_pending_cat = -1, trans_pending_incat = -1, trans_pending_catpage = -1;
+define TRANS_STEP = 22;
+int slide_ox = 0;
+const string cat_names[] = { "Button Tempo", "Go-to Shots", "Insta Shot", "RS Shooting", "Misc" };
+
+// ===== Menu labels =====
+const string menu_header[] = { "Button Tempo", "Button MS", "Stability Enhancer", "Turbo Shots", "RS Shooting", "Insta Shot", "Insta Speed (ms)", "Insta Tempo (ms)", "Remap Square", "Goto Shot", "Goto Timing", "Goto Tempo" };
+const string pageChg[] = {"---------L2+RIGHT->", "<-L2+LEFT--L2+RIGHT->", "<-L2+LEFT---------"};
+const string item_toggle[] = {"L2 + UP/DOWN", "to change"};
+const string onOff[] = {"OFF", "ON", "", "L3", "R3"};
+const string ms[] = {"ms"};
+const string reverse_modes[] = {"Hop Jumper", "Turbo Fade"};
+
+// display for Turbo Shots page
+int isLoadingScreen = 1;
+define LoadingTimer = 2000;
+int LoadingTimeToRun = 0;
+
+// Additional variables for graph
+int graph_width;
+int x_start;
+int mid_x;
+int bar_pos;
+int infinite_stamina = 0;      // ON/OFF toggle
+int ground_control = 70;       // % of stick strength (lower = less stamina drain)
+int ground_stick_active = 1;   // must be ON
+int shooting_active = 0;       // disables stamina while shooting
+// New flag for turbo fade
+int is_turbo_fade = 0;
+int flick_up_shooting_active = 1;
+
+// ===== Init =====
+init {
+flick_up_shooting_active = get_pvar(SPVAR_1, 0, 1, 1);
+delay_duration = get_pvar(SPVAR_2, 0, 300, 50);
+Delay_duration_Insta = get_pvar(SPVAR_8, 0, 300, 49);
+reverse_flick_mode = get_pvar(SPVAR_4, 0, 1, 1);
+rs_shooting_active = get_pvar(SPVAR_5, 0, 1, 0);
+rs_hold_duration = 300;
+Insta_shot_active = get_pvar(SPVAR_6, 0, 1, 1);
+Insta_shot_duration = get_pvar(SPVAR_7, 100, 1000, 605);
+remap_square_active = get_pvar(SPVAR_9, 0, 1, 0);
+stabilization_variation = get_pvar(SPVAR_3, 10, 150000, 150000);
+Goto_shot_active = get_pvar(SPVAR_10, 0, 1, 1);
+Goto_shot_duration = get_pvar(SPVAR_11, 400, 20000, 8000);
+Goto_shot_delay = get_pvar(SPVAR_12, 0, 6000, 820);
+saver_on = 0;
+saver_timer = 0;
+splash_active = 1;
+splash_drawn = 0;
+splash_timer = 0;
+for (star_i = 0; star_i < 14; star_i++) {
+star_x[star_i] = random(2, 125);
+star_y[star_i] = random(2, 61);
+}
+cls_oled(OLED_BLACK);
+}
+
+// ===== Main =====
+main {
+// Console detect
+if (get_console() == PIO_XB1) {
+isXbox = 1;
+} else {
+isXbox = 0;
+}
+
+// ===== STARTUP / LOADING =====
+
+// --- Phase 1: Star splash screen (black bg, stars, "BURGER V3") ---
+if (splash_active) {
+if (!splash_drawn) {
+cls_oled(OLED_BLACK);
+for (star_i = 0; star_i < 14; star_i++) {
+rect_oled(star_x[star_i], star_y[star_i], 1, 1, OLED_WHITE, OLED_WHITE);
+}
+print(center_x(get_string_length(splash_text[0]), OLED_FONT_MEDIUM_WIDTH), 28, OLED_FONT_MEDIUM, OLED_WHITE, splash_text[0]);
+splash_drawn = 1;
+}
+splash_timer += get_rtime();
+if (splash_timer >= SplashDuration) {
+splash_active = 0;
+cls_oled(OLED_BLACK);
+}
+} else {
+// --- Phase 2: existing loading screen, then load the rest ---
+LoadingTimeToRun += get_rtime();
+if (LoadingTimeToRun >= LoadingTimer) {
+cls_oled(OLED_BLACK);
+isLoadingScreen = 0;
+startup = 0;
+saver_on = 1;
+saver_timer = 80; // draw a saver frame soon
+}
+}
+combo_run(Infinite_Stamina_Control);
+
+if (get_val(PS4_SQUARE)
+    || combo_running(Insta_shot_reversed)) {   // ✅ ADD THIS
+    shooting_active = 1;
+} else if (!combo_running(flick_up_rs_smooth)
+        && !combo_running(flick_up_rs_reversed)
+        && !combo_running(Insta_shot_smooth)
+        && !combo_running(Insta_shot_reversed)) { // ✅ ADD THIS
+    shooting_active = 0;
+}
+// ===== Menu open/close =====
+if (event_press(PS4_CIRCLE) && menu_enabled && in_cat == 0) { // CLOSE MENU (from category list)
+menu_enabled = 0;
+circle_exit_held = 1;
+combo_run(vibration_off);
+set_rgb(0,255,0);
+saver_on = 1; // enable saver when leaving menu
+} else if (!menu_enabled && get_val(PS4_L2) && event_press(PS4_OPTIONS)) { // OPEN MENU
+menu_enabled = 1;
+cur_cat = 0;
+in_cat = 0;
+cat_page = 0;
+page = 1;
+combo_run(vibration_on);
+set_rgb(0,0,255);
+saver_on = 0; // pause saver while menu is up
+}
+
+if (circle_exit_held) {
+set_val(PS4_CIRCLE, 0);
+if (event_release(PS4_CIRCLE)) {
+circle_exit_held = 0;
+}
+}
+
+// ===== MENU RENDER & INPUT =====
+if (menu_enabled) {
+cls_oled(OLED_BLACK);
+if (!trans_active) {
+slide_ox = 0;
+}
+
+// ----- Category tab list (press CROSS to open a tab) -----
+if (in_cat == 0) {
+print(center_x(get_string_length(cat_names[cur_cat]), OLED_FONT_SMALL_WIDTH) + slide_ox, 28, OLED_FONT_SMALL, OLED_WHITE, cat_names[cur_cat]);
+
+if (event_press(PS4_RIGHT) && !trans_active && cur_cat < 4) {
+combo_run(vibration_valchg);
+start_transition(1, cur_cat + 1, in_cat, 0);
+}
+if (event_press(PS4_LEFT) && !trans_active && cur_cat > 0) {
+combo_run(vibration_valchg);
+start_transition(-1, cur_cat - 1, in_cat, 0);
+}
+if (event_press(PS4_CROSS) && !trans_active) {
+combo_run(vibration_on);
+start_transition(1, cur_cat, 1, 0);
+}
+}
+
+// ----- Inside a tab: original pages, unchanged -----
+if (in_cat == 1) {
+
+if (cur_cat == 0) {
+if (cat_page == 0) { page = 1; }
+else if (cat_page == 1) { page = 2; }
+else if (cat_page == 2) { page = 3; }
+else if (cat_page == 3) { page = 4; }
+cat_max_page = 3;
+} else if (cur_cat == 1) {
+if (cat_page == 0) { page = 10; }
+else if (cat_page == 1) { page = 11; }
+else if (cat_page == 2) { page = 12; }
+cat_max_page = 2;
+} else if (cur_cat == 2) {
+if (cat_page == 0) { page = 6; }
+else if (cat_page == 1) { page = 7; }
+else if (cat_page == 2) { page = 8; }
+cat_max_page = 2;
+} else if (cur_cat == 3) {
+page = 5;
+cat_max_page = 0;
+} else if (cur_cat == 4) {
+page = 9;
+cat_max_page = 0;
+}
+if (cat_page > cat_max_page) { cat_page = cat_max_page; }
+if (cat_page < 0) { cat_page = 0; }
+
+print(center_x(get_string_length(menu_header[page - 1]), OLED_FONT_SMALL_WIDTH) + slide_ox, 4, OLED_FONT_SMALL, OLED_WHITE, menu_header[page - 1]);
+
+// pages with numeric edit: 2 (tempo), 3 (stability enhancer), 7 (Insta speed), 8 (Insta tempo)
+if (page == 4) { // Turbo Shots page shows reverse_modes
+print(center_x(get_string_length(reverse_modes[reverse_flick_mode]), OLED_FONT_MEDIUM_WIDTH) + slide_ox, 30, OLED_FONT_MEDIUM, OLED_WHITE, reverse_modes[reverse_flick_mode]);
+} else if (page == 9) { // Remap page shows L3/R3
+print(center_x(get_string_length(onOff[remap_square_active + 3]), OLED_FONT_MEDIUM_WIDTH) + slide_ox, 30, OLED_FONT_MEDIUM, OLED_WHITE, onOff[remap_square_active + 3]);
+} else if (page != 2 && page != 3 && page != 7 && page != 8 && page != 11 && page != 12) { // other non-numeric pages show ON/OFF
+print(center_x(get_string_length(onOff[menuSelection]), OLED_FONT_MEDIUM_WIDTH) + slide_ox, 30, OLED_FONT_MEDIUM, OLED_WHITE, onOff[menuSelection]);
+}
+print(center_x(get_string_length(item_toggle[toggleType]), OLED_FONT_SMALL_WIDTH) + slide_ox, 50, OLED_FONT_SMALL, OLED_WHITE, item_toggle[toggleType]);
+
+if (event_press(PS4_CIRCLE) && !trans_active) { // back out to category list
+set_val(PS4_CIRCLE, 0);
+combo_run(vibration_valchg);
+start_transition(-1, cur_cat, 0, 0);
+}
+
+if (get_val(PS4_L2) && event_press(PS4_LEFT) && !trans_active && cat_page > 0) {
+cat_page--;
+combo_run(vibration_valchg);
+}
+if (get_val(PS4_L2) && event_press(PS4_RIGHT) && !trans_active && cat_page < cat_max_page) {
+cat_page++;
+combo_run(vibration_valchg);
+}
+
+// Page 1: Button Tempo
+if (page == 1) {
+menuSelection = flick_up_shooting_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+flick_up_shooting_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+set_pvar(SPVAR_1, flick_up_shooting_active);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+flick_up_shooting_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+set_pvar(SPVAR_1, flick_up_shooting_active);
+}
+}
+
+// Page 2: Tempo Speed (ms) -> delay_duration
+if (page == 2) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(delay_duration, FindDigits(delay_duration));
+print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+draw_x_graph(delay_duration, 0, 300, 45);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+delay_duration++;
+}
+if (event_press(PS4_DOWN)) {
+delay_duration--;
+}
+if (delay_duration > 300) {
+delay_duration = 300;
+}
+if (delay_duration < 0) {
+delay_duration = 0;
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+set_pvar(SPVAR_2, delay_duration);
+}
+}
+}
+
+// Page 3: Stability Enhancer -> stabilization_variation
+if (page == 3) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(stabilization_variation, FindDigits(stabilization_variation));
+print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+draw_x_graph(stabilization_variation, 10, 150000, 45);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+stabilization_variation++;
+}
+if (event_press(PS4_DOWN)) {
+stabilization_variation--;
+}
+if (stabilization_variation > 150000) {
+stabilization_variation = 150000;
+}
+if (stabilization_variation < 10) {
+stabilization_variation = 10;
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+set_pvar(SPVAR_3, stabilization_variation);
+}
+}
+}
+
+// Page 4: Turbo Shots (reverse_flick_mode ON/OFF)
+if (page == 4) {
+menuSelection = reverse_flick_mode;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+reverse_flick_mode = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+set_pvar(SPVAR_4, reverse_flick_mode);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+reverse_flick_mode = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+set_pvar(SPVAR_4, reverse_flick_mode);
+}
+}
+
+// Page 5: RS Shooting
+if (page == 5) {
+menuSelection = rs_shooting_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+rs_shooting_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+set_pvar(SPVAR_5, rs_shooting_active);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+rs_shooting_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+set_pvar(SPVAR_5, rs_shooting_active);
+}
+}
+
+// Page 6: Insta Shot
+if (page == 6) {
+menuSelection = Insta_shot_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+Insta_shot_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+set_pvar(SPVAR_6, Insta_shot_active);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+Insta_shot_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+set_pvar(SPVAR_6, Insta_shot_active);
+}
+}
+
+// Page 7: Insta Speed (ms) -> Insta_shot_duration
+if (page == 7) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(Insta_shot_duration, FindDigits(Insta_shot_duration));
+print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+draw_x_graph(Insta_shot_duration, 100, 1000, 45);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+Insta_shot_duration += 20;
+}
+if (event_press(PS4_DOWN)) {
+Insta_shot_duration -= 20;
+}
+if (Insta_shot_duration > 1000) {
+Insta_shot_duration = 1000;
+}
+if (Insta_shot_duration < 100) {
+Insta_shot_duration = 100;
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+set_pvar(SPVAR_7, Insta_shot_duration);
+}
+} else {
+if (event_press(PS4_UP)) {
+Insta_shot_duration += 1;
+}
+if (event_press(PS4_DOWN)) {
+Insta_shot_duration -= 1;
+}
+if (Insta_shot_duration > 1000) {
+Insta_shot_duration = 1000;
+}
+if (Insta_shot_duration < 100) {
+Insta_shot_duration = 100;
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+set_pvar(SPVAR_7, Insta_shot_duration);
+}
+}
+}
+
+// Page 8: Insta Tempo (ms) -> Delay_duration_Insta
+if (page == 8) {
+menuSelection = 2;
+toggleType = 0;
+NumberToString(Delay_duration_Insta, FindDigits(Delay_duration_Insta));
+print(70, 30, OLED_FONT_MEDIUM, OLED_WHITE, ms[0]);
+draw_x_graph(Delay_duration_Insta, 0, 300, 45);
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) {
+Delay_duration_Insta++;
+}
+if (event_press(PS4_DOWN)) {
+Delay_duration_Insta--;
+}
+if (Delay_duration_Insta > 300) {
+Delay_duration_Insta = 300;
+}
+if (Delay_duration_Insta < 0) {
+Delay_duration_Insta = 0;
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN)) {
+combo_run(vibration_valchg);
+combo_run(flashedit);
+set_pvar(SPVAR_8, Delay_duration_Insta);
+}
+}
+}
+
+// Page 9: Remap Square (L3/R3)
+if (page == 9) {
+menuSelection = remap_square_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+remap_square_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+set_pvar(SPVAR_9, remap_square_active);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+remap_square_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+set_pvar(SPVAR_9, remap_square_active);
+}
+}
+
+// Page 10: Goto Shot (on/off) — ported from Burger V1
+if (page == 10) {
+menuSelection = Goto_shot_active;
+toggleType = 0;
+if (get_val(PS4_L2) && event_press(PS4_UP)) {
+Goto_shot_active = 1;
+flashtoggle = 1;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+set_pvar(SPVAR_10, Goto_shot_active);
+}
+if (get_val(PS4_L2) && event_press(PS4_DOWN)) {
+Goto_shot_active = 0;
+flashtoggle = 0;
+combo_run(vibration_valchg);
+combo_run(flashtog);
+set_pvar(SPVAR_10, Goto_shot_active);
+}
+}
+
+// Page 11: Goto Timing (ms) -> Goto_shot_duration — exact Burger V1 logic (quarter-ms precision)
+if (page == 11) {
+menuSelection = 2;
+toggleType = 0;
+QuarterToString(Goto_shot_duration);
+draw_x_graph(Goto_shot_duration, 400, 20000, 45);
+
+if (get_val(PS4_UP)) {
+if (scroll_held != 1) {
+scroll_held = 1;
+scroll_hold_timer = 0;
+scroll_repeat_timer = 0;
+scroll_fired = 0;
+}
+scroll_hold_timer += get_rtime();
+if (!scroll_fired && scroll_hold_timer >= SCROLL_INITIAL_DELAY) {
+scroll_fired = 1;
+scroll_repeat_timer = 0;
+}
+if (scroll_fired) { scroll_repeat_timer += get_rtime(); }
+} else if (get_val(PS4_DOWN)) {
+if (scroll_held != -1) {
+scroll_held = -1;
+scroll_hold_timer = 0;
+scroll_repeat_timer = 0;
+scroll_fired = 0;
+}
+scroll_hold_timer += get_rtime();
+if (!scroll_fired && scroll_hold_timer >= SCROLL_INITIAL_DELAY) {
+scroll_fired = 1;
+scroll_repeat_timer = 0;
+}
+if (scroll_fired) { scroll_repeat_timer += get_rtime(); }
+} else {
+scroll_held = 0;
+scroll_hold_timer = 0;
+scroll_repeat_timer = 0;
+}
+
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) { Goto_shot_duration += 40; }
+if (event_press(PS4_DOWN)) { Goto_shot_duration -= 40; }
+if (scroll_fired && scroll_repeat_timer >= SCROLL_REPEAT_RATE) { Goto_shot_duration += scroll_held * 40; scroll_repeat_timer = 0; }
+} else {
+if (event_press(PS4_UP)) { Goto_shot_duration += 1; }
+if (event_press(PS4_DOWN)) { Goto_shot_duration -= 1; }
+if (scroll_fired && scroll_repeat_timer >= SCROLL_REPEAT_RATE) { Goto_shot_duration += scroll_held; scroll_repeat_timer = 0; }
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN) || (scroll_fired && scroll_repeat_timer == 0 && scroll_held != 0)) {
+set_pvar(SPVAR_11, Goto_shot_duration);
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+if (Goto_shot_duration > 20000) { Goto_shot_duration = 20000; }
+if (Goto_shot_duration < 400) { Goto_shot_duration = 400; }
+}
+
+// Page 12: Goto Tempo (ms) -> Goto_shot_delay — exact Burger V1 logic (0.05ms precision)
+if (page == 12) {
+menuSelection = 2;
+toggleType = 0;
+DecimalToString(Goto_shot_delay);
+draw_x_graph(Goto_shot_delay, 0, 6000, 45);
+
+if (get_val(PS4_UP)) {
+if (scroll_held != 1) {
+scroll_held = 1;
+scroll_hold_timer = 0;
+scroll_repeat_timer = 0;
+scroll_fired = 0;
+}
+scroll_hold_timer += get_rtime();
+if (!scroll_fired && scroll_hold_timer >= SCROLL_INITIAL_DELAY) {
+scroll_fired = 1;
+scroll_repeat_timer = 0;
+}
+if (scroll_fired) { scroll_repeat_timer += get_rtime(); }
+} else if (get_val(PS4_DOWN)) {
+if (scroll_held != -1) {
+scroll_held = -1;
+scroll_hold_timer = 0;
+scroll_repeat_timer = 0;
+scroll_fired = 0;
+}
+scroll_hold_timer += get_rtime();
+if (!scroll_fired && scroll_hold_timer >= SCROLL_INITIAL_DELAY) {
+scroll_fired = 1;
+scroll_repeat_timer = 0;
+}
+if (scroll_fired) { scroll_repeat_timer += get_rtime(); }
+} else {
+scroll_held = 0;
+scroll_hold_timer = 0;
+scroll_repeat_timer = 0;
+}
+
+if (get_val(PS4_L2)) {
+if (event_press(PS4_UP)) { Goto_shot_delay += 200; }
+if (event_press(PS4_DOWN)) { Goto_shot_delay -= 200; }
+if (scroll_fired && scroll_repeat_timer >= SCROLL_REPEAT_RATE) { Goto_shot_delay += scroll_held * 200; scroll_repeat_timer = 0; }
+} else {
+if (event_press(PS4_UP)) { Goto_shot_delay += 1; }
+if (event_press(PS4_DOWN)) { Goto_shot_delay -= 1; }
+if (scroll_fired && scroll_repeat_timer >= SCROLL_REPEAT_RATE) { Goto_shot_delay += scroll_held; scroll_repeat_timer = 0; }
+}
+if (event_press(PS4_UP) || event_press(PS4_DOWN) || (scroll_fired && scroll_repeat_timer == 0 && scroll_held != 0)) {
+set_pvar(SPVAR_12, Goto_shot_delay);
+combo_run(vibration_valchg);
+combo_run(flashedit);
+}
+if (Goto_shot_delay > 6000) { Goto_shot_delay = 6000; }
+if (Goto_shot_delay < 0) { Goto_shot_delay = 0; }
+}
+
+if (get_val(PS4_L2)) {
+set_val(PS4_UP,0);
+set_val(PS4_DOWN,0);
+set_val(PS4_LEFT,0);
+set_val(PS4_RIGHT,0);
+}
+
+} // end in_cat == 1
+
+step_transition();
+
+} // end menu_enabled
+
+// ===== Gameplay logic (no menu) =====
+if (!menu_enabled) {
+// idle visuals
+set_rgb(0,255,0);
+
+// run saver every ~80ms only when outside the menu
+if (saver_on) {
+saver_timer += get_rtime();
+if (saver_timer >= 80) {
+saver_step();
+saver_timer = 0;
+}
+}
+
+// L3/R3 Remap Logic for Square
+if (remap_square_active == 0) {
+if (get_val(PS4_L3)) {
+set_val(PS4_SQUARE, 100);
+}
+} else {
+if (get_val(PS4_R3)) {
+set_val(PS4_SQUARE, 100);
+}
+}
+
+// Detect press of Square for flag
+if (event_press(PS4_SQUARE) && !(remap_square_active == 0 && get_val(PS4_L3)) && !(remap_square_active == 1 && get_val(PS4_R3))) {
+if (reverse_flick_mode && get_val(PS4_R2)) {
+is_turbo_fade = 1;
+} else {
+is_turbo_fade = 0;
+}
+}
+
+// Auto Green (flick-up) logic
+if (flick_up_shooting_active) {
+if (!(remap_square_active == 0 && get_val(PS4_L3)) && !(remap_square_active == 1 && get_val(PS4_R3)) && get_val(PS4_SQUARE)) {
+set_val(PS4_SQUARE, 0);
+if (is_turbo_fade) {
+set_val(PS4_RY, STICK_UP_VALUE + random(random_variation_min, random_variation_max));
+} else {
+set_val(PS4_RY, STICK_DOWN_VALUE + random(random_variation_min, random_variation_max));
+}
+set_val(PS4_RX, random(random_variation_min, random_variation_max));
+}
+if (!(remap_square_active == 0 && get_val(PS4_L3)) && !(remap_square_active == 1 && get_val(PS4_R3)) && event_release(PS4_SQUARE)) {
+if (is_turbo_fade) {
+combo_run(flick_up_rs_reversed);
+} else {
+combo_run(flick_up_rs_smooth);
+}
+is_turbo_fade = 0;
+}
+}
+// D-PAD DOWN → Go To Shot (toggleable, ported from Burger V1)
+if (Goto_shot_active) {
+    if (event_press(PS4_DOWN)) {
+        set_val(PS4_DOWN, 0);
+        combo_run(go_to_shot_insta);
+    }
+}
+
+
+
+// 2. Normal Insta Shot logic
+if (Insta_shot_active) {
+    if ((remap_square_active == 0 && event_press(PS4_R3)) ||
+        (remap_square_active == 1 && event_press(PS4_L3))) {
+
+        if (reverse_flick_mode && get_val(PS4_R2)) {
+            combo_run(Insta_shot_reversed);
+        } else {
+            combo_run(Insta_shot_smooth);
+        }
+    }
+}
+
+// Insta Shot Logic (R3/L3 depending on remap)
+if (Insta_shot_active) {
+if ((remap_square_active == 0 && event_press(PS4_R3)) || (remap_square_active == 1 && event_press(PS4_L3))) {
+if (reverse_flick_mode && get_val(PS4_R2)) {
+combo_run(Insta_shot_reversed);
+} else {
+combo_run(Insta_shot_smooth);
+}
+}
+}
+
+// RS Shooting (detect manual stick hold)
+if (rs_shooting_active) {
+if (!(get_val(PS4_L2) > 20 && (get_val(PS4_R1) > 20 || get_val(PS4_LEFT) || get_val(PS4_RIGHT) || get_val(PS4_UP) || get_val(PS4_DOWN) || get_val(PS4_OPTIONS)))) {
+if (abs(get_val(PS4_RY)) > 30 || abs(get_val(PS4_RX)) > 30) {
+if (!isHolding) {
+isHolding = 1;
+holdTimer = 0;
+if (get_val(PS4_RY) < 0) {
+rs_is_up = 1;
+} else {
+rs_is_up = 0;
+}
+}
+holdTimer += get_rtime();
+} else {
+if (isHolding) {
+if (holdTimer > rs_hold_duration) {
+if (!rs_is_up) {
+combo_run(flick_up_rs_smooth);
+} else {
+combo_run(flick_up_rs_reversed);
+}
+}
+isHolding = 0;
+holdTimer = 0;
+}
+}
+}
+}
+} // end !menu_enabled
+} // end big else (post-startup)
+
+
+// ===== OLED helpers =====
+
+
+function saver_step() {
+sx += 3;
+if (sx >= OLED_HEIGHT) sx = 0;
+draw_tt_scripture_screen();
+}
+
+function draw_tt_scripture_screen() {
+cls_oled(OLED_BLACK);
+}
+// New function for mapping values
+function map(val, in_min, in_max, out_min, out_max) {
+return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+// ===== Category tab slide transition (Burger-style) =====
+function start_transition(dir, new_cat, new_incat, new_catpage) {
+trans_active = 1;
+trans_dir = dir;
+trans_x = 0;
+trans_pending_cat = new_cat;
+trans_pending_incat = new_incat;
+trans_pending_catpage = new_catpage;
+}
+
+function step_transition() {
+if (!trans_active) {
+return 0;
+}
+if (trans_active == 1) {
+trans_x += TRANS_STEP;
+if (trans_x >= 128) {
+trans_x = 128;
+if (trans_pending_cat >= 0) { cur_cat = trans_pending_cat; trans_pending_cat = -1; }
+if (trans_pending_incat >= 0) { in_cat = trans_pending_incat; trans_pending_incat = -1; }
+if (trans_pending_catpage >= 0) { cat_page = trans_pending_catpage; trans_pending_catpage = -1; }
+trans_active = 2;
+}
+slide_ox = trans_dir * (0 - trans_x);
+} else {
+trans_x -= TRANS_STEP;
+if (trans_x <= 0) {
+trans_x = 0;
+trans_active = 0;
+}
+slide_ox = trans_dir * (128 - trans_x);
+}
+return 1;
+}
+
+// New function to draw X-axis graph
+function draw_x_graph(value, min_val, max_val, y_pos) {
+graph_width = 100;
+x_start = (OLED_WIDTH - graph_width) / 2;
+mid_x = x_start + graph_width / 2;
+bar_pos = map(value, min_val, max_val, 0, graph_width);
+
+// Draw axis line
+line_oled(x_start, y_pos, x_start + graph_width, y_pos, 1, OLED_WHITE);
+
+// Draw center tick
+line_oled(mid_x, y_pos - 3, mid_x, y_pos + 3, 1, OLED_WHITE);
+
+// Draw left tick
+line_oled(x_start, y_pos - 2, x_start, y_pos + 2, 1, OLED_WHITE);
+
+// Draw right tick
+line_oled(x_start + graph_width, y_pos - 2, x_start + graph_width, y_pos + 2, 1, OLED_WHITE);
+
+// Draw bar from start to position
+rect_oled(x_start, y_pos - 2, bar_pos, 4, 1, OLED_WHITE);
+}
+
+// ===== Combos =====
+combo flick_up_rs_smooth {
+set_val(PS4_RY, -50 + random(random_hold_variation_min, random_hold_variation_max));
+set_val(PS4_RX, 20 + random(random_hold_variation_min, random_hold_variation_max));
+wait(delay_duration);
+set_val(PS4_RY, -100 + random(random_variation_min, random_variation_max));
+set_val(PS4_RX, 25 + random(random_variation_min, random_variation_max));
+wait(300);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+
+combo flick_up_rs_reversed {
+set_val(PS4_RY, 50 + random(random_hold_variation_min, random_hold_variation_max));
+set_val(PS4_RX, -20 + random(random_hold_variation_min, random_hold_variation_max));
+wait(delay_duration);
+set_val(PS4_RY, 100 + random(random_variation_min, random_variation_max));
+set_val(PS4_RX, -25 + random(random_variation_min, random_variation_max));
+wait(300);
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+combo Infinite_Stamina_Control {
+    if (infinite_stamina
+        && ground_stick_active
+        && !shooting_active
+        && !get_val(PS4_SQUARE)
+        && !get_val(PS4_R3)
+        && !combo_running(Insta_shot_smooth)
+        && !combo_running(flick_up_rs_smooth)
+        && !combo_running(flick_up_rs_reversed)
+    ) {
+        if (abs(get_val(PS4_LX)) > 20 || abs(get_val(PS4_LY)) > 20) {
+            set_val(PS4_LX, (get_val(PS4_LX) * ground_control) / 100);
+            set_val(PS4_LY, (get_val(PS4_LY) * ground_control) / 100);
+        } else {
+            set_val(PS4_LX, 0);
+            set_val(PS4_LY, 0);
+        }
+    }
+}
+combo Insta_shot_smooth {
+
+// Initial pull (small humanization OK)
+set_val(PS4_RY, STICK_DOWN_VALUE);
+set_val(PS4_RX, 0);
+wait(Insta_shot_duration);
+
+// Gather / settle (VERY small variance)
+set_val(PS4_RY, -55 + random(-1, 1));
+set_val(PS4_RX, 18);
+wait(Delay_duration_Insta);
+
+// FINAL SNAP – NO RANDOMNESS
+set_val(PS4_RY, -100);
+set_val(PS4_RX, 25);
+wait(260);
+
+// Release
+set_val(PS4_RY, 0);
+set_val(PS4_RX, 0);
+}
+combo go_to_shot_insta {
+
+    set_val(PS4_RY, STICK_UP_VALUE + random(random_variation_min, random_variation_max));
+    set_val(PS4_RX, random(random_variation_min, random_variation_max));
+    wait(Goto_shot_duration / 4);
+
+    set_val(PS4_RY, 55 + random(random_hold_variation_min, random_hold_variation_max));
+    set_val(PS4_RX, -18 + random(random_hold_variation_min, random_hold_variation_max));
+    wait(Goto_shot_delay / 20);
+
+    set_val(PS4_RY, 100);
+    set_val(PS4_RX, -25);
+    wait(260);
+
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+}
+
+
+combo Insta_shot_reversed {
+
+    stamina_blocked = 1; // 🔴 STOP stamina logic
+
+    // Initial pull
+    set_val(PS4_RY, STICK_UP_VALUE);
+    set_val(PS4_RX, 0);
+    wait(871);
+
+    // Gather
+    set_val(PS4_RY, 55);
+    set_val(PS4_RX, -18);
+    wait(Delay_duration_Insta);
+
+    // FINAL SNAP
+    set_val(PS4_RY, 100);
+    set_val(PS4_RX, -25);
+    wait(500);
+
+    // Release
+    set_val(PS4_RY, 0);
+    set_val(PS4_RX, 0);
+
+    stamina_blocked = 0; // 🟢 TURN stamina back on
+}
+
+// ===== UI effects =====
+combo flashtog {
+if (!flashtoggle) {
+set_rgb(255, 0, 0);
+} else {
+set_rgb(0, 255, 0);
+}
+wait(1000);
+set_rgb(0, 0, 255);
+}
+
+combo flashedit {
+set_rgb(0, 0, 0);
+wait(150);
+set_rgb(0, 0, 255);
+}
+
+combo vibration_on {
+set_rumble(RUMBLE_A, 100);
+wait(200);
+set_rumble(RUMBLE_A, 0);
+}
+
+combo vibration_off {
+set_rumble(RUMBLE_A, 50);
+wait(200);
+set_rumble(RUMBLE_A, 0);
+}
+
+combo vibration_valchg {
+set_rumble(RUMBLE_A, 50);
+wait(50);
+set_rumble(RUMBLE_A, 0);
+}
+
+// ===== Small helpers =====
+function center_x(f_chars, f_font) {
+return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+
+int bufferIndex, digitIndex, charIndex;
+function NumberToString(f_val, f_digits) {
+bufferIndex = 1;
+digitIndex = 10000;
+if (f_val < 0) {
+putc_oled(bufferIndex, 45);
+bufferIndex += 1;
+f_val = abs(f_val);
+}
+for (charIndex = 5; charIndex >= 1; charIndex--) {
+if (f_digits >= charIndex) {
+putc_oled(bufferIndex, (f_val / digitIndex) + 48);
+f_val %= digitIndex;
+bufferIndex++;
+if (charIndex == 4) {
+putc_oled(bufferIndex, 44);
+bufferIndex++;
+}
+}
+digitIndex /= 10;
+}
+puts_oled(center_x(bufferIndex + 1, OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, bufferIndex - 1, OLED_WHITE);
+}
+
+// ===== Ported from Burger V1 (Go-to Shots tab number display) =====
+function DecimalToString(f_val) {
+whole = f_val / 20;
+frac = (f_val % 20) * 5;
+frac_tens = frac / 10;
+frac_ones = frac % 10;
+bufferIndex = 1;
+if (whole >= 100) {
+putc_oled(bufferIndex, (whole / 100) + 48); bufferIndex++;
+putc_oled(bufferIndex, ((whole / 10) % 10) + 48); bufferIndex++;
+putc_oled(bufferIndex, (whole % 10) + 48); bufferIndex++;
+} else if (whole >= 10) {
+putc_oled(bufferIndex, (whole / 10) + 48); bufferIndex++;
+putc_oled(bufferIndex, (whole % 10) + 48); bufferIndex++;
+} else {
+putc_oled(bufferIndex, whole + 48); bufferIndex++;
+}
+putc_oled(bufferIndex, 46); bufferIndex++;
+putc_oled(bufferIndex, frac_tens + 48); bufferIndex++;
+putc_oled(bufferIndex, frac_ones + 48); bufferIndex++;
+puts_oled(center_x(bufferIndex - 1, OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, bufferIndex - 1, OLED_WHITE);
+}
+
+function QuarterToString(f_val) {
+q_whole = f_val / 4;
+q_frac = (f_val % 4) * 25;
+bufferIndex = 1;
+if (q_whole >= 1000) {
+putc_oled(bufferIndex, (q_whole / 1000) + 48); bufferIndex++;
+putc_oled(bufferIndex, ((q_whole / 100) % 10) + 48); bufferIndex++;
+putc_oled(bufferIndex, ((q_whole / 10) % 10) + 48); bufferIndex++;
+putc_oled(bufferIndex, (q_whole % 10) + 48); bufferIndex++;
+} else if (q_whole >= 100) {
+putc_oled(bufferIndex, (q_whole / 100) + 48); bufferIndex++;
+putc_oled(bufferIndex, ((q_whole / 10) % 10) + 48); bufferIndex++;
+putc_oled(bufferIndex, (q_whole % 10) + 48); bufferIndex++;
+} else if (q_whole >= 10) {
+putc_oled(bufferIndex, (q_whole / 10) + 48); bufferIndex++;
+putc_oled(bufferIndex, (q_whole % 10) + 48); bufferIndex++;
+} else {
+putc_oled(bufferIndex, q_whole + 48); bufferIndex++;
+}
+putc_oled(bufferIndex, 46); bufferIndex++;
+putc_oled(bufferIndex, (q_frac / 10) + 48); bufferIndex++;
+putc_oled(bufferIndex, (q_frac % 10) + 48); bufferIndex++;
+puts_oled(center_x(bufferIndex - 1, OLED_FONT_MEDIUM_WIDTH), 30, OLED_FONT_MEDIUM, bufferIndex - 1, OLED_WHITE);
+}
+
+int logVal;
+function FindDigits(num) {
+logVal = 0;
+do {
+num /= 10;
+logVal++;
+} while (num);
+return logVal;
+}
+
+int stringLength;
+function get_string_length(offset) {
+stringLength = 0;
+while (duint8(offset++)) {
+stringLength++;
+}
+return stringLength + 1;
+}                 
