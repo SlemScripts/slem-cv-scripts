@@ -1,0 +1,616 @@
+================================================================================
+  AVENGED MVP NBA 2K27 v1.04 — FULL DETAILED SETUP GUIDE
+  (Complete Setup & Feature Reference)
+================================================================================
+
+This guide explains:
+  - how to open and use the menu
+  - what every major feature does
+  - how Button Rhythm modes work (Rhythm vs Auto Hold)
+  - how to set timings with the slider and number pad
+  - how profiles save their own full settings
+  - dribble moves (46 unique options)
+  - Quick Stop custom binds
+  - what features conflict with each other
+  - a step-by-step first-time setup
+  - a troubleshooting checklist when shots feel off
+
+If shots feel inconsistent, it is almost always one of these:
+  1. Two shot systems on at the same time (usually Button Rhythm + Button Shot)
+  2. Tempo / Auto Hold MS set way too high or way too low
+  3. Never practiced standstill jumpers first
+  4. Menu still open / wrong mode selected
+  5. Auto shots firing when you think you are shooting manually
+
+Read section 2 first if you are brand new.
+
+
+================================================================================
+1. OPENING AND USING THE MENU
+================================================================================
+
+HOW TO OPEN
+  PlayStation:  Hold L2 + Options
+  Xbox:         Hold LT + Menu (Start)
+
+HOW TO MOVE
+  Hold L2 (or LT) and use the D-pad:
+    Up / Down    = change the value on the current page
+    Left / Right = move between pages in a category
+
+HOW TO CONFIRM / OPEN A SUB-PAGE
+  X / Cross = open nested settings for that feature
+  Example: on Button Rhythm, press X to open Mode + Tempo pages
+  Example: on Quick Stop, press X to open the bind screen
+
+HOW TO GO BACK / CLOSE
+  Circle / B = back one level, or close the menu from the top level
+  Closing the menu is what saves your settings.
+
+IMPORTANT
+  When the menu is open, the script is in setup mode.
+  Always close the menu before you play.
+
+
+================================================================================
+2. FIRST-TIME SETUP (DO THIS EXACTLY)
+================================================================================
+
+Goal: make standstill jumpers feel consistent using ONE shot system.
+
+--------------------------------
+STEP 1 — Open the menu
+--------------------------------
+  L2 + Options (PS) or LT + Menu (Xbox)
+
+--------------------------------
+STEP 2 — Button Rhythm ON
+--------------------------------
+  Go to Shooting → Button Rhythm
+  Press Up so it says ON
+  Do NOT turn Button Shot on yet.
+
+--------------------------------
+STEP 3 — Open Button Rhythm settings (press X)
+--------------------------------
+  While on Button Rhythm, press X / Cross.
+
+  You now have three sub-pages. Use Left / Right to move between them:
+
+    Page 1 — MODE
+      Shows: Rhythm  or  Auto Hold
+      Up / Down switches the mode
+      For first setup choose: RHYTHM
+
+    Page 2 — RHYTHM TEMPO
+      Slider 0–9000
+      Start between 30 and 80
+      This only matters when Mode = Rhythm
+
+    Page 3 — AUTO HOLD MS
+      Slider 0–9000
+      Start around 450–600 later
+      This only matters when Mode = Auto Hold
+
+  Tip: On a slider page, press X again to open the number pad and type an
+  exact value (example: 55), then confirm with OK.
+
+--------------------------------
+STEP 4 — Turn competing systems OFF
+--------------------------------
+  Button Shot          OFF
+  Auto Stand           OFF
+  Auto Fade            OFF
+  Auto NoDip           OFF
+  RS Shooting          OFF
+  No-Dip Shot          OFF
+  Smart Timing         OFF (optional later)
+  Fade Toggle          OFF until standstill feels good
+
+--------------------------------
+STEP 5 — Optional comfort settings
+--------------------------------
+  Soft Triggers     ON if you like softer triggers
+  Unlimited Sprint  ON if you want to sprint longer but maybe slower?
+  Shot Log          ON if you want to see release times on the OLED
+
+--------------------------------
+STEP 6 — Close the menu
+--------------------------------
+  Press Circle until the menu closes.
+  This saves your values into the active profile.
+
+--------------------------------
+STEP 7 — Practice ONLY standstill jumpers
+--------------------------------
+  In game:
+    - Catch the ball
+    - Stand still
+    - Hold Square / X
+    - Release on your normal visual / feel
+
+  If the shot feels LATE  → lower Rhythm Tempo a little
+  If the shot feels EARLY → raise Rhythm Tempo a little
+
+  Change only ONE number between tests.
+  Do not add Fade / No-Dip / Auto features yet.
+
+
+================================================================================
+3. BUTTON RHYTHM — FULL EXPLANATION
+================================================================================
+
+Button Rhythm is the main shot assist.
+
+It has TWO modes. You pick one.
+
+--------------------------------
+MODE A — RHYTHM
+--------------------------------
+  What happens:
+    1. You press and hold Square / X
+    2. The script helps the stick / shot input while you hold
+    3. YOU release when you want
+    4. On release, the script fires the release flick with your Tempo timing
+
+  Who should use this:
+    - Players who want real control
+    - Players learning their jumper
+    - Anyone who likes classic “time it yourself” feel
+
+  Slider that matters:
+    RHYTHM TEMPO (0–9000)
+    Start low: 30–80
+    Raise slowly only if needed
+
+  How to set it:
+    Button Rhythm → X → Left/Right to “Rhythm Tempo” → Up/Down or number pad
+
+--------------------------------
+MODE B — AUTO HOLD
+--------------------------------
+  What happens:
+    1. You press Square / X once
+    2. The script holds Square for a set time
+    3. The script releases for you
+
+  Who should use this:
+    - Players who want the script to time the release
+    - Players with inconsistent manual timing
+
+  Slider that matters:
+    AUTO HOLD MS (0–9000)
+    Common starting range: 450–600 (depends on jumper / latency)
+    Too low  = early releases
+    Too high = late releases / meter goes too far
+
+  How to set it:
+    Button Rhythm → X → set Mode to Auto Hold →
+    Left/Right to “Auto Hold MS” → Up/Down or number pad
+
+--------------------------------
+HOW TO SWITCH MODES
+--------------------------------
+  1. Open menu
+  2. Go to Button Rhythm
+  3. Press X
+  4. First sub-page is MODE
+  5. Up / Down = Rhythm or Auto Hold
+  6. Right = Rhythm Tempo page
+  7. Right again = Auto Hold MS page
+  8. Circle = back
+
+--------------------------------
+NUMBER PAD (EXACT VALUES)
+--------------------------------
+  On a slider page:
+    Press X to open the number pad
+    Select digits
+    Move to OK and confirm
+    The value applies right away
+    Close the menu with Circle to save it permanently
+
+  Range for both Rhythm Tempo and Auto Hold MS: 0–9000
+
+
+================================================================================
+4. PROFILES — EACH PROFILE HAS ITS OWN FULL SETTINGS
+================================================================================
+
+There are 5 profiles (P1–P5).
+
+Each profile saves and loads its OWN full setup, including:
+  - Button Rhythm on/off, mode, Rhythm Tempo, Auto Hold MS
+  - Button Shot, No-Dip, Fade, Auto shots, RS Shooting
+  - Unlimited Sprint, Soft Triggers, Vibe Blocker
+  - Dribble on/off and D-pad move slots
+  - Quick Stop on/off and bind
+  - Dunk meter / bind index
+  - Other major toggles and timings
+
+WHAT THAT MEANS
+  Profile 1 can have No-Dip ON and Tempo 50
+  Profile 2 can have No-Dip OFF and Auto Hold 520
+  Profile 3 can have Unlimited Sprint ON
+  Profile 4 can be mostly defaults with only your Tempo
+  Profile 5 can use Button Shot as the main system
+
+  Switching to P4 does NOT keep P1’s No-Dip.
+  Switching to P1 does NOT keep P4’s Tempo.
+
+WHEN YOU SWITCH PROFILES
+  1. Current profile is saved with everything you just had on
+  2. Selected profile is loaded with ONLY that profile’s settings
+
+HOW TO BUILD PROFILES
+  1. Select Profile 1 → set everything you want → close the menu (saves)
+  2. Switch to Profile 2 → set that one differently → close the menu
+  3. Repeat for P3 / P4 / P5
+
+Always close the menu after changing a profile so it writes cleanly.
+
+
+================================================================================
+5. FULL FEATURE LIST
+================================================================================
+
+--- SHOOTING ---
+
+Button Rhythm
+  Main shot system. Modes: Rhythm or Auto Hold (see section 3).
+
+Rhythm Tempo
+  Timing for Rhythm mode (0–9000). Only matters when Mode = Rhythm.
+
+Auto Hold MS
+  Hold duration for Auto Hold mode (0–9000). Only matters when Mode = Auto Hold.
+
+Remap Button
+  Moves shoot onto L3 or R3 (stick click).
+  Only turn this on if you intentionally want stick-click shooting.
+
+Smart Timing
+  Small automatic timing nudge based on context (fade / off-dribble style reads).
+  Leave OFF until base standstill timing is stable.
+
+Fade Assist
+  Extra wait used when a fade is detected.
+
+Pull-Up (ms)
+  Timing nudge for off-dribble pull-up style shots.
+
+Shot Vibe / Shot Vibe ms
+  Rumble cue during a normal shot charge, and when it fires.
+
+Auto Stand / Auto Speed / Auto Tempo
+  Fully automatic standstill shot path and its timings.
+  Leave OFF while learning manual Rhythm.
+
+Button Shot
+  A SEPARATE shot system from Button Rhythm.
+  Reads left stick and holds Square for a calibrated time
+  (standstill / fade left / fade right / optional catch).
+  For learning, use Button Shot OR Button Rhythm — not both.
+
+Button Shot MS
+  Hold-duration settings for Button Shot.
+
+Fade Toggle
+  When ON, moving the left stick away from the hoop at shot time
+  can mark the attempt as a fade.
+
+Fade Tempo
+  Extra delay used on fade releases.
+
+Turbo Shots
+  Reverse / turbo-style fade behavior (often involving R2).
+
+Fade Vibe / Fade Vibe ms
+  Rumble pattern for fade timing feedback.
+
+Auto Fade / Auto Fade Speed
+  Automatic fade shot path and hold time.
+
+No-Dip Shot
+  When enabled and conditions are met (commonly L2 held),
+  the release skips the dip/pump style motion.
+
+ND Tempo (No-Dip Tempo)
+  Timing window for no-dip releases.
+
+Auto NoDip / Auto NoDip Speed
+  Automatic no-dip shot path and hold time.
+
+
+--- DUNK ---
+
+Dunk Meter
+  Builds dunk meter when you hold your chosen dunk bind.
+
+Dunk Bind
+  Which button starts the dunk charge.
+
+
+--- DRIBBLE ---
+
+Dribble Moves
+  Master on/off for D-pad assigned moves.
+  Must be ON for D-pad slots to fire.
+
+D-Pad UP / DOWN / LEFT / RIGHT
+  Assign which move fires on each direction.
+  There are 46 unique moves (plus OFF).
+  Duplicates and empty moves were removed so every option does something.
+
+  In game:
+    - Dribble Moves must be ON
+    - Slot must not be set to OFF
+    - Do not hold L2 while pressing the D-pad (blocked on purpose)
+
+  Example move list includes:
+    BTB Spam, Curry, DBook, Moonwalk, SizeUp Esc, Hop Back, Ankle Brk,
+    Escape, Momentum, Crossover, Quick BTB, Shamgod, Hesi, Btwn Legs,
+    Behind Bk, Spin, Snatch, Hard Stop, Stepback, Hesi Cross, BL Cross,
+    Tri Cross, In & Out, Shimmy, Tur Hesi / Cross / Esc, Jab, Half Spin,
+    Full Spin, Tunnel, Size x3, Kyrie, Luka Step, Ja Burst, Dame Hesi,
+    Trae YoYo, Morant Sp, Euro, Post Spin, DriveKick, Dbl Hesi, Dbl Cross,
+    Park Ank, Comp X, Quick Stop
+
+
+--- FEEDBACK ---
+
+Shot Log
+  Shows recent release timing info on the OLED.
+  Useful while learning.
+
+
+--- MISC ---
+
+Soft Triggers
+  Softens trigger feel / response.
+
+Vibe Blocker
+  Blocks rumble coming from the game itself.
+  Script menu vibes can still work.
+
+Unlimited Sprint
+  Softens left-stick magnitude while moving so stamina drains slower.
+  Backs off during shots and dunks so it does not fight those systems.
+
+Quick Stop
+  ON/OFF toggle in Misc (after Unlimited Sprint).
+  Press X to open the custom bind screen.
+  See section 6 for full bind instructions.
+
+Profile Select
+  Save / load full setups (see section 4).
+
+
+--- RS SHOOT ---
+
+RS Shooting
+  Hold the right stick past a threshold long enough and the script can
+  fire a shot flick after RS Hold Time.
+
+RS Hold Time
+  How long RS must be held before that system fires.
+
+  Recommendation: leave RS Shooting OFF until Button Rhythm feels good alone.
+
+
+================================================================================
+6. QUICK STOP — CUSTOM BIND
+================================================================================
+
+WHERE IT IS
+  Menu → Misc → Quick Stop
+  (after Unlimited Sprint)
+
+TURN IT ON/OFF
+  Up / Down on the Quick Stop page
+
+SET THE BIND
+  1. Press X on Quick Stop
+  2. Press 1 or 2 buttons for your bind
+     Examples:
+       - L2 only
+       - X + Square
+       - R2 + O
+       - L1 + R1
+       - L2 + X
+  3. Supported buttons include:
+       X, O, Square, Triangle, L1, L2, R1, R2,
+       D-pad, L3, R3
+  4. After two buttons are set, it saves and exits automatically
+  5. To leave early: HOLD Circle for about half a second
+
+WHY HOLD CIRCLE TO EXIT
+  Normal menus use X to select and Circle to go back.
+  On the bind screen, X and Circle need to be bindable.
+  So:
+    - Short tap Circle = bind Circle as a button
+    - Hold Circle (~0.5 sec) = exit the bind screen
+
+IN GAME
+  When Quick Stop is ON and you press your bind, it fires a hard stop.
+
+
+================================================================================
+7. WHAT SHOULD NOT BE USED TOGETHER (CONFLICTS)
+================================================================================
+
+These combinations cause most timing problems.
+
+1) Button Rhythm + Button Shot both ON
+   Both systems try to control Square / X.
+   Fix: use ONE. Learning recommendation = Button Rhythm ON, Button Shot OFF.
+
+2) Auto Stand / Auto Fade / Auto NoDip ON while testing manual Rhythm
+   You may think you are timing manually while an auto path fires.
+   Fix: turn all Auto shot toggles OFF until manual timing is consistent.
+
+3) RS Shooting + Button Rhythm too early
+   Easy to double-fire or not know which system took the shot.
+   Fix: learn Button Rhythm alone first.
+
+4) No-Dip + Fade on the same attempt with no plan
+   Script must choose a path; results feel random if you do not know priority.
+   Fix: practice normal → fades → no-dips separately.
+
+5) Extremely high Tempo or Auto Hold MS
+   You leave your real green window.
+   Fix: reset toward defaults and climb slowly.
+
+6) Every feature ON on day one
+   Too many systems overlapping.
+   Fix: stack one feature at a time after standstill is good.
+
+GOLDEN RULE
+  One primary shot method at a time:
+    Button Rhythm
+      OR
+    Button Shot
+      OR
+    Auto shots
+  Not all three.
+
+
+================================================================================
+8. RECOMMENDED LEARNING ORDER
+================================================================================
+
+1 — Foundation
+  - Button Rhythm ON
+  - Mode = Rhythm
+  - Rhythm Tempo = 30–80
+  - Button Shot OFF
+  - All Auto shot toggles OFF
+  - RS Shooting OFF
+  - Standstill jumpers only
+  - Optional: Unlimited Sprint, Soft Triggers, Shot Log
+
+ 2 — Fades
+  - Keep Day 1 settings
+  - Turn Fade Toggle ON
+  - Small Fade Tempo adjustments only if needed
+  - Practice moving fades only after standstill is consistent
+
+3 — No-Dip
+  - Add No-Dip Shot + ND Tempo
+  - Practice L2 + shot no-dips on purpose
+
+ 4 — Auto Hold (optional)
+  - Switch Mode to Auto Hold
+  - Set Auto Hold MS around 450–600 to start
+  - Tune up/down based on early/late
+
+ 5+ — Extra tools
+  - Smart Timing
+  - Shot / Fade vibes
+  - Auto shots (if you want full automation)
+  - RS Shooting (if you want stick shooting)
+  - Quick Stop bind
+  - Dribble slots
+  - Save each profile when that setup feels right
+
+
+================================================================================
+9. “IT DOESN’T GREEN” CHECKLIST
+================================================================================
+
+Go down this list in order.
+
+[ ] Menu is CLOSED
+[ ] Button Rhythm is ON
+[ ] Button Shot is OFF
+[ ] You know which MODE you are on (Rhythm or Auto Hold)
+[ ] Auto Stand / Auto Fade / Auto NoDip are OFF
+[ ] RS Shooting is OFF
+[ ] You are testing STANDSTILL shots first
+[ ] Tempo / Auto Hold MS is not absurdly high
+[ ] You changed only ONE timing value since the last test
+[ ] Your in-game jumper, visual cue, and latency are consistent
+[ ] You closed the menu after the last timing change (so it saved)
+
+TUNING CHEAT SHEET
+  Auto Hold feels EARLY  → raise Auto Hold MS
+  Auto Hold feels LATE   → lower Auto Hold MS
+  Rhythm feels LATE      → lower Rhythm Tempo
+  Rhythm feels EARLY     → raise Rhythm Tempo
+
+If nothing helps:
+  1. Set Mode = Rhythm
+  2. Set Rhythm Tempo = 50
+  3. Everything else shot-related OFF
+  4. Take 20 standstill jumpers only
+  5. Adjust by 5–10 at a time
+
+
+================================================================================
+10. QUICK DEFAULTS (SAFE START)
+================================================================================
+
+Button Rhythm:             ON
+Mode:                      Rhythm
+Rhythm Tempo:              30–80
+Auto Hold MS:              500 (only matters after you switch mode)
+Button Shot:               OFF
+Auto Stand / Fade / NoDip: OFF
+RS Shooting:               OFF
+No-Dip:                    OFF until ready
+Fade Toggle:               OFF until ready
+Smart Timing:              OFF until ready
+Unlimited Sprint:          optional ON
+Soft Triggers:             optional ON
+Shot Log:                  optional ON
+Quick Stop:                optional OFF until you set a bind
+Dribble Moves:             optional OFF until you assign slots
+
+Then change one thing at a time.
+
+
+================================================================================
+11. SHORT CHAT VERSION (COPY / PASTE)
+================================================================================
+
+Start simple: Button Rhythm only, mode Rhythm, Tempo around 30–80, Button Shot
+off, all Auto shots off. Close the menu to save. Practice standstill jumpers
+first. Then add Fade, then No-Dip, then Auto features one by one. Button Rhythm
+and Button Shot should not both be on at the same time. Press X on Button Rhythm
+to open Mode / Rhythm Tempo / Auto Hold MS (Left/Right between those pages).
+Each profile saves its own full settings. Quick Stop is in Misc — press X to set
+a 1–2 button bind, hold Circle to exit the bind screen. Dribble list is 46 unique
+moves. If timing feels off, check for conflicting features before changing too
+many values at once.
+
+
+================================================================================
+12. FAQ
+================================================================================
+
+Q: Do profiles really have separate settings?
+A: Yes. Each profile stores its own full setup. P1’s No-Dip does not transfer to
+   P2. P4’s Tempo does not transfer to P1.
+
+Q: Number pad value did not stick.
+A: Confirm with OK, check the slider shows the new number, then close the menu.
+
+Q: Rhythm feels good offline but not online.
+A: Latency changes your window. Retune slightly online.
+
+Q: Can I use Button Shot instead of Button Rhythm?
+A: Yes, but use it as the main system by itself while learning.
+
+Q: What is the difference between Rhythm and Auto Hold?
+A: Rhythm = you release. Auto Hold = script releases after Auto Hold MS.
+
+Q: How do I bind Quick Stop to X or Circle?
+A: Open the Quick Stop bind screen with X. Press the button(s) you want.
+   Hold Circle to exit so those face buttons can be used as binds.
+
+Q: Dribble D-pad does nothing.
+A: Dribble Moves must be ON, slot must not be OFF, and do not hold L2 while
+   pressing the D-pad.
+
+Q: Should Unlimited Sprint be on?
+A: Optional. It a fun setting to have fun and mess around with so up to you if you want it on or off
