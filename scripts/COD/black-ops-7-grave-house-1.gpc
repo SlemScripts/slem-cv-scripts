@@ -1,0 +1,4307 @@
+/*
+
+               ░                                                                           ░░
+
+                  ░                                                                                        ░
+
+                                                                       ░            ░                                     
+                                                          ░  ░                   ▒                                        
+                                                                   ░                                                      
+                      ░             ████▒    ████████    ░    ██     ██          █  █                                     
+          ░  ███                 ██████████████    ████      ███     ███       ██  █████████▒             ██▓    ░        
+            ████               ███░         ███     ░██     ████░     ██      ██   ██                     ███             
+            ████    ░         ████          ███    ███░     ██ ███    ████   ██    ██                     ████            
+            ████              ███      ███  ██  █████      ██▒▒██████  ███  ██▒   ██████████              ███▒            
+            ████            ████   ███████▓██████       █████▒  ██      ██ ███    ███                     ███▒            
+            ████             ███  ████ ███  ██  ███       ██    ███     █████     ███                     ███▒            
+            ████             ███       ██   ██    ████   ███     ██      ███      ██░                     ███▒            
+            ████              ██████████    ██       ██████▒     ███      ██      ████████████   ░        ███▓            
+            ████     ░    ░       ██         █           █                                     ░  ░       ███▓            
+            ████                                                                        ▒                 ████            
+            ░███                      █                            █      ░████░                          ███             
+  ░████████████████████████░  ███    ░██      ████████     ██     ▓██   ████▓█▓███  ██████████  ████████████████████████▒ 
+    ███████████████████████   ███    ███    ███    ████   ███     ███  ███          ██           ▓██████████████████████  
+            ████              ██▒     ███  ██ █████ █ ██  ██░      ███ ██          ███                    ███░            
+ ░          ████              ██░█████████▒█  ██████  ▒█  ██       ██  ██████████  ██▒ ██████             ████            
+            ████           ▒█████████████ ██▓███   ██  █████      ███    ███   ███ ██████                 ████            
+     ░░     ████         ▒░   ██      ██  ██████████████▓ ██      ███         ████ ██                     ████            
+            █████             ██      ██   ██   █▒█   ██  ██     ███         ███   ██                     ████            
+            ████             ▒██       ██   ███ ██   ██   █████████▒ ███   ████    ███████████            █▒ ░            
+                             ▓██              ███████       ███ █     ████████     ░████░
+
+                                        ░░                              ░                                                 
+                                ░                       ░                         ░  ░                  ░                 
+    ░                                          ▓                         ░                                                
+                  ░                                                                                                       
+                                                               ░                                                          
+                                                                                                  ░         ░░
+
+
+*/
+/*
+version: 2.0
+Device: CronusZEN ONLY
+Controller tested: DS4 - Elite 2
+Console tested: PS4 (XBOX and PC compatible)
+Author: noozbar - GraveHunter - DogHouse - NaughtySox
+
+———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+
+
+
+◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺ ◿◸◹◺
+———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————*/
+data(0x20,0x4D,0x6F,0x64,0x20,0x4D,0x65,0x6E,0x75,0x20,0x00,0x43,0x6F,0x6E,0x74,0x72,0x6F,0x6C,0x6C,0x65,0x72,0x00,0x20,0x50,0x72,0x6F,0x66,0x69,0x6C,0x65,0x73,0x20,0x00,0x41,0x6E,0x74,0x69,0x52,0x65,0x63,0x6F,0x69,0x6C,0x00,0x52,0x61,0x70,0x69,0x64,0x46,0x69,0x72,0x65,0x00,0x42,0x75,0x72,0x73,0x74,0x46,0x69,0x72,0x65,0x00,0x41,0x49,0x4D,0x20,0x41,0x73,0x73,0x69,0x73,0x74,0x00,0x4E,0x61,0x75,0x67,0x68,0x74,0x79,0x4C,0x65,0x66,0x74,0x41,0x41,0x00,0x48,0x69,0x70,0x20,0x41,0x73,0x73,0x69,0x73,0x74,0x00,0x53,0x74,0x65,0x61,0x64,0x79,0x20,0x41,0x69,0x6D,0x00,0x41,0x49,0x4D,0x20,0x41,0x62,0x75,0x73,0x65,0x00,0x53,0x68,0x6F,0x74,0x20,0x4D,0x6F,0x64,0x00,0x53,0x68,0x6F,0x74,0x20,0x41,0x63,0x74,0x69,0x76,0x61,0x74,0x6F,0x72,0x00,0x20,0x48,0x6F,0x6C,0x64,0x20,0x42,0x72,0x65,0x61,0x74,0x68,0x00,0x54,0x75,0x72,0x62,0x6F,0x20,0x4D,0x65,0x6C,0x65,0x65,0x00,0x41,0x75,0x74,0x6F,0x20,0x41,0x44,0x53,0x00,0x41,0x75,0x74,0x6F,0x20,0x46,0x49,0x52,0x45,0x00,0x53,0x65,0x6E,0x73,0x69,0x74,0x69,0x76,0x69,0x74,0x79,
+0x00,0x41,0x75,0x74,0x6F,0x52,0x75,0x6E,0x00,0x42,0x75,0x6E,0x6E,0x79,0x20,0x48,0x6F,0x70,0x00,0x53,0x6C,0x69,0x64,0x65,0x20,0x43,0x61,0x6E,0x63,0x65,0x6C,0x00,0x41,0x52,0x20,0x53,0x6D,0x61,0x72,0x74,0x53,0x74,0x6F,0x70,0x00,0x56,0x4D,0x20,0x53,0x70,0x65,0x65,0x64,0x00,0x4F,0x46,0x46,0x00,0x50,0x72,0x6F,0x67,0x72,0x65,0x73,0x73,0x69,0x76,0x65,0x00,0x53,0x74,0x61,0x6E,0x64,0x61,0x72,0x64,0x00,0x52,0x75,0x6D,0x62,0x6C,0x65,0x20,0x4C,0x6F,0x77,0x00,0x52,0x75,0x6D,0x62,0x6C,0x65,0x20,0x4D,0x65,0x64,0x00,0x52,0x75,0x6D,0x62,0x6C,0x65,0x20,0x48,0x69,0x67,0x68,0x00,0x4F,0x46,0x46,0x00,0x44,0x79,0x6E,0x61,0x6D,0x69,0x63,0x00,0x52,0x6F,0x75,0x6E,0x64,0x73,0x20,0x70,0x65,0x72,0x20,0x6D,0x69,0x6E,0x00,0x52,0x6F,0x75,0x6E,0x64,0x73,0x20,0x70,0x65,0x72,0x20,0x73,0x65,0x63,0x00,0x4F,0x46,0x46,0x00,0x53,0x74,0x69,0x63,0x6B,0x79,0x00,0x43,0x69,0x72,0x63,0x75,0x6C,0x61,0x72,0x00,0x54,0x61,0x6C,0x6C,0x20,0x4F,0x76,0x61,0x6C,0x00,0x57,0x69,0x64,0x65,0x20,0x4F,0x76,0x61,0x6C,0x00,0x53,0x70,0x69,0x72,0x61,
+0x6C,0x00,0x48,0x65,0x6C,0x69,0x78,0x00,0x4F,0x46,0x46,0x00,0x53,0x74,0x72,0x61,0x66,0x65,0x20,0x53,0x68,0x6F,0x74,0x00,0x4A,0x75,0x6D,0x70,0x20,0x53,0x68,0x6F,0x74,0x00,0x44,0x72,0x6F,0x70,0x20,0x53,0x68,0x6F,0x74,0x00,0x41,0x44,0x53,0x20,0x2B,0x20,0x46,0x49,0x52,0x45,0x00,0x41,0x44,0x53,0x20,0x4F,0x6E,0x6C,0x79,0x00,0x46,0x49,0x52,0x45,0x20,0x4F,0x6E,0x6C,0x79,0x00,0x4F,0x46,0x46,0x00,0x43,0x75,0x73,0x74,0x6F,0x6D,0x20,0x53,0x65,0x6E,0x73,0x00,0x44,0x79,0x6E,0x61,0x6D,0x69,0x63,0x20,0x53,0x65,0x6E,0x73,0x00,0x4F,0x46,0x46,0x00,0x56,0x65,0x72,0x73,0x69,0x6F,0x6E,0x20,0x30,0x78,0x31,0x00,0x56,0x65,0x72,0x73,0x69,0x6F,0x6E,0x20,0x30,0x78,0x32,0x00,0x44,0x65,0x66,0x61,0x75,0x6C,0x74,0x00,0x45,0x69,0x67,0x68,0x74,0x20,0x6D,0x73,0x00,0x53,0x69,0x78,0x20,0x6D,0x73,0x00,0x46,0x6F,0x75,0x72,0x20,0x6D,0x73,0x00,0x54,0x77,0x6F,0x20,0x6D,0x73,0x00,0x4F,0x6E,0x65,0x20,0x6D,0x73,0x00,0x41,0x52,0x20,0x53,0x74,0x61,0x72,0x74,0x00,0x41,0x52,0x20,0x45,0x6E,0x64,0x00,0x41,0x52,0x20,0x54,0x69,0x6D,0x65,
+0x00,0x41,0x52,0x20,0x48,0x6F,0x72,0x69,0x7A,0x00,0x52,0x75,0x6D,0x62,0x6C,0x65,0x20,0x50,0x6F,0x77,0x65,0x72,0x00,0x52,0x61,0x74,0x65,0x20,0x6F,0x66,0x20,0x46,0x69,0x72,0x65,0x00,0x42,0x46,0x20,0x48,0x6F,0x6C,0x64,0x00,0x42,0x46,0x20,0x52,0x65,0x6C,0x65,0x61,0x73,0x65,0x00,0x52,0x61,0x64,0x69,0x75,0x73,0x00,0x54,0x69,0x6D,0x65,0x00,0x53,0x70,0x69,0x6E,0x20,0x53,0x69,0x7A,0x65,0x00,0x53,0x70,0x69,0x6E,0x20,0x54,0x69,0x6D,0x65,0x00,0x44,0x69,0x72,0x65,0x63,0x74,0x69,0x6F,0x6E,0x20,0x44,0x5A,0x00,0x48,0x6F,0x6C,0x64,0x20,0x54,0x69,0x6D,0x65,0x00,0x52,0x65,0x6C,0x65,0x61,0x73,0x65,0x20,0x54,0x69,0x6D,0x65,0x00,0x53,0x74,0x72,0x61,0x66,0x65,0x20,0x54,0x69,0x6D,0x65,0x00,0x49,0x6E,0x69,0x74,0x69,0x61,0x6C,0x20,0x53,0x65,0x6E,0x73,0x00,0x49,0x6E,0x63,0x72,0x65,0x61,0x73,0x65,0x20,0x50,0x6F,0x69,0x6E,0x74,0x00,0x52,0x65,0x73,0x74,0x61,0x72,0x74,0x20,0x50,0x6F,0x69,0x6E,0x74,0x00,0x4D,0x61,0x78,0x20,0x53,0x65,0x6E,0x73,0x00,0x49,0x6E,0x63,0x72,0x65,0x61,0x73,0x65,0x20,0x52,0x61,0x74,0x65,0x00,
+0x47,0x65,0x6E,0x65,0x72,0x61,0x6C,0x00,0x41,0x44,0x53,0x00,0x46,0x49,0x52,0x45,0x00,0x41,0x44,0x53,0x20,0x2B,0x20,0x46,0x49,0x52,0x45,0x00,0x43,0x61,0x6E,0x63,0x65,0x6C,0x20,0x54,0x69,0x6D,0x65,0x00,0x53,0x74,0x72,0x61,0x66,0x65,0x20,0x53,0x69,0x7A,0x65,0x00,0x52,0x65,0x73,0x6F,0x6C,0x75,0x74,0x69,0x6F,0x6E,0x00,0x52,0x69,0x67,0x68,0x74,0x53,0x74,0x63,0x6B,0x20,0x53,0x7A,0x65,0x00,0x4C,0x65,0x66,0x74,0x53,0x74,0x63,0x6B,0x20,0x53,0x69,0x7A,0x65,0x00,0x48,0x69,0x70,0x42,0x6F,0x6F,0x73,0x74,0x20,0x53,0x69,0x7A,0x65,0x00,0x41,0x44,0x53,0x20,0x42,0x54,0x4E,0x00,0x46,0x69,0x72,0x65,0x20,0x42,0x54,0x4E,0x00,0x54,0x61,0x63,0x74,0x69,0x63,0x61,0x6C,0x20,0x42,0x54,0x4E,0x00,0x4C,0x65,0x74,0x68,0x61,0x6C,0x20,0x42,0x54,0x4E,0x00,0x4A,0x75,0x6D,0x70,0x20,0x42,0x54,0x4E,0x00,0x43,0x72,0x6F,0x75,0x63,0x68,0x20,0x42,0x54,0x4E,0x00,0x52,0x65,0x6C,0x6F,0x61,0x64,0x20,0x42,0x54,0x4E,0x00,0x4D,0x65,0x6C,0x65,0x65,0x20,0x42,0x54,0x4E,0x00,0x53,0x70,0x72,0x69,0x6E,0x74,0x20,0x42,0x54,0x4E,0x00,0x57,0x65,
+0x61,0x70,0x6F,0x6E,0x20,0x42,0x54,0x4E,0x00,0x48,0x61,0x69,0x72,0x20,0x54,0x72,0x69,0x67,0x67,0x65,0x72,0x00,0x42,0x6C,0x6F,0x63,0x6B,0x20,0x52,0x75,0x6D,0x62,0x6C,0x65,0x00,0x4C,0x32,0x00,0x52,0x32,0x00,0x4C,0x31,0x00,0x52,0x31,0x00,0x43,0x52,0x4F,0x53,0x53,0x00,0x43,0x49,0x52,0x43,0x4C,0x45,0x00,0x53,0x51,0x55,0x41,0x52,0x45,0x00,0x52,0x33,0x00,0x4C,0x33,0x00,0x54,0x52,0x49,0x41,0x4E,0x47,0x4C,0x45,0x00,0x4C,0x54,0x00,0x52,0x54,0x00,0x4C,0x42,0x00,0x52,0x42,0x00,0x41,0x00,0x42,0x00,0x58,0x00,0x52,0x53,0x00,0x4C,0x53,0x00,0x59,0x00,0x50,0x72,0x69,0x6D,0x2F,0x53,0x65,0x63,0x20,0x42,0x54,0x4E,0x00,0x43,0x75,0x73,0x74,0x6F,0x6D,0x20,0x50,0x72,0x6F,0x66,0x69,0x6C,0x65,0x00,0x52,0x65,0x73,0x79,0x6E,0x63,0x20,0x42,0x54,0x4E,0x73,0x00,0x00,0x4C,0x32,0x00,0x52,0x32,0x00,0x4C,0x31,0x00,0x52,0x31,0x00,0x43,0x52,0x4F,0x53,0x53,0x00,0x43,0x49,0x52,0x43,0x4C,0x45,0x00,0x53,0x51,0x55,0x41,0x52,0x45,0x00,0x54,0x52,0x49,0x41,0x4E,0x47,0x4C,0x45,0x00,0x52,0x33,0x00,0x4C,0x33,0x00,0x44,0x70,0x61,0x64,
+0x20,0x55,0x50,0x00,0x44,0x70,0x61,0x64,0x20,0x44,0x4F,0x57,0x4E,0x00,0x44,0x70,0x61,0x64,0x20,0x4C,0x45,0x46,0x54,0x00,0x44,0x70,0x61,0x64,0x20,0x52,0x49,0x47,0x48,0x54,0x00,0x00,0x4C,0x54,0x00,0x52,0x54,0x00,0x4C,0x42,0x00,0x52,0x42,0x00,0x41,0x00,0x42,0x00,0x58,0x00,0x59,0x00,0x52,0x53,0x00,0x4C,0x53,0x00,0x44,0x70,0x61,0x64,0x20,0x55,0x50,0x00,0x44,0x70,0x61,0x64,0x20,0x44,0x4F,0x57,0x4E,0x00,0x44,0x70,0x61,0x64,0x20,0x4C,0x45,0x46,0x54,0x00,0x44,0x70,0x61,0x64,0x20,0x52,0x49,0x47,0x48,0x54,0x00,0x46,0x69,0x6C,0x6C,0x20,0x55,0x70,0x00,0x54,0x68,0x65,0x20,0x47,0x72,0x61,0x76,0x65,0x73,0x00,0x56,0x61,0x6C,0x75,0x65,0x73,0x20,0x53,0x61,0x76,0x65,0x64,0x00,0x4F,0x46,0x46,0x00,0x4F,0x4E,0x00,0x50,0x72,0x69,0x6D,0x61,0x72,0x79,0x00,0x53,0x65,0x63,0x6F,0x6E,0x64,0x61,0x72,0x79,0x00,0x43,0x75,0x73,0x74,0x6F,0x6D,0x00,0x53,0x77,0x69,0x74,0x63,0x68,0x20,0x6D,0x65,0x6E,0x75,0x73,0x3A,0x00,0x74,0x61,0x70,0x20,0x55,0x50,0x20,0x6F,0x72,0x20,0x44,0x4F,0x57,0x4E,0x00,0x45,0x6E,0x74,0x65,0x72,0x20,
+0x61,0x20,0x6D,0x65,0x6E,0x75,0x3A,0x00,0x74,0x61,0x70,0x20,0x43,0x52,0x4F,0x53,0x53,0x00,0x43,0x6C,0x6F,0x73,0x65,0x20,0x4F,0x4C,0x45,0x44,0x20,0x4D,0x65,0x6E,0x75,0x73,0x3A,0x00,0x68,0x6F,0x6C,0x64,0x20,0x4C,0x32,0x20,0x2B,0x00,0x74,0x61,0x70,0x20,0x4F,0x50,0x54,0x49,0x4F,0x4E,0x00,0x53,0x61,0x76,0x65,0x20,0x61,0x6E,0x64,0x20,0x65,0x78,0x69,0x74,0x3A,0x00,0x74,0x61,0x70,0x20,0x50,0x53,0x00,0x53,0x77,0x69,0x74,0x63,0x68,0x20,0x50,0x72,0x6F,0x66,0x69,0x6C,0x65,0x3A,0x00,0x74,0x61,0x70,0x20,0x54,0x52,0x49,0x41,0x4E,0x47,0x4C,0x45,0x00,0x53,0x77,0x69,0x74,0x63,0x68,0x20,0x4D,0x6F,0x64,0x3A,0x00,0x74,0x61,0x70,0x20,0x4C,0x45,0x46,0x54,0x20,0x6F,0x72,0x20,0x52,0x49,0x47,0x48,0x54,0x00,0x54,0x6F,0x67,0x67,0x6C,0x65,0x20,0x4F,0x4E,0x2F,0x4F,0x46,0x46,0x3A,0x00,0x74,0x61,0x70,0x20,0x55,0x50,0x20,0x6F,0x72,0x20,0x44,0x4F,0x57,0x4E,0x00,0x45,0x64,0x69,0x74,0x20,0x4D,0x65,0x6E,0x75,0x3A,0x00,0x74,0x61,0x70,0x20,0x43,0x52,0x4F,0x53,0x53,0x00,0x4D,0x61,0x69,0x6E,0x4D,0x65,0x6E,0x75,0x3A,0x00,0x74,
+0x61,0x70,0x20,0x43,0x49,0x52,0x43,0x4C,0x45,0x00,0x43,0x6C,0x6F,0x73,0x65,0x20,0x4F,0x4C,0x45,0x44,0x20,0x4D,0x65,0x6E,0x75,0x73,0x3A,0x00,0x68,0x6F,0x6C,0x64,0x20,0x4C,0x32,0x20,0x2B,0x00,0x74,0x61,0x70,0x20,0x4F,0x50,0x54,0x49,0x4F,0x4E,0x00,0x53,0x61,0x76,0x65,0x20,0x61,0x6E,0x64,0x20,0x65,0x78,0x69,0x74,0x3A,0x00,0x74,0x61,0x70,0x20,0x50,0x53,0x00,0x53,0x77,0x69,0x74,0x63,0x68,0x20,0x56,0x61,0x6C,0x75,0x65,0x3A,0x00,0x74,0x61,0x70,0x20,0x4C,0x45,0x46,0x54,0x20,0x6F,0x72,0x20,0x52,0x49,0x47,0x48,0x54,0x00,0x45,0x64,0x69,0x74,0x20,0x56,0x61,0x6C,0x75,0x65,0x3A,0x00,0x68,0x6F,0x6C,0x64,0x20,0x43,0x52,0x4F,0x53,0x53,0x20,0x2B,0x20,0x74,0x61,0x70,0x00,0x55,0x50,0x20,0x44,0x4F,0x57,0x4E,0x20,0x4C,0x45,0x46,0x54,0x20,0x52,0x49,0x47,0x48,0x54,0x00,0x4D,0x6F,0x64,0x4D,0x65,0x6E,0x75,0x3A,0x00,0x74,0x61,0x70,0x20,0x43,0x49,0x52,0x43,0x4C,0x45,0x00,0x43,0x6C,0x6F,0x73,0x65,0x20,0x4F,0x4C,0x45,0x44,0x20,0x4D,0x65,0x6E,0x75,0x73,0x3A,0x00,0x68,0x6F,0x6C,0x64,0x20,0x4C,0x32,0x20,0x2B,0x00,0x74,
+0x61,0x70,0x20,0x4F,0x50,0x54,0x49,0x4F,0x4E,0x00,0x53,0x61,0x76,0x65,0x20,0x61,0x6E,0x64,0x20,0x65,0x78,0x69,0x74,0x3A,0x00,0x74,0x61,0x70,0x20,0x50,0x53,0x00,0x4E,0x61,0x76,0x69,0x67,0x61,0x74,0x65,0x20,0x6F,0x70,0x74,0x69,0x6F,0x6E,0x73,0x3A,0x00,0x74,0x61,0x70,0x20,0x4C,0x45,0x46,0x54,0x20,0x6F,0x72,0x20,0x52,0x49,0x47,0x48,0x54,0x00,0x45,0x64,0x69,0x74,0x20,0x6F,0x70,0x74,0x69,0x6F,0x6E,0x73,0x3A,0x00,0x74,0x61,0x70,0x20,0x55,0x50,0x20,0x6F,0x72,0x20,0x44,0x4F,0x57,0x4E,0x00,0x4D,0x61,0x69,0x6E,0x4D,0x65,0x6E,0x75,0x3A,0x00,0x74,0x61,0x70,0x20,0x43,0x49,0x52,0x43,0x4C,0x45,0x00,0x43,0x6C,0x6F,0x73,0x65,0x20,0x4F,0x4C,0x45,0x44,0x20,0x4D,0x65,0x6E,0x75,0x73,0x3A,0x00,0x68,0x6F,0x6C,0x64,0x20,0x4C,0x32,0x20,0x2B,0x00,0x74,0x61,0x70,0x20,0x4F,0x50,0x54,0x49,0x4F,0x4E,0x00,0x53,0x61,0x76,0x65,0x20,0x61,0x6E,0x64,0x20,0x65,0x78,0x69,0x74,0x3A,0x00,0x74,0x61,0x70,0x20,0x50,0x53,0x00,0x4E,0x61,0x76,0x69,0x67,0x61,0x74,0x65,0x20,0x6F,0x70,0x74,0x69,0x6F,0x6E,0x73,0x3A,0x00,0x74,0x61,0x70,
+0x20,0x54,0x52,0x49,0x41,0x4E,0x47,0x4C,0x45,0x00,0x45,0x64,0x69,0x74,0x20,0x6F,0x70,0x74,0x69,0x6F,0x6E,0x73,0x3A,0x00,0x74,0x61,0x70,0x00,0x55,0x50,0x20,0x44,0x4F,0x57,0x4E,0x20,0x4C,0x45,0x46,0x54,0x20,0x52,0x49,0x47,0x48,0x54,0x00,0x4D,0x61,0x69,0x6E,0x4D,0x65,0x6E,0x75,0x3A,0x00,0x74,0x61,0x70,0x20,0x43,0x49,0x52,0x43,0x4C,0x45,0x00,0x43,0x6C,0x6F,0x73,0x65,0x20,0x4F,0x4C,0x45,0x44,0x20,0x4D,0x65,0x6E,0x75,0x73,0x3A,0x00,0x68,0x6F,0x6C,0x64,0x20,0x4C,0x32,0x20,0x2B,0x00,0x74,0x61,0x70,0x20,0x4F,0x50,0x54,0x49,0x4F,0x4E,0x00,0x53,0x61,0x76,0x65,0x20,0x61,0x6E,0x64,0x20,0x65,0x78,0x69,0x74,0x3A,0x00,0x74,0x61,0x70,0x20,0x50,0x53,0x00,0x53,0x77,0x69,0x74,0x63,0x68,0x20,0x6D,0x65,0x6E,0x75,0x73,0x3A,0x00,0x74,0x61,0x70,0x20,0x55,0x50,0x20,0x6F,0x72,0x20,0x44,0x4F,0x57,0x4E,0x00,0x45,0x6E,0x74,0x65,0x72,0x20,0x61,0x20,0x6D,0x65,0x6E,0x75,0x3A,0x00,0x74,0x61,0x70,0x20,0x41,0x00,0x43,0x6C,0x6F,0x73,0x65,0x20,0x4F,0x4C,0x45,0x44,0x20,0x4D,0x65,0x6E,0x75,0x73,0x3A,0x00,0x68,0x6F,0x6C,0x64,
+0x20,0x4C,0x54,0x20,0x2B,0x00,0x74,0x61,0x70,0x20,0x4D,0x45,0x4E,0x55,0x00,0x53,0x61,0x76,0x65,0x20,0x61,0x6E,0x64,0x20,0x65,0x78,0x69,0x74,0x3A,0x00,0x74,0x61,0x70,0x20,0x58,0x42,0x4F,0x58,0x00,0x53,0x77,0x69,0x74,0x63,0x68,0x20,0x50,0x72,0x6F,0x66,0x69,0x6C,0x65,0x3A,0x00,0x74,0x61,0x70,0x20,0x59,0x00,0x53,0x77,0x69,0x74,0x63,0x68,0x20,0x4D,0x6F,0x64,0x3A,0x00,0x74,0x61,0x70,0x20,0x4C,0x45,0x46,0x54,0x20,0x6F,0x72,0x20,0x52,0x49,0x47,0x48,0x54,0x00,0x54,0x6F,0x67,0x67,0x6C,0x65,0x20,0x4F,0x4E,0x2F,0x4F,0x46,0x46,0x3A,0x00,0x74,0x61,0x70,0x20,0x55,0x50,0x20,0x6F,0x72,0x20,0x44,0x4F,0x57,0x4E,0x00,0x45,0x64,0x69,0x74,0x20,0x4D,0x65,0x6E,0x75,0x3A,0x00,0x74,0x61,0x70,0x20,0x41,0x00,0x4D,0x61,0x69,0x6E,0x4D,0x65,0x6E,0x75,0x3A,0x00,0x74,0x61,0x70,0x20,0x42,0x00,0x43,0x6C,0x6F,0x73,0x65,0x20,0x4F,0x4C,0x45,0x44,0x20,0x4D,0x65,0x6E,0x75,0x73,0x3A,0x00,0x68,0x6F,0x6C,0x64,0x20,0x4C,0x54,0x20,0x2B,0x00,0x74,0x61,0x70,0x20,0x4D,0x45,0x4E,0x55,0x00,0x53,0x61,0x76,0x65,0x20,0x61,0x6E,0x64,0x20,
+0x65,0x78,0x69,0x74,0x3A,0x00,0x74,0x61,0x70,0x20,0x58,0x42,0x4F,0x58,0x00,0x53,0x77,0x69,0x74,0x63,0x68,0x20,0x56,0x61,0x6C,0x75,0x65,0x3A,0x00,0x74,0x61,0x70,0x20,0x4C,0x45,0x46,0x54,0x20,0x6F,0x72,0x20,0x52,0x49,0x47,0x48,0x54,0x00,0x45,0x64,0x69,0x74,0x20,0x56,0x61,0x6C,0x75,0x65,0x3A,0x00,0x68,0x6F,0x6C,0x64,0x20,0x41,0x20,0x2B,0x20,0x74,0x61,0x70,0x00,0x55,0x50,0x20,0x44,0x4F,0x57,0x4E,0x20,0x4C,0x45,0x46,0x54,0x20,0x52,0x49,0x47,0x48,0x54,0x00,0x4D,0x6F,0x64,0x4D,0x65,0x6E,0x75,0x3A,0x00,0x74,0x61,0x70,0x20,0x42,0x00,0x43,0x6C,0x6F,0x73,0x65,0x20,0x4F,0x4C,0x45,0x44,0x20,0x4D,0x65,0x6E,0x75,0x73,0x3A,0x00,0x68,0x6F,0x6C,0x64,0x20,0x4C,0x54,0x20,0x2B,0x00,0x74,0x61,0x70,0x20,0x4D,0x45,0x4E,0x55,0x00,0x53,0x61,0x76,0x65,0x20,0x61,0x6E,0x64,0x20,0x65,0x78,0x69,0x74,0x3A,0x00,0x74,0x61,0x70,0x20,0x58,0x42,0x4F,0x58,0x00,0x4E,0x61,0x76,0x69,0x67,0x61,0x74,0x65,0x20,0x6F,0x70,0x74,0x69,0x6F,0x6E,0x73,0x3A,0x00,0x74,0x61,0x70,0x20,0x4C,0x45,0x46,0x54,0x20,0x6F,0x72,0x20,0x52,0x49,0x47,
+0x48,0x54,0x00,0x45,0x64,0x69,0x74,0x20,0x6F,0x70,0x74,0x69,0x6F,0x6E,0x73,0x3A,0x00,0x74,0x61,0x70,0x20,0x55,0x50,0x20,0x6F,0x72,0x20,0x44,0x4F,0x57,0x4E,0x00,0x4D,0x61,0x69,0x6E,0x4D,0x65,0x6E,0x75,0x3A,0x00,0x74,0x61,0x70,0x20,0x42,0x00,0x43,0x6C,0x6F,0x73,0x65,0x20,0x4F,0x4C,0x45,0x44,0x20,0x4D,0x65,0x6E,0x75,0x73,0x3A,0x00,0x68,0x6F,0x6C,0x64,0x20,0x4C,0x54,0x20,0x2B,0x00,0x74,0x61,0x70,0x20,0x4D,0x45,0x4E,0x55,0x00,0x53,0x61,0x76,0x65,0x20,0x61,0x6E,0x64,0x20,0x65,0x78,0x69,0x74,0x3A,0x00,0x74,0x61,0x70,0x20,0x58,0x42,0x4F,0x58,0x00,0x4E,0x61,0x76,0x69,0x67,0x61,0x74,0x65,0x20,0x6F,0x70,0x74,0x69,0x6F,0x6E,0x73,0x3A,0x00,0x74,0x61,0x70,0x20,0x59,0x00,0x45,0x64,0x69,0x74,0x20,0x6F,0x70,0x74,0x69,0x6F,0x6E,0x73,0x3A,0x00,0x74,0x61,0x70,0x00,0x55,0x50,0x20,0x44,0x4F,0x57,0x4E,0x20,0x4C,0x45,0x46,0x54,0x20,0x52,0x49,0x47,0x48,0x54,0x00,0x4D,0x61,0x69,0x6E,0x4D,0x65,0x6E,0x75,0x3A,0x00,0x74,0x61,0x70,0x20,0x42,0x00,0x43,0x6C,0x6F,0x73,0x65,0x20,0x4F,0x4C,0x45,0x44,0x20,0x4D,0x65,0x6E,
+0x75,0x73,0x3A,0x00,0x68,0x6F,0x6C,0x64,0x20,0x4C,0x54,0x20,0x2B,0x00,0x74,0x61,0x70,0x20,0x4D,0x45,0x4E,0x55,0x00,0x53,0x61,0x76,0x65,0x20,0x61,0x6E,0x64,0x20,0x65,0x78,0x69,0x74,0x3A,0x00,0x74,0x61,0x70,0x20,0x58,0x42,0x4F,0x58,0x00,0x45,0x76,0x65,0x72,0x79,0x20,0x50,0x72,0x6F,0x66,0x69,0x6C,0x65,0x73,0x00,0x44,0x72,0x69,0x76,0x65,0x20,0x4D,0x6F,0x64,0x65,0x00,0x50,0x72,0x65,0x73,0x73,0x20,0x4A,0x75,0x6D,0x70,0x00,0x54,0x6F,0x20,0x54,0x75,0x72,0x6E,0x20,0x4F,0x46,0x46,0x00,0x43,0x6F,0x6E,0x74,0x72,0x6F,0x6C,0x6C,0x65,0x72,0x00,0x41,0x52,0x20,0x56,0x65,0x72,0x74,0x69,0x63,0x61,0x6C,0x00,0x50,0x72,0x65,0x73,0x73,0x20,0x42,0x54,0x4E,0x00,0x48,0x6F,0x6C,0x64,0x20,0x42,0x54,0x4E,0x00);
+function V_01388(arg) {
+    switch (arg) {
+        case 0: {
+           return 0;
+        }
+        case 1: {
+           return 11;
+        }
+        case 2: {
+           return 22;
+        }
+    }
+    return -1;
+}
+function V_01389(arg) {
+    switch (arg) {
+        case 0: {
+           return 33;
+        }
+        case 1: {
+           return 44;
+        }
+        case 2: {
+           return 54;
+        }
+        case 3: {
+           return 64;
+        }
+        case 4: {
+           return 75;
+        }
+        case 5: {
+           return 89;
+        }
+        case 6: {
+           return 100;
+        }
+        case 7: {
+           return 111;
+        }
+        case 8: {
+           return 121;
+        }
+        case 9: {
+           return 130;
+        }
+        case 10: {
+           return 145;
+        }
+        case 11: {
+           return 158;
+        }
+        case 12: {
+           return 170;
+        }
+        case 13: {
+           return 179;
+        }
+        case 14: {
+           return 189;
+        }
+        case 15: {
+           return 201;
+        }
+        case 16: {
+           return 209;
+        }
+        case 17: {
+           return 219;
+        }
+        case 18: {
+           return 232;
+        }
+        case 19: {
+           return 245;
+        }
+    }
+    return -1;
+}
+function V_01390(arg) {
+    switch (arg) {
+        case 0: {
+           return 254;
+        }
+        case 1: {
+           return 258;
+        }
+        case 2: {
+           return 270;
+        }
+        case 3: {
+           return 279;
+        }
+        case 4: {
+           return 290;
+        }
+        case 5: {
+           return 301;
+        }
+    }
+    return -1;
+}
+function V_08(arg) {
+    switch (arg) {
+        case 0: {
+           return 313;
+        }
+        case 1: {
+           return 317;
+        }
+        case 2: {
+           return 325;
+        }
+        case 3: {
+           return 340;
+        }
+    }
+    return -1;
+}
+function V_01392(arg) {
+    switch (arg) {
+        case 0: {
+           return 355;
+        }
+        case 1: {
+           return 359;
+        }
+        case 2: {
+           return 366;
+        }
+        case 3: {
+           return 375;
+        }
+        case 4: {
+           return 385;
+        }
+        case 5: {
+           return 395;
+        }
+        case 6: {
+           return 402;
+        }
+    }
+    return -1;
+}
+function V_01393(arg) {
+    switch (arg) {
+        case 0: {
+           return 408;
+        }
+        case 1: {
+           return 412;
+        }
+        case 2: {
+           return 424;
+        }
+        case 3: {
+           return 434;
+        }
+    }
+    return -1;
+}
+function V_01394(arg) {
+    switch (arg) {
+        case 0: {
+           return 444;
+        }
+        case 1: {
+           return 455;
+        }
+        case 2: {
+           return 464;
+        }
+    }
+    return -1;
+}
+function V_01395(arg) {
+    switch (arg) {
+        case 0: {
+           return 474;
+        }
+        case 1: {
+           return 478;
+        }
+        case 2: {
+           return 490;
+        }
+    }
+    return -1;
+}
+function V_01396(arg) {
+    switch (arg) {
+        case 0: {
+           return 503;
+        }
+        case 1: {
+           return 507;
+        }
+        case 2: {
+           return 519;
+        }
+    }
+    return -1;
+}
+function V_01397(arg) {
+    switch (arg) {
+        case 0: {
+           return 531;
+        }
+        case 1: {
+           return 539;
+        }
+        case 2: {
+           return 548;
+        }
+        case 3: {
+           return 555;
+        }
+        case 4: {
+           return 563;
+        }
+        case 5: {
+           return 570;
+        }
+    }
+    return -1;
+}
+function V_01398(arg) {
+    switch (arg) {
+        case 0: {
+           return 577;
+        }
+        case 1: {
+           return 586;
+        }
+        case 2: {
+           return 593;
+        }
+        case 3: {
+           return 601;
+        }
+        case 4: {
+           return 610;
+        }
+        case 5: {
+           return 623;
+        }
+        case 6: {
+           return 636;
+        }
+        case 7: {
+           return 644;
+        }
+        case 8: {
+           return 655;
+        }
+        case 9: {
+           return 662;
+        }
+        case 10: {
+           return 667;
+        }
+        case 11: {
+           return 677;
+        }
+        case 12: {
+           return 687;
+        }
+        case 13: {
+           return 700;
+        }
+        case 14: {
+           return 710;
+        }
+        case 15: {
+           return 723;
+        }
+        case 16: {
+           return 735;
+        }
+        case 17: {
+           return 748;
+        }
+        case 18: {
+           return 763;
+        }
+        case 19: {
+           return 777;
+        }
+        case 20: {
+           return 786;
+        }
+        case 21: {
+           return 800;
+        }
+        case 22: {
+           return 808;
+        }
+        case 23: {
+           return 812;
+        }
+        case 24: {
+           return 817;
+        }
+        case 25: {
+           return 828;
+        }
+        case 26: {
+           return 840;
+        }
+        case 27: {
+           return 852;
+        }
+        case 28: {
+           return 863;
+        }
+        case 29: {
+           return 877;
+        }
+        case 30: {
+           return 891;
+        }
+    }
+    return -1;
+}
+function V_01399(arg) {
+    switch (arg) {
+        case 0: {
+           return 905;
+        }
+        case 1: {
+           return 913;
+        }
+        case 2: {
+           return 922;
+        }
+        case 3: {
+           return 935;
+        }
+        case 4: {
+           return 946;
+        }
+        case 5: {
+           return 955;
+        }
+        case 6: {
+           return 966;
+        }
+        case 7: {
+           return 977;
+        }
+        case 8: {
+           return 987;
+        }
+        case 9: {
+           return 998;
+        }
+        case 10: {
+           return 1009;
+        }
+        case 11: {
+           return 1022;
+        }
+    }
+    return -1;
+}
+function V_01400(arg) {
+    switch (arg) {
+        case 0: {
+           return 1035;
+        }
+        case 1: {
+           return 1038;
+        }
+        case 2: {
+           return 1041;
+        }
+        case 3: {
+           return 1044;
+        }
+        case 4: {
+           return 1047;
+        }
+        case 5: {
+           return 1053;
+        }
+        case 6: {
+           return 1060;
+        }
+        case 7: {
+           return 1067;
+        }
+        case 8: {
+           return 1070;
+        }
+        case 9: {
+           return 1073;
+        }
+    }
+    return -1;
+}
+function V_01401(arg) {
+    switch (arg) {
+        case 0: {
+           return 1082;
+        }
+        case 1: {
+           return 1085;
+        }
+        case 2: {
+           return 1088;
+        }
+        case 3: {
+           return 1091;
+        }
+        case 4: {
+           return 1094;
+        }
+        case 5: {
+           return 1096;
+        }
+        case 6: {
+           return 1098;
+        }
+        case 7: {
+           return 1100;
+        }
+        case 8: {
+           return 1103;
+        }
+        case 9: {
+           return 1106;
+        }
+    }
+    return -1;
+}
+function V_01403(arg) {
+    switch (arg) {
+        case 0: {
+           return 1108;
+        }
+        case 1: {
+           return 1121;
+        }
+        case 2: {
+           return 1136;
+        }
+    }
+    return -1;
+}
+function V_01404(arg) {
+    switch (arg) {
+        case 0: {
+           return 1148;
+        }
+        case 1: {
+           return 1149;
+        }
+        case 2: {
+           return 1152;
+        }
+        case 3: {
+           return 1155;
+        }
+        case 4: {
+           return 1158;
+        }
+        case 5: {
+           return 1161;
+        }
+        case 6: {
+           return 1167;
+        }
+        case 7: {
+           return 1174;
+        }
+        case 8: {
+           return 1181;
+        }
+        case 9: {
+           return 1190;
+        }
+        case 10: {
+           return 1193;
+        }
+        case 11: {
+           return 1196;
+        }
+        case 12: {
+           return 1204;
+        }
+        case 13: {
+           return 1214;
+        }
+        case 14: {
+           return 1224;
+        }
+    }
+    return -1;
+}
+function V_01405(arg) {
+    switch (arg) {
+        case 0: {
+           return 1235;
+        }
+        case 1: {
+           return 1236;
+        }
+        case 2: {
+           return 1239;
+        }
+        case 3: {
+           return 1242;
+        }
+        case 4: {
+           return 1245;
+        }
+        case 5: {
+           return 1248;
+        }
+        case 6: {
+           return 1250;
+        }
+        case 7: {
+           return 1252;
+        }
+        case 8: {
+           return 1254;
+        }
+        case 9: {
+           return 1256;
+        }
+        case 10: {
+           return 1259;
+        }
+        case 11: {
+           return 1262;
+        }
+        case 12: {
+           return 1270;
+        }
+        case 13: {
+           return 1280;
+        }
+        case 14: {
+           return 1290;
+        }
+    }
+    return -1;
+}
+function V_01270(arg) {
+    switch (arg) {
+        case 0: {
+           return 1301;
+        }
+        case 1: {
+           return 1309;
+        }
+        case 2: {
+           return 1320;
+        }
+    }
+    return -1;
+}
+function V_01421(arg) {
+    switch (arg) {
+        case 0: {
+           return 1333;
+        }
+        case 1: {
+           return 1337;
+        }
+    }
+    return -1;
+}
+function V_01422(arg) {
+    switch (arg) {
+        case 0: {
+           return 1340;
+        }
+        case 1: {
+           return 1348;
+        }
+        case 2: {
+           return 1358;
+        }
+    }
+    return -1;
+}
+function V_01423(arg) {
+    switch (arg) {
+        case 0: {
+           return 1365;
+        }
+        case 1: {
+           return 1379;
+        }
+        case 2: {
+           return 1394;
+        }
+        case 3: {
+           return 1408;
+        }
+        case 4: {
+           return 1418;
+        }
+        case 5: {
+           return 1436;
+        }
+        case 6: {
+           return 1446;
+        }
+        case 7: {
+           return 1457;
+        }
+        case 8: {
+           return 1472;
+        }
+    }
+    return -1;
+}
+function V_01424(arg) {
+    switch (arg) {
+        case 0: {
+           return 1479;
+        }
+        case 1: {
+           return 1495;
+        }
+        case 2: {
+           return 1508;
+        }
+        case 3: {
+           return 1520;
+        }
+        case 4: {
+           return 1538;
+        }
+        case 5: {
+           return 1553;
+        }
+        case 6: {
+           return 1568;
+        }
+        case 7: {
+           return 1579;
+        }
+        case 8: {
+           return 1589;
+        }
+        case 9: {
+           return 1599;
+        }
+        case 10: {
+           return 1610;
+        }
+        case 11: {
+           return 1628;
+        }
+        case 12: {
+           return 1638;
+        }
+        case 13: {
+           return 1649;
+        }
+        case 14: {
+           return 1664;
+        }
+    }
+    return -1;
+}
+function V_01425(arg) {
+    switch (arg) {
+        case 0: {
+           return 1671;
+        }
+        case 1: {
+           return 1685;
+        }
+        case 2: {
+           return 1703;
+        }
+        case 3: {
+           return 1715;
+        }
+        case 4: {
+           return 1732;
+        }
+        case 5: {
+           return 1751;
+        }
+        case 6: {
+           return 1760;
+        }
+        case 7: {
+           return 1771;
+        }
+        case 8: {
+           return 1789;
+        }
+        case 9: {
+           return 1799;
+        }
+        case 10: {
+           return 1810;
+        }
+        case 11: {
+           return 1825;
+        }
+    }
+    return -1;
+}
+function V_01426(arg) {
+    switch (arg) {
+        case 0: {
+           return 1832;
+        }
+        case 1: {
+           return 1850;
+        }
+        case 2: {
+           return 1868;
+        }
+        case 3: {
+           return 1882;
+        }
+        case 4: {
+           return 1897;
+        }
+        case 5: {
+           return 1907;
+        }
+        case 6: {
+           return 1918;
+        }
+        case 7: {
+           return 1936;
+        }
+        case 8: {
+           return 1946;
+        }
+        case 9: {
+           return 1957;
+        }
+        case 10: {
+           return 1972;
+        }
+    }
+    return -1;
+}
+function V_01427(arg) {
+    switch (arg) {
+        case 0: {
+           return 1979;
+        }
+        case 1: {
+           return 1997;
+        }
+        case 2: {
+           return 2010;
+        }
+        case 3: {
+           return 2024;
+        }
+        case 4: {
+           return 2028;
+        }
+        case 5: {
+           return 2047;
+        }
+        case 6: {
+           return 2057;
+        }
+        case 7: {
+           return 2068;
+        }
+        case 8: {
+           return 2086;
+        }
+        case 9: {
+           return 2096;
+        }
+        case 10: {
+           return 2107;
+        }
+        case 11: {
+           return 2122;
+        }
+    }
+    return -1;
+}
+function V_01428(arg) {
+    switch (arg) {
+        case 0: {
+           return 2129;
+        }
+        case 1: {
+           return 2143;
+        }
+        case 2: {
+           return 2158;
+        }
+        case 3: {
+           return 2172;
+        }
+        case 4: {
+           return 2178;
+        }
+        case 5: {
+           return 2196;
+        }
+        case 6: {
+           return 2206;
+        }
+        case 7: {
+           return 2215;
+        }
+        case 8: {
+           return 2230;
+        }
+    }
+    return -1;
+}
+function V_01429(arg) {
+    switch (arg) {
+        case 0: {
+           return 2239;
+        }
+        case 1: {
+           return 2255;
+        }
+        case 2: {
+           return 2261;
+        }
+        case 3: {
+           return 2273;
+        }
+        case 4: {
+           return 2291;
+        }
+        case 5: {
+           return 2306;
+        }
+        case 6: {
+           return 2321;
+        }
+        case 7: {
+           return 2332;
+        }
+        case 8: {
+           return 2338;
+        }
+        case 9: {
+           return 2348;
+        }
+        case 10: {
+           return 2354;
+        }
+        case 11: {
+           return 2372;
+        }
+        case 12: {
+           return 2382;
+        }
+        case 13: {
+           return 2391;
+        }
+        case 14: {
+           return 2406;
+        }
+    }
+    return -1;
+}
+function V_01430(arg) {
+    switch (arg) {
+        case 0: {
+           return 2415;
+        }
+        case 1: {
+           return 2429;
+        }
+        case 2: {
+           return 2447;
+        }
+        case 3: {
+           return 2459;
+        }
+        case 4: {
+           return 2472;
+        }
+        case 5: {
+           return 2491;
+        }
+        case 6: {
+           return 2500;
+        }
+        case 7: {
+           return 2506;
+        }
+        case 8: {
+           return 2524;
+        }
+        case 9: {
+           return 2534;
+        }
+        case 10: {
+           return 2543;
+        }
+        case 11: {
+           return 2558;
+        }
+    }
+    return -1;
+}
+function V_01431(arg) {
+    switch (arg) {
+        case 0: {
+           return 2567;
+        }
+        case 1: {
+           return 2585;
+        }
+        case 2: {
+           return 2603;
+        }
+        case 3: {
+           return 2617;
+        }
+        case 4: {
+           return 2632;
+        }
+        case 5: {
+           return 2642;
+        }
+        case 6: {
+           return 2648;
+        }
+        case 7: {
+           return 2666;
+        }
+        case 8: {
+           return 2676;
+        }
+        case 9: {
+           return 2685;
+        }
+        case 10: {
+           return 2700;
+        }
+    }
+    return -1;
+}
+function V_01432(arg) {
+    switch (arg) {
+        case 0: {
+           return 2709;
+        }
+        case 1: {
+           return 2727;
+        }
+        case 2: {
+           return 2733;
+        }
+        case 3: {
+           return 2747;
+        }
+        case 4: {
+           return 2751;
+        }
+        case 5: {
+           return 2770;
+        }
+        case 6: {
+           return 2780;
+        }
+        case 7: {
+           return 2786;
+        }
+        case 8: {
+           return 2804;
+        }
+        case 9: {
+           return 2814;
+        }
+        case 10: {
+           return 2823;
+        }
+        case 11: {
+           return 2838;
+        }
+    }
+    return -1;
+}
+
+function V_0706(arg) {
+    switch (arg) {
+        case 0: {
+           return 2847;
+        }
+    }
+    return -1;
+}
+
+function V_0599(arg) {
+    switch (arg) {
+        case 0: {
+           return 2862;
+        }
+    }
+    return -1;
+}
+
+function V_0600(arg) {
+    switch (arg) {
+        case 0: {
+           return 2873;
+        }
+    }
+    return -1;
+}
+
+function V_0601(arg) {
+    switch (arg) {
+        case 0: {
+           return 2884;
+        }
+    }
+    return -1;
+}
+
+function V_0714(arg) {
+    switch (arg) {
+        case 0: {
+           return 2896;
+        }
+    }
+    return -1;
+}
+
+function V_0708(arg) {
+    switch (arg) {
+        case 0: {
+           return 2907;
+        }
+    }
+    return -1;
+}
+
+function V_0828(arg) {
+    switch (arg) {
+        case 0: {
+           return 2919;
+        }
+    }
+    return -1;
+}
+
+function V_0834(arg) {
+    switch (arg) {
+        case 0: {
+           return 2929;
+        }
+    }
+    return -1;
+}
+
+
+	enum { 	V_0155 , V_0156 ,   V_0157 } 
+
+ int V_0158;
+
+
+
+	enum { 	V_0159, V_0160  , V_0161   , V_0162 , V_0163 , V_0164, V_0165 , V_0166 , V_0167     ,
+	        V_0168 , V_0169 , V_0170  , V_0171   , V_0172 , V_0173 ,
+	        V_0174   , V_0175   , V_0176 , V_0177 , V_0178 
+	}
+ int V_0179;
+
+ define V_0180 = 0x1, V_0181 = 0x2, V_0182 = 0x3, V_0183 = 0x4, V_0184 = 0x5;
+ define V_0185 = 0x1, V_0186 = 0x2, V_0187 = 0x3;
+ define V_012 = 0x1, V_0189 = 0x2, V_0190 = 0x3, V_0191 = 0x4, V_0192 = 0x5, V_0193 = 0x6;
+ define V_0194 = 0x1, V_0195 = 0x2, V_0196 = 0x3;
+ define V_0197 = 0x0, V_0198 = 0x1, V_0199 = 0x2;
+ define V_0200 = 0x1, V_0201 = 0x2;
+ define V_0202 = 0x1, V_0203 = 0x2;
+
+ int V_0204[0x3]; // #1
+ int V_0205[0x3]; // #2
+ int V_0206[0x3]; // #3
+ int V_0207[0x3]; // #4
+ int V_0208[0x3]; // #5
+ int V_0209[0x3]; // #6
+ int V_0210[0x3]; // #7
+ int V_0211[0x3]; // #8
+ int V_0212[0x3]; // #9
+ int V_0213[0x3]; // #10
+ int V_0214[0x3]; // #11
+
+ define V_0215 = 0xB;
+
+ int V_0216;
+ int V_0217;
+ int V_0218
+ int V_0219;
+ int V_0220;
+ int V_0221;
+ int V_0222;
+ int V_0223;
+ int V_0224;
+
+	enum { 	V_0225      , V_0226       , V_0227       , V_0228     , V_0229 , V_0230        ,
+	        V_0231     , V_0232 , V_0233     , V_0234     , V_0235    , V_0236 , V_0237    ,V_0238    , V_0239,
+	        V_0240 , V_0241 , V_0242 , V_0243 , V_0244       , V_0245      , 
+	        V_0246    , V_0247       , V_0248       , V_0249   , V_0250 ,
+	        V_0251	 , V_0252, V_0253, V_0254, V_0255
+	}
+
+ int V_0256;
+
+ int V_0257[0x3];
+ int V_0258[0x3];
+ int V_0259[0x3];
+ int V_0260[0x3];
+ int V_0261[0x3];
+ int V_0262[0x3];
+ int V_0263[0x3];
+ int V_0264[0x3];
+ int V_0265[0x3];
+ int V_0266[0x3];
+ int V_0267;
+
+ int V_0268; 
+ int V_0269;
+
+ int V_0270;
+ int V_0271;
+
+ int V_0272; 
+
+ int V_0273;
+ int V_0274;
+ int V_0275;
+ int V_0276;
+ int V_0277;
+
+ int V_0278;
+ int V_0279;
+ int V_0280;
+ int V_0281;
+ int V_0282;
+
+ int V_0283;
+
+ int V_0284;
+ int V_0285;
+
+ int V_0286;
+ int V_0287;
+ int V_0288;
+	enum { V_0289    , V_0290  , V_0291 , V_0292 , V_0293    , V_0294 , 
+	       V_0295 , V_0296 , V_0297   , V_0298 , V_0299 , V_0300  
+	}
+
+ int V_0301;
+	const uint8 V_01402[]            = { PS4_L2, PS4_R2, PS4_L1, PS4_R1, PS4_CROSS , PS4_CIRCLE, PS4_SQUARE, PS4_R3, PS4_L3, PS4_TRIANGLE };
+
+ int V_0302;
+ int V_0303;
+ int V_0304;
+ int V_0305;
+ int V_0306;
+ int V_0307;
+ int V_0308;
+ int V_0309;
+ int V_0310;
+ int V_0311;
+ int V_0312;
+ int V_0313;
+
+
+	enum { 	       V_0314      ,    V_0315        ,    V_0316    } 
+
+ int V_0317;
+
+	const int8 V_01406[]   = { -1  , PS4_L2, PS4_R2, PS4_L1, PS4_R1, PS4_CROSS, PS4_CIRCLE, PS4_SQUARE, PS4_TRIANGLE, PS4_R3, PS4_L3, PS4_UP   , PS4_DOWN   , PS4_LEFT   , PS4_RIGHT   };
+
+ int V_0318[0x3];
+ int V_0319[0x3];
+
+
+	const uint8 V_01148[] = 
+  	{0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39};
+
+ int V_0320;
+
+ int V_0321 = TRUE;
+ int V_0322; 
+ int V_0323;
+ int V_0324;
+ int V_0325;
+
+ int V_0326;
+ int V_0327; 
+ int V_0328;
+ int V_0329;
+ int V_0330;
+ int V_0331;
+
+ int V_0332; 
+ int V_0333;
+ int V_0334;
+ int V_0335;
+ int V_0336;
+
+ int V_0337; 
+ int V_0338;
+ int V_0339;
+ int V_0340;
+
+ int V_0341; 
+ int V_0342;
+
+ int V_0343;
+ int V_0344;
+
+ int V_0345;
+ int V_0346;
+ int V_0347 = 0x0; 
+ int V_0348;
+ int V_0349;
+ int V_0350;
+ int V_0351 = 0x0;
+ int V_0352;
+ int V_0353;
+ int V_0354;
+ int V_0355;
+ int V_0356;
+ int V_0357;
+
+int LedDec,Rgb,LedInc,Colour[3];
+init{
+	V_0358 = get_pvar(SPVAR_1, 0x1, 0x7FFF, 0x0);
+	V_0206[0x0]    = V_0137(V_0358,  0x0);	V_0206[0x1]  = V_0137(V_0358,  0x1);	V_0206[0x2]  = V_0137(V_0358,  0x2);	
+	V_0208[0x0]     = V_0137(V_0358,  0x3);	V_0208[0x1]   = V_0137(V_0358,  0x4);	V_0208[0x2]   = V_0137(V_0358,  0x5);	
+	V_0213[0x0]      = V_0137(V_0358,  0x6);	V_0213[0x1]    = V_0137(V_0358,  0x7);	V_0213[0x2]    = V_0137(V_0358,  0x8);	
+	V_0214[0x0]     = V_0137(V_0358,  0x9);	V_0214[0x1]   = V_0137(V_0358, 0xA);	V_0214[0x2]   = V_0137(V_0358, 0xB);	
+	V_0211[0x0]   = V_0137(V_0358, 0xC);	V_0211[0x1] = V_0137(V_0358, 0xD);	V_0211[0x2] = V_0137(V_0358, 0xE);
+
+	V_0358 = get_pvar(SPVAR_2, 0x1, 0x7FFF, 0x0);
+	V_0212[0x0]   = V_0137(V_0358,  0x0);	V_0212[0x1] = V_0137(V_0358,  0x1);	V_0212[0x2] = V_0137(V_0358,  0x2);	
+	V_0221         = V_0137(V_0358,  0x3);  V_0222      = V_0137(V_0358,  0x4);    V_0312   = V_0137(V_0358,  0x5);  
+	V_0313          = V_0137(V_0358,  0x6);  V_0224     = V_0137(V_0358,  0x7);
+
+	V_0358 = get_pvar(SPVAR_3, inv(0x8000), 0x7FFF, 0x0);
+	V_0204[0x0] = V_0145(V_0358, 0x3);		V_0204[0x1] = V_0145(V_0358, 0x2);		V_0204[0x2] = V_0145(V_0358, 0x1)     V_0223 = V_0145(V_0358, 0x0);
+
+	V_0358 = get_pvar(SPVAR_4, inv(0x8000), 0x7FFF, 0x0);
+	V_0205[0x0] = V_0145(V_0358, 0x3);		V_0205[0x1] = V_0145(V_0358, 0x2);		V_0205[0x2] = V_0145(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_5, inv(0x8000), 0x7FFF, 0x0);
+	V_0207[0x0] = V_0145(V_0358, 0x3);		V_0207[0x1] = V_0145(V_0358, 0x2);		V_0207[0x2] = V_0145(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_6, inv(0x8000), 0x7FFF, 0x0);
+	V_0209[0x0] = V_0145(V_0358, 0x3);		    V_0209[0x1] = V_0145(V_0358, 0x2);		    V_0209[0x2] = V_0145(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_7, inv(0x8000), 0x7FFF, 0x0);
+	V_0210[0x0] = V_0145(V_0358, 0x3);   V_0210[0x1] = V_0145(V_0358, 0x2);	V_0210[0x2] = V_0145(V_0358, 0x1);    V_0220 = V_0145(V_0358, 0x0);
+
+	V_0358 = get_pvar(SPVAR_8, 0x1, 0x7FFF, V_0148(0x0, 0x1));
+	V_0302 = V_0151(V_0358, 0x0);		V_0303 = V_0151(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_9, 0x1, 0x7FFF, V_0148(0x2, 0x3));
+	V_0304 = V_0151(V_0358, 0x0);		V_0305 = V_0151(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_10, 0x1, 0x7FFF, V_0148(0x4, 0x5));
+	V_0306 = V_0151(V_0358, 0x0);		V_0307 = V_0151(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_11, 0x1, 0x7FFF, V_0148(0x6, 0x7));
+	V_0308 = V_0151(V_0358, 0x0);		V_0309 = V_0151(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_12, 0x1, 0x7FFF, V_0148(0x8, 0x9));
+	V_0310 = V_0151(V_0358, 0x0);		V_0311 = V_0151(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_13, 0x1, 0x7FFF, V_0148(0x0, 0x0));
+	V_0319[0x0] = V_0151(V_0358, 0x0);		V_0319[0x1] = V_0151(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_14, 0x1, 0x7FFF, V_0148(0x0, 0x0));
+	V_0319[0x2] = V_0151(V_0358, 0x0);		V_0318[0x0] = V_0151(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_15, 0x1, 0x7FFF, V_0148(0x0, 0x0));
+	V_0318[0x1] = V_0151(V_0358, 0x0);		V_0318[0x2] = V_0151(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_16, inv(0x8000), 0x7FFF, 0x0);
+	V_0257[0x0] = V_0151(V_0358, 0x0);		V_0258[0x0] = V_0151(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_17, inv(0x8000), 0x7FFF, 0x0);
+	V_0257[0x1] = V_0151(V_0358, 0x0);		V_0258[0x1] = V_0151(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_18, inv(0x8000), 0x7FFF, 0x0);
+	V_0257[0x2] = V_0151(V_0358, 0x0);		V_0258[0x2] = V_0151(V_0358, 0x1);
+
+	V_0259[0x0] = get_pvar(SPVAR_19, inv(0x8000), 0x7FFF, 0x0);
+	V_0259[0x1] = get_pvar(SPVAR_20, inv(0x8000), 0x7FFF, 0x0);
+	V_0259[0x2] = get_pvar(SPVAR_21, inv(0x8000), 0x7FFF, 0x0);
+
+	V_0358 = get_pvar(SPVAR_22, inv(0x8000), 0x7FFF, 0x0);
+	V_0260[0x0] = V_0151(V_0358, 0x0);		V_0261[0x0] = V_0151(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_23, inv(0x8000), 0x7FFF, 0x0);
+	V_0260[0x1] = V_0151(V_0358, 0x0);		V_0261[0x1] = V_0151(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_24, inv(0x8000), 0x7FFF, 0x0);
+	V_0260[0x2] = V_0151(V_0358, 0x0);		V_0261[0x2] = V_0151(V_0358, 0x1);
+
+	V_0262[0x0] = get_pvar(SPVAR_25, inv(0x8000), 0x7FFF, 0x0);
+	V_0262[0x1] = get_pvar(SPVAR_26, inv(0x8000), 0x7FFF, 0x0);
+	V_0262[0x2] = get_pvar(SPVAR_27, inv(0x8000), 0x7FFF, 0x0);
+
+	V_0268     = get_pvar(SPVAR_28, 0x1,  0x3E8, 0x78);
+	V_0269  = get_pvar(SPVAR_29, 0x1,  0x3E8, 0x78);
+
+	V_0358 = get_pvar(SPVAR_30, 0x1, 0x7FFF, V_0148(0xC, 0x37));
+	V_0263[0x0] = V_0151(V_0358, 0x0);		V_0264[0x0] = V_0151(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_31, 0x1, 0x7FFF, V_0148(0xC, 0x37));
+	V_0263[0x1] = V_0151(V_0358, 0x0);		V_0264[0x1] = V_0151(V_0358, 0x1);
+
+	V_0358 = get_pvar(SPVAR_32, 0x1, 0x7FFF, V_0148(0xC, 0x37));
+	V_0263[0x2] = V_0151(V_0358, 0x0);		V_0264[0x2] = V_0151(V_0358, 0x1);
+
+	V_0270     = get_pvar(SPVAR_33, 0x1, 0x1F4, 0x64);
+	V_0271  = get_pvar(SPVAR_34, 0x1, 0x1F4,  0x32);
+
+	V_0272 = get_pvar(SPVAR_35, 0x1, 0x2710, 0x1F4);
+
+	V_0273     = get_pvar(SPVAR_36, 0x1, 0x147, 0x64);
+	V_0274     = get_pvar(SPVAR_37, 0x1, 0x147, 0x64);
+	V_0275     = get_pvar(SPVAR_38, 0x1, 0x147, 0x64);
+	V_0276 = get_pvar(SPVAR_39, 0x1, 0x147, 0x64);
+
+	V_0278 = get_pvar(SPVAR_40, 0x1, 0x147, 0x3C );
+
+	V_0358 = get_pvar(SPVAR_41, 0x1, 0x7FFF, V_0148(0x50, 0x1E));
+	V_0279   = V_0151(V_0358, 0x0);		V_0280 = V_0151(V_0358, 0x1);
+
+	V_0281      = get_pvar(SPVAR_42, 0x1, 0x147, 0x64);
+	V_0282 = get_pvar(SPVAR_43, 0x1, 0x32 , 0x1  );
+
+	V_0283     = get_pvar(SPVAR_44, 0x1, 0x12C, 0x5A);
+
+	V_0265[0x0]     = get_pvar(SPVAR_45, 0x1, 0x32, 0x2);
+	V_0265[0x1]     = get_pvar(SPVAR_46, 0x1, 0x32, 0x2);
+	V_0265[0x2]     = get_pvar(SPVAR_47, 0x1, 0x32, 0x2);
+	V_0266[0x0]     = get_pvar(SPVAR_48, 0x1, 0x64, 0xA);
+	V_0266[0x1]     = get_pvar(SPVAR_49, 0x1, 0x64, 0xA);
+	V_0266[0x2]     = get_pvar(SPVAR_50, 0x1, 0x64, 0xA);
+	V_0267     	 = get_pvar(SPVAR_51, 0x1, 0x32, 0x3);
+	V_0216 = get_pvar(SPVAR_52, 0x0, 0x1, 0x0);
+	V_0284 		 = get_pvar(SPVAR_53, 0x1, 0x64, 0xF);
+	V_0219		 = get_pvar(SPVAR_54, 0x0, 0x5, 0x0); 
+	V_0218 		 = get_pvar(SPVAR_55, 0x0, 0x1, 0x0);
+	V_0285   = get_pvar(SPVAR_56, 0x1, 0x14, 0x2);
+
+	V_0217 		= get_pvar(SPVAR_57, 0x0, 0x1, 0x0);
+	V_0286	= get_pvar(SPVAR_58, 0x1, 0x64, 0x5); 
+	V_0287 = get_pvar(SPVAR_59, 0x1, 0x64, 0x5);
+	V_0288 	= get_pvar(SPVAR_60, 0x1, 0x64, 0xA);
+
+	V_0373[0x0] = V_0205[0x0];
+	V_0373[0x1] = V_0205[0x1];
+	V_0373[0x2] = V_0205[0x2];
+
+	V_0553[0x0] = V_0209[0x0];
+	V_0553[0x1] = V_0209[0x1];
+	V_0553[0x2] = V_0209[0x2];
+
+	V_0345 = get_slot();
+	LedInc = 1
+	Colour = 150;
+}
+const int16 V_01408[] = {-10, 0x0, -9, -4, -7, -7, -4, -9, 0x0, -10, 0x4, -9, 0x7, -7, 0x9, -4, 0xA, 0x0, 0x9, 0x4, 0x7, 0x7, 0x4, 0x9, 0x0, 0xA, -4, 0x9, -7, 0x7, -9, 0x4};
+const int16 V_01409[] = {-10, 0x0, -9, -4, -7, -7, -4, -9, 0x0, -10, 0x4, -9, 0x7, -7, 0x9, -4, 0xA, 0x0, 0x9, 0x4, 0x7, 0x7, 0x4, 0x9, 0x0, 0xA, -4, 0x9, -7, 0x7, -9, 0x4};
+main { 
+	
+	set_val(TRACE_1, V_0204[V_0344]);
+	set_val(TRACE_3, V_0205[V_0344]);
+	set_val(TRACE_4, V_0373[V_0344]);
+
+
+    if(get_console() == PIO_PS4)
+    {
+    	if(get_controller() != PIO_PS4) 
+    	{
+        	if(get_ival(PS4_SHARE)) 
+        	{
+        		if(get_ival(PS4_R3)) 
+        		{
+					set_val(PS4_SHARE,0x64);
+                	set_val(PS4_TOUCH,0x0);
+                	set_val(PS4_R3,0x0);
+        		}
+        		else 
+        		{
+        			set_val(PS4_TOUCH, 0x64);
+        			set_val(PS4_SHARE, 0x0);
+        		}
+        	}
+    	}
+    }
+
+    else if(get_console() == PIO_XB360)
+	{
+		if(get_controller() == PIO_PS4) 
+			swap(PS4_TOUCH, PS4_SHARE);
+	}
+
+
+	if(!V_0326 && !V_0327 && !V_0328 && !V_0329 && !V_0330)
+	{
+		LedFlow();
+		if( get_val(PS4_R1) && event_press(PS4_RIGHT) && get_brtime(PS4_RIGHT) < 0xC8 )
+		{			
+			V_0331 = !V_0331;
+
+			if(V_0331) {
+				combo_run(V_02);	
+				V_094(V_01010)
+			}
+			else
+			{
+				combo_run(V_01);
+				V_0321 = TRUE;	
+			}
+		}
+
+		if(V_0331) 
+		{
+    		V_0325= FALSE;
+			V_0341 = 0x0;
+
+			if(get_val(PS4_CROSS))
+			{
+				V_0331 = FALSE;
+				combo_run(V_01);
+				V_0321 = TRUE; 
+			}
+			combo_run(V_03);
+		}
+		else 
+			combo_stop(V_03);
+	}
+
+
+	if(!V_0331)
+	{
+
+		if(get_ival(PS4_L2))
+		{	
+			if(event_release(PS4_OPTIONS))
+			{
+				cls_oled(OLED_BLACK);
+
+				if(V_0328)
+				{
+					V_0328 = FALSE;
+					V_0321 = TRUE;   
+				}
+				else if(V_0327)
+				{
+					V_0327 = FALSE;
+					V_0321 = TRUE; 
+				}
+				else if(V_0329)
+				{
+					V_0329 = FALSE;
+					V_0321 = TRUE; 
+				}
+				else if(V_0330)
+				{
+					V_0330 = FALSE;
+					V_0321 = TRUE; 
+				}
+				else 
+					V_0326 = !V_0326;
+
+				if(!V_0326)
+				{
+					combo_run(V_02); 
+					V_0321 = TRUE;  
+				}
+				else if(V_0326)
+				{
+					V_0158 = V_0155;        
+					V_0346 = 0x0;		
+					combo_run(V_01);
+					V_0103();
+					V_0322 = TRUE;
+					V_0323 = TRUE;
+				}
+			}
+			set_val(PS4_OPTIONS, 0x0);
+		} 
+
+
+		if(V_0327 || V_0328 || V_0326 || V_0329 || V_0330)  
+		{	
+		V_094(V_01010)
+			V_0109();
+
+    		V_0325 = FALSE;
+			V_0341 = 0x0;
+
+			V_0342 += get_rtime();
+
+			if(V_0342 > 0x7D0)
+			{
+				V_0346 ++;
+				V_0323 = TRUE;
+			}
+
+			if(!get_ival(PS4_L2) && event_release(PS4_PS))
+				V_0154();
+
+
+			V_0131(); 
+		}
+
+
+		if(V_0327) 
+		{
+			V_0204[V_0344]    = V_063( V_0179, V_0159 , V_0385     , V_0204[V_0344]    );
+			V_0205[V_0344]     = V_063( V_0179, V_0160  , V_0388      , V_0205[V_0344]     );
+			V_0206[V_0344]     = V_063( V_0179, V_0161  , V_0391          , V_0206[V_0344]     );
+			V_0207[V_0344]     = V_063( V_0179, V_0162  , V_0394         , V_0207[V_0344]     );
+			V_0216   				  = V_063( V_0179, V_0163   	  , V_0391          , V_0216   			   );
+			V_0217   				 		  = V_063( V_0179, V_0164   	  , V_0391          , V_0217   						   );
+			V_0218		   				  = V_063( V_0179, V_0165     , V_0391          , V_0218      	   			   );
+			V_0208[V_0344]      = V_063( V_0179, V_0166   , V_0391          , V_0208[V_0344]      );
+			V_0209[V_0344]       = V_063( V_0179, V_0167    , V_0409       , V_0209[V_0344]       );
+			V_0210[V_0344] = V_063( V_0179, V_0168  , V_0412 , V_0210[V_0344] );
+			V_0211[V_0344]    = V_063( V_0179, V_0169 , V_0391          , V_0211[V_0344]    );
+			V_0212[V_0344]    = V_063( V_0179, V_0170 , V_0391          , V_0212[V_0344]    );
+			V_0213[V_0344]       = V_063( V_0179, V_0171    , V_0391          , V_0213[V_0344]       );
+			V_0214[V_0344]      = V_063( V_0179, V_0172   , V_0391          , V_0214[V_0344]      );
+			V_0219    					  = V_063( V_0179, V_0178 		  , V_0427	       , V_0219    					   );
+
+			V_0220 = V_063( V_0179, V_0173 , V_0430 , V_0220 );
+			V_0221     = V_063( V_0179, V_0174     , V_0391       , V_0221     );
+			V_0222    = V_063( V_0179, V_0175    , V_0391       , V_0222    );
+			V_0223 = V_063( V_0179, V_0176 , V_0439 , V_0223 );
+			V_0224   = V_063( V_0179, V_0177   , V_0391       , V_0224   );
+		} 
+
+
+		if(V_0328) 
+		{
+
+			if(get_ival(PS4_CROSS)) 
+			{
+				V_0257[V_0344]      = V_050( V_0225       , V_0257[V_0344]     ,    inv(0x63) ,     0x63 ,          0x1 ,          0xA               ); 
+				V_0258[V_0344]        = V_050( V_0226         , V_0258[V_0344]       ,    inv(0x63) ,     0x63 ,          0x1 ,          0xA               ); 
+				V_0259[V_0344]       = V_050( V_0227        , V_0259[V_0344]      ,      0x0 ,  0x2710 ,        0x64 ,        0x3E8               );  
+				V_0260[V_0344] = V_050( V_0228       , V_0260[V_0344],    inv(0x63) ,     0x63 ,          0x1 ,          0xA               ); 
+				V_0261[V_0344]          = V_050( V_0229 , V_0261[V_0344]         ,    inv(0x3C) ,     0x3C ,          0x1 ,          0xA               );
+				if(V_0205[V_0344] == V_0186)
+					V_0262[V_0344]      = V_050( V_0230        , V_0262[V_0344]         ,     0x3C ,    0x2EE ,          0x1 ,          0xA               );
+				else if(V_0205[V_0344] == V_0187)
+					V_0262[V_0344]      = V_050( V_0230        , V_0262[V_0344]         ,      0x1 ,     0x19 ,          0x1 ,          0xA               );
+				V_0263[V_0344]      = V_050( V_0233      , V_0263[V_0344]     ,      0x0 ,     0x32 ,          0x1 ,          0xA               );
+				V_0264[V_0344]       = V_050( V_0234       , V_0264[V_0344]      ,      0x0 ,    0x1F4 ,          0x1 ,          0xA               ); 
+				V_0265[V_0344]     		   = V_050( V_0235       , V_0265[V_0344]    		 ,      0x0 ,     0x32 ,          0x1 ,          0xA               );
+				V_0266[V_0344]       	   = V_050( V_0236       , V_0266[V_0344]      		 ,      0x0 ,    0x64 ,          0x1 ,          0xA               ); 
+				V_0267       					   = V_050( V_0237       , V_0267      					 ,      0x0 ,     0x32 ,          0x1 ,          0xA               );
+				V_0284       				   = V_050( V_0251      , V_0284      					 ,      0x0 ,    0x64 ,          0x1 ,          0xA               );
+				V_0286       				   = V_050( V_0253    , V_0286    					 ,      0x0 ,    0x64 ,          0x1 ,          0xA               );
+				V_0287       			   = V_050( V_0254    , V_0287					 ,      0x0 ,    0x64 ,          0x1 ,          0xA               );
+				V_0288       			  	   = V_050( V_0255   , V_0288   					 ,      0x0 ,    0x64 ,          0x1 ,          0xA               );
+				V_0285       			   = V_050( V_0252      , V_0285   				 ,      0x0 ,     0x14 ,          0x1 ,          0xA               );
+
+				V_0268         = V_050( V_0231      , V_0268         , 0x0 ,  0x3E8 , 0xA , 0x64 );
+				V_0269      = V_050( V_0232   , V_0269      , 0x0 ,  0x3E8 , 0xA , 0x64 ); 
+				V_0270          = V_050( V_0238    , V_0270          , 0x0 ,   0x1F4 , 0xA , 0x64 );
+				V_0271       = V_050( V_0239 , V_0271       , 0x0 ,   0x1F4 , 0xA , 0x64 );
+				V_0272            = V_050( V_0240  , V_0272            , 0x0 ,  0x2706 , 0xA , 0x64 );
+				V_0278  = V_050( V_0241   , V_0278  , 0x0 ,   0x147 , 0x1  , 0xA  );
+				V_0279         = V_050( V_0242  , V_0279         , 0x0 ,   0x64 , 0x1  , 0xA  );
+				V_0280       = V_050( V_0243   , V_0280       , 0x0 ,   0x64 , 0x1  , 0xA  );
+				V_0281      = V_050( V_0244       , V_0281      , 0x0 ,   0x147 , 0x1  , 0xA  );
+				V_0282 = V_050( V_0245      , V_0282 , 0x1 ,    0x32 , 0x1  , 0xA  );
+				V_0273                = V_050( V_0246     , V_0273                , 0x1 ,   0x147 , 0x1  , 0xA  );
+				V_0274                = V_050( V_0247         , V_0274                , 0x1 ,   0x147 , 0x1  , 0xA  );
+				V_0275                = V_050( V_0248        , V_0275                , 0x1 ,   0x147 , 0x1  , 0xA  );
+				V_0276            = V_050( V_0249     , V_0276            , 0x1 ,   0x147 , 0x1  , 0xA  );
+				V_0283            = V_050( V_0250  , V_0283            , 0x1 ,   0xC8 , 0x1  , 0xA  );
+			} 
+
+
+			else 
+			{	
+				if(V_0179 == V_0159)  
+				{
+					if(V_0204[V_0344] >= V_0182) 
+						V_0256 = V_0116(V_0256, V_0228, V_0229 );   
+					else if(V_0204[V_0344] == V_0181)
+						V_0256 = V_0116(V_0256, V_0226 , V_0228  ); 
+					else 
+						V_0256 = V_0116(V_0256, V_0225  , V_0228     ); 
+				}
+				if(V_0179 == V_0160)   V_0256 = V_0116(V_0256, V_0230      , V_0230        ); 
+				if(V_0179 == V_0161)   V_0256 = V_0116(V_0256, V_0231    , V_0232   ); 
+				if(V_0179 == V_0162){
+
+					if(V_0207[V_0344] >= V_0189) 
+						V_0256 = V_0116(V_0256, V_0233    , V_0237 );
+
+					else if(V_0207[V_0344] == V_012)
+						V_0256 = V_0116(V_0256, V_0233 , V_0234  );
+				}
+				if(V_0179 == V_0163 )   V_0256 = V_0116(V_0256, V_0251  , V_0251 );
+				if(V_0179 == V_0164 )   V_0256 = V_0116(V_0256, V_0253 , V_0255 );
+				if(V_0179 == V_0165 )   V_0256 = V_0116(V_0256, V_0252  , V_0252 );
+				if(V_0179 == V_0166 )   V_0256 = V_0116(V_0256, V_0238  , V_0239 ); 
+				if(V_0179 == V_0167  )   V_0256 = V_0116(V_0256, V_0240, V_0240  ); 
+
+				if(V_0179 == V_0173) 
+				{
+					if(V_0220 == V_0200)
+						V_0256 = V_0116(V_0256, V_0246, V_0249 ); 
+					else if(V_0220 == V_0201)
+						V_0256 = V_0116(V_0256, V_0241, V_0245 ); 
+				}
+
+				if(V_0179 == V_0176  )   V_0256 = V_0116(V_0256, V_0250, V_0250  ); 
+			} 
+
+		} 
+
+
+		if(V_0329)
+		{
+
+			V_0302      = V_063( V_0301, V_0289      , V_0507, V_0302      );
+			V_0303     = V_063( V_0301, V_0290     , V_0507, V_0303     );
+			V_0304 = V_063( V_0301, V_0291 , V_0507, V_0304 );
+			V_0305   = V_063( V_0301, V_0292   , V_0507, V_0305   );
+			V_0306     = V_063( V_0301, V_0293     , V_0507, V_0306     );
+			V_0307   = V_063( V_0301, V_0294   , V_0507, V_0307   );
+			V_0308   = V_063( V_0301, V_0295   , V_0507, V_0308   );
+			V_0309    = V_063( V_0301, V_0296    , V_0507, V_0309    );
+			V_0310   = V_063( V_0301, V_0297   , V_0507, V_0310   );
+			V_0311   = V_063( V_0301, V_0298   , V_0507, V_0311   );
+			V_0312  = V_063( V_0301, V_0299  , V_0391        , V_0312  );
+			V_0313       = V_063( V_0301, V_0300       , V_0391        , V_0313       );
+		}
+
+
+
+		if(!V_0326 && !V_0327 && !V_0329 && !V_0330) 
+		{
+
+
+			if(!V_0328)
+			{
+				if(V_0312)
+					deadzone(PS4_L2, PS4_R2, 0x63, 0x63);
+			V_094(V_0219);
+
+
+				if(V_0213[V_0344])
+				{
+					if(get_val(V_01402[V_0303]))
+						set_val(V_01402[V_0302], 0x64);
+				}
+
+				if(V_0214[V_0344])
+				{
+					if(get_val(V_01402[V_0302]))
+						set_val(V_01402[V_0303], 0x64);
+				}
+
+
+				if(V_0313)
+					block_rumble();
+
+
+				if(get_val(V_01406[V_0319[V_0316]]) )
+				{
+					if(event_press(V_01406[V_0318[V_0316]]) )
+					{
+						if(V_0318[V_0314] != 0x0)
+							V_0344 = V_0116(V_0344++, 0x0, 0x1);
+
+						V_0321 = TRUE;
+					}
+					set_val(V_01406[V_0318[V_0316]], 0x0)
+				}
+
+				if(get_val(V_01406[V_0319[V_0315]]) )
+				{
+
+					if(event_press(V_01406[V_0318[V_0315]]) )
+					{
+						if(V_0343 == 0x0)
+							V_0343 = 0x2;
+						else
+							V_0343 = 0x0;
+
+						V_0344 = V_0343;
+						V_0321 = TRUE;
+					}
+					set_val(V_01406[V_0318[V_0315]], 0x0)
+
+				}
+
+				if(!get_val(V_01406[V_0319[V_0315]]) && !get_val(V_01406[V_0319[V_0316]]) && event_release(V_01406[V_0318[V_0314]]) && get_ptime(V_01406[V_0318[V_0314]]) < 0xFA )
+				{
+					if(V_0343 < 0x2)
+						V_0344 = !V_0344;
+
+					V_0321 = TRUE;
+				}
+				if(V_0344 < 0x2)
+					V_0343 = 0x0;
+				else 
+					V_0343 = 0x2;
+
+
+				if(V_0211[V_0344])
+				{
+					if(get_val(V_01402[V_0302]))
+			    		set_val(V_01402[V_0310], 0x64);
+
+		   			if(get_val(V_01402[V_0302]) && get_lval(V_01402[V_0310])) 
+		       			set_val(V_01402[V_0310], 0x0);
+	       			}
+
+
+				if(V_0212[V_0344])
+				{
+					if(get_val(V_01402[V_0309]) && get_ptime(V_01402[V_0306]) > 0xC8)
+					{
+						V_0542 = V_01402[V_0309];
+						V_0625 = 0x28;
+						combo_run(V_013);
+					}
+				}
+
+
+		    	if(V_0220 == V_0200)
+		    	{	
+		    		if(isqrt(pow(abs(get_ival(PS4_RX)),0x2) + pow(abs(get_ival(PS4_RY)),0x2)) >= 0x8)
+		    		{
+			    		if(!get_val(V_01402[V_0302]) && !get_val(V_01402[V_0303]))
+							V_0277 = V_0273;
+						else if(get_val(V_01402[V_0302]) && !get_val(V_01402[V_0303]))
+							V_0277 = V_0274;
+						else if(!get_val(V_01402[V_0302]) && get_val(V_01402[V_0303]))
+							V_0277 = V_0275;
+						if(get_val(V_01402[V_0302]) && get_val(V_01402[V_0303]))
+							V_0277 = V_0276;
+
+						sensitivity(PS4_RY,NOT_USE,V_0277);
+						sensitivity(PS4_RX,NOT_USE,V_0277);
+					}
+		    	}
+
+		    	else if(V_0220 == V_0201)
+		    	{	
+		    		if((get_val(V_01402[V_0302]) || get_val(V_01402[V_0303])) && isqrt(pow(abs(get_ival(PS4_RX)),0x2) + pow(abs(get_ival(PS4_RY)),0x2)) >= 0x14)
+		    			V_029();
+		    	}
+
+				if(V_0221)
+				{
+					if((isqrt(pow(abs(get_ival(PS4_LX)),0x2) + pow(abs(get_ival(PS4_LY)),0x2)) >= 0x5A) && get_ival(PS4_LY) < 0x14 && !get_val(V_01402[V_0302]) && !get_val(V_01402[V_0303]))
+						set_val(V_01402[V_0310], 0x64);
+				}
+
+
+				if(V_0209[V_0344])
+				{
+					if(V_0209[V_0344] == V_0194)
+					{
+						if(V_030())
+							combo_run(V_09);
+						else
+							combo_stop(V_09);
+					}
+
+					else if(V_0209[V_0344] == V_0195)
+					{
+						if(V_030())
+							combo_run(V_010);
+					}
+
+					else if(V_0209[V_0344] == V_0196)
+					{
+						if(V_030())
+							set_val(V_01402[V_0307], 0x64);
+					}
+				}
+
+
+				if(V_0222)
+				{
+					if(get_val(V_01402[V_0306]) && get_ptime(V_01402[V_0306]) > 0xC8)
+					{
+						V_0542 = V_01402[V_0306];
+						V_0625 = 0x1E;
+						combo_run(V_013);
+					}
+				}
+
+
+				if(V_0223)
+				{
+
+					if(isqrt(pow(abs(get_ival(PS4_LX)),0x2) + pow(abs(get_ival(PS4_LY)),0x2)) >= 0x50 && !get_val(V_01402[V_0302]))
+					{
+						if(event_release(V_01402[V_0307]))
+						{
+							if(V_0223 == V_0202)
+								combo_run(V_014);
+							if(V_0223 == V_0203)
+								combo_run(V_015);
+						}
+					}
+					else
+					{
+						combo_stop(V_014);
+						combo_stop(V_015);
+					}
+				}
+
+
+				V_0205[V_0344]  = V_068( PS4_L2, PS4_RIGHT , V_0205[V_0344]  , V_0160  , V_0388  , V_0373[V_0344] );
+				V_0209[V_0344]    = V_068( PS4_L2, PS4_LEFT  , V_0209[V_0344]    , V_0167    , V_0409   , V_0553[V_0344]  );
+
+
+			    if(V_0324)
+			    {
+			    	V_0341 += get_rtime();
+			    	if(V_0341 >= 0x1388)
+			    	{
+			    		cls_oled(0x0);
+			    		V_0341 = 0x0;
+			    		V_0325 = TRUE;
+			    		V_0324 = FALSE;
+			    	}
+			    }
+
+			    if(V_0325)
+			    {
+			    	V_0555 += get_rtime();
+
+					if(V_0555 >= 0x64) 
+					{
+						V_0556 += 0x2;	V_01160 += 0x1;	V_01161 -= 0x1;	V_0555  = 0x0;
+					}
+					V_01159 += get_rtime();
+
+					if(V_01159 >= 0x1E) 
+					{
+						V_0557 += 0x1;	V_01165 += 0x2;	V_01167 += 0x3;	V_01169 += 0x4;
+						V_01171 += 0x5;	V_01173 += 0x6;	V_01175 += 0x7;	V_01177 += 0x8;
+						V_01159  = 0x0;
+					}
+
+					V_0132();
+					V_0558 += get_rtime();
+
+					if(V_0558 >= 0x3E8) 
+					{
+						V_0558 = 0x0;	
+						V_01155 += 0x1;
+					}
+
+					if(V_01155 == 0x1E) 
+					{
+						V_0325 = 0x0;
+						V_01155 = 0x0;
+						cls_oled(0x0);
+					}
+			    }
+			} 
+
+			if(V_0208[V_0344])
+			{
+				if(get_val(V_01402[V_0302]))
+					combo_run(V_011);
+				else
+					combo_stop(V_011);
+			}
+
+
+			if (V_0217){
+			    if(!get_ival(V_01402[V_0303]) && !get_ival(V_01402[V_0302])){
+			    	if(!get_ival(V_01402[V_0308])){
+	             combo_run(V_016);}
+	        }else{
+		        combo_stop(V_016);
+	        }
+	        if(!get_ival(V_01402[V_0302]) && get_ival(V_01402[V_0303])){
+		        combo_run(V_017);
+	        }else{
+		        combo_stop(V_017);
+	        }
+			    }
+			if(V_0207[V_0344])
+			{
+				if(V_0207[V_0344] == V_012) 
+				{	
+					if(get_val(V_01402[V_0302]) || get_val(V_01402[V_0303]) && (isqrt(pow(abs(get_ival(PS4_RY)),0x2) + pow(abs(get_ival(PS4_RX)),0x2)) < 0x64) )
+					    combo_run(V_012);
+				}
+				else 
+				{
+					if(V_0204[V_0344] && get_val(V_01402[V_0303]))
+					{
+						V_0560 = V_023(V_0260[V_0344], PS4_RX);
+						V_0652 = V_023(V_0567, PS4_RY);
+					}
+					else
+					{
+						V_0560 = get_val(PS4_RX) + V_01408[V_0347] * V_0265[V_0344] / 0x5;
+						V_0652 = get_val(PS4_RY) + V_01408[V_0347 + 0x1] * V_0265[V_0344] / 0x5;
+					}
+
+					V_0660 = isqrt(pow(V_0560, 0x2) + pow(V_0652, 0x2));	
+					V_0661 = (V_0660 < 0x64);
+
+					if(!(V_0650++ % 0x1))
+						V_0653 += V_0264[V_0344];
+
+					V_0653 = V_0653 % 0x168;
+					V_0562 = V_01410[V_0653 % 0x168];
+					V_0654 = V_01410[(V_0653 + 0x10E) % 0x168];
+
+				  	if(get_val(V_01402[V_0303]) || get_val(V_01402[V_0302]))
+				  	{
+
+				    	if(V_0660 <= V_0263[V_0344]) 
+				    	{
+							V_0562 -= V_0652;
+				      		V_0654 -= V_0560;
+				    	}
+					    else 
+					    {
+					    if(get_val(PS4_RX) < -V_0267){
+							V_0562 = (V_0562 * (0xC8 - ((abs(V_0652) + V_0660) / 0xA) * 0xA) / 0xC8) * V_0661;
+							V_0654 = (V_0654 * (0xC8 - ((abs(V_0560) + V_0660) / 0xA) * 0xA) / 0xC8) * V_0661;
+							}
+						if(get_val(PS4_RX) > -V_0267){
+							V_0562 = (V_0562 * (0xC8 - ((abs(V_0652) + V_0660) / 0xA) * 0xA) / 0xC8) * V_0661;
+							V_0654 = inv((V_0654 * (0xC8 - ((abs(V_0560) + V_0660) / 0xA) * 0xA) / 0xC8)) * V_0661;
+							}
+					    }
+
+					    V_027(V_0263[V_0344]);
+
+					    if((!get_val(V_01402[V_0303]) && V_0204[V_0344]) || !V_0204[V_0344])
+					    {
+							set_val(PS4_RX, clamp(get_val(PS4_RX) + V_0654, inv(0x64), 0x64));
+							set_val(PS4_RY, clamp(get_val(PS4_RY) + V_0562, inv(0x64), 0x64));
+				  		}
+
+						if (V_0348 < (0x32 / V_0266[V_0344])){
+							V_0348++;
+						} else {
+							V_0348 = 0x0;
+							V_0347 = (V_0347 + 0x2) % 0x20;
+							}
+					}
+				}
+			}
+
+
+			if(V_0204[V_0344])
+			{
+				if(V_0204[V_0344] == V_0181)
+					V_0257[V_0344] = V_0258[V_0344];
+
+	    		if(V_0257[V_0344] < V_0258[V_0344])
+	    	   		V_0643 = 0x1; 
+	    		else
+	    	    	V_0643 = inv(0x1);
+	    		V_0641 = (V_0259[V_0344] / 0xA) / (abs(V_0257[V_0344] - V_0258[V_0344]));
+
+	    		if(!get_val(V_01402[V_0303])) 
+	    		{
+					V_0567 = V_0257[V_0344];
+	    	    	V_0637 = 0x0;
+	    	    	V_0640 = 0x0;
+	    	    	V_0332 = 0x0;
+	    	    	V_0333 = 0x0;
+	    	    	V_0334 = 0x0;
+	    		}
+
+	    		if(get_val(V_01402[V_0303]))
+				{
+					V_0334 += random(0x1, 0x5);
+					if(V_0334 > 0xA)
+						V_0334 = 0x0;
+
+					if(V_0224)
+					{
+						if(get_ptime(V_01402[V_0303]) < 0x1F4 || get_rumble(RUMBLE_A))
+							V_0332 = 0x1;
+						else if(get_rumble(RUMBLE_A) == 0x0)
+							V_0332 = 0x0;
+					}
+					else
+						V_0332 = 0x1;
+
+			        if(!V_021())  
+						V_0567 = V_022();
+			        else
+			            V_0567 = V_0258[V_0344];
+
+					if(V_0204[V_0344] >= V_0182) 
+					{    
+					    V_0333 = max(get_rumble(RUMBLE_A),get_rumble(RUMBLE_B));
+
+					    if(V_0204[V_0344] == V_0182)  V_0335  = 0x4;
+					    if(V_0204[V_0344] == V_0183)  V_0335  = 0x2;
+					    if(V_0204[V_0344] == V_0184) V_0335  = 0x1;
+
+					    if(V_0333 > 0xA && V_0333 < 0x5A) 
+					    {
+					        V_0336 = ( (V_0333 + V_0261[V_0344]) / V_0335);
+
+					        if(!V_0207[V_0344])
+					        {
+					            set_val(PS4_RY, clamp(V_023(V_0336 + V_0334, PS4_RY), inv(0x64), 0x64));
+					            set_val(PS4_RX, clamp(V_023(V_0260[V_0344], PS4_RX), inv(0x64), 0x64));
+					        }
+					        else if(V_0207[V_0344] > V_012)
+					        {
+					            set_val(PS4_RY, clamp(V_023(V_0336 + V_0334, PS4_RY) + V_0562, inv(0x64), 0x64));
+					            set_val(PS4_RX, clamp(V_023(V_0260[V_0344], PS4_RX) + V_0654, inv(0x64), 0x64));
+					        }
+					        else if(V_0207[V_0344] == V_012)
+					        {
+					            V_0570 = V_0336 + V_0334;
+					            combo_run(V_012);
+					        }
+					    }
+					}
+					else
+					{	
+				    	if(V_0206[V_0344] == 0x1 && get_ptime(V_01402[V_0303]) <= V_0337)
+							V_026();
+
+				        if(V_0206[V_0344] == 0x0  || V_0205[V_0344] >= 0x1)
+				        {
+					        if(V_0332)
+								V_026();
+				    	}
+				    }
+		    	}
+				if(get_ival(PS4_L2) && event_press(PS4_PS) )
+				{		
+					V_0328 = !V_0328;
+
+					if(!V_0328)
+						V_0321 = TRUE;
+				}	
+			}
+
+
+			if(V_0205[V_0344])
+			{
+				if(V_0205[V_0344] == V_0185)
+				{
+					V_0337 = 0x32;
+					V_0338 = 0x23 * 0xA - (get_ival(XB1_RT) * 0x3);
+		    	}
+				else if(V_0205[V_0344] == V_0186)
+				{
+		    		V_0338 = 0x1388 / ((V_0262[V_0344] * 0xA) / 0x3C); 
+		   			V_0337 = V_0338;
+		    		if(V_0338 < 0x0) V_0338 = 0x0;
+		    	}
+				else if(V_0205[V_0344] == V_0187)
+				{
+		    		V_0338 = 0x1F4 / V_0262[V_0344]; 
+		   			V_0337 = V_0338;
+		    		if(V_0338 < 0x0) V_0338 = 0x0;
+		    	}
+
+	    		if(get_val(V_01402[V_0303]))
+	    			combo_run(V_08);
+	    		else
+	    			combo_stop(V_08);
+
+	    		V_0339 = 0x96;
+	    		V_0340 = 0x12C;
+	    		combo_run(V_06);
+			}
+
+
+			if(V_0206[V_0344]) 
+			{
+				V_0337 = V_0268;
+				V_0338 = V_0269;
+
+	    		if(get_val(V_01402[V_0303]))	
+	    			combo_run(V_07);
+				else
+	    			combo_stop(V_07);
+
+	    		V_0339 = 0xC8;
+	    		V_0340 = 0x3E8;
+	    		combo_run(V_06);
+			}
+
+			if(V_0216)
+			{
+				if (get_val(V_01402[V_0302]) || get_val(V_01402[V_0303]))
+				{
+				 	if(!get_val(PS4_LX))
+				 	{
+						V_0352 = get_ival(PS4_RX)
+						set_val(PS4_LX, V_0352);
+					}
+				    V_0349 = get_val(PS4_LX);
+				    V_0350 = get_val(PS4_LY);
+
+			        V_0353 = V_01409[V_0351] * V_0284 / 0xA;
+			        V_0354 = V_01409[V_0351 + 0x1] * random(0x0, V_0284 / 0x3) / 0xA;
+
+			        set_val(PS4_LX, V_0349 + V_0353);
+			        set_val(PS4_LY, V_0350 + V_0354);
+
+			        V_0351 = (V_0351 + 0x2) % 0x20;
+				}
+			}
+			if(V_0218){
+				if (get_val(V_01402[V_0302]) || get_val(V_01402[V_0303]))
+				{
+		       	 	V_0355 = get_val(PS4_RX);
+					V_0356 = get_val(PS4_RY);
+
+					V_0355 = V_096(V_0355, V_0285);
+					V_0356 = V_096(V_0356, V_0285);
+
+					set_val(PS4_RX, clamp(V_0355, inv(0x64), 0x64));
+					set_val(PS4_RY, clamp(V_0356, inv(0x64), 0x64)); 
+	    		}
+    		}
+
+		} 
+
+
+		if(V_0322) 
+		{
+			V_0325 = FALSE;
+			V_0341 = 0x0;
+
+			if(V_0328) 
+			{
+				V_036();
+				V_040();
+			}
+			else if(V_0327 || V_0329) 
+			{
+				V_036();
+				V_037();
+				V_038();
+			}
+			else if(V_0326) 
+			{
+				V_031();
+			}
+			else if(V_0330)
+			{
+				V_036();
+				V_039();
+			}
+			else 
+			{
+				cls_oled(OLED_BLACK);
+				print(V_0122(V_092(V_089(V_0949, V_0179)), OLED_FONT_SMALL_WIDTH),V_0586,OLED_FONT_SMALL,OLED_WHITE,V_089(V_0949, V_0179));
+				V_038();
+				V_0341 = 0x7D0;
+			}
+
+			V_0324 = TRUE;
+	        V_0322 = FALSE;
+
+	    } 
+
+
+		if(V_0323) 
+		{
+			V_0342 = 0x0;
+			rect_oled(0x1, 0x32, 0x7E, 0xD, OLED_WHITE, OLED_BLACK); 
+			V_0346 = V_0116(V_0346, 0x0, V_087(V_0112()));
+			print(V_0122(V_092(V_089(V_0112(), V_0346)), OLED_FONT_SMALL_WIDTH),V_0592,OLED_FONT_SMALL,OLED_WHITE,V_089(V_0112(), V_0346));
+			V_0323 = FALSE;
+		}
+
+	} 
+
+
+    if(V_0321)
+    {
+    	V_0325= FALSE;
+    	V_0341 = 0x0;
+
+    	cls_oled(OLED_BLACK);
+    	image_oled(0x0, 0x0, TRUE, TRUE, V_0596[0x0]);	
+
+   		V_0113(V_0345, V_0120(V_0345));
+
+		V_041();
+
+   		V_0324 = TRUE;	
+    	V_0321 = FALSE;
+    }
+
+	if(get_ival(PS4_L2))
+	{ 
+		set_val(PS4_TOUCH, 0x0);
+		set_val(PS4_SHARE, 0x0);
+		set_val(PS4_PS, 0x0);
+	}
+
+
+	if(V_0331){
+		V_0129(0x7);
+		combo_run(kBlink)}
+	else
+		V_0129(V_0344);
+
+	if(V_0205[V_0344])
+		combo_run(V_06);		
+}
+
+combo V_00 {
+	V_0598 = random(0x0,0x7F);
+	wait(V_01211);
+	V_01164 = random(0x0,0x7F);
+	wait(V_01211);
+	V_01166 = random(0x0,0x7F);
+	wait(V_01211);
+	V_01168 = random(0x0,0x7F);
+	wait(V_01211); 
+	V_01170 = random(0x0,0x7F);
+	wait(V_01211);
+	V_01172 = random(0x0,0x7F);
+	wait(V_01211); 
+	V_01174 = random(0x0,0x7F);
+	wait(V_01211); 
+	V_01176 = random(0x0,0x7F);
+	wait(V_01211);
+}
+
+combo V_01 {					
+	set_ledx(0x2, 0x2);
+	set_rumble(RUMBLE_B, 0x32);
+	wait(0x96);
+	reset_rumble();
+	wait(0x64);
+	set_rumble(RUMBLE_B, 0x32);
+	wait(0x96);
+	reset_rumble();
+}
+
+combo V_02 {						
+	set_ledx(0x1, 0x1);
+	set_rumble(RUMBLE_A, 0x32);
+	wait(0x12C);
+	reset_rumble();
+	wait(0x190);
+}
+
+combo V_03 {
+	cls_oled(OLED_BLACK);
+    print(V_0122(0xA - 0x1, OLED_FONT_MEDIUM_WIDTH),0x8,OLED_FONT_MEDIUM,OLED_WHITE,V_0599(0x0));    
+    wait(get_rtime());
+    wait(0xFA);
+    print(V_0122(0xA - 0x1, OLED_FONT_SMALL_WIDTH),0x26,OLED_FONT_SMALL,OLED_WHITE,V_0600(0x0));     
+    print(V_0122(0xB - 0x1, OLED_FONT_SMALL_WIDTH),0x32,OLED_FONT_SMALL,OLED_WHITE,V_0601(0x0)); 
+    wait(get_rtime());
+    wait(0x1388);  
+    cls_oled(OLED_BLACK);
+    wait(get_rtime());
+    wait(0x1388);  
+}
+
+combo V_04 { 
+	call(V_01);
+	wait(0x96);
+	call(V_01);		
+	wait(0x3E8);
+	V_0321 = TRUE;
+}
+
+combo V_05 {
+	V_0603 = random(0x41,0x5A);
+	V_01179 = random(0x3C,0x5A);
+	V_01180 = random(0x41,0x5A);
+	V_01181 = random(0x41,0x5A); 
+	V_01182 = random(0x41,0x5A);
+	V_01183 = random(0x41,0x5A);
+	V_01184 = random(0x41,0x5A);
+	V_01185 = random(0x41,0x5A);
+	wait(V_01210);
+}
+combo kBlink {
+	set_rgb(255, 0, 0);
+	set_hsb(0, 55, 50);
+    wait(150);
+    set_rgb(0, 0, 0);
+    wait(150);
+}
+combo V_06 {
+	set_rgb(255, 0, 0);
+	set_hsb(0, 55, 70);
+    wait(V_0339);
+    set_rgb(0, 255, 0);
+    set_hsb(100, 55, 70);
+    wait(V_0340);
+}
+
+combo V_07 { 
+    wait(V_0337);
+	call(V_08);
+	call(V_08);
+	call(V_08);
+	call(V_08);
+}
+
+combo V_08 { 
+    wait(V_0337);
+    set_val(V_01402[V_0303], 0x0);
+    wait(V_0338 - get_rtime());
+    set_val(V_01402[V_0303], 0x0);
+}
+
+combo V_09 { 
+    set_val(PS4_LX, 0x64);
+    wait(V_0272);
+    wait(0x32);
+    set_val(PS4_LX, inv(0x64));
+    wait(V_0272);
+    wait(0x32);
+}
+
+combo V_010 {
+ 	set_val(V_01402[V_0306], 0x64);
+ 	wait(0x32);
+ 	wait(0x64);
+ }
+
+combo V_011 {
+    wait(V_0270);
+    set_val(V_01402[V_0302], 0x0);
+    wait(V_0271 - get_rtime());
+    set_val(V_01402[V_0302], 0x0);
+}
+
+int V_0570;
+
+combo V_012 {
+	if(V_0204[V_0344] && get_val(V_01402[V_0303]))
+	{
+    	set_val(PS4_RY, V_023(V_0570 + V_0263[V_0344], PS4_RY));
+    	set_val(PS4_RX, V_023(V_0260[V_0344], PS4_RX));
+    }
+    else 
+    	set_val(PS4_RY, V_023(V_0263[V_0344], PS4_RY));
+    wait(V_0264[V_0344]);
+
+	if(V_0204[V_0344] && get_val(V_01402[V_0303]))
+	{
+    	set_val(PS4_RY, V_023(V_0570, PS4_RY));
+    	set_val(PS4_RX, V_023(V_0260[V_0344] + V_0263[V_0344], PS4_RX));
+    }
+    else	
+    	set_val(PS4_RX, V_023(V_0263[V_0344], PS4_RX));
+
+    set_val(PS4_LX, V_023(V_0263[V_0344], PS4_LX));
+    wait(V_0264[V_0344]);
+
+	if(V_0204[V_0344] && get_val(V_01402[V_0303]))
+	{
+    	set_val(PS4_RY, V_023(V_0570 + inv(V_0263[V_0344]), PS4_RY));
+    	set_val(PS4_RX, V_023(V_0260[V_0344], PS4_RX));
+    }
+    else
+    	set_val(PS4_RY, V_023(inv(V_0263[V_0344]), PS4_RY));
+    wait(V_0264[V_0344]);
+
+	if(V_0204[V_0344] && get_val(V_01402[V_0303]))
+	{
+    	set_val(PS4_RY, V_023(V_0570, PS4_RY));
+    	set_val(PS4_RX, V_023(V_0260[V_0344] + inv(V_0263[V_0344]), PS4_RX));
+    }
+    else
+    	set_val(PS4_RX, V_023(inv(V_0263[V_0344]), PS4_RX));
+
+    set_val(PS4_LX, V_023(inv(V_0263[V_0344]), PS4_LX));
+    wait(V_0264[V_0344] - get_rtime());
+
+	if(V_0204[V_0344] && get_val(V_01402[V_0303]))
+	{
+    	set_val(PS4_RY, V_023(V_0570, PS4_RY));
+    	set_val(PS4_RX, V_023(V_0260[V_0344] + inv(V_0263[V_0344]), PS4_RX));
+    }
+    else
+    	set_val(PS4_RX, V_023(inv(V_0263[V_0344]), PS4_RX));
+
+    set_val(PS4_LX, V_023(inv(V_0263[V_0344]), PS4_LX));
+}
+
+int V_0542, V_0625;
+
+combo V_013 {
+	wait(V_0625);
+	set_val(V_0542, 0x0);
+	wait(V_0625 - get_rtime());
+	set_val(V_0542, 0x0);
+}
+
+combo V_014 {              
+	set_val(V_01402[V_0307], 0x64);          
+	wait(V_0283);                         
+	set_val(V_01402[V_0307], 0x0);            
+	wait(0x3C);                          
+	set_val(V_01402[V_0307], 0x64);          
+	wait(0x32);                          
+	set_val(V_01402[V_0307], 0x64);          
+	set_val(V_01402[V_0306], 0x64);           
+	wait(0x3C);                          
+	set_val(V_01402[V_0307], 0x0);            
+	set_val(V_01402[V_0306], 0x64);          
+	wait(0xA);                        
+	set_val(V_01402[V_0306], 0x0);
+}
+
+combo V_015 { 
+	set_val(V_01402[V_0307], 0x64);
+	wait(V_0283);
+	set_val(V_01402[V_0307], 0x0);
+	wait(0x14);
+	set_val(V_01402[V_0310], 0x0);
+	set_val(V_01402[V_0307], 0x64);
+	set_val(V_01402[V_0310], 0x64);
+	wait(0x14);
+	set_val(V_01402[V_0307], 0x0);
+	set_val(V_01402[V_0310], 0x0);
+	wait(0x14);
+}
+combo V_016 {
+    V_018(PS4_RX, -V_0286)
+    V_018(PS4_LX, -V_0287)
+    wait(0xA)
+    V_018(PS4_RY, V_0286)
+    V_018(PS4_LY, V_0287)
+    wait(0xA)
+    V_018(PS4_RX, V_0286)
+    V_018(PS4_LX, V_0287)
+    wait(0xA)
+    V_018(PS4_RY, -V_0286)
+    V_018(PS4_LY, -V_0287)
+    wait(0xA)
+}
+combo V_017 {
+V_018(PS4_RX,V_0286 + V_0288)wait(0xA)
+V_018(PS4_RX,-V_0286 - V_0288)wait(0xA)
+V_018(PS4_RY,V_0286 + V_0288 + 0x1)wait(0xA)
+V_018(PS4_RY,-V_0286 - V_0288 - 0x1)wait(0xA)
+V_018(PS4_RY,V_0286 + V_0288 + 0x1)wait(0xA)
+V_018(PS4_RX,-V_0286 - V_0288)wait(0xA)
+V_018(PS4_RX,V_0286 + V_0288)wait(0xA)
+V_018(PS4_RY,-V_0286 - V_0288 - 0x1)wait(0xA)
+}
+function V_018( V_019,  V_020) {
+  set_val(V_019, clamp(V_020 * (0x64 - abs(get_val(V_019))) / 0x64 + get_val(V_019), inv(0x64), 0x64));
+  return;
+}
+int V_0637;
+
+function V_021() {
+
+    V_0637++;
+    if(V_0637 > V_0259[V_0344] / 0xA) 
+    {
+        V_0637 = V_0259[V_0344] / 0xA;
+        return 0x1;
+    }    
+    return 0x0;
+}
+
+int V_0640;
+int V_0641;
+int V_0567; 
+int V_0643;
+
+function V_022() {
+
+    V_0640++;
+    if(V_0640 == V_0641) 
+    {
+        V_0640 = 0x0;
+        V_0567 += V_0643;
+    }
+    return V_0567;
+}
+
+int V_0646;
+
+function V_023(V_024, V_025) {
+
+	V_0646 = ( (V_024 * ( 0x64 - abs( get_val(V_025) ) ) ) / 0x64); 
+    return clamp(get_val(V_025) + V_0646, inv(0x64), 0x64);
+}
+
+function V_026() {
+
+	if(!V_0207[V_0344])
+	{
+		set_val(PS4_RY, clamp(V_023(V_0567, PS4_RY), inv(0x64), 0x64));   
+		set_val(PS4_RX, clamp(V_023(V_0260[V_0344], PS4_RX), inv(0x64), 0x64));
+	}
+	else if(V_0207[V_0344] > V_012)
+	{
+		set_val(PS4_RY, clamp(V_023(V_0567, PS4_RY) + V_0562, inv(0x64), 0x64));   
+		set_val(PS4_RX, clamp(V_023(V_0260[V_0344], PS4_RX) + V_0654, inv(0x64), 0x64));
+	}
+	else if(V_0207[V_0344] == V_012)
+	{
+		V_0570 = V_0567;
+		combo_run(V_012);
+	}
+}
+
+
+int V_0650;
+int V_0560, V_0652;
+int V_0653, V_0654, V_0562;
+int V_0656,V_0657,V_0658,V_0659;
+int V_0660, V_0661, V_0662;
+
+const int8 V_01410[]={0x64,0x64,0x64,0x64,0x64,0x64,0x64,0x64,0x63,0x63,0x63,0x63,0x62,0x62,0x61,0x61,0x61,0x60,0x5F,0x5F,0x5E,0x5E,0x5D,0x5C,0x5C,0x5B,0x5A,0x59,0x59,0x58,0x57,0x56,0x55,0x54,0x53,0x52,0x51,    
+0x50,0x4F,0x4E,0x4D,0x4B,0x4A,0x49,0x48,0x47,0x46,0x45,0x43,0x42,0x41,0x3F,0x3E,0x3D,0x3B,0x3A,0x38,0x37,0x35,0x34,0x32,0x31,0x2F,0x2E,0x2C,0x2B,0x29,0x28,0x26,0x24,0x23,0x21,0x1F,0x1E,0x1C,0x1A,0x19,0x17,0x15,0x14,0x12,0x10,0xE,0xD,0xB,0x9,0x7, 
+0x6,0x4,0x2,0x0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,  
+-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95, 
+-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,   
+-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61, 
+-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0x0,0x2,0x4,0x6,0x7,
+0x9,0xB,0xD,0xE,0x10,0x12,0x14,0x15,0x17,0x19,0x1A,0x1C,0x1E,0x1F,0x21,0x23,0x24,0x26,0x28,0x29,0x2B,0x2C,0x2E,0x2F,0x31,0x33,0x34,0x36,0x37,0x38,0x3A,0x3B,0x3D,0x3E,0x3F,0x41,0x42,0x43,0x45,0x46,0x46,0x48,0x49,0x4A,0x4B,0x4D,0x4E,0x4F,0x50,0x51,
+0x52,0x53,0x54,0x55,0x56,0x57,0x58,0x59,0x59,0x5A,0x5B,0x5C,0x5C,0x5D,0x5E,0x5E,0x5F,0x5F,0x60,0x61,0x61,0x61,0x62,0x62,0x63,0x63,0x63,0x63,0x64,0x64,0x64,0x64,0x64,0x64,0x64};
+
+int V_0663;
+
+function V_027(V_028) {
+
+    if(!V_0656)                                
+	{
+		V_0658 -= 0x1;
+		if(V_0658 < 0x1)
+			V_0656 = TRUE;
+	}
+	else
+	{
+	    V_0658 += 0x1;
+		if(V_0658 > V_028)
+			V_0656 = FALSE;
+	}
+	if(!V_0657)
+	{
+		V_0659 -= 0x1;
+		if(V_0659 < 0x1)
+			V_0657 = TRUE;
+	}
+	else
+	{
+		V_0659 += 0x1;
+		if(V_0659 >  V_028)
+			V_0657 = FALSE;
+	} 
+	if(V_0207[V_0344] == 0x2)                    
+	{ 
+        V_0652 = (V_0562 * V_028) /0x64;
+        V_0560 = (V_0654 * V_028) /0x64;  
+	} 
+	if(V_0207[V_0344] == 0x3)        
+	{ 
+        V_0652 = (V_0562 * V_028) /0x64;
+        V_0560 = (V_0654 * (V_028 / 0x2)) /0x64; 
+	}
+	if(V_0207[V_0344] == 0x4)                     
+	{ 
+        V_0652 = (V_0562 * (V_028 / 0x2)) /0x64;
+        V_0560 = (V_0654 * V_028) /0x64;  
+	} 
+	if(V_0207[V_0344] == 0x5)                  
+	{
+        V_0652 = (V_0562 * V_0658) /0x64;
+        V_0560 = (V_0654 * V_0659) /0x64;  
+	}
+    if(V_0207[V_0344] == 0x6)
+	{
+		V_0560 = (V_0654 * V_0662) /0x64;
+		V_0652 = (V_0562 * V_0662) /0x64;
+
+		if(V_0662 == 0x0)
+		    V_0560 = (V_0654 * V_028) /0x64;
+
+		if(V_0662 == 0x1)
+			V_0652 = (V_0562 * V_028) /0x64;
+
+		if(V_0662 == 0x2) 
+			V_0560 = (V_0654 * V_028) /0x64 * inv(0x1);
+
+		if(V_0662 == 0x3)
+			V_0652 = (V_0562 * V_028) /0x64 * inv(0x1);
+
+		V_0663++;
+		if(V_0663 >= V_0264[V_0344])
+		{
+			V_0662++;
+			V_0663 = 0x0;
+		}
+
+		if(V_0662 == 0x4)
+			V_0662 = 0x0;
+    }
+
+	V_0654 = V_0560;
+	V_0562 = V_0652;
+}
+
+
+int V_0674;
+int V_0675;
+int V_0676,V_0677;
+
+function V_029 () {
+
+    if(abs(get_lval(PS4_RX)) >= V_0279) 
+    {
+	    V_0676 += 0x1;
+
+		if(V_0676 >= V_0282 && V_0674 < V_0281) 
+		{ 
+		    V_0674 += 0x1; 
+		    V_0676 = 0x0; 
+		} 
+			else if(V_0674 >= V_0281) 
+				V_0676 = 0x0;  
+	}
+
+    else if(abs(get_val(PS4_RX)) < V_0280) 
+    {
+	    V_0676 = 0x0; 
+	    V_0674 = V_0278;
+	}
+
+    if(abs(get_lval(PS4_RY)) >= V_0279) 
+    {
+	    V_0677 += 0x1;
+		if(V_0677 >= V_0282 && V_0675 < V_0281) 
+		{ 
+		    V_0675 += 0x1; 
+		    V_0677 = 0x1; 
+		} 
+			else if(V_0675 >= V_0281) 
+				V_0677 = 0x0; 
+	}
+
+    else if(abs(get_val(PS4_RY)) < V_0280) 
+    {
+	    V_0675 = V_0278; 
+	    V_0677 = 0x0;
+	}
+
+	sensitivity(PS4_RX,NOT_USE,V_0674);
+    sensitivity(PS4_RY,NOT_USE,V_0675);
+}
+
+
+function V_030() {
+
+	if(V_0210[V_0344] == V_0197)
+	{
+		if(get_val(V_01402[V_0302]) && get_val(V_01402[V_0303]))
+			return TRUE;
+	}
+	else if(V_0210[V_0344] == V_0198)
+	{
+		if(get_val(V_01402[V_0302]) && !get_val(V_01402[V_0303]))
+			return TRUE;
+	}
+	else if(V_0210[V_0344] == V_0199)
+	{
+		if(!get_val(V_01402[V_0302]) && get_val(V_01402[V_0303]))
+			return TRUE;
+	}	
+	return FALSE;
+}
+
+
+function V_031() {
+
+	rect_oled(0xD, 0x1, 0x66, 0x2F, OLED_WHITE, OLED_BLACK); 
+	V_032(V_0155,V_0156,V_0157);
+	V_032(V_0156,V_0157,V_0155);
+	V_032(V_0157,V_0155,V_0156);
+}
+
+function V_032(V_033,V_034,V_035){
+
+	if(V_0158 == V_033) 
+	{ 
+		print(V_0122(V_092(V_089(V_0956, V_033)), OLED_FONT_SMALL_WIDTH),V_0586,OLED_FONT_SMALL,OLED_WHITE,V_089(V_0956,V_033));
+		print(V_0122(V_092(V_089(V_0956, V_034)) , OLED_FONT_SMALL_WIDTH),V_0699,OLED_FONT_SMALL,OLED_WHITE,V_089(V_0956,V_034) ); 
+		print(V_0122(V_092(V_089(V_0956, V_035)) , OLED_FONT_SMALL_WIDTH),V_0703,OLED_FONT_SMALL,OLED_WHITE,V_089(V_0956,V_035) );
+	} 
+}
+
+function V_036() {
+
+	rect_oled(0xD, 0x1, 0x66, OLED_FONT_SMALL_HEIGHT + 0x5, OLED_WHITE , OLED_BLACK);
+
+	if(V_0327)
+	{				
+		if(V_0179 < V_0215) 
+			V_041 ();
+		else 
+    		print(V_0122(0xE - 0x1, OLED_FONT_SMALL_WIDTH),0x4,OLED_FONT_SMALL,OLED_WHITE,V_0706(0x0));
+	}
+
+	else if(V_0328) 
+	{
+    	if(V_0256 == V_0226 && V_0204[V_0344] == V_0181)
+    		print(V_0122(0xB- 0x1, OLED_FONT_SMALL_WIDTH),V_0703,OLED_FONT_SMALL,OLED_WHITE,V_0708(0x0));  
+    	else
+    		print(V_0122(V_092(V_089(V_0950, V_0256)), OLED_FONT_SMALL_WIDTH),V_0703,OLED_FONT_SMALL,OLED_WHITE,V_089(V_0950, V_0256));  
+	}
+	else if(V_0329)
+	{
+    	print(V_0122(0xA - 0x1, OLED_FONT_SMALL_WIDTH),V_0703,OLED_FONT_SMALL,OLED_WHITE,V_0714(0x0));  
+	}
+	else if(V_0330)
+	{
+    	print(V_0122(V_092(V_089(V_0959, V_0317)), OLED_FONT_SMALL_WIDTH),V_0703,OLED_FONT_SMALL,OLED_WHITE,V_089(V_0959, V_0317));
+	}
+}
+
+function V_037() {
+
+	rect_oled(0xD, 0x11, 0x66, OLED_FONT_SMALL_HEIGHT + 0x5, OLED_WHITE , OLED_BLACK);
+
+	if(V_0327)
+	{
+		print(V_0122(V_092(V_089(V_0949, V_0179)), OLED_FONT_SMALL_WIDTH),V_0586,OLED_FONT_SMALL,OLED_WHITE,V_089(V_0949, V_0179));  // small size
+	}
+	else if(V_0329)
+	{
+		print(V_0122(V_092(V_089(V_0957, V_0301)), OLED_FONT_SMALL_WIDTH),V_0586,OLED_FONT_SMALL,OLED_WHITE,V_089(V_0957, V_0301));  // small size
+
+	}
+}
+
+function V_038() {
+
+	rect_oled(0xD, 0x21, 0x66, OLED_FONT_SMALL_HEIGHT + 0x5, OLED_WHITE , OLED_BLACK);
+
+	if(V_0329)
+	{
+		V_045( V_0301, V_0289      , V_0111(), V_0302      );
+		V_045( V_0301, V_0290     , V_0111(), V_0303     );
+		V_045( V_0301, V_0291 , V_0111(), V_0304 );
+		V_045( V_0301, V_0292   , V_0111(), V_0305   );
+		V_045( V_0301, V_0293     , V_0111(), V_0306     );
+		V_045( V_0301, V_0294   , V_0111(), V_0307   );
+		V_045( V_0301, V_0295   , V_0111(), V_0308   );
+		V_045( V_0301, V_0296    , V_0111(), V_0309    );
+		V_045( V_0301, V_0297   , V_0111(), V_0310   );
+		V_045( V_0301, V_0298   , V_0111(), V_0311   );
+		V_045( V_0301, V_0299  , V_0391                     , V_0312  );
+		V_045( V_0301, V_0300       , V_0391                     , V_0313       );
+	}
+	else
+	{
+		V_045( V_0179, V_0159 , V_0385     , V_0204[V_0344]    );
+		V_045( V_0179, V_0160  , V_0388      , V_0205[V_0344]     );
+		V_045( V_0179, V_0161  , V_0391          , V_0206[V_0344]     );
+		V_045( V_0179, V_0162  , V_0394         , V_0207[V_0344]     );
+		V_045( V_0179, V_0163  	  , V_0391          , V_0216    			   );
+		V_045( V_0179, V_0164  	  , V_0391          , V_0217		    			   );
+		V_045( V_0179, V_0165	  , V_0391          , V_0218    					   );
+		V_045( V_0179, V_0162  , V_0394         , V_0207[V_0344]     );
+		V_045( V_0179, V_0166   , V_0391          , V_0208[V_0344]      );
+		V_045( V_0179, V_0167    , V_0409       , V_0209[V_0344]       );
+		V_045( V_0179, V_0168  , V_0412 , V_0210[V_0344] );
+		V_045( V_0179, V_0169 , V_0391          , V_0211[V_0344]    );
+		V_045( V_0179, V_0170 , V_0391          , V_0212[V_0344]    );
+		V_045( V_0179, V_0171     , V_0391         , V_0213[V_0344]       );
+		V_045( V_0179, V_0172    , V_0391         , V_0214[V_0344]      );
+		V_045( V_0179, V_0178    	   , V_0427       , V_0219					       );
+
+		V_045( V_0179, V_0173 , V_0430 , V_0220 );
+		V_045( V_0179, V_0174     , V_0391       , V_0221     );
+		V_045( V_0179, V_0175    , V_0391       , V_0222    );
+		V_045( V_0179, V_0176 , V_0439 , V_0223 );
+		V_045( V_0179, V_0177   , V_0391       , V_0224   );
+	}
+}
+
+function V_039() {
+	if(V_0317 == V_0314)
+	{		
+		rect_oled(0xD, 0x12, 0x66, OLED_FONT_SMALL_HEIGHT + 0x13, OLED_WHITE , OLED_BLACK); 
+
+		if(V_0318[V_0317] == 0x0)
+			print(V_0122(0x9 - 0x1, OLED_FONT_SMALL_WIDTH),V_0827,OLED_FONT_SMALL,OLED_WHITE,V_0828(0x0));
+		else
+			print(V_0122(V_092(V_089(V_0110(), V_0318[V_0317])), OLED_FONT_SMALL_WIDTH),V_0827,OLED_FONT_SMALL,OLED_WHITE,V_089(V_0110(), V_0318[V_0317]));
+	}
+	else
+	{
+		rect_oled(0xD, 0x11, 0x66, OLED_FONT_SMALL_HEIGHT + 0x5, OLED_WHITE , OLED_BLACK);
+		rect_oled(0xD, 0x21, 0x66, OLED_FONT_SMALL_HEIGHT + 0x5, OLED_WHITE , OLED_BLACK);
+
+		if(V_0319[V_0317] == 0x0)
+			print(V_0122(0x8 - 0x1, OLED_FONT_SMALL_WIDTH),V_0586,OLED_FONT_SMALL,OLED_WHITE,V_0834(0x0));
+		else
+			print(V_0122(V_092(V_089(V_0110(), V_0319[V_0317])), OLED_FONT_SMALL_WIDTH),V_0586,OLED_FONT_SMALL,OLED_WHITE,V_089(V_0110(), V_0319[V_0317]));
+
+		if(V_0318[V_0317] == 0x0)
+			print(V_0122(0x9 - 0x1, OLED_FONT_SMALL_WIDTH),V_0699,OLED_FONT_SMALL,OLED_WHITE,V_0828(0x0));
+		else
+			print(V_0122(V_092(V_089(V_0110(), V_0318[V_0317])), OLED_FONT_SMALL_WIDTH),V_0699,OLED_FONT_SMALL,OLED_WHITE,V_089(V_0110(), V_0318[V_0317]));			
+	}
+}
+
+function V_040() {
+
+	rect_oled(0x26, 0x12, 0x33 , OLED_FONT_SMALL_HEIGHT + 0x3 , OLED_WHITE , OLED_BLACK); 
+	rect_oled(0x1B, 0x1F, 0x4A , OLED_FONT_SMALL_HEIGHT + 0x6 , OLED_WHITE , OLED_BLACK); 
+
+	V_042( V_0225       , V_0257[V_0344]      );
+	V_042( V_0226         , V_0258[V_0344]        );
+	V_042( V_0227        , V_0259[V_0344]       );
+	V_042( V_0228       , V_0260[V_0344] );
+	V_042( V_0229 , V_0261[V_0344]          );
+	V_042( V_0230        , V_0262[V_0344]          );
+	V_042( V_0233      , V_0263[V_0344]      );
+	V_042( V_0234       , V_0264[V_0344]       );
+	V_042( V_0235       , V_0265[V_0344]          	 );
+	V_042( V_0236       , V_0266[V_0344]      		 );
+	V_042( V_0237       , V_0267       					 );
+	V_042( V_0251      , V_0284       					 );
+	V_042( V_0253    , V_0286     					 );
+	V_042( V_0254    , V_0287    				 );
+	V_042( V_0255   , V_0288    					 );
+	V_042( V_0252      , V_0285       				 );
+
+	V_042( V_0231      , V_0268         );
+	V_042( V_0232   , V_0269      );
+	V_042( V_0238    , V_0270          );
+	V_042( V_0239 , V_0271       );
+	V_042( V_0240  , V_0272            );
+	V_042( V_0241   , V_0278  );
+	V_042( V_0242  , V_0279         );
+	V_042( V_0243   , V_0280       );
+	V_042( V_0244       , V_0281      );
+	V_042( V_0245      , V_0282 );
+	V_042( V_0246     , V_0273                );
+	V_042( V_0247         , V_0274                );
+	V_042( V_0248        , V_0275                );
+	V_042( V_0249     , V_0276            );
+	V_042( V_0250  , V_0283            );
+}
+
+int V_0876;
+
+function V_041() {
+
+	if(V_0321)
+		V_0876 = 0x32; 
+	else
+		V_0876 = 0x4; 
+
+    print(V_0122(V_092(V_089(V_0955, V_0344)), OLED_FONT_SMALL_WIDTH),V_0876,OLED_FONT_SMALL,OLED_WHITE,V_089(V_0955, V_0344));
+}
+
+function V_042(V_043, V_024) {
+
+    if(V_0256 == V_043)
+    		V_0113(V_024, V_0120(V_024));
+}
+
+function V_045(V_043, V_047, V_048, V_049) {
+
+    if(V_043 == V_047)
+    	print(V_0122(V_092(V_089(V_048, V_049)), OLED_FONT_SMALL_WIDTH),V_0699,OLED_FONT_SMALL,OLED_WHITE,V_089(V_048, V_049));
+}
+
+
+function V_050(V_043, V_024, V_053, V_054, V_055, V_056) {
+
+	if(V_0256 == V_043)
+	{
+    	V_024    = V_057( V_024 ,PS4_LEFT , inv(V_055), V_053, V_054 ); 
+    	V_024    = V_057( V_024 ,PS4_RIGHT, V_055     , V_053, V_054 ); 
+   	   	V_024    = V_057( V_024 ,PS4_DOWN , inv(V_056), V_053, V_054 ); 
+       	V_024    = V_057( V_024 ,PS4_UP   , V_056     , V_053, V_054 ); 
+	}		
+	return V_024;
+}
+
+function V_057(V_024,V_059,V_060, V_061, V_062) {
+
+    if(V_0127(V_059)) 
+    {
+        V_024 += V_060;
+	  	if(V_024 < V_061) 
+	  		V_024 = V_061; 
+	  	if(V_024 > V_062) 
+	  		V_024 = V_062;
+
+        V_0322 = TRUE; 
+    }
+    return V_024; 
+}
+
+
+function V_063(V_043, V_047, V_048, V_024) { 
+
+	if(V_043 == V_047)
+	{
+		if(event_press(PS4_UP))
+		{
+			V_024 = V_0116(V_024 + 0x1, 0x0, V_087(V_048));	
+			V_084(V_024);
+		}
+
+		if(event_press(PS4_DOWN))
+		{
+			V_024 = V_0116(V_024 - 0x1, 0x0, V_087(V_048));
+			V_084(V_024);
+		}
+
+		if(V_0179 == V_0160) 
+		{
+			if(V_024 >= 0x1) 
+			{
+				V_0206[V_0344] = 0x0;
+				V_0373[V_0344] = V_024;
+			}
+		}		
+		else if(V_0179 == V_0167)
+		{
+			if(V_024 >= 0x1)
+				V_0553[V_0344] = V_024;
+		}
+		else if(V_0179 == V_0161)
+		{
+			if(V_024 == 0x1) 
+				V_0205[V_0344] = 0x0;
+		}
+		else if(V_0179 == V_0173) 
+		{
+			if(V_024 == 0x2) 
+			{
+				V_0207[0x0] = 0x0;
+				V_0207[0x1] = 0x0;
+				V_0207[0x2] = 0x0;
+			}
+		}
+	}
+	return V_024;
+}
+
+int V_0373[0x3], V_0553[0x3];
+
+function V_068(V_069, V_070, V_024, V_043, V_048, V_074) { 
+
+	if(get_val(V_069))
+	{
+		if(get_val(V_070) && get_ptime(V_070) == 0x1F4) 
+		{
+			V_0179 = V_043;
+
+			if(V_024)
+				V_024 = 0x0;
+			else
+			{
+				V_024 = V_075(V_074, V_024, V_048, V_070, 0x0); 
+			}
+
+			V_084(V_024);
+		}
+
+		if(event_press(V_070) && get_brtime(V_070) <= 0xC8) 
+		{		
+			V_0179 = V_043;
+
+			if(V_070 != PS4_UP && V_070 != PS4_RIGHT) 
+			{
+				if(V_024)
+				{
+					V_024 = V_0116(V_024++, 0x1, V_087(V_048));
+					V_081(V_070, V_024);
+				}
+				else
+				{
+					V_024 = V_075(V_074, V_024, V_048, V_070, 0x1); 
+				}
+			}
+
+			V_084(V_024);
+		}
+		if(V_070 != PS4_UP)
+			set_val(V_070, 0x0)
+	}
+	return V_024;
+}
+
+function V_075(V_074, V_024, V_048, V_070, V_053) {
+
+	if(!V_074)
+	{
+		V_024 = V_0116(V_024++, V_053, V_087(V_048));
+		V_081(V_070, V_024);
+	}
+	else
+	{
+		V_024 = V_074;
+	}
+
+	if(V_0179 == V_0162)
+	{
+		if(V_024 >= 0x1 && V_0220 == 0x2) 
+			V_0220 = 0x0;
+	}
+	return V_024;
+}
+
+function V_081(V_070, V_024) {
+	if(V_070 == PS4_RIGHT)
+		V_0373[V_0344] =  V_024;
+	if(V_070 == PS4_LEFT)
+		V_0553[V_0344] =  V_024;
+}
+
+function V_084(V_024){
+	if(V_024 == 0x0) combo_run(V_02);
+	else combo_run(V_01);
+	V_0322 = TRUE; 
+}
+
+function V_086() {
+	if(V_0179 == V_0159  && V_0204[V_0344])      return TRUE;
+	if(V_0179 == V_0160   && V_0205[V_0344] > 0x1)   return TRUE;
+	if(V_0179 == V_0161   && V_0206[V_0344])       return TRUE;
+	if(V_0179 == V_0162   && V_0207[V_0344])       return TRUE;
+	if(V_0179 == V_0163   		&& V_0216)      			    return TRUE;
+	if(V_0179 == V_0164   		&& V_0217)			      			    return TRUE;
+	if(V_0179 == V_0165	    && V_0218)					        return TRUE;
+	if(V_0179 == V_0166    && V_0208[V_0344])        return TRUE;
+	if(V_0179 == V_0167     && V_0209[V_0344] == 0x1)    return TRUE;
+	if(V_0179 == V_0173 && V_0220)                  return TRUE;
+	if(V_0179 == V_0176  && V_0223)                 return TRUE;
+	return FALSE;
+}
+
+
+enum { V_0949      , V_0950         , V_0951  , V_0952  , V_0953  , V_0954    , V_0955      ,
+       V_0956     , V_0957  , V_0391           , V_0959  , V_0960   , V_0961   , V_0962 , 
+       V_0963 , V_0964 , V_0965 , V_0507 , V_0967   , V_0385      , V_0388    , 
+       V_0394       , V_0409        , V_0412  , V_0430   , V_0974 , V_0975 , V_0439, V_0427
+       }
+
+function V_087(V_088) { 
+
+    V_0320 = 0x0;
+    if (V_088 == V_0949) {              while (V_01389(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0950) {         while (V_01398(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0951) {  while (V_01424(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0952) {    while (V_01425(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0953) {  while (V_01429(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0954) {    while (V_01430(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0955) {         while (V_01422(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0956) {        while (V_01388(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0957) {  while (V_01399(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0391) {           while (V_01421(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0959) {    while (V_01403(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0960) {   while (V_01404(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0961) {   while (V_01405(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0962) {    while (V_01423(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0963) {    while (V_01428(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0964) { while (V_01426(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0507) {   while (V_01400(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0967) {   while (V_01401(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0385) {      while (V_01390(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0388) {       while (V_08(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0394) {          while (V_01392(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0409) {        while (V_01393(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0412) {  while (V_01394(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0430) {     while (V_01395(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0974) { while (V_01427(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0975) { while (V_01432(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0439) {     while (V_01396(V_0320) != inv(0x1)) { V_0320++; } }
+    else if (V_088 == V_0427) 	 {     while (V_01397(V_0320) != inv(0x1)) { V_0320++; } }
+    return V_0320 - 0x1;
+}
+
+function V_089(V_088, V_043) {
+
+	if(V_088 == V_0949)            return V_01389(V_043);
+	if(V_088 == V_0950)            return V_01398(V_043);
+	if(V_088 == V_0951)     return V_01424(V_043);
+	if(V_088 == V_0952)       return V_01425(V_043);
+	if(V_088 == V_0953)     return V_01429(V_043);
+	if(V_088 == V_0954)       return V_01430(V_043);
+	if(V_088 == V_0955)            return V_01422(V_043);
+	if(V_088 == V_0956)           return V_01388(V_043);
+	if(V_088 == V_0957)     return V_01399(V_043);
+	if(V_088 == V_0391)              return V_01421(V_043);
+	if(V_088 == V_0959)       return V_01403(V_043);
+	if(V_088 == V_0960)      return V_01404(V_043);
+	if(V_088 == V_0961)      return V_01405(V_043);
+	if(V_088 == V_0962)       return V_01423(V_043);
+	if(V_088 == V_0963)       return V_01428(V_043);
+	if(V_088 == V_0964)    return V_01426(V_043);
+	if(V_088 == V_0965)    return V_01431(V_043);
+	if(V_088 == V_0507)      return V_01400(V_043);
+	if(V_088 == V_0967)      return V_01401(V_043);
+	if(V_088 == V_0385)         return V_01390(V_043);
+	if(V_088 == V_0388)          return V_08(V_043);
+	if(V_088 == V_0394)             return V_01392(V_043);
+	if(V_088 == V_0409)           return V_01393(V_043);
+	if(V_088 == V_0412)     return V_01394(V_043);
+	if(V_088 == V_0430)        return V_01395(V_043);
+	if(V_088 == V_0974)    return V_01427(V_043);
+	if(V_088 == V_0975)    return V_01432(V_043);
+	if(V_088 == V_0439)        return V_01396(V_043);
+	if(V_088 == V_0427)        	  return V_01397(V_043)
+	return inv(0x1);
+}
+
+int V_01007;
+
+function V_092(V_093) { 
+    V_01007 = 0x0;
+    do { 
+        V_093++;
+        V_01007++;
+    } while (duint8(V_093));
+    return V_01007;
+}
+define V_01010 = 0x0; 
+function V_094 (V_095){
+    if     (V_095 == 0x0) vm_tctrl(inv(0x0));//10 ms Default
+    else if(V_095 == 0x1) vm_tctrl(inv(0x2));// 8 ms
+    else if(V_095 == 0x2) vm_tctrl(inv(0x4));// 6 ms
+    else if(V_095 == 0x3) vm_tctrl(inv(0x6));// 4 ms
+    else if(V_095 == 0x4) vm_tctrl(inv(0x8));// 2 ms
+    else if(V_095 == 0x5) vm_tctrl(inv(0x9));// 1 ms
+}
+function V_096(V_097, V_098) {
+    if (V_097 >= 0x0) {
+        V_0357 = (V_097 % V_098);
+        if (V_0357 >= (V_098 / 0x2)) {
+            V_097 = V_097 + (V_098 - V_0357);
+        } else {
+            V_097 -= V_0357;
+        }
+    } else {
+        V_0357 = (V_097 % V_098);
+        if (abs(V_0357) >= (V_098 / 0x2)) {
+            V_097 = V_097 - (V_098 + V_0357);
+        } else {
+            V_097 += abs(V_0357);
+        }
+    }
+    return V_097;
+}
+
+function V_099() {
+	rect_oled(0x0, 0x0, 0x80, 0x31, OLED_BLACK, OLED_WHITE); 
+	line_oled(0x1, 0x10, 0x7E, 0x10, 0x1, OLED_WHITE); 
+
+	if(!V_0329)
+	{
+		rect_oled(0x2, 0x2, OLED_FONT_SMALL_WIDTH + 0x4, OLED_FONT_SMALL_HEIGHT + 0x3, OLED_WHITE , OLED_WHITE); 
+		rect_oled(0x73, 0x2, OLED_FONT_SMALL_WIDTH + 0x4, OLED_FONT_SMALL_HEIGHT + 0x3, OLED_WHITE, OLED_WHITE); 
+	}
+}
+
+function V_0100() {
+	rect_oled(0x1, 0x11, 0x7E, 0x1F, OLED_WHITE, OLED_BLACK);
+
+	line_oled(0x1, 0x20, 0x7E, 0x20, 0x1, OLED_WHITE); 
+
+	rect_oled(0x2, 0x12, OLED_FONT_SMALL_WIDTH + 0x4, OLED_FONT_SMALL_HEIGHT + 0x3, OLED_WHITE , OLED_WHITE); 
+	rect_oled(0x73, 0x12, OLED_FONT_SMALL_WIDTH + 0x4, OLED_FONT_SMALL_HEIGHT + 0x3, OLED_WHITE, OLED_WHITE); 
+	rect_oled(0x2, 0x22, OLED_FONT_SMALL_WIDTH + 0x4, OLED_FONT_SMALL_HEIGHT + 0x3, OLED_WHITE , OLED_WHITE); 
+	rect_oled(0x73, 0x22, OLED_FONT_SMALL_WIDTH + 0x4, OLED_FONT_SMALL_HEIGHT + 0x3, OLED_WHITE, OLED_WHITE); 
+}
+
+function V_0101() {
+	rect_oled(0x1, 0x11, 0x7E, 0x1F, OLED_WHITE, OLED_BLACK);
+
+	rect_oled(0x2, 0x12, OLED_FONT_SMALL_WIDTH + 0x4, OLED_FONT_SMALL_HEIGHT + 0x4, OLED_WHITE , OLED_WHITE); 
+	rect_oled(0x73, 0x12, OLED_FONT_SMALL_WIDTH + 0x4, OLED_FONT_SMALL_HEIGHT + 0x4, OLED_WHITE, OLED_WHITE); 
+	rect_oled(0x2, 0x21, OLED_FONT_SMALL_WIDTH + 0x4, OLED_FONT_SMALL_HEIGHT + 0x4, OLED_WHITE , OLED_WHITE); 
+	rect_oled(0x73, 0x21, OLED_FONT_SMALL_WIDTH + 0x4, OLED_FONT_SMALL_HEIGHT + 0x4, OLED_WHITE, OLED_WHITE); 
+	rect_oled(0xE, 0x12, OLED_FONT_MEDIUM_WIDTH + 0x1, OLED_FONT_MEDIUM_HEIGHT + 0xB, OLED_WHITE , OLED_WHITE); 
+	rect_oled(0x66, 0x12, OLED_FONT_MEDIUM_WIDTH + 0x1, OLED_FONT_MEDIUM_HEIGHT + 0xB, OLED_WHITE, OLED_WHITE); 
+
+	line_oled(0x10, 0x1F, 0x17, 0x1F, 0x2, OLED_BLACK); 
+	putc_oled(0x1, 0x2B); 
+	puts_oled(0x67, 0x18, OLED_FONT_MEDIUM, 0x1, OLED_BLACK); 
+
+}
+
+function V_0102() {
+	rect_oled(0x1, 0x11, 0x7E, 0x1F, OLED_WHITE, OLED_BLACK);
+	rect_oled(0x2, 0x12, OLED_FONT_MEDIUM_WIDTH , OLED_FONT_MEDIUM_HEIGHT + 0xB, OLED_WHITE , OLED_WHITE); 
+	rect_oled(0x73, 0x12, OLED_FONT_MEDIUM_WIDTH , OLED_FONT_MEDIUM_HEIGHT + 0xB, OLED_WHITE, OLED_WHITE); 
+}
+
+function V_0103() {
+	rect_oled(0x0, 0x0, 0x80, 0x31, OLED_BLACK, OLED_WHITE); 
+	rect_oled(0x1, 0x1, 0x7E, 0x2F, OLED_WHITE, OLED_BLACK); 
+	V_01018 = V_01025;
+	V_01020 = V_01024;
+	putc_oled(0x1,V_01018); 
+	puts_oled(V_01030 + 0x2, V_0586, OLED_FONT_SMALL, 0x1, OLED_WHITE); 	
+	putc_oled(0x1,V_01020); 
+	puts_oled(V_01031 - 0x2, V_0586, OLED_FONT_SMALL, 0x1, OLED_WHITE);
+
+}
+
+define V_01022 = 0x83, V_01023 = 0x84, V_01024 = 0x85, V_01025 = 0x86, V_01026 = 0x82, V_01027 = 0x59, V_01028 = 0x7F, V_01029 = 0x41;
+define V_01030 = 0x4, V_01031 = 0x75;
+define V_0703 = 0x4, V_0586 = 0x14, V_0699 = 0x24, V_0592 = 0x35, V_0827 = 0x1C; 
+int V_01018;
+int V_01020;
+
+function V_0104() {
+
+	if(V_0328)
+	{
+		V_01018 = V_01024;
+		V_01020 = V_01025;
+	}
+	else
+	{		
+		if(get_controller() == PIO_PS4)
+		{
+			V_01018 = V_01026;
+			V_01020 = V_01026;
+		}
+		else
+		{
+			V_01018 = V_01027;
+			V_01020 = V_01027;
+		}
+	}
+
+	if(!V_0329)
+	{
+		rect_oled(0x3, 0x3, OLED_FONT_SMALL_WIDTH + 0x2, OLED_FONT_SMALL_HEIGHT + 0x1, OLED_WHITE , V_01042); 
+		rect_oled(0x74, 0x3, OLED_FONT_SMALL_WIDTH + 0x2, OLED_FONT_SMALL_HEIGHT + 0x1, OLED_WHITE, V_01043); 
+		putc_oled(0x1,V_01018); 
+		puts_oled(V_01030, V_0703, OLED_FONT_SMALL, 0x1, V_01046); 	
+		putc_oled(0x1,V_01020); 
+		puts_oled(V_01031, V_0703, OLED_FONT_SMALL, 0x1, V_01049); 
+	}
+}
+
+function V_0105() {
+	V_01018 = V_01024;
+	V_01020 = V_01025;
+
+	rect_oled(0x3, 0x13, OLED_FONT_SMALL_WIDTH + 0x2, OLED_FONT_SMALL_HEIGHT + 0x1, OLED_WHITE , V_01042); 
+	rect_oled(0x74, 0x13, OLED_FONT_SMALL_WIDTH + 0x2, OLED_FONT_SMALL_HEIGHT + 0x1, OLED_WHITE, V_01043); 
+
+	putc_oled(0x1,V_01018); 
+	puts_oled(V_01030, V_0586, OLED_FONT_SMALL, 0x1, V_01046); 	
+	putc_oled(0x1,V_01020); 
+	puts_oled(V_01031, V_0586, OLED_FONT_SMALL, 0x1, V_01049);
+
+}
+
+function V_0106() { 
+	V_01018 = V_01023;
+	V_01020 = V_01022;
+
+	rect_oled(0x3, 0x22, OLED_FONT_SMALL_WIDTH + 0x2, OLED_FONT_SMALL_HEIGHT + 0x2, OLED_WHITE , V_01042); 
+	rect_oled(0x74, 0x22, OLED_FONT_SMALL_WIDTH + 0x2, OLED_FONT_SMALL_HEIGHT + 0x2, OLED_WHITE, V_01043); 
+
+	putc_oled(0x1,V_01018); 
+	puts_oled(V_01030, V_0699, OLED_FONT_SMALL, 0x1, V_01046); 
+	putc_oled(0x1,V_01020); 
+	puts_oled(V_01031, V_0699, OLED_FONT_SMALL, 0x1, V_01049);  
+}
+
+function V_0107() { 
+	if(get_controller() == PIO_PS4)
+	{
+		rect_oled(0x1C, 0x13, OLED_FONT_SMALL_WIDTH + 0x1 , OLED_FONT_SMALL_HEIGHT , OLED_WHITE , V_01042); 
+		rect_oled(0x5B, 0x13, OLED_FONT_SMALL_WIDTH + 0x2, OLED_FONT_SMALL_HEIGHT  , OLED_WHITE, V_01043);
+
+		putc_oled(0x1, V_01028);
+		puts_oled(0x5C, V_0586 - 0x1, OLED_FONT_SMALL, 0x1, V_01046);
+		putc_oled(0x1, V_01028);
+		puts_oled(0x1C, V_0586 - 0x1, OLED_FONT_SMALL, 0x1, V_01049);
+
+		rect_oled(0x1B, 0x12, OLED_FONT_SMALL_WIDTH + 0x3 , OLED_FONT_SMALL_HEIGHT + 0x2 , OLED_BLACK , OLED_WHITE); 
+		rect_oled(0x5B, 0x12, OLED_FONT_SMALL_WIDTH + 0x3, OLED_FONT_SMALL_HEIGHT + 0x2 , OLED_BLACK, OLED_WHITE); 
+	}
+	else
+	{
+		rect_oled(0x1C, 0x13, OLED_FONT_SMALL_WIDTH + 0x2 , OLED_FONT_SMALL_HEIGHT , OLED_WHITE , V_01042); 
+		rect_oled(0x5B, 0x13, OLED_FONT_SMALL_WIDTH + 0x2, OLED_FONT_SMALL_HEIGHT  , OLED_WHITE, V_01043);
+
+		putc_oled(0x1, V_01029);
+		puts_oled(0x5C, V_0586 , OLED_FONT_SMALL, 0x1, V_01046);
+		putc_oled(0x1, V_01029);
+		puts_oled(0x1D, V_0586 , OLED_FONT_SMALL, 0x1, V_01049);
+
+		rect_oled(0x1B, 0x12, OLED_FONT_SMALL_WIDTH + 0x4 , OLED_FONT_SMALL_HEIGHT + 0x2 , OLED_BLACK , OLED_WHITE); 
+		rect_oled(0x5A, 0x12, OLED_FONT_SMALL_WIDTH + 0x4, OLED_FONT_SMALL_HEIGHT + 0x2 , OLED_BLACK, OLED_WHITE); 
+	}
+}
+
+function V_0108() {
+	V_01018 = V_01024;
+	V_01020 = V_01025;
+
+	rect_oled(0x3, 0x13, OLED_FONT_SMALL_WIDTH + 0x2, OLED_FONT_SMALL_HEIGHT + 0x11, OLED_WHITE , V_01042); 
+	rect_oled(0x74, 0x13, OLED_FONT_SMALL_WIDTH + 0x2, OLED_FONT_SMALL_HEIGHT + 0x11, OLED_WHITE, V_01043); 
+
+
+	putc_oled(0x1,V_01018); 
+	puts_oled(V_01030, 0x1C, OLED_FONT_SMALL, 0x1, V_01046); 
+	putc_oled(0x1,V_01020); 
+	puts_oled(V_01031, 0x1C, OLED_FONT_SMALL, 0x1, V_01049); 
+}
+
+int V_01046; 
+int V_01049;
+int V_01042 = 0x1;
+int V_01043 = 0x1;
+
+function V_0109() {
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	if(event_press(PS4_TRIANGLE))
+	{
+		V_01046 = 0x1;
+		V_01049 = 0x1;
+		V_01042 = 0x0;
+		V_01043 = 0x0;
+
+		if(!V_0328 && !V_0326)
+			V_0104();
+	}
+	else if(event_release(PS4_TRIANGLE))//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	{
+		V_01046 = 0x0;
+		V_01049 = 0x0;
+		V_01042 = 0x1;
+		V_01043 = 0x1;
+
+		if(V_0327)
+		{
+			if(V_0318[V_0314] == 0x0)
+			{
+				if(V_0319[V_0315] == 0x0 || V_0318[V_0315] == 0x0)
+					V_0344 = 0x0;
+				else
+					V_0344 = V_0116(V_0344 + 0x2, 0x0, V_087(V_0955));
+			}
+			else if(V_0319[V_0315] == 0x0 || V_0318[V_0315] == 0x0)
+				V_0344 = V_0116(V_0344++, 0x0, 0x1);
+			else
+				V_0344 = V_0116(V_0344 + 0x1, 0x0, V_087(V_0955));
+
+			V_0322 = TRUE; 
+		}
+		else if(V_0330)
+		{
+			V_0317 = V_0116(V_0317 + 0x1, 0x0, V_087(V_0959));
+
+			if(V_0317 == V_0314)
+			{
+				V_099();
+				V_0102();	
+				V_0104();	
+				V_0108();
+			}
+			else
+			{
+				V_099();		
+				V_0100();		
+				V_0104();		
+				V_0105(); 
+				V_0106();	
+			}
+
+			V_0322 = TRUE; 
+		}
+		if(!V_0328 && !V_0326)
+			V_0104();
+	}	
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	if(event_press(PS4_LEFT))
+	{
+		V_01046 = 0x1;
+		V_01049 = 0x0;
+		V_01042 = 0x0;
+		V_01043 = 0x1;
+
+		if(V_0328)
+		{
+			if(get_val(PS4_CROSS))
+			{
+				V_0105();
+			}
+			else
+			{
+				V_0256 -= 0x1;
+
+				if(V_0179 == V_0159 && V_0204[V_0344] == V_0181)
+				{	
+					if(V_0256 == V_0227)
+						V_0256 = V_0226;
+					if(V_0256 < V_0226)
+						V_0256 = V_0228;
+				}
+				V_0104();
+				V_0322 = TRUE; 
+			}
+		}
+		else if(V_0327)
+		{
+			V_0179 = V_0116(V_0179 - 0x1, 0x0, V_087(V_0949));  
+			V_0105();
+			V_0322 = TRUE; 
+		}
+		else if(V_0329)
+		{
+			V_0301 = V_0116(V_0301 - 0x1, 0x0, V_087(V_0957)); 
+			V_0105();
+			V_0322 = TRUE;
+		}
+		else if(V_0330)
+		{
+			if(V_0317 == V_0314)
+			{
+				V_0318[V_0317] = V_0116(V_0318[V_0317] - 0x1, 0x0, V_087(V_0960));
+				V_0108();
+			}
+			else
+			{
+				V_0319[V_0317] = V_0116(V_0319[V_0317] - 0x1, 0x0, V_087(V_0960));  
+				V_0105();
+			}	
+			V_0322 = TRUE; 
+		}		
+	}
+	if(event_release(PS4_LEFT))//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	{
+		V_01046 = 0x0;
+		V_01049 = 0x0;
+		V_01042 = 0x1;
+		V_01043 = 0x1;
+
+		if(V_0328)
+		{
+			if(get_val(PS4_CROSS))
+				V_0105();
+			else
+				V_0104();
+		}
+		else if(V_0330)
+		{
+			if(V_0317 == V_0314)
+				V_0108();
+			else
+				V_0105();
+		}	
+		else if(!V_0326)
+			V_0105();
+	}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	if(event_press(PS4_RIGHT))
+	{
+		V_01046 = 0x0;
+		V_01049 = 0x1;
+		V_01042 = 0x1;
+		V_01043 = 0x0;
+
+		if(V_0328)
+		{
+			if(get_val(PS4_CROSS))
+				V_0105();
+			else
+			{
+				V_0256 += 0x1;				
+
+				if(V_0179 == V_0159 && V_0204[V_0344] == V_0181)
+				{								
+					if(V_0256 == V_0227)
+						V_0256 = V_0228;
+					if(V_0256 > V_0228)
+						V_0256 = V_0226;
+				}
+				V_0104();
+				V_0322 = TRUE; 
+			}
+		}
+		else if(V_0327)
+		{
+			V_0179 = V_0116(V_0179 + 0x1, 0x0, V_087(V_0949));  
+			V_0105();
+			V_0322 = TRUE; 
+		}
+		else if(V_0329)
+		{
+			V_0301 = V_0116(V_0301 + 0x1, 0x0, V_087(V_0957)); 
+			V_0105();
+			V_0322 = TRUE;
+		}
+		else if(V_0330)
+		{
+			if(V_0317 == V_0314)
+			{
+				V_0318[V_0317] = V_0116(V_0318[V_0317] + 0x1, 0x0, V_087(V_0960));
+				V_0108();
+			}
+			else
+			{
+				V_0319[V_0317] = V_0116(V_0319[V_0317] + 0x1, 0x0, V_087(V_0960));  
+				V_0105();
+			}	
+			V_0322 = TRUE; 
+		}	
+	}
+	if(event_release(PS4_RIGHT))//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	{
+		V_01046 = 0x0;
+		V_01049 = 0x0;
+		V_01042 = 0x1;
+		V_01043 = 0x1;
+
+		if(V_0328)
+		{
+			if(get_val(PS4_CROSS))
+				V_0105();
+			else
+				V_0104();
+		}
+		else if(V_0330)
+		{
+			if(V_0317 == V_0314)
+				V_0108();
+			else
+				V_0105();
+		}	
+		else if(!V_0326)
+			V_0105();
+	}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	if(event_press(PS4_UP))
+	{
+		V_01046 = 0x0;
+		V_01049 = 0x1;
+		V_01042 = 0x1;
+		V_01043 = 0x0;
+
+		if(V_0326)
+		{
+			V_0158 = V_0116(V_0158 - 0x1, 0x0, V_087(V_0956)); 
+			V_0322 = TRUE;
+		}
+		else if(V_0328)
+		{
+			if(get_val(PS4_CROSS))
+				V_0106();
+		}
+		else if(V_0330)
+		{
+			if(V_0317 != V_0314)
+			{
+				V_0318[V_0317] = V_0116(V_0318[V_0317] + 0x1, 0x0, V_087(V_0960)); 
+				V_0106();
+				V_0322 = TRUE; 
+			}
+		}
+		else if(!V_0326)
+			V_0106();
+	}
+	if(event_release(PS4_UP))//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	{
+		V_01046 = 0x0;
+		V_01049 = 0x0;
+		V_01042 = 0x1;
+		V_01043 = 0x1;
+
+		if(V_0328)
+		{
+			if(get_val(PS4_CROSS))
+				V_0106();
+		}
+		else if(V_0330)
+		{
+			if(V_0317 != V_0314)
+				V_0106();
+		}
+		else if(!V_0326)
+			V_0106();
+	}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	if(event_press(PS4_DOWN))
+	{
+		V_01046 = 0x1;
+		V_01049 = 0x0;
+		V_01042 = 0x0;
+		V_01043 = 0x1;
+
+		if(V_0326)
+		{
+			V_0158 = V_0116(V_0158 + 0x1, 0x0, V_087(V_0956)); 
+			V_0322 = TRUE;
+		}
+		else if(V_0328)
+		{
+			if(get_val(PS4_CROSS))
+				V_0106();
+		}
+		else if(V_0330)
+		{
+			if(V_0317 != V_0314)
+			{
+				V_0318[V_0317] = V_0116(V_0318[V_0317] - 0x1, 0x0, V_087(V_0960));  
+				V_0106();
+				V_0322 = TRUE;
+			}
+		}
+		else if(!V_0326)
+			V_0106();
+	}
+	if(event_release(PS4_DOWN))//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	{
+		V_01046 = 0x0;
+		V_01049 = 0x0;
+		V_01042 = 0x1;
+		V_01043 = 0x1;
+
+		if(V_0328)
+		{
+			if(get_val(PS4_CROSS))
+				V_0106();
+		}
+		else if(V_0330)
+		{
+			if(V_0317 != V_0314)
+				V_0106();
+		}
+		else if(!V_0326)
+			V_0106();
+	}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	if(event_press(PS4_CROSS))
+	{
+		V_01046 = 0x1;
+		V_01049 = 0x1;
+		V_01042 = 0x0;
+		V_01043 = 0x0;
+
+		if(V_0328)	
+			V_0107();
+	}
+	if(event_release(PS4_CROSS))//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	{
+		V_01046 = 0x0;
+		V_01049 = 0x0;
+		V_01042 = 0x1;
+		V_01043 = 0x1;
+
+		if(V_0326)
+		{
+			if(V_0158 == V_0155)
+			{
+				V_0179 = 0x0;
+				V_0327 = TRUE;
+				V_0326 = FALSE;			
+				V_0100();				
+				V_0105(); 
+				V_0106();	
+			}
+
+			else if(V_0158 == V_0156)
+			{
+				V_0301 = 0x0;
+				V_0329 = TRUE;
+				V_0326 = FALSE;		
+				V_0100();				
+				V_0105(); 
+				V_0106();	
+			}
+
+			else if(V_0158 == V_0157)
+			{
+				V_0317 = 0x0;
+				V_0330 = TRUE;
+				V_0326 = FALSE;	
+				V_0102();	
+				V_0108();
+			}
+
+			V_0346 = 0x0;
+			V_099();
+			V_0104();
+			V_0322 = TRUE;
+			V_0323 = TRUE;
+		}
+		else if(V_0327) 
+		{
+			if(V_086()) 	 
+			{
+				if(V_0204[V_0344] >= V_0182)
+					V_0256 = V_0229; 
+				else
+					V_0256 = V_087(V_0950) + 0x1; 
+
+				if(V_0179 == V_0160) 
+				{
+					if(V_0205[V_0344] == 0x2 && V_0262[V_0344] < 0x3C)
+						V_0262[V_0344] = 0xF0;
+					if(V_0205[V_0344] == 0x3 && V_0262[V_0344] > 0x19)
+						V_0262[V_0344] = 0x4;
+				}
+
+				V_0346 = 0x0;		
+				V_0328 = TRUE;
+				V_0327 = FALSE;
+				V_0101();			
+				V_0104();		
+				V_0105();		
+				V_0107();
+				V_0106();	
+				V_0322 = TRUE;
+				V_0323 = TRUE;
+			}
+		}
+		else if(V_0328)	
+			V_0107();
+	}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	if(event_press(PS4_CIRCLE))
+	{
+		if(V_0327) 
+		{
+			V_0326 = TRUE;
+			V_0327 = FALSE;
+			V_0103();
+		}
+		if(V_0328) 
+		{
+			V_0327 = TRUE;
+			V_0328 = FALSE;
+			V_0100();		
+			V_0104();	
+			V_0105();	
+			V_0106();
+		}
+		if(V_0329) 
+		{
+			V_0326 = TRUE;
+			V_0329 = FALSE;
+			V_0103();
+		}
+		if(V_0330) 
+		{
+			V_0326 = TRUE;
+			V_0330 = FALSE;
+			V_0103();
+		}
+		V_0346 = 0x0;
+		V_0322 = TRUE;
+		V_0323 = TRUE;
+	}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	if(event_release(PS4_PS))
+	{
+		if(V_0328 && get_ival(PS4_L2))
+		{
+			if(V_0204[V_0344] >= V_0182)
+				V_0256 = V_0229; 
+			else
+				V_0256 = V_087(V_0950) + 0x1; 
+
+			V_0179 = V_0159;
+			V_099();
+			V_0101();			
+			V_0104();		
+			V_0105();		
+			V_0107();
+			V_0106();	
+			V_0322 = TRUE;
+			V_0323 = TRUE;
+		}
+	}
+
+}
+
+const image V_0596 = {0x70, 0x2D, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3E, 0x39, 0xC0, 0xC1, 0x01, 0x1F, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC0, 0x00, 0x61, 0xB0,
+0x60, 0xC1, 0x81, 0x18, 0x00, 0x06, 0x00, 0x00, 0x00, 0x00, 0xC0, 0x00, 0xC0, 0x30, 0x60, 0xE1, 0x83, 0x30, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x01, 0x80, 0x30, 0x41, 0xE0, 0xC2, 0x30, 0x00, 0x07, 0x00, 0x00, 0x00,
+0x00, 0xE0, 0x03, 0x80, 0x31, 0xC1, 0x30, 0xC6, 0x30, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x03, 0x00, 0x33, 0x81, 0x38, 0xCC, 0x3F, 0x80, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x03, 0x0F, 0xFC, 0x03, 0xF0, 0x4C, 0x38, 
+0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x07, 0x1F, 0x3C, 0x06, 0x30, 0x78, 0x20, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x03, 0x33, 0x26, 0x02, 0x10, 0x38, 0x20, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x03, 0x02,
+0x23, 0x06, 0x18, 0x38, 0x20, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x03, 0x02, 0x30, 0xC6, 0x08, 0x30, 0x20, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x01, 0x9C, 0x20, 0x6C, 0x08, 0x10, 0x3F, 0xC0, 0x07, 0x00, 0x00,
+0x00, 0x00, 0xE0, 0x00, 0xF8, 0x20, 0x0C, 0x00, 0x00, 0x18, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0E, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x01,
+0x04, 0x0F, 0x01, 0x04, 0x3F, 0x00, 0x00, 0x07, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xE1, 0x04, 0x1F, 0xC3, 0x04, 0x60, 0x9F, 0x83, 0xFF, 0xFF, 0x00, 0x00, 0x7F, 0xFF, 0xE3, 0x04, 0x30, 0xE2, 0x0E, 0xC0, 0x18, 0x03, 0xFF, 0xFF,
+0x00, 0x00, 0x00, 0xE0, 0x03, 0x06, 0x59, 0xE6, 0x06, 0xC0, 0x10, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x03, 0x06, 0x4E, 0xB6, 0x06, 0xC0, 0x10, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x03, 0x3F, 0x4F, 0x96, 0x04,
+0x7F, 0x30, 0xC0, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x03, 0xFF, 0xD9, 0x96, 0x04, 0x7B, 0xBF, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x07, 0xBE, 0xF9, 0xF6, 0x0E, 0x01, 0xB0, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0,
+0x03, 0x06, 0x7F, 0xF2, 0x0C, 0x01, 0xB0, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x03, 0x04, 0x47, 0xF2, 0x0C, 0x03, 0x30, 0x00, 0x07, 0x00, 0x00, 0x00, 0x00, 0xE0, 0x03, 0x06, 0x26, 0x22, 0x1C, 0x03, 0x30, 0x00, 0x07,
+0x00, 0x00, 0x00, 0x00, 0xC0, 0x03, 0x00, 0x36, 0x23, 0xF8, 0x8E, 0x31, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x1E, 0xC1, 0xF1, 0xFC, 0x1F, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x0F, 0x80,
+0x00, 0x60, 0x00, 0x00, 0x00, 0x00};
+
+
+function V_0110() {
+
+	if(get_controller() == PIO_PS4) return V_0960;
+	else                            return V_0961;
+
+	return inv(0x1);
+}
+
+function V_0111() {
+
+	if(get_controller() == PIO_PS4) return V_0507;
+	else                            return V_0967;
+
+	return inv(0x1);
+}
+
+function V_0112() {
+
+	if(get_controller() == PIO_PS4)
+	{
+		if(V_0326)            return V_0962;
+		else if(V_0327)        return V_0951;
+		else if(V_0328)        return V_0952;
+		else if(V_0329) return V_0964;
+		else if(V_0330)   return V_0974;
+	}
+	else
+	{
+		if(V_0326)            return V_0963;
+		else if(V_0327)        return V_0953;
+		else if(V_0328)        return V_0954;
+		else if(V_0329) return V_0965;
+		else if(V_0330)   return V_0975;
+	}
+	return inv(0x1);
+}
+
+
+int V_01144,V_01145;
+
+function V_0113(V_024,V_0115) {
+
+    V_0320 = 0x1;  V_01145 = 0x2710;
+
+	if(V_024 < 0x0)
+	{          
+         putc_oled(V_0320,0x2D);    
+         V_0320 += 0x1;
+         V_024 = abs(V_024);
+	}
+
+	for(V_01144 = 0x5; V_01144 >= 0x1; V_01144--) 
+	{
+	    if(V_0115 >= V_01144) 
+	    {
+            putc_oled(V_0320,V_01148[V_024 / V_01145]);
+            V_024 = V_024 % V_01145;
+            V_0320 +=  0x1; 
+           
+        }
+        V_01145 /= 0xA;
+    }
+    if(V_0321)
+    	puts_oled(0x78, 0x36, OLED_FONT_SMALL, V_0320 - 0x1, OLED_WHITE); 
+    else
+    	puts_oled(V_0122(V_0320 - 0x1,OLED_FONT_MEDIUM_WIDTH),0x1C,OLED_FONT_MEDIUM,V_0320 - 0x1,OLED_WHITE); 
+}
+
+function V_0116(V_024, V_0118, V_0119) {
+	if(V_024 > V_0119) return V_0118;
+	if(V_024 < V_0118) return V_0119;
+	return V_024;
+}
+
+function V_0120(V_0121) {
+
+    V_0121 = abs(V_0121);
+    if(V_0121 / 0x2710 > 0x0) return 0x5;
+    if(V_0121 /  0x3E8 > 0x0) return 0x4;
+    if(V_0121 /   0x64 > 0x0) return 0x3;
+    if(V_0121 /    0xA > 0x0) return 0x2;
+                          return 0x1;
+}
+
+function V_0122(V_0123,V_0124) {
+
+    return (OLED_WIDTH / 0x2) - ((V_0123 * V_0124) / 0x2);
+}
+
+function V_0125(V_0126) {
+
+    return (OLED_HEIGHT  / 0x2) - (V_0126 / 0x2);
+}
+
+function V_0127(V_059) {
+
+	return event_press(V_059) || get_ival(V_059) && get_ptime(V_059) > 0xFA 
+	       && get_ptime(V_059) % (get_rtime() * 0x8) == 0x0;
+}
+
+function V_0129(V_0130) {
+
+   for(V_0320 = 0x0; V_0320 <= 0x3; V_0320++) 
+   {
+     set_led(V_0320,duint8((V_0130 * 0x4) + V_0320));
+   }
+}
+
+function V_0131() {
+
+set_val(PS4_UP     , 0x0 ); 	set_val(PS4_DOWN  , 0x0 ); 	set_val(PS4_LEFT  , 0x0 );	set_val(PS4_RIGHT   , 0x0);
+set_val(PS4_CROSS  , 0x0 ); 	set_val(PS4_CIRCLE, 0x0 ); 	set_val(PS4_SQUARE, 0x0 ); 	set_val(PS4_TRIANGLE, 0x0);
+set_val(PS4_L1     , 0x0 ); 	set_val(PS4_R1    , 0x0 ); 	set_val(PS4_L3    , 0x0 ); 	set_val(PS4_R3      , 0x0);
+set_val(PS4_OPTIONS, 0x0 ); 	set_val(PS4_SHARE , 0x0 );	set_val(PS4_TOUCH , 0x0 );	set_val(PS4_PS      , 0x0);
+set_val(XB1_PL1    , 0x0 ); 	set_val(XB1_PL2   , 0x0 );	set_val(XB1_PR1   , 0x0 );	set_val(XB1_PR2     , 0x0);
+}
+
+
+int V_01155,V_0558,V_0556,V_0555,V_01159,V_01160,V_01161;
+int V_0598,V_0557,V_01164,V_01165,V_01166,V_01167, V_01168,V_01169,V_01170,V_01171,V_01172,V_01173,V_01174,V_01175,V_01176,V_01177,V_0603,V_01179,V_01180,V_01181,V_01182,V_01183,V_01184,V_01185;
+int V_01186 = 0x1,V_01187 = 0x8,V_01188 = 0xF,V_01189 = 0x16,V_01190 = 0x1D,V_01191 = 0x24,V_01192 = 0x2B,V_01193 = 0x32,V_01194 = 0x39,V_01195 = 0x40,V_01196 = 0x47;
+define V_01197 = 0x47,V_01198 = 0x52,V_01199 = 0x41,V_01200 = 0x56,V_01201 = 0x45,V_01202 = 0x20,V_01203 = 0x48,V_01204 = 0x4F,V_01205 = 0x55,V_01206 = 0x53,V_01207 = 0x45,V_01208 = 0x32,V_01209 = 0x31,V_01210 = 0x1388,V_01211 = 0xA;
+
+function V_0132(){
+	cls_oled(0x0);
+	combo_run(V_00);
+	combo_run(V_05);
+if (V_0557 > 0x40)  V_0557 =   0x0;
+if (V_01165 > 0x40)  V_01165 =   0x0;
+if (V_01167 > 0x40)  V_01167 =   0x0;
+if (V_01169 > 0x40)  V_01169 =   0x0;
+if (V_01171 > 0x40)  V_01171 =   0x0;
+if (V_01173 > 0x40)  V_01173 =   0x0;
+if (V_01175 > 0x40)  V_01175 =   0x0;
+if (V_01177 > 0x40)  V_01177 =   0x0;
+if (V_0556 > 0x69) V_0556 = inv(0x32);
+if (V_01160 > 0x2D)  V_01160 =   0x0;
+if (V_01161 < 0x0)   V_01161 =  0x37;
+	putc_oled(0x1,V_0603);
+	puts_oled(V_0598,V_0557,0x0,0x1,0x1);
+	putc_oled(0x1,V_01179);
+	puts_oled(V_01164,V_01165,0x0,0x1,0x1);
+	putc_oled(0x1,V_01180);
+	puts_oled(V_01166,V_01167,0x0,0x1,0x1);
+	putc_oled(0x1,V_01181);
+	puts_oled(V_01168,V_01169,0x0,0x1,0x1);
+	putc_oled(0x1,V_01182);
+	puts_oled(V_01170,V_01171,0x0,0x1,0x1);
+	putc_oled(0x1,V_01183);
+	puts_oled(V_01172,V_01173,0x0,0x1,0x1);
+	putc_oled(0x1,V_01184);
+	puts_oled(V_01174,V_01175,0x0,0x1,0x1);
+	putc_oled(0x1,V_01185);
+	puts_oled(V_01176,V_01177,0x0,0x1,0x1);
+	putc_oled(0x1,V_01197);
+	puts_oled(V_01186 + V_0556,V_01160 + 0x2,0x0,0x1,0x1);
+	putc_oled(0x1,V_01198);
+	puts_oled(V_01187 + V_0556,V_01161 + 0x4,0x0,0x1,0x1);
+	putc_oled(0x1,V_01199);
+	puts_oled(V_01188 + V_0556,V_01160 + 0x6,0x0,0x1,0x1);
+	putc_oled(0x1,V_01200);
+	puts_oled(V_01189 + V_0556,V_01161 + 0x8,0x0,0x1,0x1);
+	putc_oled(0x1,V_01201);
+	puts_oled(V_01190 + V_0556,V_01160 + 0xA,0x0,0x1,0x1);
+	putc_oled(0x1,V_01202);
+	puts_oled(V_01191 + V_0556,V_01161 + 0xC,0x0,0x1,0x1);
+	putc_oled(0x1,V_01203);
+	puts_oled(V_01192 + V_0556,V_01160 + 0xE,0x0,0x1,0x1);
+	putc_oled(0x1,V_01204);
+	puts_oled(V_01193 + V_0556,V_01161 + 0x10,0x0,0x1,0x1);
+	putc_oled(0x1,V_01205);
+	puts_oled(V_01194 + V_0556,V_01160 + 0x12,0x0,0x1,0x1);
+	putc_oled(0x1,V_01206);
+	puts_oled(V_01195 + V_0556,V_01161 + 0x14,0x0,0x1,0x1);
+	putc_oled(0x1,V_01207);
+	puts_oled(V_01196 + V_0556,V_01160 + 0x16,0x0,0x1,0x1);
+}
+
+
+int V_01250;
+int V_0135;
+int V_0358;
+
+function V_0133(V_0134, V_0135, V_0136) { 
+	for(V_0320 = V_0136; V_0320 < (0x1 + V_0136); V_0320++)
+	{
+		V_0134 = V_0134 & (~(0x1 << V_0320));
+	}
+	V_0134 = V_0134 | (V_0135 << V_0136);
+
+	return V_0134;
+}
+
+function V_0137(V_0134, V_0136){
+	V_01250 = 0x0;
+	V_0135 = 0x0;
+	for(V_0320 = 0x0; V_0320 < 0x1 ; V_0320++)
+	{
+		V_01250 = V_01250 | (0x1 << V_0320);
+	}
+	V_01250 = V_01250 << V_0136
+	V_0135 = (V_0134 & V_01250) >> V_0136
+return V_0135;
+}
+
+function V_0140(V_0141, V_0142, V_0143, V_0144) { 
+	return 0xff00 & ((0xf0 & (V_0141 << 0x4) | V_0142) << 0x8) | (0xf0 & (V_0143 << 0x4) | V_0144); 
+}
+
+function V_0145(V_0146, V_0147) { 
+	return  (V_0146 >> (0x4 * V_0147)) & 0x0F; 
+}
+
+function V_0148(V_0149, V_0150) { 
+	V_0135 = 0x0;
+
+	if(V_0149 < 0x0)
+   		V_0149 = abs(V_0149) | 0x80;
+
+	V_0135 = (abs(V_0150) << 0x8)|V_0149;
+
+	if(V_0150 < 0x0)
+		V_0135 *= inv(0x1);
+
+	return V_0135;
+}
+
+function V_0151(V_0134, V_0153) {
+	V_0135 = 0x0;
+
+	if(V_0153 == 0x0)
+	{	 
+		V_0135 = 0x80 & abs(V_0134) ;
+		V_0135 = V_0135 >> 0x7;
+		V_0135 = ((inv(0x2)) * V_0135) + 0x1;
+		V_0135 = (abs(V_0134) & 0x7F) * V_0135;
+	}
+	else
+	{
+		V_0135 = V_0134 >> 0x8;
+
+	    if(V_0134 < 0x0)
+			V_0135 += 0x1;
+	}
+
+	return V_0135;
+}
+
+function V_0154() {
+	V_0326 = FALSE;
+	V_0327 = FALSE;
+	V_0328 = FALSE;
+	V_0329 = FALSE;
+	V_0330 = FALSE;
+	cls_oled(OLED_BLACK);
+	print(V_0122(0x7 - 1,OLED_FONT_MEDIUM_WIDTH),V_0125(OLED_FONT_MEDIUM_HEIGHT) - 0xF,OLED_FONT_MEDIUM,OLED_WHITE,V_01270(0x0)); 	
+	print(V_0122(0xA - 1,OLED_FONT_MEDIUM_WIDTH),V_0125(OLED_FONT_MEDIUM_HEIGHT) + 0x5 ,OLED_FONT_MEDIUM,OLED_WHITE,V_01270(0x1)); 	
+	print(V_0122(0xC - 1,OLED_FONT_SMALL_WIDTH) ,V_0125(OLED_FONT_SMALL_HEIGHT) + 0x15 ,OLED_FONT_SMALL ,OLED_WHITE,V_01270(0x2)); 
+	combo_run(V_04);
+	V_0358 = V_0133(V_0358, V_0206[0x0]  ,  0x0);		V_0358 = V_0133(V_0358, V_0206[0x1]  ,  0x1);		V_0358 = V_0133(V_0358, V_0206[0x2]  ,  0x2);
+	V_0358 = V_0133(V_0358, V_0208[0x0]   ,  0x3);		V_0358 = V_0133(V_0358, V_0208[0x1]   ,  0x4);		V_0358 = V_0133(V_0358, V_0208[0x2]   ,  0x5);
+	V_0358 = V_0133(V_0358, V_0213[0x0]    ,  0x6);		V_0358 = V_0133(V_0358, V_0213[0x1]    ,  0x7);		V_0358 = V_0133(V_0358, V_0213[0x2]    ,  0x8);
+	V_0358 = V_0133(V_0358, V_0214[0x0]   ,  0x9);		V_0358 = V_0133(V_0358, V_0214[0x1]   , 0xA);		V_0358 = V_0133(V_0358, V_0214[0x2]   , 0xB);
+	V_0358 = V_0133(V_0358, V_0211[0x0] , 0xC);		V_0358 = V_0133(V_0358, V_0211[0x1] , 0xD);		V_0358 = V_0133(V_0358, V_0211[0x2] , 0xE);
+	set_pvar(SPVAR_1,V_0358);
+
+	V_0358 = V_0133(V_0358, V_0212[0x0] ,  0x0);		V_0358 = V_0133(V_0358, V_0212[0x1] ,  0x1);		V_0358 = V_0133(V_0358, V_0212[0x2] ,  0x2);
+	V_0358 = V_0133(V_0358, V_0221       ,  0x3);	 	V_0358 = V_0133(V_0358, V_0222      ,  0x4);	 	V_0358 = V_0133(V_0358, V_0312   ,  0x5); 		
+	V_0358 = V_0133(V_0358, V_0313        ,  0x6);	    V_0358 = V_0133(V_0358, V_0224     ,  0x7);
+	set_pvar(SPVAR_2,V_0358);
+
+	V_0358 = V_0140(V_0204[0x0], V_0204[0x1], V_0204[0x2], V_0223);
+	set_pvar(SPVAR_3,V_0358);
+
+	V_0358 = V_0140(V_0205[0x0], V_0205[0x1], V_0205[0x2], NOT_USE);
+	set_pvar(SPVAR_4,V_0358);
+
+	V_0358 = V_0140(V_0207[0x0], V_0207[0x1], V_0207[0x2], NOT_USE);
+	set_pvar(SPVAR_5,V_0358);
+
+	V_0358 = V_0140(V_0209[0x0], V_0209[0x1], V_0209[0x2], NOT_USE);
+	set_pvar(SPVAR_6,V_0358);
+
+	V_0358 = V_0140(V_0210[0x0], V_0210[0x1], V_0210[0x2], V_0220);
+	set_pvar(SPVAR_7,V_0358);
+
+	V_0358 = V_0148(V_0302, V_0303);
+	set_pvar(SPVAR_8,V_0358);
+
+	V_0358 = V_0148(V_0304, V_0305);
+	set_pvar(SPVAR_9,V_0358);
+
+	V_0358 = V_0148(V_0306, V_0307);
+	set_pvar(SPVAR_10,V_0358);
+
+	V_0358 = V_0148(V_0308, V_0309);
+	set_pvar(SPVAR_11,V_0358);
+
+	V_0358 = V_0148(V_0310, V_0311);
+	set_pvar(SPVAR_12,V_0358);
+
+	V_0358 = V_0148(V_0319[0x0], V_0319[0x1]);
+	set_pvar(SPVAR_13,V_0358);
+
+	V_0358 = V_0148(V_0319[0x2], V_0318[0x0]);
+	set_pvar(SPVAR_14,V_0358);
+
+	V_0358 = V_0148(V_0318[0x1], V_0318[0x2]);
+	set_pvar(SPVAR_15,V_0358);
+
+	V_0358 = V_0148(V_0257[0x0], V_0258[0x0]);
+	set_pvar(SPVAR_16,V_0358);
+
+	V_0358 = V_0148(V_0257[0x1], V_0258[0x1]);
+	set_pvar(SPVAR_17,V_0358);
+
+	V_0358 = V_0148(V_0257[0x2], V_0258[0x2]);
+	set_pvar(SPVAR_18,V_0358);
+
+	set_pvar(SPVAR_19,V_0259[0x0]);
+	set_pvar(SPVAR_20,V_0259[0x1]);
+	set_pvar(SPVAR_21,V_0259[0x2]);
+
+	V_0358 = V_0148(V_0260[0x0], V_0261[0x0]);
+	set_pvar(SPVAR_22,V_0358);
+
+	V_0358 = V_0148(V_0260[0x1], V_0261[0x1]);
+	set_pvar(SPVAR_23,V_0358);
+
+	V_0358 = V_0148(V_0260[0x2], V_0261[0x2]);
+	set_pvar(SPVAR_24,V_0358);
+
+	set_pvar(SPVAR_25,V_0262[0x0]);
+	set_pvar(SPVAR_26,V_0262[0x1]);
+	set_pvar(SPVAR_27,V_0262[0x2]);
+
+	set_pvar(SPVAR_28, V_0268   );
+	set_pvar(SPVAR_29, V_0269);
+
+	V_0358 = V_0148(V_0263[0x0], V_0264[0x0]);
+	set_pvar(SPVAR_30,V_0358);
+	V_0358 = V_0148(V_0263[0x1], V_0264[0x1]);
+	set_pvar(SPVAR_31,V_0358);
+	V_0358 = V_0148(V_0263[0x2], V_0264[0x2]);
+	set_pvar(SPVAR_32,V_0358);
+
+	set_pvar(SPVAR_33,V_0270);
+	set_pvar(SPVAR_34,V_0271);
+
+	set_pvar(SPVAR_35,V_0272);
+
+	set_pvar(SPVAR_36,V_0273);
+	set_pvar(SPVAR_37,V_0274);
+	set_pvar(SPVAR_38,V_0275);
+	set_pvar(SPVAR_39,V_0276);
+
+	set_pvar(SPVAR_40,V_0278);
+
+	V_0358 = V_0148(V_0279, V_0280);
+	set_pvar(SPVAR_41,V_0358);
+
+	set_pvar(SPVAR_42,V_0281);
+	set_pvar(SPVAR_43,V_0282);
+
+	set_pvar(SPVAR_44,V_0283);
+
+	set_pvar(SPVAR_45,V_0265[0x0]);
+	set_pvar(SPVAR_46,V_0265[0x1]);
+	set_pvar(SPVAR_47,V_0265[0x2]);
+	set_pvar(SPVAR_48,V_0266[0x0]);
+	set_pvar(SPVAR_49,V_0266[0x1]);
+	set_pvar(SPVAR_50,V_0266[0x2]);
+	set_pvar(SPVAR_51,V_0267);
+	set_pvar(SPVAR_52,V_0216);
+	set_pvar(SPVAR_53,V_0284);
+	set_pvar(SPVAR_54,V_0219); 
+	set_pvar(SPVAR_55,V_0218);
+	set_pvar(SPVAR_56,V_0285);
+
+	set_pvar(SPVAR_57,V_0217);
+	set_pvar(SPVAR_58,V_0286); 
+	set_pvar(SPVAR_59,V_0287);
+	set_pvar(SPVAR_60,V_0288);
+}
+function LedFlow() {
+
+    Rgb += get_rtime();
+        
+    if (Rgb == 60) {
+        set_rgb(Colour,Colour[1],Colour[2]);
+        Colour[LedDec] -= 1; 
+        Colour[LedInc] += 1;
+
+        if (!Colour[LedDec]) { 
+            LedInc = (LedInc + 1) % 3; 
+            LedDec = (LedDec + 1) % 3; 
+        }
+            Rgb = 0;    
+    }
+} ����������������

@@ -1,0 +1,453 @@
+// ty from script finder
+const string CustomerName = "Mihai"; 
+define Linear = FALSE; 
+define MakeScriptSomewhatWorse = FALSE;
+int BloomReducer = TRUE; 
+int AutoTrackingMovementAmount = 100;
+	define Interact = PS4_SQUARE;
+	define FIRE             = PS4_R2;
+	define ADS              = PS4_L2;
+	define DeadzoneRightStick = 10;
+	define DeadzoneLeftStick = 10;
+	define Build = XB1_B;
+	define Pickaxe = XB1_Y;
+	define Roof = PS4_L1;
+	define Floor = PS4_R1;
+	define Ramp = PS4_L2;
+	define Wall = PS4_R2;
+	define Trap = PS4_SQUARE;
+	define edit = XB1_LS;
+	define reset = XB1_LT;
+	define select = XB1_RT;
+define EditAssistMod = FALSE;
+define EditAssistTime = 19;
+int EditT;
+int AntiRecoil = TRUE;
+int AntirecoilVertical;
+int AntiRecoilStrength = 11;
+int HeadShotAssist = TRUE;
+int PickupMacro = FALSE;
+define AutoaimHold = PS4_SHARE;
+define AutoaimPress = PS4_SHARE;
+define AntiRecoilToleHold = PS4_UP;
+define AntiRecoilTolePress = PS4_DOWN;
+int SlightStutterAA = FALSE;
+																																																																																																																																																																						int AimAssistExpo      	   = FALSE;int ExpoAccuracyTracker = FALSE;int HairTriers = TRUE;int PolarAdsAA = FALSE;int radius = DeadzoneRightStick - 1;define speed = 50;define release = DeadzoneRightStick + 10;int AdsAimAssist = FALSE;define strength = 1;define delay = 20;define Start = TRUE;define StartingPoint = release + 1;int ToleBattsStickyAim = FALSE;int HipfireAimAssistTime = 20; int HipAimAssistSize = 7;  int AdsAimAssistTime = 20;  int AdsAimAssistSize = 3;  int ToleRumbleBoost  = TRUE;   int TaylorAngleBoost   = 5;      int PolarBoost         = 10;    define AutoAim = TRUE;int StrafeShot = TRUE;int BuildTrack = FALSE;int Head;define HipAssist   = 2;  define LX = PS4_LX; define LY = PS4_LY;define RX = PS4_RX;                                    define RY = PS4_RY;define X = RX;define Y = RY;int BuildCount;define BuildTracker = TRUE;define BuildSyncTime = 4000;int HeadMax = 30;int HeadStep = 5;int AccuracyExploit  	   = TRUE;int StickAssistLinearV2_LS = FALSE;int StickAssistLinearV1_RS = FALSE;int Spam_Accuracy = 100;int AimAssist_Strength = DeadzoneRightStick;int StrafeWait = 1;int Feature1 = 8;define ExpoFirstShotAccuracy = TRUE;define On  = TRUE;define Off = FALSE;define Up = PS4_UP;define Left = PS4_LEFT;define Down = PS4_DOWN;define Right = PS4_RIGHT;define aimY = PS4_RY;define aimX = PS4_RX;define Strafe = PS4_LX;define Walk = PS4_LY;define Aim_Stick = POLAR_RS;define AIM_X            = PS4_RX;define AIM_Y            = PS4_RY;int Aim_Val = 0, Wait_Val = 0;int ToleTaylorAssist =  TRUE; int TaylorRadius       = 0;           int TaylorAngle        = 0;int TaylorRadiusMin    =  0;int ExpoStrength = 27;
+init{
+		cls_oled(OLED_BLACK);
+		print(20,20,OLED_FONT_MEDIUM,OLED_WHITE,PRIVATE[0]);
+		print(40,40,OLED_FONT_SMALL,OLED_WHITE,Script[0])   
+		print(44,10,OLED_FONT_SMALL,OLED_WHITE,CustomerName[0]);
+	if(MakeScriptSomewhatWorse == TRUE){
+	BloomReducer = FALSE
+	AutoTrackingMovementAmount = 50;
+	SlightStutterAA = TRUE;
+	ExpoStrength = ExpoStrength / 2;
+	radius = DeadzoneRightStick - 4;
+	}
+	if(Linear) {
+	PolarAdsAA = TRUE;
+	AdsAimAssist = TRUE;
+	ToleBattsStickyAim = TRUE;
+	StickAssistLinearV2_LS = FALSE;
+	StickAssistLinearV1_RS = FALSE;	
+	HeadShotAssist = FALSE;
+	}
+	else {
+	AimAssistExpo = TRUE;
+	}
+	}
+const string PRIVATE = "BRAVEAIM"; 
+const string Script = "PRIVATE";
+main {
+		vm_tctrl(-9);
+		if (get_ival(edit) && EditAssistMod)
+			EditAssist();
+		if(event_release(edit) && EditAssistMod)
+			EditT = 0;
+		if(HairTriers) {
+			if(get_ival(ADS)){
+				set_val(ADS,100);
+				}
+			if(get_ival(FIRE)){
+				set_val(FIRE,100);
+				}
+			}
+		if(get_ival(AntiRecoilToleHold) && event_press(AntiRecoilTolePress) && AntiRecoil){
+			AntiRecoil = !AntiRecoil;
+			}
+if (BuildTracker) {
+        if (event_press(Build)) {
+            BuildTrack = !BuildTrack;
+        }
+        if (BuildTrack) {
+            BuildCount += get_rtime();
+            if (event_press(Pickaxe) || BuildCount == BuildSyncTime) {
+                BuildTrack = FALSE;
+                BuildCount = 0;
+            }
+            if (get_ival(Roof) || get_ival(Floor) || get_ival(Ramp) || get_ival(Wall) || get_ival(Trap)) {
+                BuildCount = 0;
+                	}
+                }
+            }
+    if (!BuildTrack) {
+        if (SlightStutterAA) {
+            combo_run(SlightStutterAA);
+                  if (abs(get_val(PS4_RX)) >= 15 || abs(get_val(PS4_RX)) >= 15 || abs(get_val(PS4_LY)) <= 15 || abs(get_val(PS4_LX)) <= 15) {
+                combo_stop(SlightStutterAA);
+            }
+                }
+if(AntiRecoil && get_ival(ADS) && get_ival(FIRE)){
+combo_run(AntiRecoil);
+}
+		if(PickupMacro == TRUE && get_ival(XB1_RB) && get_ival(XB1_LB)){
+		combo_run(PickupMacroCombo)
+		}
+if(AimAssistExpo) 
+{
+       combo_run(ExponentialAimSlightOffset);
+		combo_run(ExponentialAimSlightOffset2);
+    if (abs(get_val(PS4_RX)) > 16 || abs(get_val(PS4_RY)) > 16 || abs(get_val(PS4_LX)) > 16 || abs(get_val(PS4_LY)) > 16) {
+                combo_stop(ExponentialAimSlightOffset);
+            }
+            combo_run(ExponentialAimSlightOffset2);
+            if (abs(get_val(PS4_RX)) > 17 || abs(get_val(PS4_RY)) > 17 || abs(get_val(PS4_LX)) > 16 || abs(get_val(PS4_LY)) > 16) {
+                combo_stop(ExponentialAimSlightOffset2);
+                }
+    if(get_ival(ADS)) 
+    {
+        if(ExpoAccuracyTracker){
+        combo_run(Aim_Expo_Accuracy);
+		}
+		else {
+	    combo_run(Aim_Expo);
+        } 
+      if(!get_ival(ADS)) {
+        combo_stop(Aim_Expo);
+        combo_stop(Aim_Expo_Accuracy);
+        }
+}
+}
+        if (AutoAim) {
+            if (StrafeShot) {
+                if (event_press(AutoaimPress)) {
+                    StrafeShot = FALSE;
+                }
+            } 
+            else {
+                if (event_press(AutoaimPress)) {
+                    StrafeShot = TRUE;
+                }
+            }
+        }
+if(AutoAim){
+			if(StrafeShot & !get_ival(XB1_X)){
+				combo_run(StrafeShot)
+			}
+			if (StrafeShot){
+				if (StrafeShot && abs(get_ival(LX)) <= 35 && abs(get_ival(LY)) <= 35 && !get_ival(XB1_X)){
+					combo_run(StrafeShot);
+									}
+				else{
+					combo_stop(StrafeShot);
+									}
+							}
+					}
+if(BloomReducer) {
+			if(get_ival(ADS) && (get_ival(FIRE))) {
+				combo_run(AntiBloom);
+							}
+				if(abs(get_ival(LX)) > 40 || abs(get_ival(LY)) > 40) {
+				combo_stop(AntiBloom);
+							}
+	}
+	if (PolarAdsAA && get_ival(ADS)){
+	if (abs(get_ival(XB1_RX)) < release && abs(get_ival(XB1_RY)) < release) {
+		set_polar(Aim_Stick, angle = (angle + speed) % 360 ,radius * 327);
+	}
+}
+	if (AdsAimAssist){
+		if(!Start || (abs(get_val(XB1_RY)) >= StartingPoint  ||  abs(get_val(XB1_RX)) > StartingPoint)){
+		if(get_ival(ADS)){
+			combo_run(AdsAimAssist);
+	}	else {
+			combo_stop(AdsAimAssist);
+			}
+}
+}
+    if(ToleBattsStickyAim){
+        if(get_ival(FIRE) && !get_ival(ADS)){
+            combo_run(HipfireStickyAim);
+    	}
+    	if(get_ival(FIRE) && get_ival(ADS)){
+    		combo_run(AdsStickyAim);
+    	}
+	}
+if(HeadShotAssist) 
+{
+	if(get_ival(ADS) && get_ival(FIRE) || (HeadShotAssist == HipAssist && get_ival(FIRE))) 
+    {
+		if (abs(get_ival(RY)) < HeadMax) 
+		{ 			
+            Head = DeadzoneRightStick;
+            Head += HeadStep;
+			combo_run(HeadAssist_cmb);
+		}	
+	}             
+		if (!get_ival(FIRE)) Head = 0;
+		if (Head >= HeadMax) combo_stop(HeadAssist_cmb);
+}
+if(StickAssistLinearV2_LS) 
+{
+	if(StickAssistLinearV2_LS == TRUE) {
+        if(get_ival(FIRE) && !get_ival(ADS) && abs(get_ival(LX)) <= 70 && abs(get_ival(LY)) <= 70) combo_run(AimAssistThree); 
+    }
+}
+		if(ToleTaylorAssist) 
+	    {      
+			RX1 = get_val(PS4_RX);                                
+    		RY1 = get_val(PS4_RY); 
+  			ActualMagnitude = isqrt(pow(RX1, 2) + pow(RY1, 2));   
+  			MaxMagnitude = (ActualMagnitude < 100);             
+			angle += TaylorAngle + Angle;                                    
+			angle = angle % 360;  
+			CosAngle = DamPolar[(angle + 270) % 360];  
+			SinAngle = DamPolar[angle % 360];
+   		   	if(ToleRumbleBoost)
+    		{
+    			if(get_ival(FIRE))
+    			{
+    				SmartRumble = get_rumble(RUMBLE_A);
+    				Angle = TaylorAngleBoost;
+    		    	if(SmartRumble > 10 && SmartRumble < 40) 
+    		    	{
+    				    PolarStrength  = (TaylorRadius + PolarBoost + TaylorAngleBoost + SmartRumble / 10); 
+    					SmartRumble    = 0;
+    				}
+    	    	}
+    		}
+    		if(get_ival(ADS) || get_ival(FIRE))         
+    		{
+        		if(ActualMagnitude < TaylorRadius)           
+        		{
+           			SinAngle -= RY1;                                                              
+					CosAngle -= RX1;
+	    		}
+	   			else 
+	   			{     
+					SinAngle = (SinAngle * (200 - ((abs(RY1) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;  
+					CosAngle = (CosAngle * (200 - ((abs(RX1) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;   
+				}                                                  
+				if(!get_rumble(RUMBLE_A))
+    				GetShapes(TaylorRadius); 
+    			else 
+    				GetShapes(PolarStrength); 
+				}
+				PolarStrength = 0; 
+    			SmartRumble   = 0;  
+			}
+	}
+}
+combo PickupMacroCombo {
+    set_val(Interact,100);
+    wait(1);
+    set_val(Interact,0);
+    wait(1);
+}
+combo AntiRecoil {
+	AntirecoilVertical = get_val(PS4_RY) + AntiRecoilStrength;  
+    if(AntirecoilVertical > 100) AntirecoilVertical = 100;
+    if(abs(get_val(PS4_RY)) < abs(AntiRecoilStrength) +  5)
+    set_val(PS4_RY, (AntirecoilVertical));
+}
+combo ExponentialAimSlightOffset {
+    set_val(PS4_RX, Feature1);
+    wait(1);
+    set_val(PS4_RY, Feature1);
+    wait(1);
+    set_val(PS4_RX, -Feature1);
+    wait(1);
+    set_val(PS4_RY, -Feature1);
+    wait(1);
+}
+combo ExponentialAimSlightOffset2 {
+    set_val(PS4_RX, Feature1);
+    wait(1);
+    set_val(PS4_RY, Feature1);
+    wait(1);
+    set_val(PS4_RX, -Feature1);
+    wait(1);
+    set_val(PS4_RY, -Feature1);
+    wait(1);
+}
+combo AdsAimAssist {
+set_val(XB1_RY,get_ival(XB1_RY) + inv(strength));
+wait(delay):
+set_val(XB1_RX,get_ival(XB1_RX) + (strength));
+wait(delay):
+set_val(XB1_RY,get_ival(XB1_RY) + (strength));
+wait(delay):
+set_val(XB1_RX,get_ival(XB1_RX) + inv(strength));
+wait(delay):
+}
+combo HipfireStickyAim {
+offset2(PS4_RY,HipAimAssistSize);
+wait(HipfireAimAssistTime);
+offset2(PS4_RX,HipAimAssistSize);
+offset2(PS4_LX,HipAimAssistSize);
+wait(HipfireAimAssistTime);
+offset2(PS4_RY,inv(HipAimAssistSize));
+wait(HipfireAimAssistTime);
+offset2(PS4_RX,inv(HipAimAssistSize));
+offset2(PS4_LX,inv(HipAimAssistSize));
+wait(HipfireAimAssistTime);
+}
+combo AdsStickyAim {
+offset2(PS4_RY,AdsAimAssistSize);
+wait(AdsAimAssistTime);
+offset2(PS4_RX,AdsAimAssistSize);
+offset2(PS4_LX,AdsAimAssistSize);
+wait(AdsAimAssistTime);
+offset2(PS4_RY,inv(AdsAimAssistSize));
+wait(AdsAimAssistTime);
+offset2(PS4_RX,inv(AdsAimAssistSize));
+offset2(PS4_LX,inv(AdsAimAssistSize));
+wait(AdsAimAssistTime);
+}
+combo SlightStutterAA {
+    set_val(PS4_RX, AimAssist_Strength);
+    set_val(PS4_RY, AimAssist_Strength);
+    wait(1);
+    set_val(PS4_RX, -AimAssist_Strength);
+    set_val(PS4_RY, -AimAssist_Strength);
+    wait(1);
+}
+combo  AimAssistThree 
+{
+    set_val(LX,-100 + get_ival(LX));
+    wait(15);
+    set_val(LX,100 + get_ival(LX));
+    wait(15);
+}
+combo HeadAssist_cmb
+{
+	set_val(RY,inv(Head) + get_ival(RY));
+}                                                
+combo StrafeShot {
+    set_val(Strafe, -AutoTrackingMovementAmount);
+    wait(StrafeWait);
+    set_val(Strafe, AutoTrackingMovementAmount);
+}
+function EditAssist () {
+	EditT += get_rtime();
+    if (get_ival(edit)) {
+    	if (EditT >= EditAssistTime)
+       		set_val(select,100);
+   }
+}
+function RemoveStickNoise() 
+{
+  if(isqrt(pow(abs(get_ival(PS4_LX)),2) + pow(abs(get_ival(PS4_LY)),2)) <= Deadzone) {
+    set_val(PS4_LX,0);
+    set_val(PS4_LY,0);
+  }
+  if(isqrt(pow(abs(get_ival(PS4_RX)),2) + pow(abs(get_ival(PS4_RY)),2)) <= Deadzone) {
+    set_val(PS4_RX,0);
+    set_val(PS4_RY,0);
+  }
+}
+function offset(int axis, int offset_val) 
+{
+  set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+  return 
+}
+function offset2(Stick,Value) {
+  set_val(Stick, clamp(Value * (100 - abs(get_val(Stick))) / 100 + get_val(Stick), -100, 100));
+  return;
+}
+define True = TRUE;
+define False = FALSE; 
+int RX1,RY1,angle,CosAngle,SinAngle,SpiralPosition1,SpiralPosition2,InnerSpiral,OuterSpiral,ActualMagnitude,MaxMagnitude,SmartRumble,PolarStrength,Angle;
+const int8 DamPolar[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,    
+80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7, 
+6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,  
+-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95, 
+-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,   
+-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61, 
+-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,
+9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,
+82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};  
+combo AntiBloom {
+	set_val(LX,-40);
+	wait(50);
+	set_val(LX, 40);
+	wait(50);
+	} 
+int Position;   
+function GetShapes(f_var) {     
+    if(!SpiralPosition1)                                
+	{
+		InnerSpiral -= 1;
+		if(InnerSpiral < TaylorRadiusMin)
+			SpiralPosition1 = True;
+	}
+	else
+	{
+	    InnerSpiral += 1;
+		if(InnerSpiral > f_var)
+			SpiralPosition1 = False;
+	}
+	if(!SpiralPosition2)
+	{
+		OuterSpiral -= 1;
+		if(OuterSpiral < TaylorRadiusMin)
+			SpiralPosition2 = True;
+	}
+	else
+	{
+		OuterSpiral += 1;
+		if(OuterSpiral >  f_var)
+			SpiralPosition2 = False;
+	} 
+	if(ToleTaylorAssist == TRUE)                    
+	{ 
+        RY1 = (get_val(PS4_RY))  + ( (SinAngle * f_var) )/100;
+        RX1 = (get_val(PS4_RX))  + ( (CosAngle * f_var) )/100;  
+	} 
+    set_val(PS4_RX,RX1);
+    set_val(PS4_RY,RY1);
+}
+function AXRL(AxisXY,AxisVal) 
+{
+    if (abs(get_ival(AxisXY)) <= ExpoStrength) 
+        return AxisVal;
+        return get_ival(AxisXY);
+}
+combo Aim_Expo 
+{
+    set_val(RY,AXRL(RY,ExpoStrength));
+    wait(8);
+    set_val(RX,AXRL(RX,ExpoStrength));
+    wait(8);
+    set_val(LX,AXRL(LX,ExpoStrength));
+    wait(8);
+    set_val(RY,AXRL(RY,-ExpoStrength));
+    wait(8);
+    set_val(RX,AXRL(RX,-ExpoStrength));
+    wait(8);
+    set_val(LX,AXRL(LX,-ExpoStrength));
+    wait(8);
+}
+combo Aim_Expo_Accuracy 
+{
+    set_val(RY,AXRL(RY,27));
+    wait(8);
+    set_val(RX,AXRL(RX,ExpoStrength));
+    wait(8);
+    set_val(RY,AXRL(RY,-ExpoStrength));
+    wait(8);
+    set_val(RX,AXRL(RX,-ExpoStrength));
+    wait(8);
+}
+ ÃƒÂºÃ‚Â¹Ã‹â€ Ã‚Â¹Ã…Â Ã‚Â½Ã…Â½Ã‚Â·Ã¢â€šÂ¬Ã‚Â¶Ã¢â‚¬Å¡Ã‚ÂµÃ†â€™Ã‚Â³Ã¢â‚¬Å¾Ã‚Â± ÃºÂ¸Å ÂºË†ÂºÆ’Â³Æ’Â²â‚¬Â¸ÂÂ¼Å’ÃŠ                  ú¸‰½‹»Œ´„´…¼‹¸ˆÍ 

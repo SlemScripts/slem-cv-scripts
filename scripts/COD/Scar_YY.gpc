@@ -1,0 +1,620 @@
+
+
+/*
+
+On first load, you will need to select your button layout and if you use bumper swap
+LEFT and RIGHT DPad to adjust
+CROSS/A to go to next setting/save
+
+Menu Controls:
+Aim Button + PS/XBOX button for global kill switch
+Aim Button + OPTIONS/MENU to open the menu
+CROSS/A to enter menus
+CIRCLE/B to exit menus
+UP and DOWN DPad to navigate
+LEFT and RIGHT DPad to adjust mod values
+PS/XBOX button to save values
+
+If you find any issues, let me know in my discord server so I can fix them
+
+*/
+
+int Menu;
+int OnOff;
+int Update;
+int OledClear;
+
+int PreLoad = 1;
+int CurrentPreEdit = 1;
+
+int CurrentMenu;
+
+int CurrentMod;
+int YYDelay;
+
+int CurrentSetting;
+int ButtonLayout;
+int BumperSwap;
+
+int AimButton;
+int ShootButton;
+int SwapButton;
+int SprintButton;
+
+const string Presets1 [] = {
+	"DEFAULT", "TACTICAL", "LEFTY", "N0M4D/CHARLIE", "N0M4D/CHARLIE", "N0M4D/CHARLIE", "L1 BUTTON JUMPER", "L1 BUTTON JUMPER", "ONE-HAND", "STICK AND MOVE", "BRAWLER", "BEAST"
+}
+const string Presets2 [] = {
+	"", "", "", "", "TACTICAL", "L3F7Y", "", "TACTICAL", "GUNSLINGER", "", "", ""
+}
+const uint8 Preset_Controls [][] = {
+//   AIM    SHOOT  SWAP         SPRINT
+	{PS5_L2,PS5_R2,PS5_TRIANGLE,PS5_L3},// DEFAULT
+	{PS5_L2,PS5_R2,PS5_TRIANGLE,PS5_L3},// TACTICAL
+	{PS5_R2,PS5_L2,PS5_TRIANGLE,PS5_R3},// LEFTY
+	{PS5_R1,PS5_R2,PS5_TRIANGLE,PS5_L3},// N0M4D/CHARLIE
+	{PS5_R1,PS5_R2,PS5_TRIANGLE,PS5_L3},// N0M4D/CHARLIE TACTICAL
+	{PS5_L1,PS5_L2,PS5_TRIANGLE,PS5_R3},// N0M4D/CHARLIE L3F7Y
+	{PS5_L2,PS5_R2,PS5_TRIANGLE,PS5_L3},// L1 BUTTON JUMPER
+	{PS5_L2,PS5_R2,PS5_TRIANGLE,PS5_L3},// L1 BUTTON JUMPER TACTICAL
+	{PS5_L2,PS5_L1,PS5_TRIANGLE,PS5_L3},// ONE-HAND GUNSLINGER
+	{PS5_L2,PS5_R2,PS5_TRIANGLE,PS5_L3},// STICK AND MOVE
+	{PS5_L2,PS5_R2,PS5_TRIANGLE,PS5_L3},// BRAWLER
+	{PS5_L2,PS5_R2,PS5_TRIANGLE,PS5_L3} // BEAST
+	
+}
+define MaxMenus = 2;
+const string Menus [] = {
+	"", "Mods", "Settings"
+}
+define MaxMods = 1;
+const string Mods [] = {
+	"", "YY Delay"
+}
+const int32 Mod_Values [][] = {
+	{0,0},
+	{0,2147483647}
+}
+define MaxSettings = 2;
+const string Settings [] = {
+	"", "Button Layout", "Bumper Swap"
+}
+const uint8 Setting_Values [][] = {
+	{0,0},
+	{0,11},
+	{0,1}
+}
+const string Status [] = {
+	"Disabled", "Enabled"
+}
+const string to_save = " to save"
+const string Current_Delay = "Current Delay:"
+const string Title = "Scar YY"
+const string Saved = "Saved"
+const string off = "off"
+
+init {
+Load();
+update_oled();
+reset_leds();
+block_rumble();
+adt_off(PS5_L2);
+adt_off(PS5_R2);
+}
+
+main {
+set_val(38,Small_Width);
+clear_timer();
+if(PreLoad){
+	set_rgb(10,10,10);
+	block_all_inputs();
+	if(event_release(PS5_CROSS)){
+		if(CurrentPreEdit == 2){
+			PreLoad = FALSE;
+			reset_leds();
+			set_controls();
+			Save();
+		}
+		update_oled();
+		CurrentPreEdit++;
+	}
+	if(CurrentPreEdit == 1){
+		ButtonLayout = adjust_variable(ButtonLayout,0,11,1);
+		if(Update){
+			Print(Settings[1],Center,3,Small,White,String);
+			if(ButtonLayout == 4 || ButtonLayout == 5 || ButtonLayout == 7 || ButtonLayout == 8){
+				Print(Presets1[ButtonLayout],Center,center_y(Small_Height) - 6,Small,White,String);
+				Print(Presets2[ButtonLayout],Center,center_y(Small_Height) + 6,Small,White,String);
+			} else {
+				Print(Presets1[ButtonLayout],Center,center_y(Small_Height),Small,White,String);
+			}
+			display_horizontal_arrows(ButtonLayout,0,11);
+			if(get_controller() == PIO_PS4 || get_controller() == PIO_PS5){
+				Print(OLED_CROSS,35,54,Small,White,Oled);
+				Print(to_save[0],42,54,Small,White,String);
+			} else {
+				Print(ASCII_UPPER_A,35,54,Small,White,Oled);
+				Print(to_save[0],42,54,Small,White,String);
+			}
+		}
+	}
+	if(CurrentPreEdit == 2){
+		BumperSwap = adjust_variable(BumperSwap,0,1,1);
+		if(Update){
+			Print(Settings[2],Center,3,Small,White,String);
+			Print(Status[BumperSwap],Center,center_y(Small_Height),Small,White,String);
+			display_horizontal_arrows(BumperSwap,0,1);
+			if(get_controller() == PIO_PS4 || get_controller() == PIO_PS5){
+				Print(OLED_CROSS,35,54,Small,White,Oled);
+				Print(to_save[0],42,54,Small,White,String);
+			} else {
+				Print(ASCII_UPPER_A,35,54,Small,White,Oled);
+				Print(to_save[0],42,54,Small,White,String);
+			}
+		}
+	}
+}
+if(!PreLoad){
+	if(get_ival(AimButton)){
+		if(!Menu){
+			set_val(PS5_PS,0);
+			if(event_press(PS5_PS)){
+				OnOff = !OnOff
+				update_oled();
+				reset_leds();
+			}
+			if(!OnOff){
+				if(event_press(PS5_OPTIONS)){
+					update_oled();
+					Menu = 1;
+					CurrentMenu = 1;
+					CurrentMod = 1;
+					CurrentSetting = 1;
+				}
+			}
+		}
+	}
+	if(Menu){
+		vm_tctrl(0);
+		set_rgb(10,0,10);
+		block_all_inputs();
+		if(event_release(PS5_PS)){
+			Save();
+			set_controls();
+			combo_run(Menu_Save);
+		}
+		if(event_release(PS5_CROSS)){
+			update_oled();
+			if(Menu < 2){
+				Menu++;
+			}
+		}
+		if(event_release(PS5_CIRCLE) && AimButton != 0){
+			if(Menu == 1){
+				reset_leds();
+			}
+			update_oled();
+			Menu--
+		}
+		if(Menu == 1){
+			CurrentMenu = navigate(CurrentMenu,1,MaxMenus);
+			if(Update){
+				Print(Menus[CurrentMenu - 2],Center,center_y(Small_Height) - 24,Small,White,String);
+				Print(Menus[CurrentMenu - 1],Center,center_y(Small_Height) - 12,Small,White,String);
+				Print(Menus[CurrentMenu],Center,center_y(Small_Height),Small,Black,String);
+				Print(Menus[CurrentMenu + 1],Center,center_y(Small_Height) + 12,Small,White,String);
+				Print(Menus[CurrentMenu + 2],Center,center_y(Small_Height) + 24,Small,White,String);
+			}
+		}
+		if(Menu == 2){
+			if(CurrentMenu == 1){
+				CurrentMod = navigate(CurrentMod,1,MaxMods);
+				CurrentMod[CurrentMod] = adjust_variable(CurrentMod[CurrentMod],Mod_Values[CurrentMod][0],Mod_Values[CurrentMod][1],5);
+				if(Update){
+					Print(Mods[CurrentMod],Center,3,Small,White,String);
+					Print(YYDelay,Center,center_y(Medium_Height),Medium,White,Value);
+					display_vertical_arrows(CurrentMod,1,MaxMods);
+					display_horizontal_arrows(CurrentMod[CurrentMod],0,2147483647);
+				}
+			}
+			if(CurrentMenu == 2){
+				CurrentSetting = navigate(CurrentSetting,1,MaxSettings);
+				CurrentSetting[CurrentSetting] = adjust_variable(CurrentSetting[CurrentSetting],Setting_Values[CurrentSetting][0],Setting_Values[CurrentSetting][1],1);
+				if(Update){
+					Print(Settings[CurrentSetting],Center,3,Small,White,String);
+					if(CurrentSetting == 1){
+						if(ButtonLayout == 4 || ButtonLayout == 5 || ButtonLayout == 7 || ButtonLayout == 8){
+							Print(Presets1[ButtonLayout],Center,center_y(Small_Height) - 6,Small,White,String);
+							Print(Presets2[ButtonLayout],Center,center_y(Small_Height) + 6,Small,White,String);
+						} else {
+							Print(Presets1[ButtonLayout],Center,center_y(Small_Height),Small,White,String);
+						}
+					}
+					if(CurrentSetting == 2){
+						Print(Status[CurrentSetting[CurrentSetting]],Center,center_y(Small_Height),Small,White,String);
+					}
+					display_vertical_arrows(CurrentSetting,1,MaxSettings);
+					display_horizontal_arrows(CurrentSetting[CurrentSetting],Setting_Values[CurrentSetting][0],Setting_Values[CurrentSetting][1]);
+				}
+			}
+		}
+	}
+	if(!Menu && !OnOff){
+		set_vm_speed();
+		
+		deadzone(PS5_L2, PS5_R2, 100, 100);
+		
+		if(get_console() == PIO_XB1){
+			set_rgb(0,10,0);
+		}
+		if(!get_ival(AimButton) && !get_ival(ShootButton)){
+			if(get_ival(SprintButton)){
+				combo_run(YY);
+			}
+		}
+		if(Update){
+			Print(Title[0],Center,3,Small,White,String);
+			Print(Current_Delay[0],Center,center_y(Small_Height) + ((OLED_HEIGHT / 4) - (Small_Height / 2)),Small,White,String);
+			Print(YYDelay,Center,center_y(Small_Height) + ((OLED_HEIGHT / 4) + (Small_Height / 2)),Small,White,Value);
+		}
+	}
+	else if(OnOff){
+		if(Update){
+			vm_tctrl(0);
+			set_rgb(10,0,0);
+			Print(off[0],Center,center_y(Medium_Height),Medium,White,String);
+		}
+	}
+}
+Update = FALSE;
+}
+
+combo Menu_Save {
+cls_oled(0);
+Print(Saved[0],Center,center_y(Medium_Height),Medium,White,String);
+wait(1):
+set_rgb(10,10,10);
+wait(100);
+set_rgb(0,0,0);
+wait(100);
+set_rgb(10,10,10);
+wait(100);
+set_rgb(0,0,0);
+wait(100);
+Menu = FALSE;
+update_oled();
+reset_leds();
+}
+combo YY {
+set_val(SwapButton,100);
+wait(20);
+set_val(SwapButton,0);
+wait(20);
+set_val(SwapButton,100);
+wait(20);
+set_val(SwapButton,0);
+wait(YYDelay);
+}
+
+// Functions \\
+
+
+function set_controls() {
+if(ButtonLayout < 12){
+	AimButton = Preset_Controls[ButtonLayout][0];
+	ShootButton = Preset_Controls[ButtonLayout][1];
+	SwapButton = Preset_Controls[ButtonLayout][2];
+	SprintButton = Preset_Controls[ButtonLayout][3];
+	if(BumperSwap){
+		if(Preset_Controls[ButtonLayout][0] == PS5_L2){
+			AimButton = PS5_L1;
+		}
+		if(Preset_Controls[ButtonLayout][0] == PS5_R2){
+			AimButton = PS5_R1;
+		}
+		if(Preset_Controls[ButtonLayout][0] == PS5_L1){
+			AimButton = PS5_L2;
+		}
+		if(Preset_Controls[ButtonLayout][0] == PS5_R1){
+			AimButton = PS5_R2;
+		}
+		if(Preset_Controls[ButtonLayout][1] == PS5_L2){
+			ShootButton = PS5_L1;
+		}
+		if(Preset_Controls[ButtonLayout][1] == PS5_R2){
+			ShootButton = PS5_R1;
+		}
+		if(Preset_Controls[ButtonLayout][1] == PS5_L1){
+			ShootButton = PS5_L2;
+		}
+		if(Preset_Controls[ButtonLayout][1] == PS5_R1){
+			ShootButton = PS5_R2;
+		}
+	}
+}
+}
+function set_vm_speed() {
+	if(get_controller() == PIO_PS3 || get_controller() == PIO_PS4 || get_controller() == PIO_PS5){
+		vm_tctrl(-6);
+	}
+	else if(get_controller() == PIO_XB1){
+		vm_tctrl(-2);
+	} else {
+		vm_tctrl(0);
+	}
+}
+function adjust_variable(var, min, max, adjust_by) {
+	if(!get_ival(AimButton)){
+		if(event_press(PS5_RIGHT)){
+			update_oled();
+			var += adjust_by;
+		}
+		if(event_press(PS5_LEFT)){
+			update_oled();
+			var -= adjust_by;
+		}
+	}
+	else if(adjust_by >= 5 && get_ival(AimButton)){
+		if(event_press(PS5_RIGHT)){
+			update_oled();
+			var += (adjust_by * 5);
+		}
+		if(event_press(PS5_LEFT)){
+			update_oled();
+			var -= (adjust_by * 5);
+		}
+		if(get_ival(PS5_RIGHT) && get_ptime(PS5_RIGHT) > 400){
+			update_oled();
+			var += (adjust_by * 5);
+		}
+		if(get_ival(PS5_LEFT) && get_ptime(PS5_LEFT) > 400){
+			update_oled();
+			var -= (adjust_by * 5);
+		}
+	}
+	var = clamp(var,min,max);
+	return var;
+}
+function navigate(var, min, max) {
+	if(event_press(PS5_DOWN)){
+		update_oled();
+		var++;
+	}
+	if(event_press(PS5_UP)){
+		update_oled();
+		var--;
+	}
+	var = clamp(var, min, max);
+	return var;
+}
+define White 			= OLED_WHITE;
+define Black			= OLED_BLACK;
+define Small 			= OLED_FONT_SMALL;
+define Medium 			= OLED_FONT_MEDIUM;
+define Large 			= OLED_FONT_LARGE;
+define Small_Width 		= OLED_FONT_SMALL_WIDTH;
+define Medium_Width 	= OLED_FONT_MEDIUM_WIDTH;
+define Large_Width 		= OLED_FONT_LARGE_WIDTH;
+define Small_Height 	= OLED_FONT_SMALL_HEIGHT;
+define Medium_Height 	= OLED_FONT_MEDIUM_HEIGHT;
+define Large_Height		= OLED_FONT_LARGE_HEIGHT;
+define Left = -1
+define Center = -2
+define Right = -3
+define String = 0 
+define Value = 1
+define Oled = 2;
+int n,i;
+function Print (f_string,f_x,f_y,f_font,f_color,f_type){
+    if(f_type == String){
+        print(x_location(get_string_length(f_string),f_font,f_x),f_y,f_font,f_color,f_string)
+    }
+    else if(f_type == Value){
+        if(f_string < 0){putc_oled(1,45);}
+        if(f_string){
+	        for(n = find_digits(f_string) + i = (f_string < 0 ),f_string = abs(f_string); f_string > 0; n-- , i++){  
+	            putc_oled(n,f_string%10 + 48);
+	            f_string = f_string/10;
+	        }
+        }
+        else{
+        	putc_oled(1,48); i = 1
+        }
+        puts_oled(x_location(i,f_font,f_x),f_y,f_font,i ,f_color);
+    }
+	else if(f_type == Oled){
+		putc_oled(1,f_string);
+		puts_oled(f_x,f_y,f_font,1,f_color);
+	}
+}
+int stringLength;
+function get_string_length(offset) {
+    stringLength = 0;
+        while (duint8(offset++)) { stringLength++; }
+    return stringLength + 1;
+}
+function x_location(f_chars,f_font,f_x) {
+    if(f_x == -3){return 128 - ((f_chars * (7 + (f_font > 1) + f_font * 4)) + 3 );}
+    if(f_x == -2){return 64 - ((f_chars * (7 + (f_font > 1) + f_font * 4)) / 2);}    
+    if(f_x == -1){return 3}
+    return f_x;     
+}
+function find_digits(f_num) {
+    for(n = 1; n < 11;n++){
+        if(!(abs(f_num) / pow(10,n))){
+               return n; 
+               break;
+          }
+    }
+    return 1;
+}
+function center_y(f_size) {
+    return (OLED_HEIGHT  / 2) - (f_size / 2);
+}
+function display_vertical_arrows(var,min,max) {
+if(var > min){
+	Print(OLED_UP,3,center_y(Small_Height) - (Small_Height / 2),Small,White,Oled);
+}
+if(var < max){
+	Print(OLED_DOWN,3,center_y(Small_Height) + (Small_Height / 2),Small,White,Oled);
+}
+}
+function display_horizontal_arrows(var,min,max) {
+if(var > min){
+	Print(OLED_LEFT,6,52,Small,White,Oled);
+}
+if(var < max){
+	Print(OLED_RIGHT,115,52,Small,White,Oled);
+}
+}
+function clear_timer() {
+OledClear = max(0,OledClear - get_rtime());
+if(OledClear){
+	if(OledClear <= get_rtime()){
+		cls_oled(0);
+	}
+} 
+}
+function update_oled() {
+cls_oled(0);
+Update = TRUE;
+OledClear = 10000;
+}
+function Save() {
+spvar_current_slot 	= SPVAR_1;
+spvar_current_bit 	= 0;
+spvar_current_value = 0;
+
+save_spvar(1,0,1);
+save_spvar(PreLoad,0,1);
+save_spvar(YYDelay,0,2147483647);
+save_spvar(ButtonLayout,0,11);
+save_spvar(BumperSwap,0,1);
+}
+function Load() {
+spvar_current_slot = SPVAR_1;
+spvar_current_bit = 0;
+spvar_current_value = 0;
+
+if(read_spvar(0,1,0) == 1){
+	PreLoad = read_spvar(0,1,1);
+	YYDelay = read_spvar(0,2147483647,0);
+	ButtonLayout = read_spvar(0,11,0);
+	BumperSwap = read_spvar(0,1,0);
+	set_controls();
+}
+}
+
+// ------ DO NOT TOUCH ANYTHING BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING! ------ 
+
+int spvar_current_bit, 		// Variable used to keep track of the next available bit
+	spvar_current_slot,		// Variable used to keep track of the currently used SPVAR slot
+	spvar_current_value,	// Variable used to keep track of the current value with all the bits from the previous variables saved in the current SPVAR
+	spvar_tmp,				// Variable used temporarily during the various calculation steps
+	spvar_bits;				// Variable used to keep track of the number of bits required to represent the currently saved/loaded variable
+
+// Function used to count the number of bits used by the given value
+function get_bit_count(val) {
+	spvar_tmp = 0; // We need to start at 0, we use spvar_tmp here as we need to track the bits during our loop below
+	while (val) { // Loop while val is anything but 0
+		spvar_tmp++; // Increment the bit count by 1
+		val = abs(val >> 1); // Shift the value down 1 bit, once we have no more bits set this will result in 0, unless the value is negative - in which case this will be endless, we do abs here to make it always
+	}
+	return spvar_tmp;
+}
+// Function used to count the number of bits used by 2 given values
+function get_bit_count2(val1, val2) {	
+	spvar_tmp = max(get_bit_count(val1), get_bit_count(val2)); // Get the highest bit count required for either min or max
+	if (is_signed2(val1, val2)) { // Check if we need to know if the value is negative or not
+		spvar_tmp++; // If we need to track if the saved value is negative, we need 1 bit for that specifically - the others are used to store the actual value
+	}
+	return spvar_tmp;
+}
+// Function used to determine if either of 2 given values is negative
+function is_signed2(val1, val2) { return val1 < 0 || val2 < 0; }
+// Function used to generate a bitmask for the sign bit, this will always be the highest bit in the range we're requesting it for, to do that - we need to start with the lowest bit set and move it up the number of steps there is between 1 and the bits we need, this needs to be a maximum of 31 but can never be negative
+function make_sign(bits) { return 1 << clamp(bits - 1, 0, 31); }
+// Function used to generate a full bitmask (essentially all bits set up to and including the number of bits given)
+function make_full_mask(bits) {	
+	if (bits == 32) { // If we're wanting a bitmask for all bits, we can simply return -1 (which is all bits set to 1)
+		return -1;
+	}
+	return 0x7FFFFFFF >> (31 - bits); // What we do here is basically take a value with all bits except the highest set and shift them down as many times as we need to get a mask that fits the bit count we're looking for
+}
+// Function used to generate a bitmask for just the bits required for the value part of a signed range, this means all the bits below the sign bit
+function make_sign_mask(bits) { return make_full_mask(bits - 1); }
+// Function used to pack a value that has potential for being negative in a way that we use the least number of bits we really need to represent the value
+function pack_i(val, bits) {
+	if (val < 0) { // Check if we have a negative value, if so - handle it accordingly
+		return (abs(val) & make_sign_mask(bits)) | make_sign(bits); // Get the positive version of the value and keep the bits that are within range of what we're doing and add the sign bit since we have a negative value and return the result
+	}
+	return val & make_sign_mask(bits); // Get the bits that are within our range
+}
+// Function used to unpack (restore) a value that has potential for being negative, essentially reversing what pack_i does above
+function unpack_i(val, bits) {
+	if (val & make_sign(bits)) { // Check if the stored value is supposed to ve negative
+		return 0 - (val & make_sign_mask(bits)); // Retrieve the stored positive value and subtract it from 0 (resulting in the same value except negative), return the result
+	}
+	return val & make_sign_mask(bits); // Retrieve the stored positive value and return it
+}
+// Function used to read the value of a SPVAR without any limits
+function read_spvar_slot(slot) { return get_pvar(slot, 0x80000000, 0x7FFFFFFF, 0); }
+// Function used to save your value in the SPVARs, this is the function you'll be calling when saving a value. You need to provide the value to save aswell as the range (minimum and maximum value, this is how we determine how many bits to use when saving this value)
+function save_spvar(val, min, max) {
+	spvar_bits = get_bit_count2(min, max); // Set spvar_bits to the number of bits we need for this range
+	
+	val = clamp(val, min, max); // Make sure the value is within our defined range to begin with
+	
+	if (is_signed2(min, max)) { // If either min or max is negative, we need to pack this value as a possibly negative value
+		val = pack_i(val, spvar_bits); // Pack as signed value (possibly negative)
+	}
+	val = val & make_full_mask(spvar_bits); // Pack as unsigned value (always positive), this essentially just makes the resulting value not have any extra bits set - it's safe to use after the signed packing since we're not using any bits outside of the unsigned range anyways
+	
+	if (spvar_bits >= 32 - spvar_current_bit) { // Check if there is not enough bits remaining to save this value as-is. if there aren't enough bits, we save what we can here and store the remaining bits in the next spvar, if this means we're hitting the end, we can make this smaller by handling the case where we use all bits here aswell
+		spvar_current_value = spvar_current_value | (val << spvar_current_bit); // Add what we can to the current value where there is bits available to use
+		set_pvar(spvar_current_slot, spvar_current_value); // Save the current SPVAR before advancing to the next one
+		spvar_current_slot++; // Move to the next slot
+		spvar_bits -= (32 - spvar_current_bit); // Update the required bits according to our needs for the next slot, if we don't do this here, we'll screw up the saved value by moving it too far out of range
+		val = val >> (32 - spvar_current_bit); // Move the remaining bits down, discarding the bits we've already saved
+		spvar_current_bit = 0; // Reset the current bit counter since we're starting with a new SPVAR
+		spvar_current_value = 0; // Reset our value so we start clean, we aren't currently using any bits anyways
+	}
+	
+	spvar_current_value = spvar_current_value | (val << spvar_current_bit); // Merge the current SPVAR value with our currently value where there is space to keep our value
+	spvar_current_bit += spvar_bits; // Move up the counter of next available bit to where we are currently saving data at
+	if (!spvar_current_bit) {
+		spvar_current_value = 0; // Reset our value so we start clean, we aren't currently using any bits anyways
+	}
+	set_pvar(spvar_current_slot, spvar_current_value); // Save the SPVAR with the current value, this won't write anything to flash unless the value changed - so we can do this for each variable saved to no risk missing anything
+}
+// Function used to read your value from the SPVARs, this is the function you'll be calling when reading a value. You need to provide the range (minimum and maximum value, this is how we determine how many bits to use when reading the value) aswell as a default value if what we read is out of range
+function read_spvar(min, max, def) {
+	spvar_bits = get_bit_count2(min, max); // Set spvar_bits to the number of bits we need for this range
+		spvar_current_value = (read_spvar_slot(spvar_current_slot) >> spvar_current_bit) & make_full_mask(spvar_bits); // Read the current SPVAR value from flash and shift them into position, we'll handle split values next
+	
+	if (spvar_bits >= 32 - spvar_current_bit) { // Check if we are dealing with a split SPVAR value, essentially if the current position means we're using more than 32 bits in the SPVAR, we need to retrieve the missing bits from the next SPVAR and put them back to our current value, we use the same space saving trick here as in the save function
+		spvar_current_value = (spvar_current_value & make_full_mask(32 - spvar_current_bit)) | ((read_spvar_slot(spvar_current_slot + 1) & make_full_mask(spvar_bits - (32 - spvar_current_bit))) << (32 - spvar_current_bit));
+		//Below is a breakdown of the line above, with each step done one at a time instead of all at once - this however increases codesize - the below code is to explain how it all works tho
+		//spvar_tmp = read_spvar_slot(spvar_current_slot + 1); // Read the SPVAR slot coming after the initial one we used to spvar_tmp from flash, we need to maintain the data we've read thus far, but also add on what we have in flash for the next SPVAR
+		//spvar_tmp = spvar_tmp & make_full_mask(spvar_bits - (32 - spvar_current_bit)); // Extract the bits we need need (the ones that didn't fit in the previous SPVAR)
+		//spvar_tmp = spvar_tmp << (32 - spvar_current_bit); // Move the bits into their original position, they were stored at the beginning of the new SPVAR but belong at the top of the currently read value
+		//spvar_current_value = (spvar_current_value & make_full_mask(32 - spvar_current_bit)) | spvar_tmp; // put all bits together again with the part read from the first SPVAR cleaned up to only include the bits from this variable/value and not all bits set in the upper range like they normally are
+	}	
+	spvar_current_bit += spvar_bits; // Move up the counter of next available bit to where we are will be reading data from next
+	spvar_current_value = spvar_current_value & make_full_mask(spvar_bits); // Extract all bits included for this value and discard any other bits
+	if (spvar_current_bit >= 32) {
+		spvar_current_slot++; // Move to the next SPVAR slot
+		spvar_current_bit -= 32; // Remove 32 from the spvar_current_bit tracker since we've gone beyond what we can do here
+	}
+	
+	if (is_signed2(min, max)) { // Check if the value can be negative and handle it accordingly
+		spvar_current_value = unpack_i(spvar_current_value, spvar_bits); // Restore the signed, possibly negative value
+	}
+	
+	if (spvar_current_value < min || spvar_current_value > max) { // Check if the value is below our specified min or above our specified max, if so - return the default value instead
+		return def; // This can be changed to min instead as a reasonable default with the default parameter being removed if you don't need to have a override value for the default when out of range, that will save a bit of code size
+	}
+	
+	// Return the retrieved value to the user since it's within the expected range
+	return spvar_current_value;
+}                 

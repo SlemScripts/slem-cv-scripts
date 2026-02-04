@@ -1,0 +1,545 @@
+// SHADOW INTERFACE - Warzone
+// Author: CAT Shadow
+
+define ST_BOOT   = 0;
+define ST_HOME   = 1;
+define ST_MENU   = 2;
+define ST_MOD    = 3;
+
+define FRAME_MS    = 50;
+define IDLE_FRAMES = 20;
+define BOOT_END    = 2400;
+define FP          = 16;
+
+define ROW_H  = 13;
+define LIST_Y = 11;
+define FOOT_Y = 51;
+
+define P_AIM_ON   = 0;
+define P_AIM_SIZE = 1;
+define P_AIM_WAIT = 2;
+define P_AIM_LS   = 3;
+define P_AR_ON    = 4;
+define P_AR_VERT  = 5;
+define N_PARAMS   = 6;
+
+define N_MODS  = 2;
+define N_ITEMS = 3;
+
+define PT_TOGGLE = 0;
+define PT_VALUE  = 1;
+
+define NPART    = 6;
+define RUN_NONE = 0;
+define RUN_LIVE = 1;
+define RUN_DEAD = 2;
+
+define CFG_MAGIC = 101;
+
+const int8 SIN64[] = {
+    0, 10, 20, 29, 38, 47, 56, 63,
+    71, 77, 83, 88, 92, 96, 98, 100,
+    100, 100, 98, 96, 92, 88, 83, 77,
+    71, 63, 56, 47, 38, 29, 20, 10,
+    0, -10, -20, -29, -38, -47, -56, -63,
+    -71, -77, -83, -88, -92, -96, -98, -100,
+    -100, -100, -98, -96, -92, -88, -83, -77,
+    -71, -63, -56, -47, -38, -29, -20, -10
+};
+
+const int8 PAR_FIRST[] = { P_AIM_ON, P_AR_ON };
+const int8 PAR_COUNT[] = { 4, 2 };
+const int8 PAR_TYPE[]  = { PT_TOGGLE, PT_VALUE, PT_VALUE, PT_TOGGLE, PT_TOGGLE, PT_VALUE };
+const int8 PAR_MIN[]   = { 0, 1, 1, 0, 0, 0 };
+const int8 PAR_MAX[]   = { 1, 60, 40, 1, 1, 100 };
+const int8 PAR_STEP[]  = { 1, 1, 1, 1, 1, 1 };
+const int8 PAR_DEF[]   = { 1, 20, 10, 1, 1, 40 };
+
+const string S_MENU    = "SHADOW MENU";
+const string S_SAVE    = "SAVE & EXIT";
+const string S_ON      = "ON";
+const string S_OFF     = "OFF";
+const string S_AIM     = "AIM ASSIST";
+const string S_AR      = "ANTI-RECOIL";
+const string S_ENABLED = "ENABLED";
+const string S_SIZE    = "SIZE";
+const string S_DELAY   = "DELAY";
+const string S_LSTICK  = "LEFT STICK";
+const string S_VERT    = "VERTICAL";
+const string S_HINT    = "L2+OPTIONS > MENU";
+const string S_HINT_M  = "X ENTER    O EXIT";
+const string S_HINT_P  = "<> CHANGE  O BACK";
+
+int par[N_PARAMS];
+
+int ui_state, ui_frame, dt, acc;
+int boot_t, home_t, idle_f, scan_y, typed, type_t;
+int glitch_t;
+int menu_sel, mod_idx, par_sel;
+int sel_fp, sel_tfp, scroll_fp, scroll_tfp;
+int ps_fp, ps_tfp, pscroll_fp, pscroll_tfp;
+int anim_fp[N_PARAMS];
+int run_state, run_x, run_y, run_dir, run_leg, run_leg_t;
+int spawn_t, lock_t, fire_t, dead_t, miss_t, boost_t;
+int cross_x, cross_y, cross_tx, cross_ty;
+int pa_x[NPART], pa_y[NPART], pa_vx[NPART], pa_vy[NPART], pa_life[NPART], pa_gnd[NPART];
+int in_l2, in_opt, in_up, in_dn, in_lf, in_rg, in_cr, in_ci;
+int lst_opt, lst_up, lst_dn, lst_lf, lst_rg, lst_cr, lst_ci;
+int ev_opt, ev_up, ev_dn, ev_lf, ev_rg, ev_cr, ev_ci;
+int i_ring, i_ray, i_row, i_part, i_cell, i_ang;
+int tmp_x, tmp_y, tmp_r, tmp_v;
+int sweep_a;
+int ez_d;
+int pidx;
+int orbit_theta, orbit_l_theta, orbit_acc, orbit_l_acc;
+int ar_t;
+int aa_l2, aa_r2, aa_speed, aa_steps, aa_amp, aa_micro_x, aa_micro_y;
+int aa_raw_rx, aa_raw_ry, aa_cur_rx, aa_cur_ry;
+int aa_l_steps, aa_micro_lx, aa_micro_ly, aa_raw_lx, aa_raw_ly, aa_cur_lx, aa_cur_ly;
+int ar_l2, ar_r2, ar_base, ar_off, ar_cur_y;
+
+init {
+    if(get_pvar(SPVAR_7, 0, 30000, 0) == CFG_MAGIC) {
+        par[P_AIM_ON]   = get_pvar(SPVAR_1, 0, 1, PAR_DEF[P_AIM_ON]);
+        par[P_AIM_SIZE] = get_pvar(SPVAR_2, 1, 60, PAR_DEF[P_AIM_SIZE]);
+        par[P_AIM_WAIT] = get_pvar(SPVAR_3, 1, 40, PAR_DEF[P_AIM_WAIT]);
+        par[P_AIM_LS]   = get_pvar(SPVAR_4, 0, 1, PAR_DEF[P_AIM_LS]);
+        par[P_AR_ON]    = get_pvar(SPVAR_5, 0, 1, PAR_DEF[P_AR_ON]);
+        par[P_AR_VERT]  = get_pvar(SPVAR_6, 0, 100, PAR_DEF[P_AR_VERT]);
+    } else {
+        par[P_AIM_ON]   = PAR_DEF[P_AIM_ON];
+        par[P_AIM_SIZE] = PAR_DEF[P_AIM_SIZE];
+        par[P_AIM_WAIT] = PAR_DEF[P_AIM_WAIT];
+        par[P_AIM_LS]   = PAR_DEF[P_AIM_LS];
+        par[P_AR_ON]    = PAR_DEF[P_AR_ON];
+        par[P_AR_VERT]  = PAR_DEF[P_AR_VERT];
+        set_pvar(SPVAR_7, CFG_MAGIC);
+        save_settings();
+    }
+
+    anim_fp[0] = par[0] * FP;
+    anim_fp[1] = par[1] * FP;
+    anim_fp[2] = par[2] * FP;
+    anim_fp[3] = par[3] * FP;
+    anim_fp[4] = par[4] * FP;
+    anim_fp[5] = par[5] * FP;
+
+    pa_life[0] = 0;
+    pa_life[1] = 0;
+    pa_life[2] = 0;
+    pa_life[3] = 0;
+    pa_life[4] = 0;
+    pa_life[5] = 0;
+
+    ui_state = ST_BOOT;
+    boot_t = 0;
+    scan_y = -25;
+    spawn_t = 600;
+    run_state = RUN_NONE;
+    cross_x = 64 * FP;  cross_tx = cross_x;
+    cross_y = 30 * FP;  cross_ty = cross_y;
+    orbit_theta = 0; orbit_acc = 0;
+    orbit_l_theta = 0; orbit_l_acc = 0;
+    ar_t = 0;
+}
+
+main {
+    read_inputs();
+    if(ui_state == ST_MENU || ui_state == ST_MOD) block_all_inputs();
+    else run_mods();
+    handle_input();
+    acc = acc + get_rtime();
+    if (acc >= FRAME_MS) {
+        dt = acc;
+        if (dt > 100) dt = 100;
+        acc = 0;
+        ui_frame++;
+        draw_frame();
+    }
+}
+
+function read_inputs() {
+    in_l2  = get_ival(PS4_L2);
+    in_opt = get_ival(PS4_OPTIONS);
+    in_up  = get_ival(PS4_UP);
+    in_dn  = get_ival(PS4_DOWN);
+    in_lf  = get_ival(PS4_LEFT);
+    in_rg  = get_ival(PS4_RIGHT);
+    in_cr  = get_ival(PS4_CROSS);
+    in_ci  = get_ival(PS4_CIRCLE);
+
+    ev_opt = 0; if (in_opt && !lst_opt) ev_opt = 1; lst_opt = in_opt;
+    ev_up  = 0; if (in_up  && !lst_up)  ev_up  = 1; lst_up  = in_up;
+    ev_dn  = 0; if (in_dn  && !lst_dn)  ev_dn  = 1; lst_dn  = in_dn;
+    ev_lf  = 0; if (in_lf  && !lst_lf)  ev_lf  = 1; lst_lf  = in_lf;
+    ev_rg  = 0; if (in_rg  && !lst_rg)  ev_rg  = 1; lst_rg  = in_rg;
+    ev_cr  = 0; if (in_cr  && !lst_cr)  ev_cr  = 1; lst_cr  = in_cr;
+    ev_ci  = 0; if (in_ci  && !lst_ci)  ev_ci  = 1; lst_ci  = in_ci;
+}
+
+function handle_input() {
+    if (ev_opt && in_l2 && ui_state != ST_BOOT) {
+        if (ui_state == ST_HOME) open_menu();
+        else close_menu();
+    } else if (ui_state == ST_MENU) {
+        if (ev_up) { menu_sel = menu_sel - 1; if (menu_sel < 0) menu_sel = N_ITEMS - 1; sync_menu(); }
+        if (ev_dn) { menu_sel = menu_sel + 1; if (menu_sel >= N_ITEMS) menu_sel = 0; sync_menu(); }
+        if (ev_cr || ev_rg) {
+            if (menu_sel >= N_MODS) close_menu();
+            else {
+                mod_idx = menu_sel;
+                par_sel = 0; ps_fp = 0; ps_tfp = 0; pscroll_fp = 0; pscroll_tfp = 0;
+                ui_state = ST_MOD; glitch_t = 120;
+            }
+        }
+        if (ev_ci) close_menu();
+    } else if (ui_state == ST_MOD) {
+        if (ev_up) { par_sel = par_sel - 1; if (par_sel < 0) par_sel = PAR_COUNT[mod_idx] - 1; sync_par(); }
+        if (ev_dn) { par_sel = par_sel + 1; if (par_sel >= PAR_COUNT[mod_idx]) par_sel = 0; sync_par(); }
+
+        pidx = PAR_FIRST[mod_idx] + par_sel;
+
+        if (PAR_TYPE[pidx] == PT_TOGGLE) {
+            if (ev_cr) { if (par[pidx]) par[pidx] = 0; else par[pidx] = 1; }
+            if (ev_lf) { par[pidx] = 0; }
+            if (ev_rg) { par[pidx] = 1; }
+        } else {
+            if (ev_lf) { par[pidx] = par[pidx] - PAR_STEP[pidx]; if (par[pidx] < PAR_MIN[pidx]) par[pidx] = PAR_MIN[pidx]; }
+            if (ev_rg) { par[pidx] = par[pidx] + PAR_STEP[pidx]; if (par[pidx] > PAR_MAX[pidx]) par[pidx] = PAR_MAX[pidx]; }
+        }
+        if (ev_ci) { ui_state = ST_MENU; glitch_t = 120; }
+    }
+}
+
+function open_menu() {
+    ui_state = ST_MENU;
+    menu_sel = 0;
+    sync_menu();
+    sel_fp = sel_tfp; scroll_fp = scroll_tfp;
+    glitch_t = 140;
+}
+
+function close_menu() {
+    save_settings();
+    ui_state = ST_HOME;
+    home_t = 600; typed = 17; type_t = 1000; idle_f = 0;
+    glitch_t = 140;
+}
+
+function sync_menu() {
+    sel_tfp = menu_sel * ROW_H * FP;
+    tmp_v = menu_sel - 2;
+    if (tmp_v < 0) tmp_v = 0;
+    if (tmp_v > N_ITEMS - 3) tmp_v = N_ITEMS - 3;
+    if (tmp_v < 0) tmp_v = 0;
+    scroll_tfp = tmp_v * ROW_H * FP;
+}
+
+function sync_par() {
+    ps_tfp = par_sel * ROW_H * FP;
+    tmp_v = par_sel - 2;
+    if (tmp_v < 0) tmp_v = 0;
+    if (tmp_v > PAR_COUNT[mod_idx] - 3) tmp_v = PAR_COUNT[mod_idx] - 3;
+    if (tmp_v < 0) tmp_v = 0;
+    pscroll_tfp = tmp_v * ROW_H * FP;
+}
+
+function save_settings() {
+    set_pvar(SPVAR_1, par[P_AIM_ON]);
+    set_pvar(SPVAR_2, par[P_AIM_SIZE]);
+    set_pvar(SPVAR_3, par[P_AIM_WAIT]);
+    set_pvar(SPVAR_4, par[P_AIM_LS]);
+    set_pvar(SPVAR_5, par[P_AR_ON]);
+    set_pvar(SPVAR_6, par[P_AR_VERT]);
+}
+
+function sn(a) { return SIN64[((a % 64) + 64) % 64]; }
+function cs(a) { return SIN64[(((a + 16) % 64) + 64) % 64]; }
+
+function ease(cur, tgt, k) {
+    if (cur == tgt) return tgt;
+    ez_d = (tgt - cur) / k;
+    if (ez_d == 0) { if (tgt > cur) return cur + 1; else return cur - 1; }
+    return cur + ez_d;
+}
+
+function draw_frame() {
+    cls_oled(0);
+    if (ui_state == ST_BOOT) draw_boot();
+    else if (ui_state == ST_HOME) draw_home();
+    else if (ui_state == ST_MENU) { idle_f = 0; draw_menu(); }
+    else { idle_f = 0; draw_mod(); }
+    if (glitch_t > 0) { glitch_t = glitch_t - dt; draw_glitch(); }
+}
+
+function draw_boot() {
+    boot_t = boot_t + dt;
+    if (boot_t > BOOT_END) { ui_state = ST_HOME; home_t = 0; typed = 0; type_t = 0; idle_f = 0; }
+}
+
+function draw_home() {
+    home_t = home_t + dt;
+    if (home_t > 20480) home_t = home_t - 20480;
+    idle_f++;
+    hud_frame(9, 2);
+    if (idle_f > IDLE_FRAMES) {
+        update_idle();
+        tmp_x = cross_x / FP;
+        tmp_y = cross_y / FP;
+    } else {
+        cross_x = 64 * FP;  cross_tx = cross_x;
+        cross_y = 30 * FP;  cross_ty = cross_y;
+        tmp_x = 64;
+        tmp_y = 30;
+    }
+    tmp_r = 9;
+    circle_oled(tmp_x, tmp_y, tmp_r, 0, 1);
+    rect_oled(0, 50, 128, 14, 0, 1);
+    print(4, 52, OLED_FONT_SMALL, 1, S_HINT[0]);
+    scan_y = scan_y + (dt * 60 / 1000);
+    if (scan_y > 90) scan_y = -25;
+    if (scan_y >= 0 && scan_y < 50) line_oled(0, scan_y, 127, scan_y, 1, 1);
+}
+
+function update_idle() {
+    if (spawn_t <= 0) spawn_runner();
+    cross_x = ease(cross_x, cross_tx, 3);
+    cross_y = ease(cross_y, cross_ty, 3);
+}
+
+function spawn_runner() {
+    if (random(0,1)) run_dir = 1; else run_dir = -1;
+    if (run_dir > 0) run_x = -10 * FP; else run_x = 138 * FP;
+    run_y = random(24, 42);
+    run_state = RUN_LIVE;
+    lock_t = 0;
+    spawn_t = random(400, 1200);
+}
+
+function draw_menu() {
+    sel_fp = ease(sel_fp, sel_tfp, 3);
+    scroll_fp = ease(scroll_fp, scroll_tfp, 3);
+
+    for (i_row = 0; i_row < N_ITEMS; i_row++) {
+        tmp_y = LIST_Y + (i_row * ROW_H) - (scroll_fp / FP);
+        if (tmp_y > -2 && tmp_y < 52) {
+            if (i_row >= N_MODS) {
+                print(10, tmp_y + 1, OLED_FONT_SMALL, 1, S_SAVE[0]);
+            } else {
+                draw_mod_name(i_row, 10, tmp_y + 1, 1);
+                tmp_v = par[PAR_FIRST[i_row]];
+                if (tmp_v) {
+                    rect_oled(100, tmp_y + 1, 24, 11, 1, 1);
+                    print(103, tmp_y + 1, OLED_FONT_SMALL, 0, S_ON[0]);
+                } else {
+                    print(103, tmp_y + 1, OLED_FONT_SMALL, 1, S_OFF[0]);
+                }
+            }
+        }
+    }
+
+    tmp_y = LIST_Y + (sel_fp / FP) - (scroll_fp / FP);
+    putc_oled(1, 62);
+    puts_oled(1, tmp_y + 1, OLED_FONT_SMALL, 1, 1);
+    rect_oled(8, tmp_y, 116, ROW_H, 0, 1);
+    if ((ui_frame / 8) % 2) rect_oled(9, tmp_y + 1, 114, ROW_H - 2, 0, 1);
+
+    rect_oled(0, FOOT_Y, 128, 13, 1, 0);
+    rect_oled(0, 0, 128, LIST_Y, 1, 1);
+    print(3, 0, OLED_FONT_SMALL, 0, S_MENU[0]);
+    draw_count(103, 0);
+
+    line_oled(0, FOOT_Y, 127, FOOT_Y, 1, 1);
+    print(3, 53, OLED_FONT_SMALL, 1, S_HINT_M[0]);
+}
+
+function draw_count(x, y) {
+    tmp_v = 0;
+    if (par[PAR_FIRST[0]]) tmp_v = tmp_v + 1;
+    if (par[PAR_FIRST[1]]) tmp_v = tmp_v + 1;
+    putc_oled(1, 48 + tmp_v);
+    putc_oled(2, 47);
+    putc_oled(3, 48 + N_MODS);
+    puts_oled(x, y, OLED_FONT_SMALL, 3, 0);
+}
+
+function draw_mod_name(idx, x, y, col) {
+    if (idx == 0) print(x, y, OLED_FONT_SMALL, col, S_AIM[0]);
+    else print(x, y, OLED_FONT_SMALL, col, S_AR[0]);
+}
+
+function draw_par_name(idx, x, y, col) {
+    if (idx == P_AIM_ON || idx == P_AR_ON) print(x, y, OLED_FONT_SMALL, col, S_ENABLED[0]);
+    else if (idx == P_AIM_SIZE) print(x, y, OLED_FONT_SMALL, col, S_SIZE[0]);
+    else if (idx == P_AIM_WAIT) print(x, y, OLED_FONT_SMALL, col, S_DELAY[0]);
+    else if (idx == P_AIM_LS) print(x, y, OLED_FONT_SMALL, col, S_LSTICK[0]);
+    else print(x, y, OLED_FONT_SMALL, col, S_VERT[0]);
+}
+
+function draw_mod() {
+    ps_fp = ease(ps_fp, ps_tfp, 3);
+    pscroll_fp = ease(pscroll_fp, pscroll_tfp, 3);
+
+    for(i_row = 0; i_row < PAR_COUNT[mod_idx]; i_row++) {
+        pidx = PAR_FIRST[mod_idx] + i_row;
+        tmp_y = 12 + (i_row * ROW_H) - (pscroll_fp / FP);
+
+        anim_fp[pidx] = ease(anim_fp[pidx], par[pidx] * FP, 4);
+
+        if (tmp_y > -2 && tmp_y < 51) {
+            draw_par_name(pidx, 10, tmp_y, 1);
+
+            if (PAR_TYPE[pidx] == PT_TOGGLE) {
+                rect_oled(94, tmp_y + 1, 26, 9, 0, 1);
+                rect_oled(96 + (anim_fp[pidx] * 13 / FP), tmp_y + 2, 11, 7, 1, 1);
+                if (par[pidx] && ((ui_frame / 4) % 2)) rect_oled(93, tmp_y, 28, 11, 0, 1);
+            } else {
+                rect_oled(68, tmp_y + 2, 32, 7, 0, 1);
+                tmp_v = (anim_fp[pidx] + (FP / 2)) / FP;
+                tmp_r = tmp_v * 30 / PAR_MAX[pidx];
+                if (tmp_r > 30) tmp_r = 30;
+                if (tmp_r > 0) rect_oled(69, tmp_y + 3, tmp_r, 5, 1, 1);
+                draw_num(103, tmp_y, tmp_v, 1);
+            }
+        }
+    }
+
+    tmp_y = 12 + (ps_fp / FP) - (pscroll_fp / FP);
+    putc_oled(1, 62);
+    puts_oled(1, tmp_y, OLED_FONT_SMALL, 1, 1);
+    line_oled(9, tmp_y + 11, 60, tmp_y + 11, 1, 1);
+
+    if (PAR_COUNT[mod_idx] > 3) {
+        line_oled(126, 12, 126, 50, 1, 1);
+        rect_oled(125, 12 + (par_sel * 29 / (PAR_COUNT[mod_idx] - 1)), 3, 10, 1, 1);
+    }
+
+    rect_oled(0, FOOT_Y, 128, 13, 1, 0);
+    rect_oled(0, 0, 128, LIST_Y, 1, 1);
+    draw_mod_name(mod_idx, 3, 0, 0);
+    if (par[PAR_FIRST[mod_idx]]) print(113, 0, OLED_FONT_SMALL, 0, S_ON[0]);
+
+    line_oled(0, FOOT_Y, 127, FOOT_Y, 1, 1);
+    print(3, 53, OLED_FONT_SMALL, 1, S_HINT_P[0]);
+}
+
+function draw_num(x, y, v, col) {
+    putc_oled(1,32); putc_oled(2,32); putc_oled(3,32);
+    if (v >= 100) {
+        putc_oled(1, 48 + (v / 100));
+        putc_oled(2, 48 + ((v / 10) % 10));
+        putc_oled(3, 48 + (v % 10));
+    } else if (v >= 10) {
+        putc_oled(2, 48 + (v / 10));
+        putc_oled(3, 48 + (v % 10));
+    } else {
+        putc_oled(3, 48 + v);
+    }
+    puts_oled(x, y, OLED_FONT_SMALL, 3, col);
+}
+
+function hud_frame(len, ins) {
+    line_oled(ins, ins, ins + len, ins, 1, 1);
+    line_oled(ins, ins, ins, ins + len, 1, 1);
+    line_oled(127 - ins - len, ins, 127 - ins, ins, 1, 1);
+    line_oled(127 - ins, ins, 127 - ins, ins + len, 1, 1);
+    line_oled(ins, 63 - ins - len, ins, 63 - ins, 1, 1);
+    line_oled(ins, 63 - ins, ins + len, 63 - ins, 1, 1);
+    line_oled(127 - ins, 63 - ins - len, 127 - ins, 63 - ins, 1, 1);
+    line_oled(127 - ins - len, 63 - ins, 127 - ins, 63 - ins, 1, 1);
+}
+
+function draw_glitch() {
+    for (i_row = 0; i_row < 2; i_row++) {
+        tmp_y = random(0,58);
+        rect_oled(0, tmp_y, 128, random(2, 6), 1, i_row % 2);
+    }
+    for (i_part = 0; i_part < 12; i_part++) {
+        tmp_x = random(0, 127);
+        tmp_y = random(0, 63);
+        pixel_oled(tmp_x, tmp_y, 1);
+    }
+}
+
+function run_mods() {
+    if (par[P_AIM_ON]) aim_assist();
+    if (par[P_AR_ON]) anti_recoil();
+}
+
+function aim_assist() {
+    aa_l2 = get_val(PS4_L2);
+    aa_r2 = get_val(PS4_R2);
+
+    if (aa_l2 > 20 || aa_r2 > 20) {
+        aa_speed = 6400 / par[P_AIM_WAIT];
+        orbit_acc += (aa_speed * get_rtime());
+        aa_steps = orbit_acc / 330;
+        orbit_acc %= 330;
+        orbit_theta = (orbit_theta + aa_steps) % 64;
+
+        aa_amp = par[P_AIM_SIZE];
+        aa_micro_x = (cs(orbit_theta) * aa_amp) / 100;
+        aa_micro_y = (sn(orbit_theta) * aa_amp) / 100;
+
+        aa_raw_rx = get_ival(PS4_RX);
+        aa_raw_ry = get_ival(PS4_RY);
+
+        if (abs(aa_raw_rx) < 60 && abs(aa_raw_ry) < 60) {
+            aa_cur_rx = get_val(PS4_RX);
+            aa_cur_ry = get_val(PS4_RY);
+            set_val(PS4_RX, clamp(aa_cur_rx + aa_micro_x, -100, 100));
+            set_val(PS4_RY, clamp(aa_cur_ry + aa_micro_y, -100, 100));
+        }
+
+        if (par[P_AIM_LS]) {
+            orbit_l_acc += (aa_speed * get_rtime());
+            aa_l_steps = orbit_l_acc / 330;
+            orbit_l_acc %= 330;
+            orbit_l_theta = (orbit_l_theta + aa_l_steps) % 64;
+
+            aa_micro_lx = (cs(orbit_l_theta) * 15) / 100;
+            aa_micro_ly = (sn(orbit_l_theta) * 15) / 100;
+
+            aa_raw_lx = get_ival(PS4_LX);
+            aa_raw_ly = get_ival(PS4_LY);
+
+            if (abs(aa_raw_lx) > 15 || abs(aa_raw_ly) > 15) {
+                aa_cur_lx = get_val(PS4_LX);
+                aa_cur_ly = get_val(PS4_LY);
+                set_val(PS4_LX, clamp(aa_cur_lx + aa_micro_lx, -100, 100));
+                set_val(PS4_LY, clamp(aa_cur_ly + aa_micro_ly, -100, 100));
+            }
+        }
+    } else {
+        orbit_theta = 0; orbit_acc = 0;
+        orbit_l_theta = 0; orbit_l_acc = 0;
+    }
+}
+
+function anti_recoil() {
+    ar_l2 = get_val(PS4_L2);
+    ar_r2 = get_val(PS4_R2);
+
+    if (ar_l2 > 20 && ar_r2 > 20) {
+        ar_base = par[P_AR_VERT];
+        
+        ar_t = ar_t + get_rtime();
+        if (ar_t < 100) {
+            ar_off = ar_base * 2;
+        } else if (ar_t < 300) {
+            ar_off = ar_base * 1.5;
+        } else if (ar_t < 600) {
+            ar_off = ar_base;
+        } else {
+            ar_off = ar_base * 0.7;
+        }
+
+        if (ar_off > 100) ar_off = 100;
+
+        ar_cur_y = get_val(PS4_RY);
+        
+        set_val(PS4_RY, clamp(ar_cur_y + ar_off, -100, 100));
+    } else {
+        ar_t = 0;
+    }
+} ˙∏ã∫ãøçΩä∏äœ˘œ¯º
