@@ -1,0 +1,677 @@
+SWISH LABS V6.0 – NBA 2K27
+Cronus Zen Script Instruction Manual
+=====================================
+
+SCRIPT OVERVIEW
+---------------
+Swish Labs V6.0 is an NBA 2K27 Cronus Zen script built around shooting,
+automation, dribble shortcuts, movement utilities, and multiple saved profiles.
+
+Main features found in this script include:
+
+- Button Rhythm shooting
+- Adjustable Tempo timing
+- Hop Jumper / Turbo Fade behavior
+- Right-stick shooting
+- Square-button remapping to L3/LS or R3/RS
+- Automated Shot
+- Adjustable Automated Speed
+- Adjustable Automated Tempo
+- QuickStop modes
+- D-Pad dribble shortcuts
+- Dunk Meter control
+- Defense Assist
+- Unlimited Stamina movement control
+- Five saved profiles
+- OLED menu with PlayStation and Xbox button labels
+
+IMPORTANT
+---------
+- The script uses PlayStation button names internally.
+- On Xbox, use the equivalent Xbox buttons.
+- The OLED automatically displays Xbox-style menu instructions when an Xbox
+  console is detected.
+- Settings are stored separately for Profiles 1-5.
+- Exiting the menu saves the currently selected profile.
+
+INSTALLATION
+------------
+1. Open Zen Studio.
+2. Connect your Cronus Zen to your computer.
+3. Open the GPC Compiler.
+4. Load the Swish Labs V6.0 GPC file.
+5. Compile the script.
+6. Drag/program it to an available Cronus Zen memory slot.
+7. Connect the Cronus Zen to your console or PC.
+8. Select the memory slot containing Swish Labs V6.0.
+9. Allow the OLED startup animation to finish.
+
+OPENING THE OLED MENU
+---------------------
+PlayStation:
+Hold L2 + press OPTIONS
+
+Xbox:
+Hold LT + press START / MENU
+
+The OLED home screen also displays this shortcut.
+
+MAIN MENU CONTROLS
+------------------
+When the menu first opens, you are shown five categories:
+
+1. Rhythm
+2. Automation
+3. Dribbles
+4. Misc
+5. Profile
+
+Category Screen:
+- D-Pad UP: Previous category
+- D-Pad DOWN: Next category
+- CROSS / A: Open selected category
+- CIRCLE / B: Exit the menu
+
+Setting Screen:
+- D-Pad LEFT: Previous setting in the category
+- D-Pad RIGHT: Next setting in the category
+- D-Pad UP: Increase / enable / previous option
+- D-Pad DOWN: Decrease / disable / next option
+- CIRCLE / B: Return to category screen
+
+To fully exit:
+- Press CIRCLE / B from the setting screen to return to categories.
+- Press CIRCLE / B again to close the menu.
+
+The script saves the current profile when the menu is closed.
+
+FAST VALUE ADJUSTMENT
+---------------------
+For numerical timing settings:
+
+- Tap UP/DOWN for single-step changes.
+- Hold L2/LT while holding UP/DOWN to use the script's accelerated repeat system.
+
+For Automated Speed:
+- Hold R1/RB while changing the value to adjust in 10 ms steps.
+- Without R1/RB, the value changes in 1 ms steps.
+
+============================================================
+RHYTHM CATEGORY
+============================================================
+
+1. BUTTON RHYTHM
+----------------
+Options:
+- OFF
+- ON
+
+Purpose:
+Enables the script's Square/X button rhythm shooting behavior.
+
+When enabled:
+- Holding the normal shoot button is converted into right-stick shooting input.
+- Releasing the shoot button completes the programmed stick flick.
+- The Tempo setting controls part of the release/flick timing.
+
+PlayStation shoot button:
+SQUARE
+
+Xbox equivalent:
+X
+
+Default script variable:
+OFF
+
+2. TEMPO (MS)
+-------------
+Range:
+0-300 ms
+
+Purpose:
+Controls the delay used during the script's rhythm shooting release sequence.
+
+Higher value:
+Adds more delay before the final stick movement.
+
+Lower value:
+Makes the transition happen sooner.
+
+Adjustment:
+- UP increases by 1 ms.
+- DOWN decreases by 1 ms.
+- Hold L2/LT + UP/DOWN for faster scrolling.
+
+Default script variable:
+0 ms
+
+3. TURBO SHOTS
+--------------
+Options shown by the script:
+- Hop Jumper
+- Turbo Fade
+
+Hop Jumper:
+Uses the script's normal shooting direction.
+
+Turbo Fade:
+Enables the reverse-flick shooting mode when R2/RT is being held.
+
+This setting affects:
+- Button Rhythm shooting
+- Automated Shot
+- Right-stick shooting release behavior
+
+Default:
+Hop Jumper
+
+4. RS SHOOTING
+--------------
+Options:
+- OFF
+- ON
+
+Purpose:
+Allows the script to monitor manual right-stick shooting.
+
+When enabled:
+- Move and hold the right stick beyond the script's threshold.
+- If the stick is held for longer than approximately 300 ms and then released,
+  the script completes a programmed shooting flick.
+- The direction used depends on the original stick direction.
+- The Turbo Shots / reverse mode can affect the resulting release behavior.
+
+The script suppresses this feature while certain menu/defensive combinations
+are being used.
+
+Default:
+OFF
+
+5. REMAP BUTTON
+---------------
+PlayStation options:
+- L3
+- R3
+
+Xbox options:
+- LS
+- RS
+
+Purpose:
+Remaps the selected stick-click button to SQUARE/X for shooting.
+
+If L3 / LS is selected:
+- Pressing L3/LS outputs SQUARE/X.
+- R3/RS becomes the Automated Shot trigger when Automated Shot is enabled.
+
+If R3 / RS is selected:
+- Pressing R3/RS outputs SQUARE/X.
+- L3/LS becomes the Automated Shot trigger when Automated Shot is enabled.
+
+Default:
+L3 / LS
+
+============================================================
+AUTOMATION CATEGORY
+============================================================
+
+6. AUTOMATED SHOT
+-----------------
+Options:
+- OFF
+- ON
+
+Purpose:
+Enables a one-button automated shooting sequence.
+
+Trigger depends on the Remap Button setting:
+
+If Remap Button = L3 / LS:
+- Press R3 / RS to trigger Automated Shot.
+
+If Remap Button = R3 / RS:
+- Press L3 / LS to trigger Automated Shot.
+
+The automated sequence uses:
+- Automated Speed
+- Automated Tempo
+- Turbo Shots / reverse behavior
+- Programmed right-stick movements
+
+Default:
+OFF
+
+7. AUTOMATED SPEED
+------------------
+Menu range:
+100-1000 ms
+
+Purpose:
+Controls the initial right-stick hold time used by Automated Shot.
+
+Adjustment:
+- UP/DOWN = 1 ms steps
+- Hold R1/RB while adjusting = 10 ms steps
+- Hold L2/LT + UP/DOWN for accelerated repeating
+
+Lower values:
+Shorter initial shooting hold.
+
+Higher values:
+Longer initial shooting hold.
+
+Important:
+The source initializes this variable to 100 ms before profile loading, but a
+completely empty stored profile can load a zero value until it is adjusted.
+The menu itself restricts adjustments to 100-1000 ms.
+
+8. AUTOMATED TEMPO
+------------------
+Range:
+0-300 ms
+
+Purpose:
+Controls the delay between stages of the Automated Shot stick sequence.
+
+Adjustment:
+- UP increases by 1 ms.
+- DOWN decreases by 1 ms.
+- Hold L2/LT + UP/DOWN for accelerated repeating.
+
+Default script variable:
+0 ms
+
+============================================================
+DRIBBLES CATEGORY
+============================================================
+
+9. QUICKSTOP
+------------
+Options:
+- OFF
+- AUTO
+- LT/L2
+
+QuickStop OFF:
+No QuickStop automation.
+
+QuickStop AUTO:
+While moving and holding R2/RT, pressing SQUARE/X can start the script's
+QuickStop shooting sequence.
+
+QuickStop LT/L2:
+While moving and using L2/LT, pressing SQUARE/X can start the QuickStop
+sequence.
+
+During the QuickStop sequence the script temporarily:
+- Stops left-stick movement.
+- Suppresses the normal shoot button.
+- Applies a short right-stick movement.
+- Completes the shot when the shoot button is released.
+
+The script avoids activating QuickStop when the selected remapped stick-click
+shoot button is being used.
+
+Default:
+OFF
+
+10. DRIBBLE D-PAD UP
+--------------------
+Options:
+- Off
+- BTB Spam
+- Curry
+- D Booker
+
+Choose the dribble action you want assigned to D-Pad UP.
+
+During gameplay:
+Press/hold D-Pad UP to run the assigned sequence.
+
+If set to Off:
+D-Pad UP is not assigned a dribble sequence by this feature.
+
+Default:
+Off
+
+11. DRIBBLE D-PAD DOWN
+----------------------
+Options:
+- Off
+- BTB Spam
+- Curry
+- D Booker
+
+Choose the dribble action assigned to D-Pad DOWN.
+
+During gameplay:
+Press/hold D-Pad DOWN to run the assigned sequence.
+
+Default:
+Off
+
+12. DRIBBLE D-PAD LEFT
+----------------------
+Options:
+- Off
+- B Break
+- Escape
+- Momentum
+
+Choose the dribble action assigned to D-Pad LEFT.
+
+During gameplay:
+Press/hold D-Pad LEFT to run the assigned sequence.
+
+Default:
+Off
+
+13. DRIBBLE D-PAD RIGHT
+-----------------------
+Options:
+- Off
+- B Break
+- Escape
+- Momentum
+
+Choose the dribble action assigned to D-Pad RIGHT.
+
+During gameplay:
+Press/hold D-Pad RIGHT to run the assigned sequence.
+
+Default:
+Off
+
+DRIBBLE SHORTCUT NOTES
+----------------------
+The script enables its D-Pad dribble handler whenever at least one D-Pad
+direction has a dribble action assigned.
+
+Available UP/DOWN actions:
+- BTB Spam
+- Curry
+- D Booker
+
+Available LEFT/RIGHT actions:
+- B Break
+- Escape
+- Momentum
+
+These actions perform predefined combinations of right-stick, left-stick, and
+R2/RT inputs.
+
+============================================================
+MISC CATEGORY
+============================================================
+
+14. DUNK METER
+--------------
+Options:
+- OFF
+- ON
+
+When enabled:
+Hold L1/LB while R2/RT is held or was very recently held.
+
+The script then:
+- Holds R2/RT.
+- Pushes the right stick downward according to the script's internal axis value.
+
+Releasing L1/LB or R2/RT ends the sequence.
+
+Default:
+OFF
+
+15. DEFENSE ASSIST
+------------------
+Options:
+- OFF
+- ON
+
+When enabled:
+Hold L2/LT + R1/RB while moving the left stick.
+
+The script:
+- Suppresses R1/RB.
+- Copies left-stick movement to the right stick while the combination is active.
+
+Release the combination to return to normal right-stick control.
+
+Default:
+OFF
+
+16. UNLIMITED STAMINA
+---------------------
+Options:
+- OFF
+- ON
+
+Purpose:
+Applies the script's stamina-control movement behavior.
+
+When enabled and moving:
+- Left-stick output is scaled to approximately 70% by the script.
+- Very small left-stick inputs are centered.
+
+The script temporarily avoids this stamina behavior while the Dunk Meter
+condition is active.
+
+Important:
+Despite the menu name "Unlimited Stamina", the source code implements this
+feature by modifying left-stick movement output; it does not directly change an
+in-game stamina value.
+
+Default:
+OFF
+
+============================================================
+PROFILE CATEGORY
+============================================================
+
+17. PROFILE SELECT
+------------------
+Options:
+- Profile 1
+- Profile 2
+- Profile 3
+- Profile 4
+- Profile 5
+
+Purpose:
+Stores multiple Swish Labs configurations.
+
+When changing profiles:
+1. The script saves the profile you are leaving.
+2. It switches to the selected profile.
+3. It loads that profile's saved values.
+
+The currently selected profile is displayed on the startup OLED screen.
+
+Default profile:
+Profile 1, unless another profile was previously saved as active.
+
+PROFILE-SAVED SETTINGS
+----------------------
+Each of the five profiles stores the following values:
+
+- Button Rhythm
+- Turbo Shots / reverse mode
+- RS Shooting
+- Dunk Meter
+- Defense Assist
+- Automated Shot
+- Unlimited Stamina
+- Remap Button
+- QuickStop mode
+- D-Pad Up dribble selection
+- D-Pad Down dribble selection
+- D-Pad Left dribble selection
+- D-Pad Right dribble selection
+- Tempo
+- Automated Tempo
+- Automated Speed
+
+The script also remembers:
+- Current profile
+- Last menu page
+
+============================================================
+GAMEPLAY CONTROL SUMMARY
+============================================================
+
+OPEN MENU
+PlayStation:
+L2 + OPTIONS
+
+Xbox:
+LT + START/MENU
+
+BUTTON RHYTHM
+When enabled:
+Hold and release SQUARE/X to use the programmed right-stick rhythm sequence.
+
+REMAP SHOOT BUTTON
+If L3/LS selected:
+L3/LS outputs SQUARE/X.
+
+If R3/RS selected:
+R3/RS outputs SQUARE/X.
+
+AUTOMATED SHOT
+If remap = L3/LS:
+Press R3/RS.
+
+If remap = R3/RS:
+Press L3/LS.
+
+QUICKSTOP
+AUTO mode:
+Move + hold R2/RT + press SQUARE/X.
+
+LT/L2 mode:
+Move + use L2/LT + press SQUARE/X.
+
+D-PAD DRIBBLES
+Press the D-Pad direction assigned to the desired dribble macro.
+
+DUNK METER
+When enabled:
+Use L1/LB + R2/RT.
+
+DEFENSE ASSIST
+When enabled:
+Hold L2/LT + R1/RB while moving the left stick.
+
+============================================================
+SUGGESTED FIRST-TIME SETUP
+============================================================
+
+1. Select Profile 1.
+2. Open Rhythm.
+3. Turn Button Rhythm ON if you want button-based rhythm shooting.
+4. Set Tempo to a starting value and test it in NBA 2K27.
+5. Choose Hop Jumper or Turbo Fade under Turbo Shots.
+6. Enable RS Shooting only if you want the script to assist right-stick releases.
+7. Choose whether L3/LS or R3/RS should act as the remapped shoot button.
+8. Open Automation.
+9. Enable Automated Shot if desired.
+10. Adjust Automated Speed and Automated Tempo gradually.
+11. Open Dribbles and assign only the D-Pad moves you actually want.
+12. Choose a QuickStop mode if desired.
+13. Enable Dunk Meter, Defense Assist, or Unlimited Stamina individually so each
+    feature can be tested separately.
+14. Exit the menu completely to save the profile.
+
+============================================================
+TUNING TIPS
+============================================================
+
+BUTTON RHYTHM FEELS TOO EARLY OR TOO LATE
+- Adjust Tempo in small increments.
+- Test one change at a time.
+
+AUTOMATED SHOT TIMING IS OFF
+- Tune Automated Speed first.
+- Then tune Automated Tempo.
+- Change only one timing value at a time so you know which adjustment helped.
+
+WANT FASTER NUMERIC CHANGES
+- Hold L2/LT while holding UP or DOWN.
+- On Automated Speed, hold R1/RB for 10 ms steps.
+
+DRIBBLE MACRO IS ACTIVATING ON THE WRONG DIRECTION
+- Re-open the Dribbles category.
+- Check each D-Pad assignment individually.
+- Set unused directions to Off.
+
+AUTOMATED SHOT USES THE WRONG STICK BUTTON
+- Check Remap Button.
+- Automated Shot always uses the opposite stick-click from the one selected as
+  the SQUARE/X remap.
+
+QUICKSTOP DOES NOT ACTIVATE
+- Confirm QuickStop is not Off.
+- AUTO requires movement plus R2/RT before the SQUARE/X press.
+- LT/L2 mode requires movement plus L2/LT before the SQUARE/X press.
+- The script intentionally avoids triggering QuickStop from the selected
+  stick-click remapped shoot button.
+
+SETTINGS ARE NOT SAVING
+- Exit completely from the OLED menu after making changes.
+- CIRCLE/B from a setting returns to the category screen.
+- CIRCLE/B again closes the menu and saves the current profile.
+
+SETTINGS CHANGED AFTER SWITCHING PROFILE
+- Each profile has independent stored values.
+- Switching profiles saves the old profile and loads the new profile.
+
+============================================================
+DEFAULT / INITIAL SCRIPT VALUES
+============================================================
+
+The source declares these initial values before saved profile data is loaded:
+
+Button Rhythm: OFF
+Tempo: 0 ms
+Turbo Shots: Hop Jumper
+RS Shooting: OFF
+Remap Button: L3 / LS
+Automated Shot: OFF
+Automated Speed: 100 ms before profile loading
+Automated Tempo: 0 ms
+QuickStop: OFF
+D-Pad Up: Off
+D-Pad Down: Off
+D-Pad Left: Off
+D-Pad Right: Off
+Dunk Meter: OFF
+Defense Assist: OFF
+Unlimited Stamina: OFF
+Profile: Profile 1 if no previously selected profile is stored
+
+Because profiles are loaded from persistent variables during startup, previously
+saved profile values override these initial declarations.
+
+============================================================
+SCRIPT VERSION NOTES
+============================================================
+
+Script branding:
+Swish Labs
+
+Version displayed on OLED:
+v6.0
+
+Number of OLED setting pages:
+17
+
+Number of menu categories:
+5
+
+Available profiles:
+5
+
+The instructions above are based directly on the controls and logic present in
+this Swish Labs V6.0 GPC build.
+
+End of manual.

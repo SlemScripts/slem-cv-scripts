@@ -1,0 +1,4686 @@
+const string NAME[]  = { "ScarZens" };
+const string NAME2[]  = { "LOADING" };
+
+int i;
+combo RapidCrouchSpam_Combo{
+}
+
+int RapidCrouchSpam_ON = 0;
+
+
+define INTERNAL_DZ     = 2;
+define CLASSIC_COMP    = 12;
+define SMOOTH_SLOW     = 70;
+define SMOOTH_FAST     = 20;
+define SPEED_THRESHOLD = 10;
+int prev_out_x, prev_out_y;
+int prev_in_x, prev_in_y;
+int av, s, tri, boost, compv, outv, scaled, speed, smooth_pct;
+
+int HOLD_DELAY = 275;
+int HOLD_RATE  = 75;
+int next_rep_right = 0;
+int next_rep_left  = 0;
+function iabs(v) { if(v < 0) return(-v); return(v); }
+function isign(v) { if(v < 0) return(-1); if(v > 0) return(1); return(0);
+}
+
+function dz_remap(v, dz) {
+    av = iabs(v);
+    if(av <= dz) return(0);
+    scaled = ((av - dz) * 100) / (100 - dz);
+    return(scaled * isign(v));
+}
+function classic_comp(v) {
+    av = iabs(v); s = isign(v);
+    tri = 50 - iabs(av - 50);
+    boost = (CLASSIC_COMP * tri) / 50;
+    compv = (CLASSIC_COMP * av) / 200;
+    outv = av + boost - compv;
+    if(outv > 100) outv = 100;
+    return(outv * s);
+}
+function vel_smooth(v, axis) {
+    if(axis == 0) {
+        speed = iabs(v - prev_in_x);
+        if(speed <= SPEED_THRESHOLD) smooth_pct = SMOOTH_SLOW;
+        else smooth_pct = SMOOTH_FAST;
+        outv = ((prev_out_x * smooth_pct) + (v * (100 - smooth_pct))) / 100;
+        prev_in_x = v; prev_out_x = outv;
+    } else {
+        speed = iabs(v - prev_in_y);
+        if(speed <= SPEED_THRESHOLD) smooth_pct = SMOOTH_SLOW;
+        else smooth_pct = SMOOTH_FAST;
+        outv = ((prev_out_y * smooth_pct) + (v * (100 - smooth_pct))) / 100;
+        prev_in_y = v; prev_out_y = outv;
+    }
+    return(outv);
+}
+
+
+
+int global_scale = 100;
+int smooth_scale = 100;
+int currentlyUpdatingValues = FALSE;
+int updating = FALSE;
+int screen = 0;
+int CurrentDeadzoneX = 10;
+int CurrentDeadzoneY = 10;
+int HipfireRecoil = TRUE;
+int HoldCrouch275 = FALSE;
+int BHoldCrouchMode = FALSE;
+
+
+int qs_up    = 1;
+int qs_right = 11;
+int qs_down  = 5;
+int qs_left  = 12;
+
+int qs_item = 0;
+int qs_edit = FALSE;
+int qs_weapon_edit = 0;
+int crouchHoldTimer = 0;
+int crouchHoldFired = FALSE;
+int A, B;
+int oldA, oldB;
+int remap_used[64];
+const string TXT_BUTTON[] = { "BUTTON" };
+const string TXT_USES[]   = { "USES" };
+int RemapEnabled[10];
+int RemapSrc[10];
+int RemapDst[10];
+int rm_i = 0;
+int remap_edit_field = 0;
+int REMAP_SLOTS = 10;
+int BTN_LIST[16];
+int remap_init_done = FALSE;
+int CROUCH_BTN = XB1_B;
+
+// *** DISPLAY FIX VARIABLE ***
+int bUpdateDisplay = TRUE;
+
+function UpdateCrouchBtn() {
+    CROUCH_BTN = XB1_B;
+    if(SwapEnabled[1]) {
+        CROUCH_BTN = BTN_LIST[SwapWith[1]];
+        return;
+    }
+
+    for(rm_i = 0; rm_i < 10; rm_i++) {
+        if(!RemapEnabled[rm_i]) continue;
+        if(RemapSrc[rm_i] == XB1_B) { CROUCH_BTN = RemapDst[rm_i]; return; }
+        if(RemapDst[rm_i] == XB1_B) { CROUCH_BTN = RemapSrc[rm_i];
+            return; }
+    }
+}
+
+function InitBtnList() {
+    BTN_LIST[0]  = XB1_A;    BTN_LIST[1]  = XB1_B;
+    BTN_LIST[2]  = XB1_X;    BTN_LIST[3]  = XB1_Y;
+    BTN_LIST[4]  = XB1_LB;   BTN_LIST[5]  = XB1_RB;
+    BTN_LIST[6]  = XB1_LT;
+    BTN_LIST[7]  = XB1_RT;
+    BTN_LIST[8]  = XB1_LS;   BTN_LIST[9]  = XB1_RS;
+    BTN_LIST[10] = XB1_UP;   BTN_LIST[11] = XB1_DOWN;
+    BTN_LIST[12] = XB1_LEFT; BTN_LIST[13] = XB1_RIGHT;
+    BTN_LIST[14] = XB1_VIEW; BTN_LIST[15] = XB1_MENU;
+}
+
+function InitRemaps() {
+    for(rm_i = 0; rm_i < 10; rm_i++) {
+        RemapEnabled[rm_i] = FALSE;
+        RemapSrc[rm_i] = XB1_A;
+        RemapDst[rm_i] = XB1_A;
+    }
+}
+
+#define BTN_COUNT = 16
+int SwapWith[BTN_COUNT];
+int SwapEnabled[BTN_COUNT];
+int used_pair[BTN_COUNT];
+function ApplyButtonSwaps() {
+    for(i = 0; i < BTN_COUNT; i++) {
+        used_pair[i] = FALSE;
+    }
+    for(i = 0; i < BTN_COUNT; i++) {
+        if(!SwapEnabled[i]) continue;
+        j = SwapWith[i];
+        if(j < 0) continue;
+        if(j >= BTN_COUNT) continue;
+        if(i == j) continue;
+        if(used_pair[i] || used_pair[j]) continue;
+        b1 = BTN_LIST[i];
+        b2 = BTN_LIST[j];
+        v1 = get_val(b1);
+        v2 = get_val(b2);
+        set_val(b1, v2);
+        set_val(b2, v1);
+        used_pair[i] = TRUE;
+        used_pair[j] = TRUE;
+    }
+}
+
+int btn1, btn2;
+int v1, v2;
+int w;
+function ApplyRemaps() {
+    for(i = 0; i < 64; i++) {
+        remap_used[i] = FALSE;
+    }
+    for(rm_i = 0; rm_i < 10; rm_i++) {
+        if(!RemapEnabled[rm_i]) continue;
+        btn1 = RemapDst[rm_i];
+        btn2 = RemapSrc[rm_i];
+        if(btn1 == btn2) continue;
+        if(remap_used[btn1] || remap_used[btn2]) continue;
+        v1 = get_val(btn1);
+        v2 = get_val(btn2);
+        set_val(btn1, v2);
+        set_val(btn2, v1);
+        remap_used[btn1] = TRUE;
+        remap_used[btn2] = TRUE;
+    }
+}
+
+int __prev_out[64];
+function PostPress(int btn) {
+    return (get_val(btn) > 50 && __prev_out[btn] <= 50);
+}
+
+function UpdatePostPressPrev() {
+    __prev_out[XB1_A]    = get_val(XB1_A);
+    __prev_out[XB1_B]    = get_val(CROUCH_BTN);
+    __prev_out[XB1_X]    = get_val(XB1_X);
+    __prev_out[XB1_Y]    = get_val(XB1_Y);
+    __prev_out[XB1_LB]   = get_val(XB1_LB);
+    __prev_out[XB1_RB]   = get_val(XB1_RB);
+    __prev_out[XB1_LS]   = get_val(XB1_LS);
+    __prev_out[XB1_RS]   = get_val(XB1_RS);
+    __prev_out[XB1_UP]   = get_val(XB1_UP);
+    __prev_out[XB1_DOWN] = get_val(XB1_DOWN);
+    __prev_out[XB1_LEFT] = get_val(XB1_LEFT);
+    __prev_out[XB1_RIGHT]= get_val(XB1_RIGHT);
+    __prev_out[XB1_VIEW] = get_val(XB1_VIEW);
+    __prev_out[XB1_MENU] = get_val(XB1_MENU);
+    __prev_out[XB1_LT]   = get_val(XB1_LT);
+    __prev_out[XB1_RT]   = get_val(XB1_RT);
+}
+
+const string BTN_A[] = { "A/X" };
+const string BTN_B[] = { "B/O" };
+const string BTN_X[] = { "X/SQU" };
+const string BTN_Y[] = { "Y/TRI" };
+const string BTN_LB[] = { "LB/L1" };
+const string BTN_RB[] = { "RB/R1" };
+const string BTN_LT[] = { "LT/L2" };
+const string BTN_RT[] = { "RT/R2" };
+const string BTN_LS[] = { "LS" };
+const string BTN_RS[] = { "RS" };
+const string BTN_UP[] = { "UP" };
+const string BTN_DOWN[] = { "DOWN" };
+const string BTN_LEFT[] = { "LEFT" };
+const string BTN_RIGHT[] = { "RIGHT" };
+const string BTN_VIEW[] = { "VIEW" };
+const string BTN_MENU[] = { "MENU" };
+function PrintBtnName(x, y, idx) {
+    if(idx == 0)       print(x, y, 0, OLED_FONT_SMALL, BTN_A[0]);
+    else if(idx == 1)  print(x, y, 0, OLED_FONT_SMALL, BTN_B[0]);
+    else if(idx == 2)  print(x, y, 0, OLED_FONT_SMALL, BTN_X[0]);
+    else if(idx == 3)  print(x, y, 0, OLED_FONT_SMALL, BTN_Y[0]);
+    else if(idx == 4)  print(x, y, 0, OLED_FONT_SMALL, BTN_LB[0]);
+    else if(idx == 5)  print(x, y, 0, OLED_FONT_SMALL, BTN_RB[0]);
+    else if(idx == 6)  print(x, y, 0, OLED_FONT_SMALL, BTN_LT[0]);
+    else if(idx == 7)  print(x, y, 0, OLED_FONT_SMALL, BTN_RT[0]);
+    else if(idx == 8)  print(x, y, 0, OLED_FONT_SMALL, BTN_LS[0]);
+    else if(idx == 9)  print(x, y, 0, OLED_FONT_SMALL, BTN_RS[0]);
+    else if(idx == 10) print(x, y, 0, OLED_FONT_SMALL, BTN_UP[0]);
+    else if(idx == 11) print(x, y, 0, OLED_FONT_SMALL, BTN_DOWN[0]);
+    else if(idx == 12) print(x, y, 0, OLED_FONT_SMALL, BTN_LEFT[0]);
+    else if(idx == 13) print(x, y, 0, OLED_FONT_SMALL, BTN_RIGHT[0]);
+    else if(idx == 14) print(x, y, 0, OLED_FONT_SMALL, BTN_VIEW[0]);
+    else if(idx == 15) print(x, y, 0, OLED_FONT_SMALL, BTN_MENU[0]);
+}
+
+int prev_LT = 0;
+int prev_RT = 0;
+int j;
+int b1, b2;
+const string TXT_PRESSBTN = "PRESS BTN";
+const string TXT_CANCELB  = "B CANCEL";
+
+
+int weaponCategory = 0;
+int weaponIndex = 0;
+int stanceIsStanding = 1;
+int recoilStrengthPct = 100;
+int suppressRightStickOutput = FALSE;
+int recoilComboState = -1;
+int rightStickSensitivityPct = 100;
+int rightStickDeadzone = 5;
+int rightStickCurvePct = 100;
+int sens_raw_rx = 0;
+int sens_raw_ry = 0;
+int sens_raw_rx_dz = 0;
+int sens_raw_ry_dz = 0;
+int current_sens_mul_x = 100;
+int current_sens_mul_y = 100;
+int sens_mod_rx = 0;
+int sens_mod_ry = 0;
+int sens_combo_dx = 0;
+int sens_combo_dy = 0;
+int sens_player_rx = 0;
+int sens_player_ry = 0;
+int sens_final_rx = 0;
+int sens_final_ry = 0;
+int sens_abs = 0;
+
+
+
+int axisOutput;
+int axisHeadroomPct;
+int recoilAxisDelta;
+int userAxisProcessed;
+int strafeRecoilBonusPct;
+int smoothingColumnOffset;
+int recoilSmoothingY, recoilSmoothingX;
+int altSmoothingToggle[5];
+int recoilAxisEnabledXY[2];
+
+
+const int axisScalePctXY[]={ 100,100 };
+const int strafeBonusPctByWeaponAndStance[][]={
+    { 1,3,3,5 },
+    { 1,2,2,4 }, 
+    { 1,2,2,4 },
+    { 1,2,2,4 },
+    { 2,3,6,8 },
+    { 3,6,8,12 },
+    { 1,2,2,4 } 
+};
+const int smoothingAutoWeapons[][]={
+    { 100,100,140,155 },
+    { 100,100,140,155 },
+    { 100,100,140,155 },
+    { 100,100,140,155 },
+    { 100,100,140,155 },
+    { 100,100,140,155 },
+    { 100,100,140,155 }
+};
+const int smoothingSemiWeapons[][]={
+    { 100,100,140,155 },
+    { 100,100,140,155 },
+    { 100,100,140,155 },
+    { 100,100,140,155 },
+    { 100,100,140,155 },
+    { 100,100,140,155 },
+    { 100,100,140,155 }
+};
+const int smoothingExtraWeapons[][]={
+    { 100,100,140,155 }
+};
+
+
+const string TXT_HIPRECOIL[] = { "HIPFIRE" };
+const string TXT_HOLDCROUCH[] = { "HOLD CROUCH" };
+const string TXT_BHOLDCROUCH[] = { "PC CROUCH" };
+const string TXT_ON[]  = { "ON" };
+const string TXT_OFF[] = { "OFF" };
+define SENS_MIN = 1
+define SENS_MAX = 100
+define SENS_STEP = 1
+
+define DEF_HIP_SENS = 80;
+define DEF_1X_SENS  = 50;
+define DEF_4X_SENS  = 50;
+
+define DZ_MIN = 0
+define DZ_MAX = 30
+define DZ_STEP = 1
+define DEF_DZ_X = 10
+define DEF_DZ_Y = 10
+
+
+define VERT_COMP_PCT = 120
+int BASE_HIP_X  = DEF_HIP_SENS;
+int BASE_HIP_Y  = DEF_HIP_SENS;
+int BASE_1X_X   = DEF_1X_SENS;
+int BASE_1X_Y   = DEF_1X_SENS;
+int BASE_4X_X   = DEF_4X_SENS;
+int BASE_4X_Y   = DEF_4X_SENS;
+
+int sens_item = 0;
+const string TXT_ARROW[] = {">"};
+const string TXT_QS_BIND[] = {"RB+UP","RB+LEFT","RB+DOWN","RB+RIGHT"};
+const string TXT_HIP_X[] = {"HIP: X"};
+const string TXT_HIP_Y[] = {"HIP: Y"};
+const string TXT_1X_X[]  = {"1X: X"};
+const string TXT_1X_Y[]  = {"1X: Y"};
+const string TXT_4X_X[]  = {"4X: X"};
+const string TXT_4X_Y[]  = {"4X: Y"};
+const string TXT_DZ_X[]  = {"DZ: X"};
+const string TXT_DZ_Y[]  = {"DZ: Y"};
+const string TXT_ZERO[]  = {"0"};
+const string TXT_NUM[] = {
+"1","2","3","4","5","6","7","8","9","10",
+"11","12","13","14","15","16","17","18","19","20",
+"21","22","23","24","25","26","27","28","29","30",
+"31","32","33","34","35","36","37","38","39","40",
+"41","42","43","44","45","46","47","48","49","50",
+"51","52","53","54","55","56","57","58","59","60",
+"61","62","63","64","65","66","67","68","69","70",
+"71","72","73","74","75","76","77","78","79","80",
+"81","82","83","84","85","86","87","88","89","90",
+"91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123","124","125","126","127","128","129","130","131","132","133","134","135","136","137","138","139","140","141","142","143","144","145","146","147","148","149","150"};
+int weapon_lock = 0;
+int weapon_locked = FALSE;
+
+
+int CurrentWeapon = 0;
+int RT_HIP_ENABLED = 1;
+
+
+const string Status[] = {"STAND", "CROUCH"};
+
+
+int searchinginAnInventory = FALSE;
+int CurrentStatus = 0;
+int strafeRYBoost = 0;
+#define STAND = 0
+#define CROUCH = 1
+int inventoryLocked = FALSE;
+int invMoveTimer    = 0;
+int flickState      = 0;
+int flickTimer      = 0;
+int bDebounceTimer  = 400;
+int anyDpad = FALSE;
+int playerMoved = FALSE;
+int spinTimer = 0;
+int spinDir = 1;
+int spinning = FALSE;
+int spinStage = 0;
+int RAW_LX;
+int load_elapsed;
+init {
+	load_elapsed = 0;
+
+
+
+	altSmoothingToggle[0] = 0;
+	altSmoothingToggle[1] = 0;
+	altSmoothingToggle[2] = 0;
+	altSmoothingToggle[3] = 0;
+	altSmoothingToggle[4] = 0;
+
+	recoilAxisEnabledXY[0] = 1;
+	recoilAxisEnabledXY[1] = 1;
+
+
+	InitBtnList();
+	InitRemaps();
+	for(i = 0; i < BTN_COUNT; i++) { SwapWith[i] = i; SwapEnabled[i] = FALSE; }
+	remap_init_done = TRUE;
+
+
+
+    vm_tctrl(-7);
+    BASE_HIP_X = DEF_HIP_SENS;
+    BASE_HIP_Y = DEF_HIP_SENS;
+    BASE_1X_X  = DEF_1X_SENS;
+    BASE_1X_Y  = DEF_1X_SENS;
+    BASE_4X_X  = DEF_4X_SENS;
+    BASE_4X_Y  = DEF_4X_SENS;
+
+    BASE_HIP_X = clamp(BASE_HIP_X, SENS_MIN, SENS_MAX);
+    BASE_HIP_Y = clamp(BASE_HIP_Y, SENS_MIN, SENS_MAX);
+    BASE_1X_X  = clamp(BASE_1X_X,  SENS_MIN, SENS_MAX);
+    BASE_1X_Y  = clamp(BASE_1X_Y,  SENS_MIN, SENS_MAX);
+    BASE_4X_X  = clamp(BASE_4X_X,  SENS_MIN, SENS_MAX);
+    BASE_4X_Y  = clamp(BASE_4X_Y,  SENS_MIN, SENS_MAX);
+
+    set_led(1, 0);set_led(2, 0);set_led(3, 0);
+    BASE_HIP_X = get_pvar(SPVAR_1, SENS_MIN, SENS_MAX, DEF_HIP_SENS);
+    BASE_1X_X  = get_pvar(SPVAR_2, SENS_MIN, SENS_MAX, DEF_1X_SENS);
+    BASE_4X_X  = get_pvar(SPVAR_3, SENS_MIN, SENS_MAX, DEF_4X_SENS);
+    BASE_HIP_Y = get_pvar(SPVAR_4, SENS_MIN, SENS_MAX, DEF_HIP_SENS);
+    if (BASE_HIP_Y == 85 || BASE_HIP_Y == 100) { BASE_HIP_Y = DEF_HIP_SENS; set_pvar(SPVAR_4, BASE_HIP_Y);
+    }
+
+    BASE_1X_Y  = get_pvar(SPVAR_9,  SENS_MIN, SENS_MAX, DEF_1X_SENS);
+    BASE_4X_Y  = get_pvar(SPVAR_10, SENS_MIN, SENS_MAX, DEF_4X_SENS);
+    CurrentDeadzoneX = get_pvar(SPVAR_11, DZ_MIN, DZ_MAX, DEF_DZ_X);
+    CurrentDeadzoneY = get_pvar(SPVAR_12, DZ_MIN, DZ_MAX, DEF_DZ_Y);
+
+    BASE_HIP_X = clamp(BASE_HIP_X, SENS_MIN, SENS_MAX);
+    BASE_HIP_Y = clamp(BASE_HIP_Y, SENS_MIN, SENS_MAX);
+    BASE_1X_X  = clamp(BASE_1X_X,  SENS_MIN, SENS_MAX);
+    BASE_1X_Y  = clamp(BASE_1X_Y,  SENS_MIN, SENS_MAX);
+    BASE_4X_X  = clamp(BASE_4X_X,  SENS_MIN, SENS_MAX);
+    BASE_4X_Y  = clamp(BASE_4X_Y,  SENS_MIN, SENS_MAX);
+
+    CurrentDeadzoneX = clamp(CurrentDeadzoneX, DZ_MIN, DZ_MAX);
+    CurrentDeadzoneY = clamp(CurrentDeadzoneY, DZ_MIN, DZ_MAX);
+}
+
+int YTapCount = 0;
+int YTapAge = 0;
+int YDoubleTapWindow = 250;
+main {
+
+    sens_raw_rx = get_val(XB1_RX);
+    sens_raw_ry = get_val(XB1_RY);
+
+
+
+
+
+    UpdateCrouchBtn();
+
+    RecoilControl();
+
+        hiprecoil();
+
+    ApplyButtonSwaps();
+    if(screen == 0) {
+        ApplyRemaps();
+    }
+
+    if (screen == 0 && bUpdateDisplay) {
+        UpdateScreen();
+        bUpdateDisplay = FALSE;
+    }
+    else if (screen == 1) UpdateValues();
+    else if (screen == 2) UpdateSens();
+    else if (screen == 3) UpdateRemaps();
+    else if (screen == 4) UpdateQuickSwaps();
+    else if (screen == 5) {
+        UpdateRemapMenu();
+        if (!weapon_locked) {
+            weapon_lock   = CurrentWeapon;
+            weapon_locked = TRUE;
+        }
+        CurrentWeapon = weapon_lock;
+        set_val(XB1_UP, 0); set_val(XB1_DOWN, 0); set_val(XB1_LEFT, 0);
+        set_val(XB1_RIGHT, 0);
+        set_val(XB1_RT, 0); set_val(XB1_LT, 0); set_val(XB1_RB, 0); set_val(XB1_LB, 0);
+    }
+
+
+    if(screen != 0) {
+        set_val(XB1_LX, 0); set_val(XB1_LY, 0);
+        set_val(XB1_RX, 0); set_val(XB1_RY, 0);
+        set_val(XB1_LT, 0); set_val(XB1_RT, 0);
+        set_val(XB1_UP, 0); set_val(XB1_DOWN, 0); set_val(XB1_LEFT, 0); set_val(XB1_RIGHT, 0);
+        set_val(XB1_A, 0); set_val(CROUCH_BTN, 0);
+        set_val(XB1_X, 0); set_val(XB1_Y, 0);
+        set_val(XB1_LB, 0); set_val(XB1_RB, 0); set_val(XB1_LS, 0); set_val(XB1_RS, 0);
+        set_val(XB1_VIEW, 0); set_val(XB1_MENU, 0); set_val(XB1_XBOX, 0);
+    }
+
+    prev_LT = get_val(XB1_LT);
+    prev_RT = get_val(XB1_RT);
+    RAW_LX = get_val(XB1_LX);
+    if (event_press(XB1_RS) && event_press(XB1_LS)) {
+        spinning = !spinning;
+    }
+    if (spinning) {
+        spinTimer += get_rtime();
+        if (spinStage == 0) {
+            set_val(XB1_RX, 100);
+            if (spinTimer >= 400) { spinTimer = 0; spinStage = 1;
+            }
+        } else if (spinStage == 1) {
+            set_val(XB1_UP, 100);
+            if (spinTimer >= 120) { spinTimer = 0; spinStage = 2;
+            }
+        } else if (spinStage == 2) {
+            if (spinTimer >= 1000) { spinTimer = 0;
+            spinStage = 3; }
+        } else if (spinStage == 3) {
+            set_val(CROUCH_BTN, 100);
+            if (spinTimer >= 120) { spinTimer = 0; spinStage = 0;
+            }
+        }
+    }
+
+
+    if (get_val(XB1_RB) > 65) {
+        if (event_press(XB1_UP))    { combo_stop_all(); CurrentWeapon = qs_up;    bUpdateDisplay = TRUE; }
+        if (event_press(XB1_DOWN))  { combo_stop_all(); CurrentWeapon = qs_down;  bUpdateDisplay = TRUE; }
+        if (event_press(XB1_LEFT))  { combo_stop_all(); CurrentWeapon = qs_left;  bUpdateDisplay = TRUE; }
+        if (event_press(XB1_RIGHT)) { combo_stop_all(); CurrentWeapon = qs_right; bUpdateDisplay = TRUE; }
+    }
+
+
+    playerMoved = (abs(get_val(XB1_LX)) > 20 || abs(get_val(XB1_LY)) > 20);
+    if(bDebounceTimer > 0) {
+        bDebounceTimer -= get_rtime();
+        if(bDebounceTimer < 0) bDebounceTimer = 0;
+    }
+
+    if(event_press(XB1_UP) || event_press(XB1_DOWN) || event_press(XB1_X)) {
+        bDebounceTimer = 200;
+    }
+
+YTapAge += get_rtime();
+
+if(event_press(XB1_Y)) {
+    if(YTapCount == 0) {
+        YTapCount = 1;
+        YTapAge = 0;
+    } else if(YTapCount == 1 && YTapAge <= YDoubleTapWindow && !updating) {
+        searchinginAnInventory = FALSE;
+        inventoryLocked = FALSE; invMoveTimer = 0; flickState = 0; flickTimer = 0;
+        CurrentStatus ^= 1;
+        crouchHoldTimer = 0;
+        crouchHoldFired = FALSE;
+        bUpdateDisplay = TRUE;
+        YTapCount = 0;
+        YTapAge = 0;
+    }
+}
+
+if(YTapCount == 1 && YTapAge > YDoubleTapWindow) {
+    YTapCount = 0;
+    YTapAge = 0;
+}
+
+    if(event_press(XB1_LS)) { searchinginAnInventory = FALSE; inventoryLocked = FALSE; invMoveTimer = 0; flickState = 0;
+    flickTimer = 0; }
+    if(event_press(XB1_X) && !searchinginAnInventory) { searchinginAnInventory = TRUE; inventoryLocked = FALSE; invMoveTimer = 0;
+    flickState = 0; flickTimer = 0; }
+    if(event_press(XB1_RS) && !searchinginAnInventory) { searchinginAnInventory = TRUE; inventoryLocked = FALSE;
+    invMoveTimer = 0; flickState = 0; flickTimer = 0; }
+
+    anyDpad = event_press(XB1_UP) || event_press(XB1_DOWN) ||
+    event_press(XB1_LEFT) || event_press(XB1_RIGHT);
+    if(searchinginAnInventory) {
+        if(playerMoved && (event_press(XB1_LEFT) || event_press(XB1_RIGHT))) { searchinginAnInventory = FALSE;
+        inventoryLocked = FALSE; invMoveTimer = 0; }
+        else if(anyDpad) { inventoryLocked = TRUE;
+        }
+    } else {
+        if(event_press(XB1_UP) || event_press(XB1_DOWN)) { searchinginAnInventory = TRUE;
+        inventoryLocked = TRUE; }
+    }
+
+    if(searchinginAnInventory && !inventoryLocked) {
+        if(abs(get_val(XB1_LX)) > 90 || abs(get_val(XB1_LY)) > 90) {
+            invMoveTimer += get_rtime();
+            if(invMoveTimer > 80) { searchinginAnInventory = FALSE; invMoveTimer = 0;
+            }
+        } else { invMoveTimer = 0;
+        }
+    }
+
+    if(abs(get_val(XB1_LX)) > 60 || abs(get_val(XB1_LY)) > 60) {
+        if(flickState == 0) { flickState = 1;
+        flickTimer = 0; }
+        else if(flickState == 2 && searchinginAnInventory) { inventoryLocked = TRUE;
+        flickState = 0; }
+    } else if(abs(get_val(XB1_LX)) < 20 && abs(get_val(XB1_LY)) < 20) {
+        if(flickState == 1) { flickState = 2;
+        flickTimer = 0; }
+    }
+
+    if(flickState > 0) {
+        flickTimer += get_rtime();
+        if(flickTimer > 300) { flickState = 0; flickTimer = 0;
+        }
+    }
+
+    if (screen == 0 && RapidCrouchSpam_ON && get_val(XB1_RT) > 10) {
+        combo_run(RapidCrouchSpam_Combo);
+    } else {
+        combo_stop(RapidCrouchSpam_Combo);
+    }
+
+
+    if (screen == 0 && RapidCrouchSpam_ON && get_val(XB1_RT) > 10) {
+
+    }
+    else if (BHoldCrouchMode) {
+        searchinginAnInventory = FALSE;
+        inventoryLocked = FALSE;
+        invMoveTimer = 0;
+        flickState = 0;
+        flickTimer = 0;
+        bDebounceTimer = 0;
+        crouchHoldTimer = 0;
+        crouchHoldFired = FALSE;
+
+        if (get_val(CROUCH_BTN) > 50) {
+            if (CurrentStatus != CROUCH) { CurrentStatus = CROUCH;
+            combo_stop_all(); bUpdateDisplay = TRUE; }
+        } else {
+            if (CurrentStatus != STAND) { CurrentStatus = STAND;
+            combo_stop_all(); bUpdateDisplay = TRUE; }
+        }
+    } else if (bDebounceTimer <= 0) {
+        if (searchinginAnInventory) {
+            if (PostPress(CROUCH_BTN)) { searchinginAnInventory = FALSE;
+            inventoryLocked = FALSE; invMoveTimer = 0; }
+        } else {
+            if (!HoldCrouch275) {
+                if (PostPress(CROUCH_BTN)) { CurrentStatus ^= 1;
+                combo_stop_all(); bUpdateDisplay = TRUE; }
+            } else {
+                if (get_val(CROUCH_BTN) > 50) {
+                    if (!crouchHoldFired) {
+                        crouchHoldTimer += get_rtime();
+                        if (crouchHoldTimer >= 275) { crouchHoldFired = TRUE; crouchHoldTimer = 0; CurrentStatus ^= 1; combo_stop_all(); bUpdateDisplay = TRUE;
+                        }
+                    }
+                } else { crouchHoldTimer = 0;
+                crouchHoldFired = FALSE; }
+            }
+        }
+    }
+if (get_val(XB1_LT) && event_press(XB1_MENU)) { currentlyUpdatingValues = TRUE;
+updating = TRUE; screen = 1; bUpdateDisplay = TRUE; }
+    if (currentlyUpdatingValues && get_val(XB1_LT) < 10) { set_led(1, 1);
+    }
+
+
+
+
+        if(get_val(XB1_RT) > 70 && get_val(XB1_LT) > 70)
+
+
+    if (get_val(XB1_RT) < 10)
+        combo_stop_all();
+    if (CurrentStatus == 1) stanceIsStanding = 0;
+    else stanceIsStanding = 1;
+
+rightStickSensitivityPct = 100;
+weaponCategory = 0; weaponIndex = 2;
+    if(CurrentWeapon == 1) {
+        weaponCategory = 0; weaponIndex = 0;
+    } else if (CurrentWeapon == 3) {
+        weaponCategory = 1; weaponIndex = 1;
+    } else if (CurrentWeapon == 5) {
+        weaponCategory = 0; weaponIndex = 6;
+    } else if (CurrentWeapon >= 9 && CurrentWeapon <= 11) {
+        weaponCategory = 0;
+        weaponIndex = 4;
+    } else if (CurrentWeapon == 18) {
+        weaponCategory = 1;
+        weaponIndex = 2;
+    } else if (CurrentWeapon == 25) {
+        weaponCategory = 1;
+        weaponIndex = 0;
+    } else if (CurrentWeapon == 20) {
+        weaponCategory = 1;
+        weaponIndex = 0;
+    }
+
+    if(get_val(XB1_RT) > 10) {
+
+        if (!HipfireRecoil && get_val(XB1_LT) < 10) {
+
+        } else {
+
+
+            if (CurrentWeapon != 0 && CurrentWeapon != 2 && CurrentWeapon != 4 &&
+                CurrentWeapon != 6 && CurrentWeapon != 7 && CurrentWeapon != 8 &&
+               
+                CurrentWeapon != 9 && CurrentWeapon != 10 && CurrentWeapon != 13 && CurrentWeapon != 12 &&
+                CurrentWeapon != 14 && CurrentWeapon != 15 && CurrentWeapon != 16 &&
+                CurrentWeapon != 17 && CurrentWeapon != 19 && CurrentWeapon != 20 &&
+                CurrentWeapon != 21 && CurrentWeapon != 22 && CurrentWeapon != 23 &&
+   
+                CurrentWeapon != 24 && CurrentWeapon != 26 && CurrentWeapon != 27 && CurrentWeapon != 28)
+            {
+
+            }
+        }
+    } else {
+        recoilComboState = -1;
+        combo_stop_all();
+    }
+
+
+adsComboAllowed = FALSE;
+    ads4XComboAllowed = FALSE;
+
+    current_sens_mul_x = BASE_HIP_X;
+    current_sens_mul_y = BASE_HIP_Y;
+    if (CurrentWeapon >= 0 && CurrentWeapon <= 26 &&
+       (CurrentWeapon != 3 && CurrentWeapon != 5 && CurrentWeapon != 7 && CurrentWeapon != 10 && CurrentWeapon != 11 && CurrentWeapon != 21 && CurrentWeapon != 1)) {
+        adsComboAllowed = TRUE;
+    }
+
+
+    if (CurrentWeapon == 3 || CurrentWeapon == 5 || CurrentWeapon == 7 ||
+        CurrentWeapon == 11 || CurrentWeapon == 10 || CurrentWeapon == 21 || CurrentWeapon == 1) {
+        ads4XComboAllowed = TRUE;
+    }
+
+    if (get_val(XB1_LT) > 10) {
+        if (ads4XComboAllowed) {
+            current_sens_mul_x = BASE_4X_X;
+            current_sens_mul_y = BASE_4X_Y;
+        } else if (adsComboAllowed) {
+            current_sens_mul_x = BASE_1X_X;
+            current_sens_mul_y = BASE_1X_Y;
+        }
+    }
+
+    sens_mod_rx = get_val(XB1_RX);
+    sens_mod_ry = get_val(XB1_RY);
+    if(screen == 0) {
+        sens_combo_dx = sens_mod_rx - sens_raw_rx;
+        sens_combo_dy = sens_mod_ry - sens_raw_ry;
+
+        sens_raw_rx_dz = dz_remap(sens_raw_rx, CurrentDeadzoneX);
+        sens_raw_ry_dz = dz_remap(sens_raw_ry, CurrentDeadzoneY);
+        if(current_sens_mul_x != 100) {
+            sens_player_rx = (sens_raw_rx_dz * current_sens_mul_x) / 100;
+        } else {
+            sens_player_rx = sens_raw_rx_dz;
+        }
+
+        if(current_sens_mul_y != 100) {
+            sens_player_ry = (sens_raw_ry_dz * current_sens_mul_y) / 100;
+        } else {
+            sens_player_ry = sens_raw_ry_dz;
+        }
+
+
+        // Vertical compensation: makes Y match X feel better (game vertical is often slower)
+        if(VERT_COMP_PCT != 100) {
+            sens_player_ry = (sens_player_ry * VERT_COMP_PCT) / 100;
+            sens_player_ry = clamp(sens_player_ry, -100, 100);
+        }
+
+        sens_abs = iabs(sens_combo_dx);
+        if(sens_abs > 100) sens_abs = 100;
+        if(sens_abs > 0) sens_player_rx = (sens_player_rx * (100 - sens_abs)) / 100;
+        sens_final_rx = sens_player_rx + sens_combo_dx;
+        sens_final_rx = clamp(sens_final_rx, -100, 100);
+
+        sens_abs = iabs(sens_combo_dy);
+        if(sens_abs > 100) sens_abs = 100;
+        if(sens_abs > 0) sens_player_ry = (sens_player_ry * (100 - sens_abs)) / 100;
+        sens_final_ry = sens_player_ry + sens_combo_dy;
+        sens_final_ry = clamp(sens_final_ry, -100, 100);
+
+        set_val(XB1_RX, sens_final_rx);
+        set_val(XB1_RY, sens_final_ry);
+    }
+
+    UpdatePostPressPrev();
+}
+int adsComboAllowed = FALSE;
+int ads4XComboAllowed = FALSE;
+int hipMul = 100;
+int adsMul = 100;
+int ads4XMul = 100;
+int RY = 0;
+int RX = 0;
+int HOLOoverrideBoost = 125;
+int SCOPE2_OverrideBoost = 185;
+int SCOPE4X_OverrideBoost = 175;
+int SCOPE2_OverrideBoost2 = 75;
+int hipMultiplier = 100;
+int adsMultiplier = 100;
+int RecoilAssistRX = 100;
+int RecoilAssistRY = 100;
+int AssistMin = 50;
+int AssistMax = 80;
+            int specific_combo_active = FALSE;
+
+define WEAPON_MIN = 0;
+define WEAPON_MAX = 30;
+
+define HOLD_DELAY_MS = 450;
+define HOLD_REPEAT_MS = 160;
+
+function StepWeapon(dir) {
+
+    if(dir > 0) {
+        if(CurrentWeapon < WEAPON_MAX) CurrentWeapon = CurrentWeapon + 1;
+    } else {
+        if(CurrentWeapon > WEAPON_MIN) CurrentWeapon = CurrentWeapon - 1;
+    }
+
+
+}
+int right_last_ptime = 0;
+int left_last_ptime  = 0;
+
+function UpdateValues()
+{
+    if (screen != 1) return;
+    
+    if(event_press(XB1_RIGHT)) {
+        StepWeapon(1);
+        right_last_ptime = get_ptime(XB1_RIGHT);
+        bUpdateDisplay = TRUE;
+    }
+    else if(get_val(XB1_RIGHT)) {
+        if(get_ptime(XB1_RIGHT) > HOLD_DELAY_MS) {
+            if((get_ptime(XB1_RIGHT) - right_last_ptime) >= HOLD_REPEAT_MS) {
+                if(CurrentWeapon < WEAPON_MAX) StepWeapon(1);
+                right_last_ptime = get_ptime(XB1_RIGHT);
+                bUpdateDisplay = TRUE;
+            }
+        }
+    } else {
+        right_last_ptime = 0;
+    }
+
+    if(event_press(XB1_LEFT)) {
+        StepWeapon(-1);
+        left_last_ptime = get_ptime(XB1_LEFT);
+        bUpdateDisplay = TRUE;
+    }
+    else if(get_val(XB1_LEFT)) {
+        if(get_ptime(XB1_LEFT) > HOLD_DELAY_MS) {
+            if((get_ptime(XB1_LEFT) - left_last_ptime) >= HOLD_REPEAT_MS) {
+                if(CurrentWeapon > WEAPON_MIN) StepWeapon(-1);
+                left_last_ptime = get_ptime(XB1_LEFT);
+                bUpdateDisplay = TRUE;
+            }
+        }
+    } else {
+        left_last_ptime = 0;
+    }
+
+    if (event_press(XB1_RT)) { weapon_lock = CurrentWeapon; screen = 2; bUpdateDisplay = TRUE; return; }
+    if (event_press(XB1_LT)) { weapon_lock = CurrentWeapon; screen = 5; bUpdateDisplay = TRUE; return; }
+    if (event_press(XB1_Y)) { currentlyUpdatingValues = FALSE; screen = 0; set_led(1, 0); updating = FALSE; bUpdateDisplay = TRUE; return; }
+
+    if (bUpdateDisplay) {
+        cls_oled(0);
+        print(5, 30, 0, OLED_FONT_MEDIUM, Weapons[CurrentWeapon]);
+        bUpdateDisplay = FALSE;
+    }
+}
+
+
+int button_index;
+int capture_idx = -1;
+function UpdateRemapMenu() {
+    if(screen != 5) return;
+    
+    if(event_press(XB1_Y)) { currentlyUpdatingValues = FALSE; screen = 0; set_led(1, 0); updating = FALSE; bUpdateDisplay = TRUE; return; }
+
+    if(event_press(XB1_UP))   { remap_edit_field = 0; bUpdateDisplay = TRUE; }
+    if(event_press(XB1_DOWN)) { remap_edit_field = 1; bUpdateDisplay = TRUE; }
+    if(event_press(XB1_LEFT)) { button_index = button_index - 1; if(button_index < 0) button_index = BTN_COUNT - 1; bUpdateDisplay = TRUE; }
+    if(event_press(XB1_RIGHT)) { button_index = button_index + 1; if(button_index >= BTN_COUNT) button_index = 0; bUpdateDisplay = TRUE; }
+
+    if(event_press(XB1_RB)) {
+        A = button_index; oldB = SwapWith[A];
+        SwapWith[A] = SwapWith[A] + 1; if(SwapWith[A] >= BTN_COUNT) SwapWith[A] = 0;
+        B = SwapWith[A];
+        if(oldB != A) { SwapWith[oldB] = oldB; SwapEnabled[oldB] = FALSE; }
+        oldA = SwapWith[B];
+        if(oldA != B) { SwapWith[oldA] = oldA; SwapEnabled[oldA] = FALSE; }
+        SwapWith[A] = B; SwapWith[B] = A; SwapEnabled[A] = TRUE; SwapEnabled[B] = TRUE;
+        bUpdateDisplay = TRUE;
+    }
+    if(event_press(XB1_LB)) {
+        A = button_index; oldB = SwapWith[A];
+        SwapWith[A] = SwapWith[A] - 1; if(SwapWith[A] < 0) SwapWith[A] = BTN_COUNT - 1;
+        B = SwapWith[A];
+        if(oldB != A) { SwapWith[oldB] = oldB; SwapEnabled[oldB] = FALSE; }
+        oldA = SwapWith[B];
+        if(oldA != B) { SwapWith[oldA] = oldA; SwapEnabled[oldA] = FALSE; }
+        SwapWith[A] = B; SwapWith[B] = A; SwapEnabled[A] = TRUE; SwapEnabled[B] = TRUE;
+        bUpdateDisplay = TRUE;
+    }
+    if(event_press(XB1_A)) {
+        A = button_index; B = SwapWith[A];
+        if(B == A) SwapEnabled[A] = !SwapEnabled[A];
+        else { SwapEnabled[A] = !SwapEnabled[A]; SwapEnabled[B] = SwapEnabled[A]; }
+        bUpdateDisplay = TRUE;
+    }
+    if(event_press(XB1_X)) {
+        A = button_index; B = SwapWith[A]; SwapEnabled[A] = FALSE;
+        if(B != A) { SwapEnabled[B] = FALSE; SwapWith[B] = B; }
+        SwapWith[A] = A;
+        bUpdateDisplay = TRUE;
+    }
+
+    if(event_press(XB1_RT)) { screen = 1; bUpdateDisplay = TRUE; return; }
+    if(event_press(XB1_LT)) { screen = 4; bUpdateDisplay = TRUE; return; }
+
+    if (bUpdateDisplay) {
+        cls_oled(0);
+        if(SwapEnabled[button_index])
+            if(remap_edit_field == 0) print(0, 28, 0, OLED_FONT_SMALL, TXT_ARROW[0]);
+        if(remap_edit_field == 1) print(0, 46, 0, OLED_FONT_SMALL, TXT_ARROW[0]);
+
+        print(10, 28, 0, OLED_FONT_SMALL, TXT_BUTTON[0]); PrintBtnName(60, 28, button_index);
+        print(10, 46, 0, OLED_FONT_SMALL, TXT_USES[0]);   PrintBtnName(60, 46, SwapWith[button_index]);
+        bUpdateDisplay = FALSE;
+    }
+}
+
+int remap_index = 0;
+function UpdateRemaps() {
+    if (screen != 3) return;
+    
+    if (event_press(XB1_UP))   { remap_index = remap_index - 1; if (remap_index < 0) remap_index = 2; bUpdateDisplay = TRUE; }
+    if (event_press(XB1_DOWN)) { remap_index = remap_index + 1; if (remap_index > 2) remap_index = 0; bUpdateDisplay = TRUE; }
+
+    if (event_press(XB1_A)) {
+        if (remap_index == 0) HipfireRecoil   = !HipfireRecoil;
+        if (remap_index == 1) HoldCrouch275   = !HoldCrouch275;
+        if (remap_index == 2) BHoldCrouchMode = !BHoldCrouchMode;
+        if (BHoldCrouchMode) HoldCrouch275 = FALSE;
+        bUpdateDisplay = TRUE;
+    }
+
+    if (event_press(XB1_RT)) { screen = 4; bUpdateDisplay = TRUE; return; }
+    if (event_press(XB1_LT)) { screen = 2; bUpdateDisplay = TRUE; return; }
+    if (event_press(XB1_Y))  { currentlyUpdatingValues = FALSE; screen = 0; set_led(1, 0); updating = FALSE; bUpdateDisplay = TRUE; return; }
+
+    if (bUpdateDisplay) {
+        cls_oled(0);
+        if (remap_index == 0) {
+            print(0, 30, 0, OLED_FONT_SMALL, TXT_ARROW[0]);
+            print(10, 30, 0, OLED_FONT_SMALL, TXT_HIPRECOIL[0]);
+            if (HipfireRecoil) print(92, 30, 0, OLED_FONT_SMALL, TXT_ON[0]); else print(92, 30, 0, OLED_FONT_SMALL, TXT_OFF[0]);
+        } else if (remap_index == 1) {
+            print(0, 30, 0, OLED_FONT_SMALL, TXT_ARROW[0]);
+            print(10, 30, 0, OLED_FONT_SMALL, TXT_HOLDCROUCH[0]);
+            if (HoldCrouch275) print(92, 30, 0, OLED_FONT_SMALL, TXT_ON[0]); else print(92, 30, 0, OLED_FONT_SMALL, TXT_OFF[0]);
+        } else if (remap_index == 2) {
+            print(0, 30, 0, OLED_FONT_SMALL, TXT_ARROW[0]);
+            print(10, 30, 0, OLED_FONT_SMALL, TXT_BHOLDCROUCH[0]);
+            if (BHoldCrouchMode) print(92, 30, 0, OLED_FONT_SMALL, TXT_ON[0]); else print(92, 30, 0, OLED_FONT_SMALL, TXT_OFF[0]);
+        }
+        bUpdateDisplay = FALSE;
+    }
+}
+
+function UpdateSens() {
+    if (screen != 2) return;
+    
+    if (event_press(XB1_UP)) { sens_item = sens_item - 1; if (sens_item < 0) sens_item = 7; bUpdateDisplay = TRUE; }
+    if (event_press(XB1_DOWN)) { sens_item = sens_item + 1; if (sens_item > 7) sens_item = 0; bUpdateDisplay = TRUE; }
+
+    if (event_press(XB1_RIGHT)) {
+        next_rep_right = get_rtime() + HOLD_DELAY;
+        if (sens_item == 0) { BASE_HIP_X = clamp(BASE_HIP_X + SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_1, BASE_HIP_X); }
+        else if (sens_item == 1) { BASE_HIP_Y = clamp(BASE_HIP_Y + SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_4, BASE_HIP_Y); }
+        else if (sens_item == 2) { BASE_1X_X  = clamp(BASE_1X_X  + SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_2, BASE_1X_X); }
+        else if (sens_item == 3) { BASE_1X_Y  = clamp(BASE_1X_Y  + SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_9, BASE_1X_Y); }
+        else if (sens_item == 4) { BASE_4X_X  = clamp(BASE_4X_X  + SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_3, BASE_4X_X); }
+        else if (sens_item == 5) { BASE_4X_Y  = clamp(BASE_4X_Y  + SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_10, BASE_4X_Y); }
+        else if (sens_item == 6) { CurrentDeadzoneX = clamp(CurrentDeadzoneX + DZ_STEP, DZ_MIN, DZ_MAX); set_pvar(SPVAR_11, CurrentDeadzoneX); }
+        else if (sens_item == 7) { CurrentDeadzoneY = clamp(CurrentDeadzoneY + DZ_STEP, DZ_MIN, DZ_MAX); set_pvar(SPVAR_12, CurrentDeadzoneY); }
+        bUpdateDisplay = TRUE;
+    }
+    else if (get_val(XB1_RIGHT) && next_rep_right > 0 && get_rtime() >= next_rep_right) {
+        next_rep_right = get_rtime() + HOLD_RATE;
+        if (sens_item == 0) { BASE_HIP_X = clamp(BASE_HIP_X + SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_1, BASE_HIP_X); }
+        else if (sens_item == 1) { BASE_HIP_Y = clamp(BASE_HIP_Y + SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_4, BASE_HIP_Y); }
+        else if (sens_item == 2) { BASE_1X_X  = clamp(BASE_1X_X  + SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_2, BASE_1X_X); }
+        else if (sens_item == 3) { BASE_1X_Y  = clamp(BASE_1X_Y  + SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_9, BASE_1X_Y); }
+        else if (sens_item == 4) { BASE_4X_X  = clamp(BASE_4X_X  + SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_3, BASE_4X_X); }
+        else if (sens_item == 5) { BASE_4X_Y  = clamp(BASE_4X_Y  + SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_10, BASE_4X_Y); }
+        else if (sens_item == 6) { CurrentDeadzoneX = clamp(CurrentDeadzoneX + DZ_STEP, DZ_MIN, DZ_MAX); set_pvar(SPVAR_11, CurrentDeadzoneX); }
+        else if (sens_item == 7) { CurrentDeadzoneY = clamp(CurrentDeadzoneY + DZ_STEP, DZ_MIN, DZ_MAX); set_pvar(SPVAR_12, CurrentDeadzoneY); }
+        bUpdateDisplay = TRUE;
+    }
+    else if (!get_val(XB1_RIGHT)) { next_rep_right = 0; }
+
+    if (event_press(XB1_LEFT)) {
+        next_rep_left = get_rtime() + HOLD_DELAY;
+        if (sens_item == 0) { BASE_HIP_X = clamp(BASE_HIP_X - SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_1, BASE_HIP_X); }
+        else if (sens_item == 1) { BASE_HIP_Y = clamp(BASE_HIP_Y - SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_4, BASE_HIP_Y); }
+        else if (sens_item == 2) { BASE_1X_X  = clamp(BASE_1X_X  - SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_2, BASE_1X_X); }
+        else if (sens_item == 3) { BASE_1X_Y  = clamp(BASE_1X_Y  - SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_9, BASE_1X_Y); }
+        else if (sens_item == 4) { BASE_4X_X  = clamp(BASE_4X_X  - SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_3, BASE_4X_X); }
+        else if (sens_item == 5) { BASE_4X_Y  = clamp(BASE_4X_Y  - SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_10, BASE_4X_Y); }
+        else if (sens_item == 6) { CurrentDeadzoneX = clamp(CurrentDeadzoneX - DZ_STEP, DZ_MIN, DZ_MAX); set_pvar(SPVAR_11, CurrentDeadzoneX); }
+        else if (sens_item == 7) { CurrentDeadzoneY = clamp(CurrentDeadzoneY - DZ_STEP, DZ_MIN, DZ_MAX); set_pvar(SPVAR_12, CurrentDeadzoneY); }
+        bUpdateDisplay = TRUE;
+    }
+    else if (get_val(XB1_LEFT) && next_rep_left > 0 && get_rtime() >= next_rep_left) {
+        next_rep_left = get_rtime() + HOLD_RATE;
+        if (sens_item == 0) { BASE_HIP_X = clamp(BASE_HIP_X - SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_1, BASE_HIP_X); }
+        else if (sens_item == 1) { BASE_HIP_Y = clamp(BASE_HIP_Y - SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_4, BASE_HIP_Y); }
+        else if (sens_item == 2) { BASE_1X_X  = clamp(BASE_1X_X  - SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_2, BASE_1X_X); }
+        else if (sens_item == 3) { BASE_1X_Y  = clamp(BASE_1X_Y  - SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_9, BASE_1X_Y); }
+        else if (sens_item == 4) { BASE_4X_X  = clamp(BASE_4X_X  - SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_3, BASE_4X_X); }
+        else if (sens_item == 5) { BASE_4X_Y  = clamp(BASE_4X_Y  - SENS_STEP, SENS_MIN, SENS_MAX); set_pvar(SPVAR_10, BASE_4X_Y); }
+        else if (sens_item == 6) { CurrentDeadzoneX = clamp(CurrentDeadzoneX - DZ_STEP, DZ_MIN, DZ_MAX); set_pvar(SPVAR_11, CurrentDeadzoneX); }
+        else if (sens_item == 7) { CurrentDeadzoneY = clamp(CurrentDeadzoneY - DZ_STEP, DZ_MIN, DZ_MAX); set_pvar(SPVAR_12, CurrentDeadzoneY); }
+        bUpdateDisplay = TRUE;
+    }
+    else if (!get_val(XB1_LEFT)) { next_rep_left = 0; }
+
+    if (event_press(XB1_RT)) { screen = 3; bUpdateDisplay = TRUE; return; }
+    if (event_press(XB1_LT)) { screen = 1; bUpdateDisplay = TRUE; return; }
+    if (event_press(XB1_Y))  { currentlyUpdatingValues = FALSE; screen = 0; set_led(1, 0); updating = FALSE; bUpdateDisplay = TRUE; return; }
+
+    if (bUpdateDisplay) {
+        cls_oled(0);
+        if (sens_item == 0) { print(0, 30, 0, OLED_FONT_SMALL, TXT_ARROW[0]); print(10, 30, 0, OLED_FONT_SMALL, TXT_HIP_X[0]); print(92, 30, 0, OLED_FONT_SMALL, TXT_NUM[BASE_HIP_X - 1]); }
+        else if (sens_item == 1) { print(0, 30, 0, OLED_FONT_SMALL, TXT_ARROW[0]); print(10, 30, 0, OLED_FONT_SMALL, TXT_HIP_Y[0]); print(92, 30, 0, OLED_FONT_SMALL, TXT_NUM[BASE_HIP_Y - 1]); }
+        else if (sens_item == 2) { print(0, 30, 0, OLED_FONT_SMALL, TXT_ARROW[0]); print(10, 30, 0, OLED_FONT_SMALL, TXT_1X_X[0]); print(92, 30, 0, OLED_FONT_SMALL, TXT_NUM[BASE_1X_X - 1]); }
+        else if (sens_item == 3) { print(0, 30, 0, OLED_FONT_SMALL, TXT_ARROW[0]); print(10, 30, 0, OLED_FONT_SMALL, TXT_1X_Y[0]); print(92, 30, 0, OLED_FONT_SMALL, TXT_NUM[BASE_1X_Y - 1]); }
+        else if (sens_item == 4) { print(0, 30, 0, OLED_FONT_SMALL, TXT_ARROW[0]); print(10, 30, 0, OLED_FONT_SMALL, TXT_4X_X[0]); print(92, 30, 0, OLED_FONT_SMALL, TXT_NUM[BASE_4X_X - 1]); }
+        else if (sens_item == 5) { print(0, 30, 0, OLED_FONT_SMALL, TXT_ARROW[0]); print(10, 30, 0, OLED_FONT_SMALL, TXT_4X_Y[0]); print(92, 30, 0, OLED_FONT_SMALL, TXT_NUM[BASE_4X_Y - 1]); }
+        else if (sens_item == 6) { print(0, 30, 0, OLED_FONT_SMALL, TXT_ARROW[0]); print(10, 30, 0, OLED_FONT_SMALL, TXT_DZ_X[0]); if(CurrentDeadzoneX == 0) print(92, 30, 0, OLED_FONT_SMALL, TXT_ZERO[0]); else print(92, 30, 0, OLED_FONT_SMALL, TXT_NUM[CurrentDeadzoneX - 1]); }
+        else if (sens_item == 7) { print(0, 30, 0, OLED_FONT_SMALL, TXT_ARROW[0]); print(10, 30, 0, OLED_FONT_SMALL, TXT_DZ_Y[0]); if(CurrentDeadzoneY == 0) print(92, 30, 0, OLED_FONT_SMALL, TXT_ZERO[0]); else print(92, 30, 0, OLED_FONT_SMALL, TXT_NUM[CurrentDeadzoneY - 1]); }
+        bUpdateDisplay = FALSE;
+    }
+}
+
+
+
+function UpdateQuickSwaps() {
+    if (screen != 4) return;
+    
+    w = qs_up;
+    if(qs_item == 1) w = qs_left;
+    else if(qs_item == 2) w = qs_down;
+    else if(qs_item == 3) w = qs_right;
+
+    if(!qs_edit) {
+        if(event_press(XB1_UP))   { qs_item = qs_item - 1; if(qs_item < 0) qs_item = 3; bUpdateDisplay = TRUE; }
+        if(event_press(XB1_DOWN)) { qs_item = qs_item + 1; if(qs_item > 3) qs_item = 0; bUpdateDisplay = TRUE; }
+        if(event_press(XB1_A))    { qs_edit = TRUE; qs_weapon_edit = w; bUpdateDisplay = TRUE; }
+    } else {
+        if(event_press(XB1_LEFT))  { qs_weapon_edit = qs_weapon_edit - 1; if(qs_weapon_edit < 0) qs_weapon_edit = 26; bUpdateDisplay = TRUE; }
+        if(event_press(XB1_RIGHT)) { qs_weapon_edit = qs_weapon_edit + 1; if(qs_weapon_edit > 26) qs_weapon_edit = 0; bUpdateDisplay = TRUE; }
+
+        if(event_press(XB1_A)) {
+            if(qs_item == 0) { qs_up = qs_weapon_edit; set_pvar(SPVAR_5, qs_up); }
+            else if(qs_item == 1) { qs_left = qs_weapon_edit; set_pvar(SPVAR_8, qs_left); }
+            else if(qs_item == 2) { qs_down = qs_weapon_edit; set_pvar(SPVAR_7, qs_down); }
+            else if(qs_item == 3) { qs_right = qs_weapon_edit; set_pvar(SPVAR_6, qs_right); }
+            qs_edit = FALSE;
+            bUpdateDisplay = TRUE;
+        }
+    }
+
+    if(event_press(XB1_RT)) { qs_edit = FALSE; screen = 5; bUpdateDisplay = TRUE; return; }
+    if(event_press(XB1_LT)) { qs_edit = FALSE; screen = 3; bUpdateDisplay = TRUE; return; }
+    if(event_press(XB1_Y))  { qs_edit = FALSE; currentlyUpdatingValues = FALSE; screen = 0; set_led(1, 0); updating = FALSE; bUpdateDisplay = TRUE; return; }
+
+    if (bUpdateDisplay) {
+        cls_oled(0);
+        if(qs_item == 0) print(10, 30, 0, OLED_FONT_SMALL, TXT_QS_BIND[0]);
+        else if(qs_item == 1) print(10, 30, 0, OLED_FONT_SMALL, TXT_QS_BIND[1]);
+        else if(qs_item == 2) print(10, 30, 0, OLED_FONT_SMALL, TXT_QS_BIND[2]);
+        else if(qs_item == 3) print(10, 30, 0, OLED_FONT_SMALL, TXT_QS_BIND[3]);
+
+        print(0, 30, 0, OLED_FONT_SMALL, TXT_ARROW[0]);
+        if(!qs_edit) { print(70, 30, 0, OLED_FONT_SMALL, Weapons[w]); } 
+        else { print(70, 30, 0, OLED_FONT_SMALL, Weapons[qs_weapon_edit]); }
+        bUpdateDisplay = FALSE;
+    }
+}
+
+
+
+
+function UpdateScreen() {
+    cls_oled(0);
+
+    
+
+    print(5, 30, 0, OLED_FONT_MEDIUM, Weapons[CurrentWeapon]);
+    if (CurrentStatus & 1) {
+        print(5, 50, 0, OLED_FONT_MEDIUM, Status[1]);
+    } else {
+        print(5, 50, 0, OLED_FONT_MEDIUM, Status[0]);
+    }
+}
+int loading = TRUE;
+
+function passthroughUnlessSuppressed(inputValue){
+    if(suppressRightStickOutput){
+        return 0
+    }
+    else{
+        return inputValue
+    }
+    return inputValue
+}
+
+function applyRecoilToRightStickY(f_val,f_str){
+    strafeRecoilBonusPct=0;
+    recoilSmoothingY=100;
+    smoothingColumnOffset=0;
+    if(altSmoothingToggle[0]==1){
+        smoothingColumnOffset=2;
+    }
+    else{
+        smoothingColumnOffset=0;
+    }
+    if(weaponCategory==0)recoilSmoothingY=smoothingAutoWeapons[weaponIndex][smoothingColumnOffset + 1];
+    else if(weaponCategory==1)recoilSmoothingY=smoothingSemiWeapons[weaponIndex][smoothingColumnOffset + 1];
+    else if(weaponCategory==2)recoilSmoothingY=smoothingExtraWeapons[weaponIndex][smoothingColumnOffset + 1];
+    if(get_val(7)< 50){
+        recoilSmoothingY=((recoilSmoothingY - 100)/ 2)+ 85;
+    }
+    if(abs(get_val(11))>=50 || abs(get_val(12))>=50){
+        strafeRecoilBonusPct=strafeBonusPctByWeaponAndStance[weaponIndex][stanceIsStanding];
+    }
+    userAxisProcessed=get_val(10);
+    if(abs(userAxisProcessed)> rightStickDeadzone){
+        if(userAxisProcessed > 0)userAxisProcessed=(userAxisProcessed - rightStickDeadzone)* rightStickSensitivityPct /(100 - rightStickDeadzone);
+        else userAxisProcessed=(userAxisProcessed + rightStickDeadzone)* rightStickSensitivityPct /(100 - rightStickDeadzone);
+            }
+    else{
+        userAxisProcessed=0;
+    }
+    if(recoilAxisEnabledXY[1]==0){
+        recoilAxisDelta=0;
+    }
+    else{
+        recoilAxisDelta=(f_val * f_str)/ 100;
+        recoilAxisDelta=recoilAxisDelta + strafeRecoilBonusPct;
+        recoilAxisDelta=(recoilAxisDelta * recoilSmoothingY)/ 100;
+        if(abs(userAxisProcessed)> 100)axisHeadroomPct=0;
+        else axisHeadroomPct=100 - abs(userAxisProcessed);
+        recoilAxisDelta=(recoilAxisDelta * axisHeadroomPct)/ 100;
+        recoilAxisDelta=(recoilAxisDelta * axisScalePctXY[1])/ 100;
+    }
+    axisOutput=userAxisProcessed + recoilAxisDelta;
+    if(axisOutput > 100)return 100;
+    if(axisOutput < -100)return -100;
+    return axisOutput;
+}
+
+function applyRecoilToRightStickX(f_val,f_str){
+    recoilSmoothingX=100;
+    smoothingColumnOffset=0;
+    if(altSmoothingToggle[0]==1){
+        smoothingColumnOffset=2;
+    }
+    else{
+        smoothingColumnOffset=0;
+    }
+    if(weaponCategory==0)recoilSmoothingX=smoothingAutoWeapons[weaponIndex][smoothingColumnOffset];
+    else if(weaponCategory==1)recoilSmoothingX=smoothingSemiWeapons[weaponIndex][smoothingColumnOffset];
+    else if(weaponCategory==2)recoilSmoothingX=smoothingExtraWeapons[weaponIndex][smoothingColumnOffset];
+    if(get_val(7)< 50){
+        recoilSmoothingX=((recoilSmoothingX - 100)/ 2)+ 90;
+    }
+    userAxisProcessed=get_val(9);
+    if(abs(userAxisProcessed)> rightStickDeadzone){
+        if(userAxisProcessed > 0)userAxisProcessed=(userAxisProcessed - rightStickDeadzone)* rightStickSensitivityPct /(100 - rightStickDeadzone);
+        else userAxisProcessed=(userAxisProcessed + rightStickDeadzone)* rightStickSensitivityPct /(100 - rightStickDeadzone);
+            }
+    else{
+        userAxisProcessed=0;
+    }
+    if(recoilAxisEnabledXY[0]==0){
+        recoilAxisDelta=0;
+    }
+    else{
+        recoilAxisDelta=(f_val * f_str)/ 100;
+        recoilAxisDelta=(recoilAxisDelta * recoilSmoothingX)/ 100;
+        if(abs(userAxisProcessed)> 100)axisHeadroomPct=0;
+        else axisHeadroomPct=100 - abs(userAxisProcessed);
+        recoilAxisDelta=(recoilAxisDelta * axisHeadroomPct)/ 100;
+        recoilAxisDelta=(recoilAxisDelta * axisScalePctXY[0])/ 100;
+    }
+    axisOutput=userAxisProcessed + recoilAxisDelta;
+    if(axisOutput > 100)return 100;
+    if(axisOutput < -100)return -100;
+    return axisOutput;
+}
+
+
+function AddToCombosRX() {
+    RX = get_val(XB1_RX);
+    RX = dz_remap(RX, INTERNAL_DZ);
+    RX = classic_comp(RX);
+    RX = vel_smooth(RX, 0);
+    return RX;
+}
+
+function AddToCombosRY() {
+    RY = get_val(XB1_RY);
+    RY = dz_remap(RY, INTERNAL_DZ);
+    RY = classic_comp(RY);
+    RY = vel_smooth(RY, 1);
+    return RY;
+}
+
+function RecoilControl() {
+    if(get_val(XB1_RT) > 70 && get_val(XB1_LT) > 70) {
+
+
+        if(CurrentWeapon == 0 && CurrentStatus == 0 && !combo_running(TMYStanding)) combo_restart(TMYStanding);
+        if(CurrentWeapon == 0 && CurrentStatus == 1 && !combo_running(TMYCrouched)) combo_restart(TMYCrouched);
+
+
+        if(CurrentWeapon == 1 && CurrentStatus == 0 && !combo_running(TMYStanding)) combo_restart(TMYStanding);
+        if(CurrentWeapon == 1 && CurrentStatus == 1 && !combo_running(TMYCrouched_EX)) combo_restart(TMYCrouched_EX);
+
+
+        if(CurrentWeapon == 2 && CurrentStatus == 0 && !combo_running(TOMMY4XS)) combo_restart(TOMMY4XS);
+        if(CurrentWeapon == 2 && CurrentStatus == 1 && !combo_running(TOMMY4XC)) combo_restart(TOMMY4XC);
+
+
+        if(CurrentWeapon == 3 && CurrentStatus == 0 && !combo_running(recoil_AK_ADS_Standing)) combo_restart(recoil_AK_ADS_Standing);
+        if(CurrentWeapon == 3 && CurrentStatus == 1 && !combo_running(recoil_AK_ADS_Crouched)) combo_restart(recoil_AK_ADS_Crouched);
+
+
+        if(CurrentWeapon == 4 && CurrentStatus == 0 && !combo_running(recoil_AK_ADS_Standing)) combo_restart(recoil_AK_ADS_Standing);
+        if(CurrentWeapon == 4 && CurrentStatus == 1 && !combo_running(recoil_AK_ADS_Crouched_EX)) combo_restart(recoil_AK_ADS_Crouched_EX);
+
+
+        if(CurrentWeapon == 5 && CurrentStatus == 0 && !combo_running(recoil_AK_ADS_Standing)) combo_restart(recoil_AK_ADS_Standing);
+        if(CurrentWeapon == 5 && CurrentStatus == 1 && !combo_running(AK_CrouchedHolo2)) combo_restart(AK_CrouchedHolo2);
+
+
+        if(CurrentWeapon == 6 && CurrentStatus == 0 && !combo_running(AK_Stand4X)) combo_restart(AK_Stand4X);
+        if(CurrentWeapon == 6 && CurrentStatus == 1 && !combo_running(AK_Crouched4X)) combo_restart(AK_Crouched4X);
+
+
+        if(CurrentWeapon == 7 && CurrentStatus == 0 && !combo_running(SKS_StandHolo)) combo_restart(SKS_StandHolo);
+        if(CurrentWeapon == 7 && CurrentStatus == 1 && !combo_running(SKS_CrouchedHolo)) combo_restart(SKS_CrouchedHolo);
+
+
+        if(CurrentWeapon == 8 && CurrentStatus == 0 && !combo_running(SKS_Stand4X)) combo_restart(SKS_Stand4X);
+        if(CurrentWeapon == 8 && CurrentStatus == 1 && !combo_running(SKS_Crouched4X)) combo_restart(SKS_Crouched4X);
+
+
+        if(CurrentWeapon == 9 && CurrentStatus == 0 && !combo_running(M2_StandHolo)) combo_restart(M2_StandHolo);
+        if(CurrentWeapon == 9 && CurrentStatus == 1 && !combo_running(recoil_M2_HIP_Crouched)) combo_restart(recoil_M2_HIP_Crouched);
+
+
+        if(CurrentWeapon == 10) {
+            smooth_scale = 142;
+            if(CurrentStatus == 0 && !combo_running(M2_Stand4X)) combo_restart(M2_Stand4X);
+            if(CurrentStatus == 1 && !combo_running(M2_Crouch4X)) combo_restart(M2_Crouch4X);
+        }
+
+
+        if(CurrentWeapon == 11 && CurrentStatus == 0 && !combo_running(MP5S)) combo_restart(MP5S);
+        if(CurrentWeapon == 11 && CurrentStatus == 1 && !combo_running(MP5C)) combo_restart(MP5C);
+
+
+        if(CurrentWeapon == 12 && CurrentStatus == 0 && !combo_running(MP5_StandBurst)) combo_restart(MP5_StandBurst);
+        if(CurrentWeapon == 12 && CurrentStatus == 1 && !combo_running(MP5_CrouchedBurst)) combo_restart(MP5_CrouchedBurst);
+
+
+        if(CurrentWeapon == 13 && CurrentStatus == 0 && !combo_running(MP5_StandBurst4X)) combo_restart(MP5_StandBurst4X);
+        if(CurrentWeapon == 13 && CurrentStatus == 1 && !combo_running(MP5_CrouchedBurst4X)) combo_restart(MP5_CrouchedBurst4X);
+
+
+        if(CurrentWeapon == 14 && CurrentStatus == 0 && !combo_running(LR_Stand4X)) combo_restart(LR_Stand4X);
+        if(CurrentWeapon == 14 && CurrentStatus == 1 && !combo_running(LR_Crouched4X)) combo_restart(LR_Crouched4X);
+
+
+        if(CurrentWeapon == 15 && CurrentStatus == 0 && !combo_running(LR_StandHOLO)) combo_restart(LR_StandHOLO);
+        if(CurrentWeapon == 15 && CurrentStatus == 1 && !combo_running(LR_CrouchedHOLO)) combo_restart(LR_CrouchedHOLO);
+
+
+        if(CurrentWeapon == 16 && CurrentStatus == 0 && !combo_running(CSTMStanding)) combo_restart(CSTMStanding);
+        if(CurrentWeapon == 16 && CurrentStatus == 1 && !combo_running(CSTMCrouched)) combo_restart(CSTMCrouched);
+
+
+        if(CurrentWeapon == 17 && CurrentStatus == 0 && !combo_running(P2_Stand)) combo_restart(P2_Stand);
+        if(CurrentWeapon == 17 && CurrentStatus == 1 && !combo_running(P2_Crouched)) combo_restart(P2_Crouched);
+
+
+        if(CurrentWeapon == 18 && CurrentStatus == 0 && !combo_running(PYTHON_Stand)) combo_restart(PYTHON_Stand);
+        if(CurrentWeapon == 18 && CurrentStatus == 1 && !combo_running(PYTHON_Crouched)) combo_restart(PYTHON_Crouched);
+
+
+        if(CurrentWeapon == 19 && CurrentStatus == 0 && !combo_running(REVO_Stand)) combo_restart(REVO_Stand);
+        if(CurrentWeapon == 19 && CurrentStatus == 1 && !combo_running(REVO_Crouched)) combo_restart(REVO_Crouched);
+
+
+        if(CurrentWeapon == 20 && CurrentStatus == 0 && !combo_running(NAILGUN_Stand)) combo_restart(NAILGUN_Stand);
+        if(CurrentWeapon == 20 && CurrentStatus == 1 && !combo_running(NAILGUN_Crouched)) combo_restart(NAILGUN_Crouched);
+
+
+        if(CurrentWeapon == 21 && CurrentStatus == 0 && !combo_running(DB_Stand)) combo_restart(DB_Stand);
+        if(CurrentWeapon == 21 && CurrentStatus == 1 && !combo_running(DB_Crouched)) combo_restart(DB_Crouched);
+
+
+        if(CurrentWeapon == 22 && CurrentStatus == 0 && !combo_running(M92_Stand)) combo_restart(M92_Stand);
+        if(CurrentWeapon == 22 && CurrentStatus == 1 && !combo_running(M92_Crouched)) combo_restart(M92_Crouched);
+
+
+        if(CurrentWeapon == 23 && CurrentStatus == 0 && !combo_running(HMLMG_StandHolo)) combo_restart(HMLMG_StandHolo);
+        if(CurrentWeapon == 23 && CurrentStatus == 1 && !combo_running(HMLMG_CrouchHolo)) combo_restart(HMLMG_CrouchHolo);
+
+
+        if(CurrentWeapon == 24 && CurrentStatus == 0 && !combo_running(M39_Stand4X)) combo_restart(M39_Stand4X);
+        if(CurrentWeapon == 24 && CurrentStatus == 1 && !combo_running(M39_Crouch4X)) combo_restart(M39_Crouch4X);
+
+
+        if(CurrentWeapon == 25 && CurrentStatus == 0 && !combo_running(GLOCK_Stand)) combo_restart(GLOCK_Stand);
+        if(CurrentWeapon == 25 && CurrentStatus == 1 && !combo_running(GLOCK_Crouch)) combo_restart(GLOCK_Crouch);
+
+
+        if(CurrentWeapon == 26 && CurrentStatus == 0 && !combo_running(HCR_Stand)) combo_restart(HCR_Stand);
+        if(CurrentWeapon == 26 && CurrentStatus == 1 && !combo_running(HCR_Crouch)) combo_restart(HCR_Crouch);
+
+
+        if(CurrentWeapon == 27 && CurrentStatus == 0 && !combo_running(HSMGStanding)) combo_restart(HSMGStanding);
+        if(CurrentWeapon == 27 && CurrentStatus == 1 && !combo_running(HSMGCrouched)) combo_restart(HSMGCrouched);
+
+
+        if(CurrentWeapon == 28 && CurrentStatus == 0 && !combo_running(MG_Stand)) combo_restart(MG_Stand);
+        if(CurrentWeapon == 28 && CurrentStatus == 1 && !combo_running(MG_Crouch)) combo_restart(MG_Crouch);
+
+
+        if(CurrentWeapon == 29 && CurrentStatus == 0 && !combo_running(recoil_SAR_ADS_Standing)) combo_restart(recoil_SAR_ADS_Standing);
+        if(CurrentWeapon == 29 && CurrentStatus == 1 && !combo_running(recoil_SAR_ADS_Crouched)) combo_restart(recoil_SAR_ADS_Crouched);
+    }
+}
+
+const string Weapons[] = {
+    "TOMMY HOLO",
+    "TOMMY HOLO(EX)",
+    "TOMMY 4X",
+    "AK HOLO",
+    "AK HOLO(EX)",
+    "AK HOLO(V2)",
+    "AK 4X",
+    "SKS HOLO",
+    "SKS 4X",
+    "M249 HOLO",
+    "M249 4X",
+    "MP5 HOLO",
+    "MP5 HOLO(B)",
+    "MP5 4X(B)",
+    "LR 4X",
+    "LR HOLO",
+    "CUSTOM HOLO",
+    "P2",
+    "PYTHON",
+    "REVOLVER",
+    "NAILGUN",
+    "DOUBLE BARREL",
+    "M92",
+    "HMLMG",
+    "M39 4X",
+    "GLOCK",
+    "HIGH CAL",
+    "HMSMG",
+    "MINIGUN",
+    "SAR",
+    "NO GUN"
+};
+
+function hiprecoil() {
+    if (screen == 0 && HipfireRecoil && get_val(XB1_RT) > 70 && get_val(XB1_LT) <= 70 && CurrentWeapon != 27) {
+
+
+        if(CurrentWeapon == 3 && CurrentStatus == 0 && !combo_running(AK_StandHip)) combo_restart(AK_StandHip);
+        if(CurrentWeapon == 3 && CurrentStatus == 1 && !combo_running(AK_CrouchedHip)) combo_restart(AK_CrouchedHip);
+
+
+        if(CurrentWeapon == 2 && CurrentStatus == 0 && !combo_running(AK_StandHip)) combo_restart(AK_StandHip);
+        if(CurrentWeapon == 2 && CurrentStatus == 1 && !combo_running(AK_CrouchedHip)) combo_restart(AK_CrouchedHip);
+
+
+        if(CurrentWeapon == 8 && CurrentStatus == 0 && !combo_running(MP5_StandHip)) combo_restart(MP5_StandHip);
+        if(CurrentWeapon == 8 && CurrentStatus == 1 && !combo_running(MP5_CrouchedHip)) combo_restart(MP5_CrouchedHip);
+
+
+        if(CurrentWeapon == 0 && CurrentStatus == 0 && !combo_running(TOMMY_StandHip)) combo_restart(TOMMY_StandHip);
+        if(CurrentWeapon == 0 && CurrentStatus == 1 && !combo_running(TOMMY_CrouchHip)) combo_restart(TOMMY_CrouchHip);
+
+
+        if(CurrentWeapon == 12 && CurrentStatus == 0 && !combo_running(LR_StandHOLO_HIP)) combo_restart(LR_StandHOLO_HIP);
+        if(CurrentWeapon == 12 && CurrentStatus == 1 && !combo_running(LR_CrouchedHOLO_HIP)) combo_restart(LR_CrouchedHOLO_HIP);
+    }
+}
+combo M92_S{
+    set_val(10,applyRecoilToRightStickY(35,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(0,-1),recoilStrengthPct));
+    set_val(4,100);
+    wait(10);
+    set_val(4,0);
+    wait(10);
+}
+
+combo M92_C{
+    set_val(10,applyRecoilToRightStickY(256,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(0,-1),recoilStrengthPct));
+    set_val(4,100);
+    wait(10);
+    set_val(4,0);
+    wait(10);
+}
+
+define STAND_RECOIL_XX  = -1;
+define STAND_RECOIL_YX  = 84;
+combo M92_Stand {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RX, STAND_RECOIL_XX + AddToCombosRX());
+    set_val(XB1_RY, STAND_RECOIL_YX + AddToCombosRY());
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+}
+
+define RECOIL_YY  = 60;
+define RECOIL_XY  = 0;
+combo M92_Crouched {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RX, RECOIL_XY + AddToCombosRX());
+    set_val(XB1_RY, RECOIL_YY + AddToCombosRY());
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+}
+
+combo recoil_M92_ADS_Crouched{
+    set_val(10,applyRecoilToRightStickY(36,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(-8,-10),recoilStrengthPct));
+    set_val(4,100);
+    wait(100);
+    set_val(4,0);
+    wait(100);
+}
+
+combo recoil_SAR_ADS_Standing{
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(10,applyRecoilToRightStickY(0,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(0,recoilStrengthPct));
+}
+
+
+combo recoil_M2_HIP_Crouched{
+    set_val(10,applyRecoilToRightStickY(25,recoilStrengthPct));
+    wait(300);
+    set_val(10,applyRecoilToRightStickY(random(26,28),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(-7,-9),recoilStrengthPct));
+    wait(900);
+    set_val(10,applyRecoilToRightStickY(random(26,28),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(-6,random(-9,-10)),recoilStrengthPct));
+    wait(4500);
+    set_val(10,applyRecoilToRightStickY(random(26,28),recoilStrengthPct));
+    wait(6000);
+}
+
+combo recoil_AK_ADS_Crouched_EX{
+    set_val(7,100);
+    set_val(4,100);
+    set_val(9,applyRecoilToRightStickX(random(-3,-5),recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(random(33, 35),recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(10));
+	set_val(7,100);
+    set_val(4,100);
+    set_val(9,applyRecoilToRightStickX(random(-3,-5),recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(random(29, 30),recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(40));
+	set_val(7,100);
+    set_val(4,100);
+    set_val(9,applyRecoilToRightStickX(random(-6,-7),recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(random(28, 29),recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(400));
+    set_val(7,100);
+    set_val(4,100);
+    set_val(9,applyRecoilToRightStickX(random(-6,-7),recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(350));
+    set_val(7,100);
+    set_val(4,100);
+    set_val(9,applyRecoilToRightStickX(random(-9,-9),recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(random(28,29),recoilStrengthPct));
+    wait(40000);
+}
+
+combo recoil_AK_ADS_Crouched{
+    set_val(7,100);
+    set_val(4,100);
+    set_val(9,applyRecoilToRightStickX(random(-3,-5),recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(random(33, 35),recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(10));
+    set_val(7,100);
+    set_val(4,100);
+    set_val(9,applyRecoilToRightStickX(random(-4,-6),recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(random(29, 30),recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(40));
+	set_val(7,100);
+    set_val(4,100);
+    set_val(9,applyRecoilToRightStickX(random(-6,-7),recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(random(28, 29),recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(400));
+    set_val(7,100);
+    set_val(4,100);
+    set_val(9,applyRecoilToRightStickX(random(-7,-8),recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(29,recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(450));
+    set_val(7,100);
+    set_val(4,100);
+    set_val(9,applyRecoilToRightStickX(random(-8,-9),recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(random(28,29),recoilStrengthPct));
+    wait(500);
+    set_val(7,100);
+    set_val(4,100);
+    set_val(9,applyRecoilToRightStickX(random(-8,-10),recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(random(28,29),recoilStrengthPct));
+    wait(40000);
+}
+
+combo recoil_AK_ADS_Standing{
+    set_val(10,applyRecoilToRightStickY(random(37,41),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-2,recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(300));
+    set_val(10,applyRecoilToRightStickY(random(36,random(41,42)),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(-7,random(-9,-10)),recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(400));
+    set_val(10,applyRecoilToRightStickY(random(34,42),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(-8,-13),recoilStrengthPct));
+    wait(400);
+    set_val(10,applyRecoilToRightStickY(random(34,42),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(-8,-13),recoilStrengthPct));
+    wait(400);
+    set_val(10,applyRecoilToRightStickY(random(34,random(41,43)),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(-8,random(-12,-14)),recoilStrengthPct));
+    wait(200);
+    set_val(10,applyRecoilToRightStickY(random(35,42),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(random(-8,-9),-13),recoilStrengthPct));
+    wait(600);
+    set_val(10,applyRecoilToRightStickY(random(34,random(41,43)),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(random(-12,-14),-8),recoilStrengthPct));
+    wait(600);
+    set_val(10,applyRecoilToRightStickY(random(35,43),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(-8,random(-11,-14)),recoilStrengthPct));
+    wait(200);
+    set_val(10,applyRecoilToRightStickY(random(36,random(40,random(42,43))),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(-8,-13),recoilStrengthPct));
+    wait(200);
+    set_val(10,applyRecoilToRightStickY(random(35,random(42,43)),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(random(-8,-9),random(-13,random(-14,-15))),recoilStrengthPct));
+    wait(500);
+    set_val(10,applyRecoilToRightStickY(random(35,random(40,random(40,43))),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(-9,random(-10,-14)),recoilStrengthPct));
+    wait(100);
+    set_val(10,applyRecoilToRightStickY(random(35,random(40,random(41,43))),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(-9,random(-10,random(-13,-14))),recoilStrengthPct));
+    wait(200);
+    set_val(10,applyRecoilToRightStickY(random(35,random(random(40,41),random(42,random(43,42)))),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(-9,random(-10,random(-14,random(-13,-12)))),recoilStrengthPct));
+    wait(500);
+}
+
+combo recoil_M92_ADS_Standing{
+    set_val(10,applyRecoilToRightStickY(48,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(random(-11,-12),recoilStrengthPct));
+    set_val(4,100);
+    wait(100);
+    set_val(4,0);
+    wait(100);
+}
+
+combo recoil_SAR_ADS_Crouched{
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-1,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(8,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(8,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(4,0);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    wait(90);
+    set_val(10,applyRecoilToRightStickY(0,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(0,recoilStrengthPct));
+}
+
+int lx;
+int STRAFE_LX_THRESH = 11;
+int STRAFE_AK_HIP = 3;
+int STRAFE_AK_4X_HOLO_CROUCH = 2;
+int STRAFE_AK_4X_STAND = 2;
+int STRAFE_AK_HOLO_STAND = 3;
+int STRAFE_LR_HOLO_STAND = 1;
+int STRAFE_LR_HOLO_CROUCH = 0;
+int STRAFE_MP5_HOLO_CROUCH = -5;
+int STRAFE_MP5_HOLO_STAND = -6;
+int STRAFE_SKS_4X_STAND = 11;
+int STRAFE_SKS_4X_CROUCH = 4;
+int STRAFE_M249_HOLO_CROUCH = -2;
+int STRAFE_M249_HOLO_STAND = 3;
+int STRAFE_SKS_HOLO_STAND = 5;
+int STRAFE_SKS_HOLO_CROUCH = 1;
+int STRAFE_M2_4X_CROUCH = 6;
+int STRAFE_M2_4X_STAND = 0;
+int STRAFE_LR_4X_STAND = 7;
+int STRAFE_LR_4X_CROUCH = 2;
+int STRAFE_TOMMY_HOLO_CROUCH = 1;
+int STRAFE_TOMMY_HOLO_STAND = 1;
+
+
+
+function STRAFE_LR_4X_CROUCH() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_LR_4X_CROUCH;
+
+    return 0;
+}
+
+function STRAFE_LR_4X_STAND() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_LR_4X_STAND;
+
+    return 0;
+}
+
+function STRAFE_M2_4X_STAND() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_M2_4X_STAND;
+
+    return 0;
+}
+
+function STRAFE_M2_4X_CROUCH() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_M2_4X_CROUCH;
+
+    return 0;
+}
+
+function STRAFE_SKS_HOLO_STAND() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_SKS_HOLO_STAND;
+
+    return 0;
+}
+
+function STRAFE_SKS_HOLO_CROUCH() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_SKS_HOLO_CROUCH;
+
+    return 0;
+}
+
+
+function STRAFE_AK_4X_HOLO_CROUCH() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_AK_4X_HOLO_CROUCH;
+
+    return 0;
+}
+
+function STRAFE_LR_HOLO_STAND() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_LR_HOLO_STAND;
+
+    return 0;
+}
+
+function STRAFE_LR_HOLO_CROUCH() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_LR_HOLO_CROUCH;
+
+    return 0;
+}
+
+
+
+
+function STRAFE_M249_HOLO_CROUCH() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_M249_HOLO_CROUCH;
+
+    return 0;
+}
+
+function STRAFE_M249_HOLO_STAND() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_M249_HOLO_STAND;
+
+    return 0;
+}
+
+function STRAFE_SKS_4X_STAND() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_SKS_4X_STAND;
+
+    return 0;
+}
+
+function STRAFE_SKS_4X_CROUCH() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_SKS_4X_CROUCH;
+
+    return 0;
+}
+
+function STRAFE_AK_4X_STAND() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_AK_4X_STAND;
+
+    return 0;
+}
+
+
+
+combo AK_Stand4X {
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-7.342595 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87.615 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(10);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-7.45 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87.635 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(10);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-7.3315 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87.62 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(10);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-7.345 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87.615 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(10);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-7.225 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87.915 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(10);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-8.1675 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87.815 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(20);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-7.225 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87.615 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(10);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-7.396 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87.615 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(10);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-7.325 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87.615 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(10);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-8.51 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87.615 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(110);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-8.51 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87.615 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(10);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-8.51 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87.615 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(20);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-8.51 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87.615 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(50);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-11.75 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(85.615 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(400);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-15.3 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(86.615 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(300);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-16.7 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(600);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-18.65 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87.2 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(350);
+
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-19 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(87 + 0 + STRAFE_AK_4X_STAND(), recoilStrengthPct));
+    wait(1900);
+}
+
+combo AK_Crouched4X {
+    set_val(XB1_LT, 255);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-7.152 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(62.95135 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(10);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-6.70 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(62.325 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(10);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-7.75 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(62.4515 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(70);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-6.865 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(62.18515 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(200);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-8.3515 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(62.25 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(120);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-12.15235 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(62.185 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(440);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-14.355358 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(62.8515 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(1310);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-15.23515 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(62.2515 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(690);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-15.525 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(62.55 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(720);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-15.45 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(62.4515325 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(260);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-14.75 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(62.35215 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(150);
+
+    set_val(XB1_LT, 0);
+}
+
+combo SKS_Stand4X{
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(76 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(75 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(75 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(74 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(74 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(74 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(74 + 0 + STRAFE_SKS_4X_STAND(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_LT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(0, recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0, recoilStrengthPct));
+}
+
+combo SKS_Crouched4X{
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(50 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(50 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(52 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(50 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(53 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(53 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(53 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(53 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(55 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(53 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_RT, 100);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(54 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+wait(80);
+set_val(XB1_RT, 0);
+set_val(XB1_LT, 100);
+set_val(XB1_RY, applyRecoilToRightStickY(53 + 0 + STRAFE_SKS_4X_CROUCH(), recoilStrengthPct));
+set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+wait(80);
+
+
+set_val(XB1_LT, 0);
+set_val(XB1_RY, applyRecoilToRightStickY(0, recoilStrengthPct));
+}
+
+combo SKS_StandHolo{
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(4 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(33 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(33 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(3 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(33 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(33 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(33 + 0 + STRAFE_SKS_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_LT, 0);
+    set_val(XB1_RY, applyRecoilToRightStickY(0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0, recoilStrengthPct));
+}
+
+combo SKS_CrouchedHolo{
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(24 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(24 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(24 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(24 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(24 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(24 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(24 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(24 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(24 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(20 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(24 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    wait(80);
+
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(20 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    wait(80);
+    set_val(XB1_RT, 0);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RY, applyRecoilToRightStickY(24 + 0 + STRAFE_SKS_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    wait(800);
+
+
+}
+
+
+  int FinalRY;
+  int FinalRX;
+function RY_Math(RawValue, Strength) {
+
+
+    if (abs(get_val(XB1_RX)) > 20 || abs(get_val(XB1_RY)) > 20) return RawValue;
+
+
+    FinalRY = (RawValue * Strength) / 100;
+
+
+    FinalRY = (FinalRY * smooth_scale) / 100;
+
+
+    if (abs(get_val(XB1_RY)) > 20) {
+        FinalRY = (FinalRY * (100 - abs(get_val(XB1_RY)))) / 100;
+    }
+
+    return FinalRY + strafeRYBoost;
+}
+
+function RX_Math(RawValue, Strength) {
+
+    if (abs(get_val(XB1_RX)) > 20 || abs(get_val(XB1_RY)) > 20) return RawValue;
+
+    FinalRX = (RawValue * Strength) / 100;
+    FinalRX = (FinalRX * smooth_scale) / 100;
+
+    if (abs(get_val(XB1_RX)) > 20) {
+        FinalRX = (FinalRX * (100 - abs(get_val(XB1_RX)))) / 100;
+    }
+
+    return FinalRX;
+}
+
+combo M2_Stand4X {
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(54, global_scale) + 0 + STRAFE_M2_4X_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(0, global_scale) + 0, recoilStrengthPct));
+    wait(250);
+
+
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(56, global_scale) + 0 + STRAFE_M2_4X_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(-14, global_scale) + 0, recoilStrengthPct));
+    wait(900);
+
+
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(56, global_scale) + 0 + STRAFE_M2_4X_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(-14, global_scale) + 0, recoilStrengthPct));
+    wait(1950);
+
+
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(random(56, 57), global_scale) + 0 + STRAFE_M2_4X_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(-14, global_scale) + 0, recoilStrengthPct));
+    wait(3000);
+
+
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(random(54, 57), global_scale) + 0 + STRAFE_M2_4X_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(-14, global_scale) + 0, recoilStrengthPct));
+    wait(6000);
+}
+
+combo M2_Crouch4X {
+
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(39, global_scale) + 0 + STRAFE_M2_4X_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(0, global_scale) + 0, recoilStrengthPct));
+    wait(300);
+
+
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(random(40, 43), global_scale) + 0 + STRAFE_M2_4X_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(random(-11, -14), global_scale) + 0, recoilStrengthPct));
+    wait(900);
+
+
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(random(40, 43), global_scale) + 0 + STRAFE_M2_4X_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(random(-9, random(-14, -15)), global_scale) + 0, recoilStrengthPct));
+    wait(4500);
+
+
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(random(40, 43), global_scale) + 0 + STRAFE_M2_4X_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(0, global_scale) + 0, recoilStrengthPct));
+    wait(6000);
+}
+
+combo M2_StandHolo {
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(35, global_scale) + 0 + STRAFE_M249_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(0, global_scale) + 0, recoilStrengthPct));
+    wait(250);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(36, global_scale) + 0 + STRAFE_M249_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(-9, global_scale) + 0, recoilStrengthPct));
+    wait(900);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(36, global_scale) + 0 + STRAFE_M249_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(-9, global_scale) + 0, recoilStrengthPct));
+    wait(1950);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(random(36, 37), global_scale) + 0 + STRAFE_M249_HOLO_STAND(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(0, global_scale) + 0, recoilStrengthPct));
+    wait(3000);
+}
+
+combo M2_CrouchHolo {
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(25, global_scale)+ 0 + STRAFE_M249_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RY_Math(0, global_scale) + 0, recoilStrengthPct));
+    wait(300);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(random(26, 28), global_scale) + 0 + STRAFE_M249_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(random(-7, -9), global_scale) + 0, recoilStrengthPct));
+    wait(900);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(random(26, 28), global_scale) + 0 + STRAFE_M249_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(random(-6, -10), global_scale) + 0, recoilStrengthPct));
+    wait(2000);
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(random(26, 28), global_scale) + 0 + STRAFE_M249_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(random(-5, -8), global_scale) + 0, recoilStrengthPct));
+    wait(1000);
+    set_val(XB1_RY, applyRecoilToRightStickY(RY_Math(random(26, 28), global_scale) + 0 + STRAFE_M249_HOLO_CROUCH(), recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(RX_Math(random(-5.85, -8.25), global_scale) + 0, recoilStrengthPct));
+    wait(10000);
+}
+
+combo LR_Crouched4X {
+	set_val(XB1_RT, 63);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(62 + 0 + STRAFE_LR_4X_CROUCH(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(62 + 0 + STRAFE_LR_4X_CROUCH(), recoilStrengthPct));
+	wait(30);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(62 + 0 + STRAFE_LR_4X_CROUCH(), recoilStrengthPct));
+	wait(40);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(62 + 0 + STRAFE_LR_4X_CROUCH(), recoilStrengthPct));
+	wait(30);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(62 + 0 + STRAFE_LR_4X_CROUCH(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(61 + 0 + STRAFE_LR_4X_CROUCH(), recoilStrengthPct));
+	wait(1390);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(2 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(61 + 0 + STRAFE_LR_4X_CROUCH(), recoilStrengthPct));
+	wait(960);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(1 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(61 + 0 + STRAFE_LR_4X_CROUCH(), recoilStrengthPct));
+	wait(1280);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(60 + 0 + STRAFE_LR_4X_CROUCH(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(53 + 0 + STRAFE_LR_4X_CROUCH(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(48 + 0 + STRAFE_LR_4X_CROUCH(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(35 + 0 + STRAFE_LR_4X_CROUCH(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 0);
+	set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(60 + 0 + STRAFE_LR_4X_CROUCH(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 67);
+	set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(20 + 0 + STRAFE_LR_4X_CROUCH(), recoilStrengthPct));
+	wait(10);
+
+}
+
+combo LR_Stand4X {
+	set_val(XB1_RT, 83);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(84 + 0 + STRAFE_LR_4X_STAND(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(84 + 0 + STRAFE_LR_4X_STAND(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(83 + 0 + STRAFE_LR_4X_STAND(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(84 + 0 + STRAFE_LR_4X_STAND(), recoilStrengthPct));
+	wait(20);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(84 + 0 + STRAFE_LR_4X_STAND(), recoilStrengthPct));
+	wait(30);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(3 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(83 + 0 + STRAFE_LR_4X_STAND(), recoilStrengthPct));
+	wait(800);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(5 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(84 + 0 + STRAFE_LR_4X_STAND(), recoilStrengthPct));
+	wait(2500);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(3 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(84 + 0 + STRAFE_LR_4X_STAND(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(1 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(84 + 0 + STRAFE_LR_4X_STAND(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(-1 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(84 + 0 + STRAFE_LR_4X_STAND(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(84 + 0 + STRAFE_LR_4X_STAND(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(84 + 0 + STRAFE_LR_4X_STAND(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(84 + 0 + STRAFE_LR_4X_STAND(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 35);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(-7 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(84 + 0 + STRAFE_LR_4X_STAND(), recoilStrengthPct));
+	wait(10);
+}
+
+define STAND_RECOIL_X2  = -3;
+define STAND_RECOIL_Y2  = 35;
+combo MP5_StandBurst {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RX, applyRecoilToRightStickX(STAND_RECOIL_X2 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(STAND_RECOIL_Y2 + 0, recoilStrengthPct));
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+}
+define RECOIL_Y  = 25;
+define RECOIL_X  = -2;
+define FIRE_RATE = 5;
+combo MP5_CrouchedBurst {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RX, applyRecoilToRightStickX(RECOIL_X + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(RECOIL_Y + 0, recoilStrengthPct));
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+}
+define STAND_RECOIL_XB  = -3;
+define STAND_RECOIL_YB  = 70;
+define RECOIL_YA  = 49;
+define RECOIL_XA  = -2;
+combo MP5_StandBurst4X {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RX, applyRecoilToRightStickX(STAND_RECOIL_XB + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(STAND_RECOIL_YB + 0, recoilStrengthPct));
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+}
+
+combo MP5_CrouchedBurst4X {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+    set_val(XB1_RX, applyRecoilToRightStickX(RECOIL_XA + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(RECOIL_YA + 0, recoilStrengthPct));
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+}
+
+combo P2_Stand {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+	set_val (XB1_RX, random(-2,-1) + AddToCombosRX());
+	set_val (XB1_RY, random(42,44) + AddToCombosRY());
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+	}
+
+combo P2_Crouched {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+	set_val (XB1_RX, 0 + AddToCombosRX());
+	set_val (XB1_RY, 31 + AddToCombosRY());
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+	}
+
+combo PYTHON_Stand {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+	set_val (XB1_RX, 2 + AddToCombosRX());
+	set_val (XB1_RY, 95 +AddToCombosRY());
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+	}
+
+combo PYTHON_Crouched {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+	set_val (XB1_RX, 1 + AddToCombosRX());
+	set_val (XB1_RY, random (69, 72) +AddToCombosRY());
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+	}
+
+combo REVO_Stand {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+	set_val (XB1_RX, random(1,-1) + AddToCombosRX());
+	set_val (XB1_RY, 55 +AddToCombosRY());
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+	}
+
+combo REVO_Crouched {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+	set_val (XB1_RX, random(1,0) + AddToCombosRX());
+	set_val (XB1_RY, 39 +AddToCombosRY());
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+	}
+
+combo NAILGUN_Stand {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+	set_val (XB1_RX, random(0,-1) + AddToCombosRX());
+	set_val (XB1_RY, random(60, 63) + AddToCombosRY());
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+	}
+
+combo NAILGUN_Crouched {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+	set_val (XB1_RX, random(0,-1) + AddToCombosRX());
+	set_val (XB1_RY, random(43, 45) + AddToCombosRY());
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+	}
+
+combo DB_Stand {
+
+	set_val (XB1_RT, 100);
+	set_val (XB1_RX, -15 + AddToCombosRX());
+	set_val (XB1_RY, 75 + AddToCombosRY());
+	wait(10);
+	set_val (XB1_RT, 100);
+	set_val (XB1_RX, 0 + AddToCombosRX());
+	set_val (XB1_RY, 0 +AddToCombosRY());
+	wait(20);
+	set_val (XB1_RT, 0);
+	set_val (XB1_RT, 100);
+	set_val (XB1_RX, 0 + AddToCombosRX());
+	set_val (XB1_RY, 70 +AddToCombosRY());
+	wait(10);
+	set_val (XB1_RT, 0)
+	}
+
+combo DB_Crouched {
+
+	set_val (XB1_RT, 100);
+	set_val (XB1_RX, -17 + AddToCombosRX());
+	set_val (XB1_RY, 50 +AddToCombosRY());
+	wait(10);
+	set_val (XB1_RT, 100);
+	set_val (XB1_RX, 0 + AddToCombosRX());
+	set_val (XB1_RY, 0 +AddToCombosRY());
+	wait(10);
+	set_val (XB1_RT, 0);
+	set_val (XB1_RT, 100);
+	set_val (XB1_RX, 0 + AddToCombosRX());
+	set_val (XB1_RY, 43 +AddToCombosRY());
+	wait(10);
+	set_val (XB1_RT, 0)
+	}
+
+
+combo HMLMG_StandHolo {
+
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(9 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(9 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(9 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(9 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(9 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(9 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(9 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(9 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(9 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(9 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(9 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+    set_val(XB1_RY, applyRecoilToRightStickY(36 + 0, recoilStrengthPct)); set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct)); wait(115);
+}
+
+combo HMLMG_CrouchHolo {
+
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(7 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(7 + 0, recoilStrengthPct));
+    wait(115);
+
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(7 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(7 + 0, recoilStrengthPct));
+    wait(115);
+
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+        set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+        set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+        set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+        set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+        set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(8 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-3 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+    wait(115);
+        set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+    wait(115);
+        set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-3 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+    wait(115);
+        set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+    wait(115);
+        set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-3 + 0, recoilStrengthPct));
+    wait(115);
+
+    set_val(XB1_RY, applyRecoilToRightStickY(27 + 0, recoilStrengthPct));
+    set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+    wait(115);
+}
+
+combo LR_CrouchedHOLO {
+	set_val(XB1_RT, 63);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(27 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(29 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(30);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(29 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(40);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(28 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(30);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(27 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(27 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(1390);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(2 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(28 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	wait(960);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(28 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	wait(1280);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(22 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(21 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(21 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(14 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 0);
+	set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(21 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 67);
+	set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(14 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	wait(10);
+
+}
+
+combo LR_StandHOLO {
+	set_val(XB1_RT, 83);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(36 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(35 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(37 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(37 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(20);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(38 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(30);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(3 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(38 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(800);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(5 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(37 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(2500);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(3 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(37 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(1 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(37 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(-1 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(37 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(37 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(36 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 100);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(36 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(10);
+	set_val(XB1_RT, 35);
+	set_val(XB1_LT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(-6 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(36 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(10);
+}
+
+combo M39_Stand4X {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+	set_val (XB1_RX, random (-20, -23) + AddToCombosRX());
+	set_val (XB1_RY, 100 +AddToCombosRY());
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+	}
+
+combo M39_Crouch4X {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+	set_val (XB1_RX, random (-15, -16) + AddToCombosRX());
+	set_val (XB1_RY, random (81, 82) +AddToCombosRY());
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+	}
+
+combo GLOCK_Stand {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+	set_val (XB1_RX, 0 + AddToCombosRX());
+	set_val (XB1_RY, random (51, 53) +AddToCombosRY());
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+	}
+
+combo GLOCK_Crouch {
+
+    set_val(XB1_RT, 100);
+    set_val(XB1_LT, 100);
+	set_val (XB1_RX, random (1, -1) + AddToCombosRX());
+	set_val (XB1_RY, random (38, 39) +AddToCombosRY());
+    wait(FIRE_RATE);
+
+    set_val(XB1_RT, 0);
+    wait(FIRE_RATE);
+	}
+
+combo HCR_Crouch {
+
+	set_val (XB1_RT, 100);
+	set_val (XB1_RX, 0 + AddToCombosRX());
+	set_val (XB1_RY, 27 + AddToCombosRY());
+	wait(10);
+	set_val (XB1_RT, 0);
+	set_val (XB1_RT, 100);
+	set_val (XB1_RX, 0 + AddToCombosRX());
+	set_val (XB1_RY, 27 + AddToCombosRY());
+	wait(10);
+	set_val (XB1_RT, 0);
+	}
+
+combo HCR_Stand {
+
+	set_val (XB1_RT, 100);
+	set_val (XB1_RX, 0 + AddToCombosRX());
+	set_val (XB1_RY, 37 + AddToCombosRY());
+	wait(10);
+	set_val (XB1_RT, 0);
+	set_val (XB1_RT, 100);
+	set_val (XB1_RX, 0 + AddToCombosRX());
+	set_val (XB1_RY, 37 + AddToCombosRY());
+	wait(10);
+	set_val (XB1_RT, 0);
+	}
+
+combo HMSMG_Crouch {
+	set_val (XB1_RX, 0 + AddToCombosRX());
+	set_val (XB1_RY, 22 + AddToCombosRY());
+	wait(1000000);
+
+	}
+
+combo HMSMG_Stand {
+	set_val (XB1_RX, -1 + AddToCombosRX());
+	set_val (XB1_RY, 28 + AddToCombosRY());
+	wait(1000000);
+
+	}
+
+combo MG_Crouch {
+	set_val (XB1_RX, 0 + AddToCombosRX());
+	set_val (XB1_RY, 21 + AddToCombosRY());
+	wait(1000000);
+
+	}
+
+combo MG_Stand {
+	set_val (XB1_RX, 0 + AddToCombosRX());
+	set_val (XB1_RY, 29 + AddToCombosRY());
+	wait(1000000);
+
+	}
+
+
+int RX_SCALE_DEN  = 100;
+int RY_SCALE_DEN  = 100;
+int SMOOTH_DEN    = 25;
+int SCALE_NUM     = 100;
+int RY_SCALE_NUM  = 25;
+int RX_SCALE_NUM  = 25;
+int axis_val;
+int axis_mix;
+int adj_scaled;
+function ApplyAxisAdjust(int axis, int adjust) {
+
+
+    if (axis == XB1_RY) {
+        axis_val = AddToCombosRY();
+    } else {
+        axis_val = AddToCombosRX();
+    }
+
+
+    if (axis_val >  90) axis_val =  80;
+    if (axis_val < -90) axis_val = -80;
+
+
+    if (axis == XB1_RY) {
+        adj_scaled = (adjust * SCALE_NUM) / RY_SCALE_DEN;
+        adj_scaled = (adj_scaled * RY_SCALE_NUM) / SMOOTH_DEN;
+    } else {
+        adj_scaled = (adjust * SCALE_NUM) / RX_SCALE_DEN;
+        adj_scaled = (adj_scaled * RX_SCALE_NUM) / SMOOTH_DEN;
+    }
+
+
+    axis_mix = 100 - abs(axis_val);
+
+    set_val(
+        axis,
+        clamp(axis_val + (adj_scaled * axis_mix / 100), -100, 100)
+    );
+}
+function StrafeAddRY() {
+
+    lx = RAW_LX;
+
+    if (lx > STRAFE_LX_THRESH || lx < -STRAFE_LX_THRESH)
+        return STRAFE_RY_AMOUNT;
+
+    return 0;
+}
+
+int STRAFE_RY_AMOUNT = 2.65;
+int STRAFE_RY_AMOUNT2 = 2.25;
+int STRAFE_RY_AMOUNT3 = 1.25;
+int STRAFE_LX_THRESH2 = 11;
+int STRAFE_LX_THRESH3 = 11;
+combo AK_StandHip {
+
+    ApplyAxisAdjust(XB1_RY, random(42, 46) + StrafeAddRY());
+    ApplyAxisAdjust(XB1_RX, -1.7);
+    wait(300);
+
+    ApplyAxisAdjust(XB1_RY, random(41, 45) + StrafeAddRY());
+    ApplyAxisAdjust(XB1_RX, random(-7.7, -8.7));
+    wait(400);
+
+    ApplyAxisAdjust(XB1_RY, random(41, 48) + StrafeAddRY());
+    ApplyAxisAdjust(XB1_RX, random(-11, -13));
+    wait(400);
+
+    ApplyAxisAdjust(XB1_RY, random(41, 47) + StrafeAddRY());
+    ApplyAxisAdjust(XB1_RX, random(-11, -13));
+    wait(400);
+
+    ApplyAxisAdjust(XB1_RY, random(41, 48) + StrafeAddRY());
+    ApplyAxisAdjust(XB1_RX, random(-10, -12));
+    wait(200);
+
+    ApplyAxisAdjust(XB1_RY, random(41, 47) + StrafeAddRY());
+    ApplyAxisAdjust(XB1_RX, random(-9, -11));
+    wait(200);
+
+    ApplyAxisAdjust(XB1_RY, random(41.65, 47) + StrafeAddRY());
+    ApplyAxisAdjust(XB1_RX, random(-9, -12));
+    wait(500);
+
+    ApplyAxisAdjust(XB1_RY, random(41, 48) + StrafeAddRY());
+    ApplyAxisAdjust(XB1_RX, random(-2, -12.65));
+    wait(150);
+
+    ApplyAxisAdjust(XB1_RY, random(41, 48) + StrafeAddRY());
+    ApplyAxisAdjust(XB1_RX, random(-12, -13));
+    wait(200);
+
+    ApplyAxisAdjust(XB1_RY, random(41.5, 45) + StrafeAddRY());
+    ApplyAxisAdjust(XB1_RX, random(-12, -15));
+    wait(200);
+
+    ApplyAxisAdjust(XB1_RY, random(41, 44) + StrafeAddRY());
+    ApplyAxisAdjust(XB1_RX, random(-12, -15));
+    wait(200);
+
+    ApplyAxisAdjust(XB1_RY, random(39.5, 42) + StrafeAddRY());
+    ApplyAxisAdjust(XB1_RX, random(-13, -15));
+    wait(800);
+}
+
+combo AK_CrouchedHip {
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(8);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(6);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(35 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(6);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-5 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+    set_val(XB1_RX, applyRecoilToRightStickX(-6 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(6);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-6 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+    set_val(XB1_RX, applyRecoilToRightStickX(-6 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(4);
+    set_val(XB1_RX, applyRecoilToRightStickX(-7 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(35);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-7 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(35);
+    set_val(XB1_RX, applyRecoilToRightStickX(-7 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(35);
+    set_val(XB1_RX, applyRecoilToRightStickX(-7 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(35);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-7 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(30);
+    set_val(XB1_RX, applyRecoilToRightStickX(-7 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(30);
+    set_val(XB1_RX, applyRecoilToRightStickX(-8 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(33 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(120);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-8 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(33 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(120);
+    set_val(XB1_RX, applyRecoilToRightStickX(-8 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(120);
+    set_val(XB1_RX, applyRecoilToRightStickX(-8 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(120);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-9 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(34 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(150);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-9 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(33 + 0 + STRAFE_AK_4X_HOLO_CROUCH(), recoilStrengthPct));
+    wait(19000);
+}
+
+combo MP5_StandHip {
+	set_val(XB1_RY, applyRecoilToRightStickY(random(43, 48) + 0, recoilStrengthPct));
+	wait(10000000);
+}
+
+
+combo MP5_CrouchedHip {
+	set_val(XB1_RX, applyRecoilToRightStickX(random (0, 1) + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(37 + 0, recoilStrengthPct));
+	wait(111000);
+}
+
+combo TOMMY_StandHip {
+
+    set_val(XB1_RX, applyRecoilToRightStickX(random (0, -3) + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(37 + 0, recoilStrengthPct));
+    wait(130000);
+}
+
+combo TOMMY_CrouchHip {
+
+    set_val(XB1_RX, applyRecoilToRightStickX(random (0, -2) + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(26 + 0, recoilStrengthPct));
+    wait(130000);
+}
+
+combo LR_CrouchedHOLO_HIP {
+	set_val(XB1_RT, 63);
+	set_val(XB1_RY, applyRecoilToRightStickY(31 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(33 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(30);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(33 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(40);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(33 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(30);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(32 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(32 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(1390);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(2 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(32 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	wait(960);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(32 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	wait(1280);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(27 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(25 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(25 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(18 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(25 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 67);
+	set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(18 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	wait(10);
+}
+
+combo LR_StandHOLO_HIP {
+	set_val(XB1_RT, 83);
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(41 + 0 + STRAFE_LR_HOLO_CROUCH(), recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(41 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(42 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(42 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(20);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(43 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(30);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(3 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(43 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(800);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(5 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(42 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(2500);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(3 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(42 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(1 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(42 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(-1 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(42 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RY, applyRecoilToRightStickY(42 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(42 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 100);
+	set_val(XB1_RX, applyRecoilToRightStickX(-4 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(41 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(10);
+
+	set_val(XB1_RT, 35);
+	set_val(XB1_RX, applyRecoilToRightStickX(-6 + 0, recoilStrengthPct));
+	set_val(XB1_RY, applyRecoilToRightStickY(41 + 0 + STRAFE_LR_HOLO_STAND(), recoilStrengthPct));
+	wait(10);
+}
+combo CSTMStanding{
+    set_val(7,100);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(random(29,30),recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(5,recoilStrengthPct));
+    wait(3000);
+}
+
+
+combo CSTMCrouched{
+    set_val(7,100);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(23,recoilStrengthPct));
+    wait(3000);
+}
+combo TMYStanding{
+    set_val(4,6);
+    set_val(7,100);
+    set_val(10,applyRecoilToRightStickY(26,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(3,recoilStrengthPct));
+    wait(10);
+    set_val(4,88);
+    set_val(7,100);
+    set_val(10,applyRecoilToRightStickY(27,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(3,recoilStrengthPct));
+    wait(10);
+    set_val(4,100);
+    set_val(7,100);
+    set_val(10,applyRecoilToRightStickY(26,recoilStrengthPct));
+    set_val(9,applyRecoilToRightStickX(5,recoilStrengthPct));
+    wait(810);
+    set_val(4,100);
+    set_val(7,100);
+    set_val(9,applyRecoilToRightStickX(-3,recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(26,recoilStrengthPct));
+    wait(120);
+    set_val(4,100);
+    set_val(7,100);
+    set_val(9,applyRecoilToRightStickX(0,recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(26,recoilStrengthPct));
+    wait(1830);
+    set_val(4,100);
+    set_val(7,100);
+    set_val(9,applyRecoilToRightStickX(-3,recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(23,recoilStrengthPct));
+    wait(10);
+    set_val(4,100);
+    set_val(7,100);
+    set_val(9,applyRecoilToRightStickX(-3,recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(15,recoilStrengthPct));
+    wait(10);
+    set_val(4,100);
+    set_val(7,100);
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(5,recoilStrengthPct));
+    set_val(11,-3);
+    set_val(12,-3);
+    wait(10);
+    set_val(4,45);
+    set_val(7,100);
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(0,recoilStrengthPct));
+    set_val(11,-5);
+    set_val(12,0);
+    wait(10);
+    set_val(4,0);
+    set_val(7,0);
+    set_val(9,applyRecoilToRightStickX(-5,recoilStrengthPct));
+    set_val(11,-6);
+    wait(580);
+}
+
+
+combo TMYCrouched{
+    set_val(7,100);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickY(20,recoilStrengthPct));
+    wait(3000);
+}
+
+combo TMYCrouched_EX{
+    set_val(7,100);
+    set_val(4,100);
+    set_val(10,applyRecoilToRightStickX(random(-1,0),recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(20,recoilStrengthPct));
+    wait(3000);
+}
+
+combo HSMGStanding{
+    set_val(4,100);
+    set_val(7,100);
+    set_val(10,applyRecoilToRightStickY(28,recoilStrengthPct));
+    wait(3000);
+}
+
+
+combo HSMGCrouched{
+    set_val(4,100);
+    set_val(7,100);
+    set_val(10,applyRecoilToRightStickY(22,recoilStrengthPct));
+    wait(3000);
+}
+
+
+combo TOMMY4XS{
+    set_val(XB1_RX, applyRecoilToRightStickX(random (0, -1) + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(57.3 + 0, recoilStrengthPct));
+    wait(300000);
+}
+
+combo TOMMY4XC {
+
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(43 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-1 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(43 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(41 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-1 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(42 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(43 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(43 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(43 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-1 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(42 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-1 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(41 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(42 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-1 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(43 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(42 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-1 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(42 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-1 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(42 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(42 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(43 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(0 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(43 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-2 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(42 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-1 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(42 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(-1 + 0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(43 + 0, recoilStrengthPct));
+    wait(130);
+
+    set_val(XB1_RX, applyRecoilToRightStickX(0, recoilStrengthPct));
+    set_val(XB1_RY, applyRecoilToRightStickY(0, recoilStrengthPct));
+}
+combo MP5C{
+    set_val(4,100);
+    set_val(7,100);
+    set_val(9,applyRecoilToRightStickX(random(2,-2),recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(random(21,25),recoilStrengthPct));
+    wait(5000);
+}
+
+
+combo MP5S{
+    set_val(4,100);
+    set_val(7,100);
+    set_val(9,applyRecoilToRightStickX(random(2,-2),recoilStrengthPct));
+    set_val(10,applyRecoilToRightStickY(random(30,31),recoilStrengthPct));
+    wait(5000);
+}
+
+combo AK_CrouchedHolo2 {
+    // Early burst (UNCHANGED)
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(33, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    // Smooth climb (UNCHANGED)
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(8));
+
+    // Transition spike (UNCHANGED)
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(30, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(6));
+
+    // Bleed vertical (UNCHANGED)
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(30, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(6));
+
+    // Horizontal dominance begins (UNCHANGED)
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-5, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-6, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(6));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-6, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-6, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(4));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-6, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(35));
+
+    // MID SPRAY FIX
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-6, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(35));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-7, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(28, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(35));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-7, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(35));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-7, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(30));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-6, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(28, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(30));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-7, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(120));
+
+    // Late spray
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-7, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(120));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-7, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(120));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(random(-8,-9), recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(120));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-8, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(150));
+
+    // Final settle
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(random(-8,-9), recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(29, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(600));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-10, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(30, recoilStrengthPct));
+    wait(passthroughUnlessSuppressed(30));
+
+    set_val(7, 100); set_val(4, 100);
+    set_val(9, applyRecoilToRightStickX(-9, recoilStrengthPct));
+    set_val(10, applyRecoilToRightStickY(random(28, 29), recoilStrengthPct));
+    wait(19000); 
+}
+                  
