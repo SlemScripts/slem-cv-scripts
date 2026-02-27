@@ -1,0 +1,56 @@
+name: Script or setup problem
+description: Something in the pack doesn't work as described
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check `SUPPORT.md` first — most issues are one of the five listed there.
+  - type: dropdown
+    id: game
+    attributes:
+      label: Game
+      options:
+        - NBA 2K27
+        - NBA 2K26
+        - Call of Duty
+        - Rainbow Six Siege
+        - Fortnite
+        - Apex Legends
+        - Rust
+        - SLEM CV app
+    validations:
+      required: true
+  - type: input
+    id: script
+    attributes:
+      label: Script filename
+      placeholder: SLEM-V4-FIXED.gpc
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options: [PC, PlayStation, Xbox]
+    validations:
+      required: true
+  - type: input
+    id: controller
+    attributes:
+      label: Controller and connection
+      placeholder: DualSense over USB / Xbox pad over Bluetooth
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens
+      description: Be specific. "Always late by a quarter second" is useful. "Broken" is not.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I ran the setup in SLEM-CV/ first
+        - label: My shot meter settings match SUPPORT.md
+        - label: I am not on Wi-Fi

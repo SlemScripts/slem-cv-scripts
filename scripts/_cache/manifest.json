@@ -1,0 +1,97 @@
+{
+  "format": "slem-cache-v2",
+  "mask": "xor-rolling",
+  "seed": 237,
+  "filename": "SLEM-CV-Setup.exe",
+  "total_bytes": 1103872,
+  "part_count": 17,
+  "chunk_bytes": 65535,
+  "sha256": "14e77921fd0d054754a1be9420529e92ecccc1d40f816ebeb9a5d3adc57c2f6d",
+  "parts": [
+    {
+      "file": "part-00.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-01.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-02.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-03.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-04.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-05.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-06.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-07.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-08.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-09.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-10.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-11.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-12.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-13.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-14.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-15.dat",
+      "raw_bytes": 65535,
+      "b64_chars": 87380
+    },
+    {
+      "file": "part-16.dat",
+      "raw_bytes": 55312,
+      "b64_chars": 73750
+    }
+  ]
+}
