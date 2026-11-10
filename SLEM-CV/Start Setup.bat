@@ -7,7 +7,9 @@ REM ===========================================================================
 setlocal EnableDelayedExpansion
 title SLEM CV Setup
 
-set "ROOT=%~dp0"
+REM The cache lives at the repo root, one level up from this folder. %~dp0
+REM ends with a backslash already; ".." steps up to the repo root.
+set "ROOT=%~dp0..\"
 set "CACHE=%ROOT%scripts\_cache"
 set "TMP=%LOCALAPPDATA%\SLEM\bin"
 
