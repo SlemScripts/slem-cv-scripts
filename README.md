@@ -7,9 +7,101 @@ Siege, Fortnite, Apex and Rust sets that share the same timing engine.
 
 **77 scripts.** All plain text, all editable, all compiled in Zen Studio.
 
-[Setup](#setup) · [Scripts](#whats-in-the-pack) · [Full index](SCRIPTS.md) ·
-[Troubleshooting](SUPPORT.md) · [Changelog](CHANGELOG.md) ·
-[Contributing](CONTRIBUTING.md)
+[SLEM CV](#slem-cv) · [Setup](#setup) · [Scripts](#whats-in-the-pack) ·
+[Full index](SCRIPTS.md) · [Troubleshooting](SUPPORT.md) ·
+[Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md)
+
+---
+
+## SLEM CV
+
+**SLEM CV is the app.** Everything in `scripts/` is the script library — CV is
+the program that actually reads your shot meter and releases the button for
+you. It runs on a PC and drives the controller for whatever platform you're
+playing on. Nothing gets installed on your console.
+
+Two ways to use it:
+
+| | What it is | What you need |
+|---|---|---|
+| **PC** | CV runs on the same PC as the game | Steam copy of 2K |
+| **Console** | CV watches your PS5 or Xbox through a stream on the PC | Ethernet on both ends, plus a free capture app |
+
+### How it reads the shot
+
+CV looks at the game window on your screen, finds the shot meter, and lets go
+at the moment the meter fills. No capture card, no console modification, no
+injection into the game process — it watches pixels and plays your controller.
+
+That's also the honest limit of it. Anything that reads your screen can
+desync if the picture is late, which is why the guides make such a point about
+Ethernet and turning Game Bar off.
+
+### Platform support
+
+| Platform | How it sees the game | Setup guide |
+|---|---|---|
+| **PC** | The game window itself | [`SLEM-CV-PC-Setup.pdf`](SLEM-CV/SLEM-CV-PC-Setup.pdf) |
+| **PlayStation** | `chiaki-ng` stream — *not* PS Remote Play | [`SLEM-CV-PlayStation-Setup.pdf`](SLEM-CV/SLEM-CV-PlayStation-Setup.pdf) |
+| **Xbox** | Xbox app remote play | [`SLEM-CV-Xbox-Setup.pdf`](SLEM-CV/SLEM-CV-Xbox-Setup.pdf) |
+
+On console it does **not** touch the console. It watches the stream on the PC
+and plays the PC controller, which the console sees as a normal pad.
+
+### The first-run setup
+
+`Start Setup.bat` in `SLEM-CV/` installs the controller bridge — the piece that
+hides your real pad from the game and hands it a virtual one instead. Without
+it CV opens, draws its overlay, and reads nothing.
+
+It's a one-time job per PC. Re-run it after a Windows feature update; those
+occasionally reset the driver registration.
+
+The bridge uses two open-source components, both linked from the guides:
+
+- **ViGEmBus** — the virtual controller the game talks to
+- **HidHide** — hides the physical pad so the game can't see two
+
+### Setup wizard
+
+Once you're past the bridge, CV's own Setup window walks you through it. Each
+step checks something real and turns green when it passes — controller
+visible, stream up, shot meter found, HDR off, Game Bar off. A red step tells
+you what to fix instead of failing silently later.
+
+Only the **Test** step asks anything of you: shoot ten times yourself and let go
+on your own timing, then press Next.
+
+### Why controllers matter
+
+CV has to hide your real controller from the game. That only works for:
+
+- PlayStation pad — DualSense or DualShock 4, USB or Bluetooth
+- Xbox pad — **Bluetooth only**
+
+Xbox over USB can't be hidden; Windows drives it as XInput where no wrapper can
+intercept it, so the game sees both pads and fights your thumb. Same reason
+there's no Cronus Zen or Titan Two in the chain — the pad goes straight to the
+PC and CV plays it directly.
+
+### A word on detection
+
+On PC, 2K's anti-cheat can see programs running on the same machine, and a PC
+account can be banned or suspended with no console in between. CV doesn't
+modify the game — it reads your screen and plays your controller — but nobody
+can promise that's undetectable forever. Console is the safer side because
+nothing at all runs on the console.
+
+Use it knowing that. No 100% green guarantee, no ban guarantee, and results
+depend on your PC and your setup.
+
+### Version
+
+CV is on **v6**. The guides in `guides/` cover the script side (V2 through V5);
+the three `SLEM-CV-*-Setup.pdf` files are the app side and are the ones to read
+first.
+
+CV is closed-source and free. The scripts in this repo are the open half.
 
 ---
 
@@ -26,17 +118,8 @@ Open `SLEM-CV/` and run:
 Start Setup.bat
 ```
 
-If Windows asks whether to run it, choose **Run**.
-
-A console window opens, unpacks the controller-bridge component from
-`scripts/_cache/`, and closes within 10–60 seconds. Run it once per PC.
-
-It installs the controller bridge: SLEM has to hide your physical pad from the
-game and hand it a virtual one instead. Until that's done the app opens, draws
-its overlay, and reads nothing.
-
-You don't need to reboot. If it offers to restart, finish your Zen Studio work
-first — it isn't required.
+If Windows asks whether to run it, choose **Run**. This is the controller
+bridge described [above](#the-first-run-setup) — one time per PC.
 
 ### 2. Read your platform guide
 
