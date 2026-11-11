@@ -50,17 +50,17 @@ and plays the PC controller, which the console sees as a normal pad.
 
 ### The first-run setup
 
-`Start Setup.bat` in `SLEM-CV/` installs the controller bridge — the piece that
-hides your real pad from the game and hands it a virtual one instead. Without
-it CV opens, draws its overlay, and reads nothing.
+`SLEM-CV\Start Setup.bat` installs the controller bridge — the piece that hides
+your real pad from the game and hands it a virtual one instead. Without it CV
+opens, draws its overlay, and reads nothing.
+
+**Run it as administrator.** The bridge registers a virtual controller driver
+and Windows only permits that from an elevated process. Right-click →
+**Run as administrator**. The script will re-launch itself with a prompt if you
+forget, so just click **Yes**.
 
 It's a one-time job per PC. Re-run it after a Windows feature update; those
 occasionally reset the driver registration.
-
-The bridge uses two open-source components, both linked from the guides:
-
-- **ViGEmBus** — the virtual controller the game talks to
-- **HidHide** — hides the physical pad so the game can't see two
 
 ### Setup wizard
 
@@ -110,16 +110,20 @@ CV is closed-source and free. The scripts in this repo are the open half.
 Extract the ZIP somewhere permanent — Desktop or Documents. Not inside the
 archive, not on a network drive.
 
-### 1. Run the setup
+### 1. Run the setup — **as administrator**
 
-Open `SLEM-CV/` and run:
+Right-click `SLEM-CV\Start Setup.bat` → **Run as administrator** → **Yes**.
 
-```
-Start Setup.bat
-```
+This is **required**, not optional. The bridge registers a virtual controller
+driver, and Windows only allows a driver registration from an elevated process.
+Without it the registration fails partway and your controller stays hidden from
+Windows — which is exactly what "SLEM does not see my controller" looks like.
 
-If Windows asks whether to run it, choose **Run**. This is the controller
-bridge described [above](#the-first-run-setup) — one time per PC.
+If you double-click it by accident, the script notices it is not elevated and
+reopens itself with a permission prompt. Click **Yes** there and carry on.
+
+Run it once per PC. Re-run it after a Windows feature update — those reset the
+driver registration.
 
 ### 2. Read your platform guide
 

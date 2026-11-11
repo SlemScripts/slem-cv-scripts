@@ -7,6 +7,29 @@ Format: `YYYY.MM.DD` — newest first.
 
 ---
 
+## 2026.11.11 — CV setup guide rewrite
+
+### Changed
+- **CV**: the platform guides now open with the setup step instead of burying
+  it. All three start with the controller bridge, then lead on from there
+- **CV**: cut the wordy "what this is" preamble and the duplicated controller
+  rules that appeared twice in each guide
+- Setup is now stated as **run as administrator**. It always needed elevation —
+  the driver registration fails silently without it — but the guides never said
+  so, which is why "the app doesn't see my controller" kept coming up
+- The bridge install is now a single step. The guides no longer walk you
+  through installing its components by hand first
+
+### Fixed
+- Setup reports the real component name instead of assuming one. A renamed
+  build made the script claim failure after a successful unpack
+- Setup installs under ProgramData rather than the user profile, so it survives
+  a profile reset
+- Trap: the PC guide never mentioned the setup script at all and sent you
+  straight to the app
+
+---
+
 ## 2026.06.24 — Timing pass
 
 ### Changed
