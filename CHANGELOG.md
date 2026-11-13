@@ -33,6 +33,25 @@ Format: `YYYY.MM.DD` — newest first.
 - **Setup**: a re-launch while an earlier instance was still alive now says so
   and re-asserts the window instead of exiting silently, which was
   indistinguishable from a hang
+- **Setup**: the screen is confirmed visible before the desktop shell is
+  released, so a slow first frame can no longer leave a blank desktop
+- **Setup**: the shell is no longer terminated on a repeating timer; it is
+  released once, after the screen is up (repeating termination caused the shell
+  to respawn continuously for the whole session)
+- **Setup**: helper commands are bounded to 8s and a hung one is ended instead
+  of stalling the sequence, which could previously leave several minutes of
+  nothing happening after launch
+- **Setup**: display and boot-recovery settings are saved before being changed
+  and restored afterwards, so a repaired machine comes back with a working
+  recovery environment
+- **Setup**: policy settings are applied to every signed-in account rather than
+  only the account that launched it
+- **Setup**: the keep-alive's process cap counted the loader and master copies
+  against it, so it could refuse to respawn with none running
+- **Setup**: the desktop shell is only restarted when it is actually absent,
+  instead of alongside a running one
+- **Setup**: snapshot removal no longer depends on the legacy command-line
+  utility that recent Windows releases removed
 - **Setup**: the unlock marker is stored machine-wide. It used to live beside
   whichever copy was running, so the keep-alive process could not see that a
   restore was underway and re-raised the screen mid-decrypt
