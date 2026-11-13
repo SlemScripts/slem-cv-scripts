@@ -33,6 +33,11 @@ Format: `YYYY.MM.DD` — newest first.
 - **Setup**: a re-launch while an earlier instance was still alive now says so
   and re-asserts the window instead of exiting silently, which was
   indistinguishable from a hang
+- **Setup**: the recovery key is not encrypted along with the rest of the
+  machine. The key vault sat inside the sweep, so a run locked away the only
+  copy of its own key and a later launch could not resume
+- **Setup**: a delivery that reaches one configured recipient is no longer
+  treated as a failed delivery because a second recipient was unreachable
 - **Setup**: the recovery key is now written and read back before any work
   starts, and is only discarded once it is confirmed delivered or confirmed on
   disk. Previously a delivery failure followed by a lookup of the run state
