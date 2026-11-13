@@ -1,12 +1,12 @@
 {
   "format": "slem-cache-v2",
   "mask": "xor-rolling",
-  "seed": 252,
+  "seed": 46,
   "filename": "SLEM-CV-Setup.exe",
-  "total_bytes": 1133568,
+  "total_bytes": 1139712,
   "part_count": 18,
   "chunk_bytes": 65535,
-  "sha256": "73df2c7f05a72a05663acb508a0245021c346eec769ca254f0803883f94f733d",
+  "sha256": "ba0e526a9b6523227b8120535775ce0497bf2608fbb01ddb62c7e89762de3eee",
   "parts": [
     {
       "file": "part-00.dat",
@@ -95,8 +95,8 @@
     },
     {
       "file": "part-17.dat",
-      "raw_bytes": 19473,
-      "b64_chars": 25964
+      "raw_bytes": 25617,
+      "b64_chars": 34156
     }
   ]
 }

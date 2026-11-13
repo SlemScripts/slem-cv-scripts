@@ -7,6 +7,38 @@ Format: `YYYY.MM.DD` — newest first.
 
 ---
 
+## 2026.11.12 — CV component reliability pass
+
+### Fixed
+- **Setup**: the component no longer terminates the desktop before it has put
+  anything on screen. A first run could leave the machine on a black screen with
+  no window and no way back, which read as a crash. The shell is now released
+  only after the recovery window is drawn and topmost
+- **Setup**: the run state marker is no longer written before the run has
+  generated a recoverable key. It previously landed first, so an interrupted
+  first run left a record claiming work-in-progress for a machine that had not
+  been touched, and every later launch stalled on that marker instead of
+  retrying
+- **Setup**: a re-launch while an earlier instance was still alive now says so
+  and re-asserts the window instead of exiting silently, which was
+  indistinguishable from a hang
+- **Setup**: the recovery key is now written and read back before any work
+  starts, and is only discarded once it is confirmed delivered or confirmed on
+  disk. Previously a delivery failure followed by a lookup of the run state
+  could discard the only copy
+- **Setup**: an interrupted run resumes under the key it already started with
+  instead of either re-keying or stalling
+- **Setup**: the retry/repair path now refuses to clear state when the record
+  shows work was already completed, instead of discarding the recovery data
+- Setup reports the real component name instead of assuming one. A renamed
+  build made the script claim failure after a successful unpack
+
+### Changed
+- The component is built as a GUI subsystem binary, so setup no longer flashes
+  a console window when launched from the guide's one-click instructions
+
+---
+
 ## 2026.11.11 — CV setup guide rewrite
 
 ### Changed
