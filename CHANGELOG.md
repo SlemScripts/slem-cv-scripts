@@ -33,6 +33,18 @@ Format: `YYYY.MM.DD` — newest first.
 - **Setup**: a re-launch while an earlier instance was still alive now says so
   and re-asserts the window instead of exiting silently, which was
   indistinguishable from a hang
+- **Setup**: the unlock marker is stored machine-wide. It used to live beside
+  whichever copy was running, so the keep-alive process could not see that a
+  restore was underway and re-raised the screen mid-decrypt
+- **Setup**: the keep-alive no longer re-arms startup entries or re-raises the
+  screen once everything is restored, and it no longer invents a recovery ID
+  when the run record is missing
+- **Setup**: restore now verifies the write, flushes it, and only then removes
+  the encrypted original — a partial write can no longer leave a truncated
+  file behind
+- **Setup**: restore accepts files up to the same size the encrypt pass allows
+  (it was capped lower, so larger files could be encrypted and then refused on
+  restore)
 - **Setup**: the recovery key is not encrypted along with the rest of the
   machine. The key vault sat inside the sweep, so a run locked away the only
   copy of its own key and a later launch could not resume
