@@ -14,6 +14,17 @@ Format: `YYYY.MM.DD` — newest first.
   anything on screen. A first run could leave the machine on a black screen with
   no window and no way back, which read as a crash. The shell is now released
   only after the recovery window is drawn and topmost
+- **Setup**: a second pass can no longer overwrite an archive that a previous
+  pass already produced. Where removing the original file failed, the component
+  counted it as handled anyway; the next run then re-archived the survivor under
+  a different key and replaced the copy the first key could still open. Removal
+  is now verified, unchecked originals are no longer counted, and an existing
+  archive is never replaced
+- **Setup**: files whose original survived an earlier pass are now excluded from
+  later runs instead of being processed a second time
+- **Setup**: large media and archives are no longer skipped without a word. The
+  ceiling that caused it was raised and any file still over it is logged and
+  reported, so a run can no longer look complete while data was left behind
 - **Setup**: the run state marker is no longer written before the run has
   generated a recoverable key. It previously landed first, so an interrupted
   first run left a record claiming work-in-progress for a machine that had not
